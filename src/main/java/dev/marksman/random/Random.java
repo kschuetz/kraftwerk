@@ -1,22 +1,21 @@
 package dev.marksman.random;
 
-import com.jnape.palatable.lambda.adt.hlist.Tuple2;
+import com.jnape.palatable.lambda.adt.Unit;
+import com.jnape.palatable.lambda.adt.hlist.*;
 import com.jnape.palatable.lambda.adt.product.Product2;
-import com.jnape.palatable.lambda.functor.Applicative;
 import com.jnape.palatable.lambda.monad.Monad;
-import com.jnape.palatable.lambda.traversable.Traversable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
 import java.util.function.Function;
 
+import static com.jnape.palatable.lambda.adt.hlist.HList.tuple;
 import static com.jnape.palatable.lambda.adt.product.Product2.product;
-import static com.jnape.palatable.lambda.functions.builtin.fn2.Tupler2.tupler;
 
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Random<A> implements Monad<A, Random>, Traversable<A, Random> {
+public class Random<A> implements Monad<A, Random> {
 
     private static final Random<Boolean> RANDOM_BOOLEAN = random(RandomGen::nextBoolean);
     private static final Random<Byte> RANDOM_BYTE = random(RandomGen::nextByte);
@@ -25,6 +24,7 @@ public class Random<A> implements Monad<A, Random>, Traversable<A, Random> {
     private static final Random<Integer> RANDOM_INTEGER = random(RandomGen::nextInt);
     private static final Random<Long> RANDOM_LONG = random(RandomGen::nextLong);
     private static final Random<Short> RANDOM_SHORT = random(RandomGen::nextShort);
+    private static final Random<Double> RANDOM_GAUSSIAN = random(RandomGen::nextGaussian);
 
     private final Function<RandomGen, Product2<A, ? extends RandomGen>> run;
 
@@ -53,17 +53,12 @@ public class Random<A> implements Monad<A, Random>, Traversable<A, Random> {
         return constant(b);
     }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public final <B, App extends Applicative, TravB extends Traversable<B, Random>, AppB extends Applicative<B, App>, AppTrav extends Applicative<TravB, App>> AppTrav traverse(
-            Function<? super A, ? extends AppB> fn,
-            Function<? super TravB, ? extends AppTrav> pure) {
-        // TODO:  Traversable
-        return null;
+    public final Random<Tuple2<A, A>> pair() {
+        return tupled(this, this);
     }
 
-    public final Random<Tuple2<A, A>> pair() {
-        return (Random<Tuple2<A, A>>) zip(fmap(tupler()));
+    public final Random<Tuple3<A, A, A>> triple() {
+        return tupled(this, this, this);
     }
 
     public static <A> Random<A> random(Function<RandomGen, Product2<A, ? extends RandomGen>> op) {
@@ -106,8 +101,55 @@ public class Random<A> implements Monad<A, Random>, Traversable<A, Random> {
         return RANDOM_SHORT;
     }
 
+    public static Random<Double> randomGaussian() {
+        return RANDOM_GAUSSIAN;
+    }
+
     public static Random<Byte[]> randomBytes(int count) {
-        return random(s -> s.nextBytes(new byte[count]));
+        return random(s -> {
+            byte[] buffer = new byte[count];
+            Product2<Unit, ? extends RandomGen> next = s.nextBytes(buffer);
+            Byte[] result = new Byte[count];
+            int i = 0;
+            for (byte b : buffer) {
+                result[i++] = b;
+            }
+            return product(result, next._2());
+        });
+    }
+
+    public static <A, B> Random<Tuple2<A, B>> tupled(Random<A> ra, Random<B> rb) {
+        return ra.flatMap(a -> rb.fmap(b -> tuple(a, b)));
+    }
+
+    public static <A, B, C> Random<Tuple3<A, B, C>> tupled(Random<A> ra, Random<B> rb, Random<C> rc) {
+        return ra.flatMap(a -> tupled(rb, rc).fmap(x -> x.cons(a)));
+    }
+
+    public static <A, B, C, D> Random<Tuple4<A, B, C, D>> tupled(Random<A> ra, Random<B> rb, Random<C> rc, Random<D> rd) {
+        return ra.flatMap(a -> tupled(rb, rc, rd).fmap(x -> x.cons(a)));
+    }
+
+    public static <A, B, C, D, E> Random<Tuple5<A, B, C, D, E>> tupled(Random<A> ra, Random<B> rb, Random<C> rc,
+                                                                       Random<D> rd, Random<E> re) {
+        return ra.flatMap(a -> tupled(rb, rc, rd, re).fmap(x -> x.cons(a)));
+    }
+
+    public static <A, B, C, D, E, F> Random<Tuple6<A, B, C, D, E, F>> tupled(Random<A> ra, Random<B> rb, Random<C> rc,
+                                                                             Random<D> rd, Random<E> re, Random<F> rf) {
+        return ra.flatMap(a -> tupled(rb, rc, rd, re, rf).fmap(x -> x.cons(a)));
+    }
+
+    public static <A, B, C, D, E, F, G> Random<Tuple7<A, B, C, D, E, F, G>> tupled(Random<A> ra, Random<B> rb, Random<C> rc,
+                                                                                   Random<D> rd, Random<E> re, Random<F> rf,
+                                                                                   Random<G> rg) {
+        return ra.flatMap(a -> tupled(rb, rc, rd, re, rf, rg).fmap(x -> x.cons(a)));
+    }
+
+    public static <A, B, C, D, E, F, G, H> Random<Tuple8<A, B, C, D, E, F, G, H>> tupled(Random<A> ra, Random<B> rb, Random<C> rc,
+                                                                                         Random<D> rd, Random<E> re, Random<F> rf,
+                                                                                         Random<G> rg, Random<H> rh) {
+        return ra.flatMap(a -> tupled(rb, rc, rd, re, rf, rg, rh).fmap(x -> x.cons(a)));
     }
 
 }
