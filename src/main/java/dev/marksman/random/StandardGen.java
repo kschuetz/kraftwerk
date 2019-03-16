@@ -70,16 +70,6 @@ public class StandardGen implements RandomGen {
     }
 
     @Override
-    public Product2<Byte, StandardGen> nextByte() {
-        return mapResult(Integer::byteValue, next(8));
-    }
-
-    @Override
-    public Product2<Short, StandardGen> nextShort() {
-        return mapResult(Integer::shortValue, next(16));
-    }
-
-    @Override
     public Product2<Unit, StandardGen> nextBytes(byte[] dest) {
         StandardGen nextSeed = this;
         int i = 0;
@@ -103,8 +93,8 @@ public class StandardGen implements RandomGen {
             Product2<Double, StandardGen> d1 = newSeed.nextDouble();
             Product2<Double, StandardGen> d2 = d1._2().nextDouble();
             newSeed = d2._2();
-            v1 = d1._1();
-            v2 = d2._1();
+            v1 = 2 * d1._1() - 1;
+            v2 = 2 * d2._1() - 1;
             s = v1 * v1 + v2 * v2;
         } while (s >= 1 || s == 0);
         double multiplier = StrictMath.sqrt(-2 * StrictMath.log(s) / s);
@@ -117,14 +107,18 @@ public class StandardGen implements RandomGen {
         long newSeedValue = (seed * 0x5DEECE66DL + 0xBL) & ((1L << 48) - 1);
         int result = (int) (newSeedValue >>> (48 - bits));
 
-        return product(result, standardGen(newSeedValue));
+        return product(result, nextStandardGen(newSeedValue));
     }
 
     private static <A, B, C> Product2<B, C> mapResult(Function<A, B> fn, Product2<A, C> p) {
         return product(fn.apply(p._1()), p._2());
     }
 
-    public static StandardGen standardGen(long seed) {
+    public static StandardGen initStandardGen(long seed) {
+        return nextStandardGen((seed ^ 0x5DEECE66DL) & ((1L << 48) - 1));
+    }
+
+    public static StandardGen nextStandardGen(long seed) {
         return new StandardGen(seed);
     }
 

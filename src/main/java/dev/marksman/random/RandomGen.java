@@ -17,10 +17,6 @@ public interface RandomGen {
 
     Product2<Boolean, ? extends RandomGen> nextBoolean();
 
-    Product2<Byte, ? extends RandomGen> nextByte();
-
-    Product2<Short, ? extends RandomGen> nextShort();
-
     Product2<Unit, ? extends RandomGen> nextBytes(byte[] dest);
 
     Product2<Double, ? extends RandomGen> nextGaussian();

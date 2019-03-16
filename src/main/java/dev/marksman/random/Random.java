@@ -18,12 +18,10 @@ import static com.jnape.palatable.lambda.adt.product.Product2.product;
 public class Random<A> implements Monad<A, Random> {
 
     private static final Random<Boolean> RANDOM_BOOLEAN = random(RandomGen::nextBoolean);
-    private static final Random<Byte> RANDOM_BYTE = random(RandomGen::nextByte);
     private static final Random<Double> RANDOM_DOUBLE = random(RandomGen::nextDouble);
     private static final Random<Float> RANDOM_FLOAT = random(RandomGen::nextFloat);
     private static final Random<Integer> RANDOM_INTEGER = random(RandomGen::nextInt);
     private static final Random<Long> RANDOM_LONG = random(RandomGen::nextLong);
-    private static final Random<Short> RANDOM_SHORT = random(RandomGen::nextShort);
     private static final Random<Double> RANDOM_GAUSSIAN = random(RandomGen::nextGaussian);
 
     private final Function<RandomGen, Product2<A, ? extends RandomGen>> run;
@@ -73,10 +71,6 @@ public class Random<A> implements Monad<A, Random> {
         return RANDOM_BOOLEAN;
     }
 
-    public static Random<Byte> randomByte() {
-        return RANDOM_BYTE;
-    }
-
     public static Random<Double> randomDouble() {
         return RANDOM_DOUBLE;
     }
@@ -95,10 +89,6 @@ public class Random<A> implements Monad<A, Random> {
 
     public static Random<Long> randomLong() {
         return RANDOM_LONG;
-    }
-
-    public static Random<Short> randomShort() {
-        return RANDOM_SHORT;
     }
 
     public static Random<Double> randomGaussian() {

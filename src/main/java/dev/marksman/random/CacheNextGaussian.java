@@ -46,16 +46,6 @@ public class CacheNextGaussian implements RandomGen {
     }
 
     @Override
-    public Product2<Byte, ? extends RandomGen> nextByte() {
-        return wrap(inner.nextByte());
-    }
-
-    @Override
-    public Product2<Short, ? extends RandomGen> nextShort() {
-        return wrap(inner.nextShort());
-    }
-
-    @Override
     public Product2<Unit, ? extends RandomGen> nextBytes(byte[] dest) {
         return wrap(inner.nextBytes(dest));
     }
