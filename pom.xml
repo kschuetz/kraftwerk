@@ -10,14 +10,17 @@
 
     <properties>
         <lambda.version>3.3.0</lambda.version>
+        <junit.version>5.4.0</junit.version>
         <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
         <maven-jar-plugin.version>3.1.1</maven-jar-plugin.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.jnape.palatable</groupId>
