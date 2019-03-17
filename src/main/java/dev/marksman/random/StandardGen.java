@@ -5,6 +5,7 @@ import com.jnape.palatable.lambda.adt.product.Product2;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
+import java.util.Random;
 import java.util.function.Function;
 
 import static com.jnape.palatable.lambda.adt.Unit.UNIT;
@@ -14,7 +15,7 @@ import static dev.marksman.random.CacheNextGaussian.cacheNextGaussian;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public final class StandardGen implements RandomGen {
     private final long seed;
-    
+
     public final long getSeedValue() {
         return seed;
     }
@@ -112,15 +113,20 @@ public final class StandardGen implements RandomGen {
         return product(result, nextStandardGen(newSeedValue));
     }
 
-    private static <A, B, C> Product2<B, C> mapResult(Function<A, B> fn, Product2<A, C> p) {
-        return product(fn.apply(p._1()), p._2());
-    }
-
     public static StandardGen initStandardGen(long seed) {
         return nextStandardGen((seed ^ 0x5DEECE66DL) & ((1L << 48) - 1));
     }
 
-    public static StandardGen nextStandardGen(long seed) {
+    public static StandardGen initStandardGen() {
+        Random random = new Random();
+        return initStandardGen(random.nextLong());
+    }
+
+    private static <A, B, C> Product2<B, C> mapResult(Function<A, B> fn, Product2<A, C> p) {
+        return product(fn.apply(p._1()), p._2());
+    }
+
+    private static StandardGen nextStandardGen(long seed) {
         return new StandardGen(seed);
     }
 
