@@ -6,8 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Random;
 import java.util.function.Function;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class StandardGenTest {
 
@@ -25,6 +24,13 @@ class StandardGenTest {
         testAgainstUtilRandom(r -> r.nextInt(255), r -> r.nextInt(255));
         testAgainstUtilRandom(r -> r.nextInt(256), r -> r.nextInt(256));
         testAgainstUtilRandom(r -> r.nextInt(Integer.MAX_VALUE), r -> r.nextInt(Integer.MAX_VALUE));
+    }
+
+    @Test
+    void nextIntWithInvalidBound() {
+        RandomGen randomGen = initStandardGen();
+        assertThrows(IllegalArgumentException.class, () -> randomGen.nextInt(0));
+        assertThrows(IllegalArgumentException.class, () -> randomGen.nextInt(-1));
     }
 
     @Test
@@ -54,24 +60,90 @@ class StandardGenTest {
 
     @Test
     void nextBytes() {
+        testNextBytes(initRandom(), initStandardGen(), 1);
+        testNextBytes(initRandom(), initStandardGen(), 2);
+        testNextBytes(initRandom(), initStandardGen(), 3);
+        testNextBytes(initRandom(), initStandardGen(), 4);
+        testNextBytes(initRandom(), initStandardGen(), 5);
+    }
+
+    @Test
+    void mixed() {
         Random random = initRandom();
-        RandomGen current = initStandardGen();
+        RandomGen rg = initStandardGen();
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextInt, RandomGen::nextInt);
+        rg = testAgainstUtilRandom(random, rg, 1, r -> r.nextInt(10), r -> r.nextInt(10));
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextDouble, RandomGen::nextDouble);
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextFloat, RandomGen::nextFloat);
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextLong, RandomGen::nextLong);
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextBoolean, RandomGen::nextBoolean);
+        testAgainstUtilRandom(random, rg, 1, Random::nextGaussian, RandomGen::nextGaussian);
+    }
 
-        byte[] expected = new byte[SEQUENCE_LENGTH];
-        byte[] actual = new byte[SEQUENCE_LENGTH];
+    @Test
+    void withCachedGaussian() {
+        Random random = initRandom();
+        RandomGen rg = initStandardGen();
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextGaussian, RandomGen::nextGaussian);
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextInt, RandomGen::nextInt);
+        rg = testAgainstUtilRandom(random, rg, 1, r -> r.nextInt(10), r -> r.nextInt(10));
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextDouble, RandomGen::nextDouble);
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextFloat, RandomGen::nextFloat);
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextLong, RandomGen::nextLong);
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextBoolean, RandomGen::nextBoolean);
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextGaussian, RandomGen::nextGaussian);
+        testAgainstUtilRandom(random, rg, 1, Random::nextInt, RandomGen::nextInt);
+    }
 
-        random.nextBytes(expected);
-        current.nextBytes(actual);
-        
-        assertArrayEquals(expected, actual);
+    @Test
+    void nextBytesWithCachedGaussian() {
+        Random random = initRandom();
+        random.nextGaussian();
+        testNextBytes(random, initStandardGen().nextGaussian()._2(), 4);
+    }
+
+    @Test
+    void noMethodsMutate() {
+        StandardGen randomGen = initStandardGen();
+        long seed = randomGen.getSeedValue();
+
+        randomGen.nextInt();
+        assertEquals(seed, randomGen.getSeedValue());
+
+        randomGen.nextInt(10);
+        assertEquals(seed, randomGen.getSeedValue());
+
+        randomGen.nextDouble();
+        assertEquals(seed, randomGen.getSeedValue());
+
+        randomGen.nextFloat();
+        assertEquals(seed, randomGen.getSeedValue());
+
+        randomGen.nextLong();
+        assertEquals(seed, randomGen.getSeedValue());
+
+        randomGen.nextBoolean();
+        assertEquals(seed, randomGen.getSeedValue());
+
+        randomGen.nextGaussian();
+        assertEquals(seed, randomGen.getSeedValue());
+
+        randomGen.nextBytes(new byte[4]);
+        assertEquals(seed, randomGen.getSeedValue());
     }
 
     private <A> void testAgainstUtilRandom(Function<Random, A> getNextExpected,
                                            Function<RandomGen, Product2<A, ? extends RandomGen>> getNextResult) {
-        Random random = initRandom();
-        RandomGen current = initStandardGen();
+        testAgainstUtilRandom(initRandom(), initStandardGen(), SEQUENCE_LENGTH, getNextExpected, getNextResult);
+    }
 
-        for (int i = 0; i < SEQUENCE_LENGTH; i++) {
+    private <A> RandomGen testAgainstUtilRandom(Random random,
+                                                RandomGen randomGen,
+                                                int times,
+                                                Function<Random, A> getNextExpected,
+                                                Function<RandomGen, Product2<A, ? extends RandomGen>> getNextResult) {
+        RandomGen current = randomGen;
+        for (int i = 0; i < times; i++) {
             A expected = getNextExpected.apply(random);
             Product2<A, ? extends RandomGen> next = getNextResult.apply(current);
             A actual = next._1();
@@ -79,6 +151,17 @@ class StandardGenTest {
 
             assertEquals(expected, actual, "index " + i);
         }
+        return current;
+    }
+
+    private static void testNextBytes(Random random, RandomGen randomGen, int count) {
+        byte[] expected = new byte[count];
+        byte[] actual = new byte[count];
+
+        random.nextBytes(expected);
+        randomGen.nextBytes(actual);
+
+        assertArrayEquals(expected, actual);
     }
 
     private static Random initRandom() {
@@ -90,12 +173,5 @@ class StandardGenTest {
     private static StandardGen initStandardGen() {
         return StandardGen.initStandardGen(INITIAL_SEED);
     }
-
-    // TODO:
-    // mixing types in sequences
-    // int with bound 0
-    // mixing gaussian / non-gaussian
-    // immutability
-    // associativity
 
 }

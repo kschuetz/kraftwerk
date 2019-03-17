@@ -59,8 +59,8 @@ public class Random<A> implements Monad<A, Random> {
         return tupled(this, this, this);
     }
 
-    public static <A> Random<A> random(Function<RandomGen, Product2<A, ? extends RandomGen>> op) {
-        return new Random<>(op);
+    public static <A> Random<A> random(Function<RandomGen, Product2<A, ? extends RandomGen>> run) {
+        return new Random<>(run);
     }
 
     public static <A> Random<A> constant(A a) {

@@ -4,7 +4,6 @@ import com.jnape.palatable.lambda.adt.Unit;
 import com.jnape.palatable.lambda.adt.product.Product2;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Value;
 
 import java.util.function.Function;
 
@@ -13,12 +12,15 @@ import static com.jnape.palatable.lambda.adt.product.Product2.product;
 import static dev.marksman.random.CacheNextGaussian.cacheNextGaussian;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Value
-public class StandardGen implements RandomGen {
+public final class StandardGen implements RandomGen {
     private final long seed;
+    
+    public final long getSeedValue() {
+        return seed;
+    }
 
     @Override
-    public Product2<Integer, StandardGen> nextInt(int bound) {
+    public final Product2<Integer, StandardGen> nextInt(int bound) {
         if (bound <= 0)
             throw new IllegalArgumentException("bound must be positive");
 
@@ -39,12 +41,12 @@ public class StandardGen implements RandomGen {
     }
 
     @Override
-    public Product2<Integer, StandardGen> nextInt() {
+    public final Product2<Integer, StandardGen> nextInt() {
         return next(32);
     }
 
     @Override
-    public Product2<Double, StandardGen> nextDouble() {
+    public final Product2<Double, StandardGen> nextDouble() {
         Product2<Integer, StandardGen> s1 = next(26);
         Product2<Integer, StandardGen> s2 = s1._2().next(27);
         double result = (((long) s1._1() << 27) + s2._1()) / (double) (1L << 53);
@@ -52,12 +54,12 @@ public class StandardGen implements RandomGen {
     }
 
     @Override
-    public Product2<Float, StandardGen> nextFloat() {
+    public final Product2<Float, StandardGen> nextFloat() {
         return mapResult(n -> n / ((float) (1 << 24)), next(24));
     }
 
     @Override
-    public Product2<Long, StandardGen> nextLong() {
+    public final Product2<Long, StandardGen> nextLong() {
         Product2<Integer, StandardGen> s1 = next(32);
         Product2<Integer, StandardGen> s2 = s1._2().next(32);
         long result = ((long) s1._1() << 32) + s2._1();
@@ -65,12 +67,12 @@ public class StandardGen implements RandomGen {
     }
 
     @Override
-    public Product2<Boolean, StandardGen> nextBoolean() {
+    public final Product2<Boolean, StandardGen> nextBoolean() {
         return mapResult(n -> n != 0, next(1));
     }
 
     @Override
-    public Product2<Unit, StandardGen> nextBytes(byte[] dest) {
+    public final Product2<Unit, StandardGen> nextBytes(byte[] dest) {
         StandardGen nextSeed = this;
         int i = 0;
         while (i < dest.length) {
@@ -86,7 +88,7 @@ public class StandardGen implements RandomGen {
     }
 
     @Override
-    public Product2<Double, CacheNextGaussian> nextGaussian() {
+    public final Product2<Double, CacheNextGaussian> nextGaussian() {
         StandardGen newSeed = this;
         double v1, v2, s;
         do {
