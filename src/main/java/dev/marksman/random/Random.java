@@ -19,6 +19,7 @@ import static com.jnape.palatable.lambda.adt.Maybe.nothing;
 import static com.jnape.palatable.lambda.adt.hlist.HList.tuple;
 import static com.jnape.palatable.lambda.adt.product.Product2.product;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Cons.cons;
+import static dev.marksman.random.Result.mapResult;
 import static dev.marksman.random.domain.Choices.choices;
 import static java.util.Arrays.asList;
 
@@ -44,7 +45,7 @@ public class Random<A> implements Monad<A, Random> {
 
     @Override
     public final <B> Random<B> fmap(Function<? super A, ? extends B> fn) {
-        return random(run.fmap(a -> product(a._1(), fn.apply(a._2()))));
+        return random(run.fmap(a -> mapResult(fn, a)));
     }
 
     @Override

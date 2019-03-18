@@ -6,11 +6,11 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 import java.util.Random;
-import java.util.function.Function;
 
 import static com.jnape.palatable.lambda.adt.Unit.UNIT;
 import static com.jnape.palatable.lambda.adt.product.Product2.product;
 import static dev.marksman.random.CacheNextGaussian.cacheNextGaussian;
+import static dev.marksman.random.Result.mapResult;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public final class StandardGen implements RandomGen {
@@ -120,10 +120,6 @@ public final class StandardGen implements RandomGen {
     public static StandardGen initStandardGen() {
         Random random = new Random();
         return initStandardGen(random.nextLong());
-    }
-
-    private static <A, B, R> Product2<R, B> mapResult(Function<A, B> fn, Product2<R, A> p) {
-        return product(p._1(), fn.apply(p._2()));
     }
 
     private static StandardGen nextStandardGen(long seed) {
