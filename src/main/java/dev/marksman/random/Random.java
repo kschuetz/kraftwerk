@@ -18,6 +18,7 @@ import static com.jnape.palatable.lambda.adt.Maybe.nothing;
 import static com.jnape.palatable.lambda.adt.hlist.HList.tuple;
 import static com.jnape.palatable.lambda.adt.product.Product2.product;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Cons.cons;
+import static dev.marksman.random.domain.Choices.choices;
 import static java.util.Arrays.asList;
 
 @Value
@@ -211,22 +212,19 @@ public class Random<A> implements Monad<A, Random> {
         return chooseFrom(choices);
     }
 
-    public static <A> Random<A> chooseFrom(Iterable<A> choices) {
-        if (!choices.iterator().hasNext()) {
+    public static <A> Random<A> chooseFrom(Iterable<A> items) {
+        if (!items.iterator().hasNext()) {
             throw new IllegalArgumentException("chooseFrom requires at least one choice");
         }
-        ArrayList<A> as;
-        if (choices instanceof ArrayList<?>) {
-            as = (ArrayList<A>) choices;
+        return fromDomain(choices(items));
+    }
+
+    public static <A> Random<A> fromDomain(Domain<A> domain) {
+        long size = domain.getSize();
+        if (size == 1) {
+            return constant(domain.getValue(1));
         } else {
-            as = new ArrayList<>();
-            choices.forEach(as::add);
-        }
-        int count = as.size();
-        if (count == 1) {
-            return constant(as.get(0));
-        } else {
-            return randomInt(count).fmap(as::get);
+            return randomLong(size).fmap(domain::getValue);
         }
     }
 
