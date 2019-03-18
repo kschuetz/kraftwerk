@@ -5,20 +5,20 @@ import com.jnape.palatable.lambda.adt.product.Product2;
 
 public interface RandomGen {
 
-    Product2<Integer, ? extends RandomGen> nextInt(int bound);
+    Product2<? extends RandomGen, Integer> nextInt(int bound);
 
-    Product2<Integer, ? extends RandomGen> nextInt();
+    Product2<? extends RandomGen, Integer> nextInt();
 
-    Product2<Double, ? extends RandomGen> nextDouble();
+    Product2<? extends RandomGen, Double> nextDouble();
 
-    Product2<Float, ? extends RandomGen> nextFloat();
+    Product2<? extends RandomGen, Float> nextFloat();
 
-    Product2<Long, ? extends RandomGen> nextLong();
+    Product2<? extends RandomGen, Long> nextLong();
 
-    Product2<Boolean, ? extends RandomGen> nextBoolean();
+    Product2<? extends RandomGen, Boolean> nextBoolean();
 
-    Product2<Unit, ? extends RandomGen> nextBytes(byte[] dest);
+    Product2<? extends RandomGen, Unit> nextBytes(byte[] dest);
 
-    Product2<Double, ? extends RandomGen> nextGaussian();
+    Product2<? extends RandomGen, Double> nextGaussian();
 
 }

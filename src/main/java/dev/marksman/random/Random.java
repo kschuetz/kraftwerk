@@ -35,25 +35,25 @@ public class Random<A> implements Monad<A, Random> {
     private static final Random<Byte> RANDOM_BYTE = RANDOM_INTEGER.fmap(Integer::byteValue);
     private static final Random<Short> RANDOM_SHORT = RANDOM_INTEGER.fmap(Integer::shortValue);
 
-    private final Function<RandomGen, Product2<A, ? extends RandomGen>> run;
+    private final Function<? super RandomGen, Product2<? extends RandomGen, A>> run;
 
-    public final Product2<A, ? extends RandomGen> run(RandomGen randomGen) {
+    public final Product2<? extends RandomGen, A> run(RandomGen randomGen) {
         return run.apply(randomGen);
     }
 
     @Override
     public final <B> Random<B> fmap(Function<? super A, ? extends B> fn) {
         return new Random<>(rg0 -> {
-            Product2<A, ? extends RandomGen> x = run.apply(rg0);
-            return product(fn.apply(x._1()), x._2());
+            Product2<? extends RandomGen, A> x = run.apply(rg0);
+            return product(x._1(), fn.apply(x._2()));
         });
     }
 
     @Override
     public final <B> Random<B> flatMap(Function<? super A, ? extends Monad<B, Random>> fn) {
         return random(rg0 -> {
-            Product2<A, ? extends RandomGen> x = run.apply(rg0);
-            return ((Random<B>) fn.apply(x._1())).run.apply(x._2());
+            Product2<? extends RandomGen, A> x = run.apply(rg0);
+            return ((Random<B>) fn.apply(x._2())).run.apply(x._1());
         });
     }
 
@@ -86,12 +86,12 @@ public class Random<A> implements Monad<A, Random> {
         return maybe(9);
     }
 
-    public static <A> Random<A> random(Function<RandomGen, Product2<A, ? extends RandomGen>> run) {
+    public static <A> Random<A> random(Function<? super RandomGen, Product2<? extends RandomGen, A>> run) {
         return new Random<>(run);
     }
 
     public static <A> Random<A> constant(A a) {
-        return random(rg -> product(a, rg));
+        return random(rg -> product(rg, a));
     }
 
     public static Random<Boolean> randomBoolean() {
@@ -107,7 +107,10 @@ public class Random<A> implements Monad<A, Random> {
     }
 
     public static Random<Integer> randomInt(int bound) {
-        return random(s -> s.nextInt(bound));
+        return random(s -> {
+            Product2<? extends RandomGen, Integer> integerProduct2 = s.nextInt(bound);
+            return integerProduct2;
+        });
     }
 
     public static Random<Integer> randomInt(int origin, int bound) {
@@ -122,18 +125,18 @@ public class Random<A> implements Monad<A, Random> {
             // power of two
             return randomInt().fmap(r -> (r & m) + origin);
         } else return random(rg0 -> {
-            Product2<Integer, ? extends RandomGen> rg1 = rg0.nextInt();
-            int r = rg1._1();
-            RandomGen current = rg1._2();
+            Product2<? extends RandomGen, Integer> rg1 = rg0.nextInt();
+            RandomGen current = rg1._1();
+            int r = rg1._2();
             for (int u = r >>> 1;
                  u + m - (r = u % n) < 0; ) {
-                Product2<Integer, ? extends RandomGen> next = current.nextInt();
-                u = next._1() >>> 1;
-                current = next._2();
+                Product2<? extends RandomGen, Integer> next = current.nextInt();
+                u = next._2() >>> 1;
+                current = next._1();
             }
             r += origin;
 
-            return product(r, current);
+            return product(current, r);
         });
     }
 
@@ -164,18 +167,18 @@ public class Random<A> implements Monad<A, Random> {
             // power of two
             return randomLong().fmap(r -> (r & m) + origin);
         } else return random(rg0 -> {
-            Product2<Long, ? extends RandomGen> rg1 = rg0.nextLong();
-            long r = rg1._1();
-            RandomGen current = rg1._2();
+            Product2<? extends RandomGen, Long> rg1 = rg0.nextLong();
+            RandomGen current = rg1._1();
+            long r = rg1._2();
             for (long u = r >>> 1;
                  u + m - (r = u % n) < 0L; ) {
-                Product2<Long, ? extends RandomGen> next = current.nextLong();
-                u = next._1() >>> 1;
-                current = next._2();
+                Product2<? extends RandomGen, Long> next = current.nextLong();
+                u = next._2() >>> 1;
+                current = next._1();
             }
             r += origin;
 
-            return product(r, current);
+            return product(current, r);
         });
     }
 
@@ -186,13 +189,13 @@ public class Random<A> implements Monad<A, Random> {
     public static Random<Byte[]> randomBytes(int count) {
         return random(s -> {
             byte[] buffer = new byte[count];
-            Product2<Unit, ? extends RandomGen> next = s.nextBytes(buffer);
+            Product2<? extends RandomGen, Unit> next = s.nextBytes(buffer);
             Byte[] result = new Byte[count];
             int i = 0;
             for (byte b : buffer) {
                 result[i++] = b;
             }
-            return product(result, next._2());
+            return product(next._1(), result);
         });
     }
 

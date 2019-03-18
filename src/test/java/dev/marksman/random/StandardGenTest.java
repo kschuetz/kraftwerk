@@ -99,7 +99,7 @@ class StandardGenTest {
     void nextBytesWithCachedGaussian() {
         Random random = initRandom();
         random.nextGaussian();
-        testNextBytes(random, initStandardGen().nextGaussian()._2(), 4);
+        testNextBytes(random, initStandardGen().nextGaussian()._1(), 4);
     }
 
     @Test
@@ -133,7 +133,7 @@ class StandardGenTest {
     }
 
     private <A> void testAgainstUtilRandom(Function<Random, A> getNextExpected,
-                                           Function<RandomGen, Product2<A, ? extends RandomGen>> getNextResult) {
+                                           Function<RandomGen, Product2<? extends RandomGen, A>> getNextResult) {
         testAgainstUtilRandom(initRandom(), initStandardGen(), SEQUENCE_LENGTH, getNextExpected, getNextResult);
     }
 
@@ -141,13 +141,13 @@ class StandardGenTest {
                                                 RandomGen randomGen,
                                                 int times,
                                                 Function<Random, A> getNextExpected,
-                                                Function<RandomGen, Product2<A, ? extends RandomGen>> getNextResult) {
+                                                Function<RandomGen, Product2<? extends RandomGen, A>> getNextResult) {
         RandomGen current = randomGen;
         for (int i = 0; i < times; i++) {
             A expected = getNextExpected.apply(random);
-            Product2<A, ? extends RandomGen> next = getNextResult.apply(current);
-            A actual = next._1();
-            current = next._2();
+            Product2<? extends RandomGen, A> next = getNextResult.apply(current);
+            current = next._1();
+            A actual = next._2();
 
             assertEquals(expected, actual, "index " + i);
         }
