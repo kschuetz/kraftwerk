@@ -4,6 +4,7 @@ import com.jnape.palatable.lambda.adt.Maybe;
 import com.jnape.palatable.lambda.adt.Unit;
 import com.jnape.palatable.lambda.adt.hlist.*;
 import com.jnape.palatable.lambda.adt.product.Product2;
+import com.jnape.palatable.lambda.functions.Fn1;
 import com.jnape.palatable.lambda.functions.builtin.fn2.Filter;
 import com.jnape.palatable.lambda.monad.Monad;
 import lombok.AccessLevel;
@@ -35,7 +36,7 @@ public class Random<A> implements Monad<A, Random> {
     private static final Random<Byte> RANDOM_BYTE = RANDOM_INTEGER.fmap(Integer::byteValue);
     private static final Random<Short> RANDOM_SHORT = RANDOM_INTEGER.fmap(Integer::shortValue);
 
-    private final Function<? super RandomGen, Product2<? extends RandomGen, A>> run;
+    private final Fn1<? super RandomGen, Product2<? extends RandomGen, A>> run;
 
     public final Product2<? extends RandomGen, A> run(RandomGen randomGen) {
         return run.apply(randomGen);
@@ -43,10 +44,7 @@ public class Random<A> implements Monad<A, Random> {
 
     @Override
     public final <B> Random<B> fmap(Function<? super A, ? extends B> fn) {
-        return new Random<>(rg0 -> {
-            Product2<? extends RandomGen, A> x = run.apply(rg0);
-            return product(x._1(), fn.apply(x._2()));
-        });
+        return random(run.fmap(a -> product(a._1(), fn.apply(a._2()))));
     }
 
     @Override
@@ -86,8 +84,12 @@ public class Random<A> implements Monad<A, Random> {
         return maybe(9);
     }
 
-    public static <A> Random<A> random(Function<? super RandomGen, Product2<? extends RandomGen, A>> run) {
+    public static <A> Random<A> random(Fn1<? super RandomGen, Product2<? extends RandomGen, A>> run) {
         return new Random<>(run);
+    }
+
+    public static <A> Random<A> random(Function<? super RandomGen, Product2<? extends RandomGen, A>> run) {
+        return random(run::apply);
     }
 
     public static <A> Random<A> constant(A a) {
