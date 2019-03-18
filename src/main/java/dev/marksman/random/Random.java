@@ -10,6 +10,8 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
+import java.util.ArrayList;
+import java.util.TreeMap;
 import java.util.function.Function;
 
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
@@ -67,35 +69,20 @@ public class Random<A> implements Monad<A, Random> {
         return tupled(this, this, this);
     }
 
-    public final Random<Maybe<A>> maybe(int nothingFrequency, int justFrequency) {
-        if (nothingFrequency < 0) {
-            throw new IllegalArgumentException("nothingFrequency must be non-negative");
-        }
+    public final Random<Maybe<A>> maybe(int justFrequency) {
         if (justFrequency < 0) {
             throw new IllegalArgumentException("justFrequency must be non-negative");
-        }
-        int total = nothingFrequency + justFrequency;
-        if (total == 0) {
-            throw new IllegalArgumentException("sum of nothingFrequency and justFrequency must be > 0");
-        }
-        if (nothingFrequency == 0) {
-            return this.fmap(Maybe::just);
         } else if (justFrequency == 0) {
             return constant(nothing());
-        } else {
-            return randomInt(total).flatMap(n -> {
-                if (n < nothingFrequency) return constant(nothing());
-                else return this.fmap(Maybe::just);
-            });
         }
-    }
-
-    public final Random<Maybe<A>> maybe(int justFrequency) {
-        return maybe(1, justFrequency);
+        Random<Maybe<A>> just = fmap(Maybe::just);
+        Random<Maybe<A>> nothing = constant(nothing());
+        return randomInt(1 + justFrequency)
+                .flatMap(n -> n == 0 ? nothing : just);
     }
 
     public final Random<Maybe<A>> maybe() {
-        return maybe(1, 9);
+        return maybe(9);
     }
 
     public static <A> Random<A> random(Function<RandomGen, Product2<A, ? extends RandomGen>> run) {
@@ -118,16 +105,77 @@ public class Random<A> implements Monad<A, Random> {
         return RANDOM_INTEGER;
     }
 
-    public static Random<Float> randomFloat() {
-        return RANDOM_FLOAT;
-    }
-
     public static Random<Integer> randomInt(int bound) {
         return random(s -> s.nextInt(bound));
     }
 
+    public static Random<Integer> randomInt(int origin, int bound) {
+        if (origin >= bound) {
+            throw new IllegalArgumentException("bound must be greater than origin");
+        }
+        int n = bound - origin;
+        int m = n - 1;
+        if (n < Integer.MAX_VALUE) {
+            return randomInt(n).fmap(r -> origin + r);
+        } else if ((n & m) == 0) {
+            // power of two
+            return randomInt().fmap(r -> (r & m) + origin);
+        } else return random(rg0 -> {
+            Product2<Integer, ? extends RandomGen> rg1 = rg0.nextInt();
+            int r = rg1._1();
+            RandomGen current = rg1._2();
+            for (int u = r >>> 1;
+                 u + m - (r = u % n) < 0; ) {
+                Product2<Integer, ? extends RandomGen> next = current.nextInt();
+                u = next._1() >>> 1;
+                current = next._2();
+            }
+            r += origin;
+
+            return product(r, current);
+        });
+    }
+
+    public static Random<Float> randomFloat() {
+        return RANDOM_FLOAT;
+    }
+
     public static Random<Long> randomLong() {
         return RANDOM_LONG;
+    }
+
+    public static Random<Long> randomLong(long bound) {
+        if (bound <= Integer.MAX_VALUE) {
+            return randomInt((int) bound).fmap(Integer::longValue);
+        } else {
+            return randomLong(0, bound);
+        }
+    }
+
+    public static Random<Long> randomLong(long origin, long bound) {
+        if (origin >= bound) {
+            throw new IllegalArgumentException("bound must be greater than origin");
+        }
+        long n = bound - origin;
+        long m = n - 1;
+
+        if ((n & m) == 0L) {
+            // power of two
+            return randomLong().fmap(r -> (r & m) + origin);
+        } else return random(rg0 -> {
+            Product2<Long, ? extends RandomGen> rg1 = rg0.nextLong();
+            long r = rg1._1();
+            RandomGen current = rg1._2();
+            for (long u = r >>> 1;
+                 u + m - (r = u % n) < 0L; ) {
+                Product2<Long, ? extends RandomGen> next = current.nextLong();
+                u = next._1() >>> 1;
+                current = next._2();
+            }
+            r += origin;
+
+            return product(r, current);
+        });
     }
 
     public static Random<Double> randomGaussian() {
@@ -157,25 +205,47 @@ public class Random<A> implements Monad<A, Random> {
 
     @SafeVarargs
     public static <A> Random<A> oneOf(A first, A... more) {
-        int choices = 1 + more.length;
-        if (choices == 1) {
-            return constant(first);
+        ArrayList<A> choices = new ArrayList<>();
+        choices.add(first);
+        choices.addAll(asList(more));
+        return chooseFrom(choices);
+    }
+
+    public static <A> Random<A> chooseFrom(Iterable<A> choices) {
+        if (!choices.iterator().hasNext()) {
+            throw new IllegalArgumentException("chooseFrom requires at least one choice");
+        }
+        ArrayList<A> as;
+        if (choices instanceof ArrayList<?>) {
+            as = (ArrayList<A>) choices;
         } else {
-            return randomInt(choices).fmap(n -> {
-                if (n == 0) return first;
-                else return more[n - 1];
-            });
+            as = new ArrayList<>();
+            choices.forEach(as::add);
+        }
+        int count = as.size();
+        if (count == 1) {
+            return constant(as.get(0));
+        } else {
+            return randomInt(count).fmap(as::get);
         }
     }
 
     @SafeVarargs
-    public static <A> Random<A> frequencies(Freq<A> first, Freq<A>... more) {
-        // TODO:  frequencies
-        Iterable<Freq<A>> fs = Filter.filter(f -> f.getWeight() > 0, cons(first, asList(more)));
-        if(!fs.iterator().hasNext()) {
+    @SuppressWarnings("unchecked")
+    public static <A> Random<A> frequency(Freq<? extends A> first, Freq<? extends A>... more) {
+        Iterable<Freq<? extends A>> fs = Filter.filter(f -> f.getWeight() > 0, cons(first, asList(more)));
+        if (!fs.iterator().hasNext()) {
             throw new IllegalArgumentException("no items with positive weights");
         }
-        return null;
+        long total = 0L;
+        TreeMap<Long, Random<? extends A>> tree = new TreeMap<>();
+        for (Freq<? extends A> f : fs) {
+            total += f.getWeight();
+            tree.put(total, f.getRandom());
+        }
+
+        return (Random<A>) randomLong(total)
+                .flatMap(n -> tree.ceilingEntry(1 + n).getValue());
     }
 
     public static <A, B> Random<Tuple2<A, B>> tupled(Random<A> ra, Random<B> rb) {
