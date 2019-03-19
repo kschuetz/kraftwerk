@@ -9,7 +9,7 @@ import static dev.marksman.composablerandom.Result.result;
 
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-final class CacheNextGaussian implements State {
+final class CacheNextGaussian implements EntropySource {
     private final StandardGen inner;
     private final double nextGaussian;
 

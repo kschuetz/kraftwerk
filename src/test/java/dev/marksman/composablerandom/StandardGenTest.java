@@ -15,7 +15,7 @@ class StandardGenTest {
 
     @Test
     void nextInt() {
-        testAgainstUtilRandom(Random::nextInt, State::nextInt);
+        testAgainstUtilRandom(Random::nextInt, EntropySource::nextInt);
     }
 
     @Test
@@ -28,34 +28,34 @@ class StandardGenTest {
 
     @Test
     void nextIntWithInvalidBound() {
-        State state = initStandardGen();
-        assertThrows(IllegalArgumentException.class, () -> state.nextInt(0));
-        assertThrows(IllegalArgumentException.class, () -> state.nextInt(-1));
+        EntropySource entropySource = initStandardGen();
+        assertThrows(IllegalArgumentException.class, () -> entropySource.nextInt(0));
+        assertThrows(IllegalArgumentException.class, () -> entropySource.nextInt(-1));
     }
 
     @Test
     void nextDouble() {
-        testAgainstUtilRandom(Random::nextDouble, State::nextDouble);
+        testAgainstUtilRandom(Random::nextDouble, EntropySource::nextDouble);
     }
 
     @Test
     void nextFloat() {
-        testAgainstUtilRandom(Random::nextFloat, State::nextFloat);
+        testAgainstUtilRandom(Random::nextFloat, EntropySource::nextFloat);
     }
 
     @Test
     void nextLong() {
-        testAgainstUtilRandom(Random::nextLong, State::nextLong);
+        testAgainstUtilRandom(Random::nextLong, EntropySource::nextLong);
     }
 
     @Test
     void nextBoolean() {
-        testAgainstUtilRandom(Random::nextBoolean, State::nextBoolean);
+        testAgainstUtilRandom(Random::nextBoolean, EntropySource::nextBoolean);
     }
 
     @Test
     void nextGaussian() {
-        testAgainstUtilRandom(Random::nextGaussian, State::nextGaussian);
+        testAgainstUtilRandom(Random::nextGaussian, EntropySource::nextGaussian);
     }
 
     @Test
@@ -70,29 +70,29 @@ class StandardGenTest {
     @Test
     void mixed() {
         Random random = initRandom();
-        State rg = initStandardGen();
-        rg = testAgainstUtilRandom(random, rg, 1, Random::nextInt, State::nextInt);
+        EntropySource rg = initStandardGen();
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextInt, EntropySource::nextInt);
         rg = testAgainstUtilRandom(random, rg, 1, r -> r.nextInt(10), r -> r.nextInt(10));
-        rg = testAgainstUtilRandom(random, rg, 1, Random::nextDouble, State::nextDouble);
-        rg = testAgainstUtilRandom(random, rg, 1, Random::nextFloat, State::nextFloat);
-        rg = testAgainstUtilRandom(random, rg, 1, Random::nextLong, State::nextLong);
-        rg = testAgainstUtilRandom(random, rg, 1, Random::nextBoolean, State::nextBoolean);
-        testAgainstUtilRandom(random, rg, 1, Random::nextGaussian, State::nextGaussian);
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextDouble, EntropySource::nextDouble);
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextFloat, EntropySource::nextFloat);
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextLong, EntropySource::nextLong);
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextBoolean, EntropySource::nextBoolean);
+        testAgainstUtilRandom(random, rg, 1, Random::nextGaussian, EntropySource::nextGaussian);
     }
 
     @Test
     void withCachedGaussian() {
         Random random = initRandom();
-        State rg = initStandardGen();
-        rg = testAgainstUtilRandom(random, rg, 1, Random::nextGaussian, State::nextGaussian);
-        rg = testAgainstUtilRandom(random, rg, 1, Random::nextInt, State::nextInt);
+        EntropySource rg = initStandardGen();
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextGaussian, EntropySource::nextGaussian);
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextInt, EntropySource::nextInt);
         rg = testAgainstUtilRandom(random, rg, 1, r -> r.nextInt(10), r -> r.nextInt(10));
-        rg = testAgainstUtilRandom(random, rg, 1, Random::nextDouble, State::nextDouble);
-        rg = testAgainstUtilRandom(random, rg, 1, Random::nextFloat, State::nextFloat);
-        rg = testAgainstUtilRandom(random, rg, 1, Random::nextLong, State::nextLong);
-        rg = testAgainstUtilRandom(random, rg, 1, Random::nextBoolean, State::nextBoolean);
-        rg = testAgainstUtilRandom(random, rg, 1, Random::nextGaussian, State::nextGaussian);
-        testAgainstUtilRandom(random, rg, 1, Random::nextInt, State::nextInt);
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextDouble, EntropySource::nextDouble);
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextFloat, EntropySource::nextFloat);
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextLong, EntropySource::nextLong);
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextBoolean, EntropySource::nextBoolean);
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextGaussian, EntropySource::nextGaussian);
+        testAgainstUtilRandom(random, rg, 1, Random::nextInt, EntropySource::nextInt);
     }
 
     @Test
@@ -133,19 +133,19 @@ class StandardGenTest {
     }
 
     private <A> void testAgainstUtilRandom(Function<Random, A> getNextExpected,
-                                           Function<State, Product2<? extends State, A>> getNextResult) {
+                                           Function<EntropySource, Product2<? extends EntropySource, A>> getNextResult) {
         testAgainstUtilRandom(initRandom(), initStandardGen(), SEQUENCE_LENGTH, getNextExpected, getNextResult);
     }
 
-    private <A> State testAgainstUtilRandom(Random random,
-                                            State state,
-                                            int times,
-                                            Function<Random, A> getNextExpected,
-                                            Function<State, Product2<? extends State, A>> getNextResult) {
-        State current = state;
+    private <A> EntropySource testAgainstUtilRandom(Random random,
+                                                    EntropySource entropySource,
+                                                    int times,
+                                                    Function<Random, A> getNextExpected,
+                                                    Function<EntropySource, Product2<? extends EntropySource, A>> getNextResult) {
+        EntropySource current = entropySource;
         for (int i = 0; i < times; i++) {
             A expected = getNextExpected.apply(random);
-            Product2<? extends State, A> next = getNextResult.apply(current);
+            Product2<? extends EntropySource, A> next = getNextResult.apply(current);
             current = next._1();
             A actual = next._2();
 
@@ -154,12 +154,12 @@ class StandardGenTest {
         return current;
     }
 
-    private static void testNextBytes(Random random, State state, int count) {
+    private static void testNextBytes(Random random, EntropySource entropySource, int count) {
         byte[] expected = new byte[count];
         byte[] actual = new byte[count];
 
         random.nextBytes(expected);
-        state.nextBytes(actual);
+        entropySource.nextBytes(actual);
 
         assertArrayEquals(expected, actual);
     }

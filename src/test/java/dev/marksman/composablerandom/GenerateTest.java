@@ -86,8 +86,8 @@ class GenerateTest {
     private static <A> void testEquivalent(Generate<A> generate1, Generate<A> generate2) {
         StandardGen initial = initStandardGen();
 
-        Product2<? extends State, ArrayList<A>> result1 = generate1.listOfN(SEQUENCE_LENGTH).run(initial);
-        Product2<? extends State, ArrayList<A>> result2 = generate2.listOfN(SEQUENCE_LENGTH).run(initial);
+        Product2<? extends EntropySource, ArrayList<A>> result1 = generate1.listOfN(SEQUENCE_LENGTH).run(initial);
+        Product2<? extends EntropySource, ArrayList<A>> result2 = generate2.listOfN(SEQUENCE_LENGTH).run(initial);
 
         assertEquals(result1._1(), result2._1(), "outbound RandomGens don't match");
         assertEquals(result1._2(), result2._2(), "values don't match");
