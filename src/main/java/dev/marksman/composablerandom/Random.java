@@ -66,7 +66,7 @@ public class Random<A> implements Monad<A, Random> {
     }
 
     @Override
-    public final <B> Monad<B, Random> pure(B b) {
+    public final <B> Random<B> pure(B b) {
         return constant(b);
     }
 
