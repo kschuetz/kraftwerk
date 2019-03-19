@@ -6,13 +6,13 @@ import com.jnape.palatable.lambda.adt.hlist.*;
 import com.jnape.palatable.lambda.adt.product.Product2;
 import com.jnape.palatable.lambda.functions.Fn1;
 import com.jnape.palatable.lambda.functions.builtin.fn2.Filter;
+import com.jnape.palatable.lambda.iteration.InfiniteIterator;
 import com.jnape.palatable.lambda.monad.Monad;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.TreeMap;
 import java.util.function.Function;
 
@@ -49,7 +49,7 @@ public class Random<A> implements Monad<A, Random> {
     }
 
     public final Iterable<A> infiniteStream(RandomGen initial) {
-        return () -> new InfiniteSequenceIterator(initial);
+        return () -> new ValuesIterator(initial);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class Random<A> implements Monad<A, Random> {
 
     public final Random<Maybe<A>> maybe(int justFrequency) {
         if (justFrequency < 0) {
-            throw new IllegalArgumentException("justFrequency must be non-negative");
+            throw new IllegalArgumentException("justFrequency must be >= 0");
         } else if (justFrequency == 0) {
             return constant(nothing());
         }
@@ -95,6 +95,9 @@ public class Random<A> implements Monad<A, Random> {
     }
 
     public final Random<ArrayList<A>> times(int n) {
+        if(n < 0) {
+            throw new IllegalArgumentException("n must be >= 0");
+        }
         return random(rg0 -> {
             RandomGen current = rg0;
             ArrayList<A> result = new ArrayList<>(n);
@@ -255,14 +258,14 @@ public class Random<A> implements Monad<A, Random> {
 
     @SafeVarargs
     @SuppressWarnings("unchecked")
-    public static <A> Random<A> frequency(Freq<? extends A> first, Freq<? extends A>... more) {
-        Iterable<Freq<? extends A>> fs = Filter.filter(f -> f.getWeight() > 0, cons(first, asList(more)));
+    public static <A> Random<A> frequency(FrequencyEntry<? extends A> first, FrequencyEntry<? extends A>... more) {
+        Iterable<FrequencyEntry<? extends A>> fs = Filter.filter(f -> f.getWeight() > 0, cons(first, asList(more)));
         if (!fs.iterator().hasNext()) {
             throw new IllegalArgumentException("no items with positive weights");
         }
         long total = 0L;
         TreeMap<Long, Random<? extends A>> tree = new TreeMap<>();
-        for (Freq<? extends A> f : fs) {
+        for (FrequencyEntry<? extends A> f : fs) {
             total += f.getWeight();
             tree.put(total, f.getRandom());
         }
@@ -305,16 +308,11 @@ public class Random<A> implements Monad<A, Random> {
         return ra.flatMap(a -> tupled(rb, rc, rd, re, rf, rg, rh).fmap(x -> x.cons(a)));
     }
 
-    private class InfiniteSequenceIterator implements Iterator<A> {
+    private class ValuesIterator extends InfiniteIterator<A> {
         private RandomGen current;
 
-        public InfiniteSequenceIterator(RandomGen initial) {
+        public ValuesIterator(RandomGen initial) {
             this.current = initial;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return true;
         }
 
         @Override

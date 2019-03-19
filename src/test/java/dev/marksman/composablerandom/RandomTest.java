@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 import static com.jnape.palatable.lambda.adt.hlist.HList.tuple;
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
-import static dev.marksman.composablerandom.Freq.freq;
+import static dev.marksman.composablerandom.FrequencyEntry.frequencyEntry;
 import static dev.marksman.composablerandom.Random.*;
 import static dev.marksman.composablerandom.StandardGen.initStandardGen;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,7 +23,8 @@ class RandomTest {
     private static final Random<Integer> gen1 = randomInt();
     private static final Random<Double> gen2 = randomGaussian();
     private static final Random<Integer> gen3 = randomInt(1, 10);
-    private static final Random<String> gen4 = frequency(freq(3, "foo"), freq(7, "bar"));
+    private static final Random<String> gen4 = frequency(frequencyEntry(3, "foo"),
+            frequencyEntry(7, "bar"));
 
     @Test
     void functorIdentity() {
