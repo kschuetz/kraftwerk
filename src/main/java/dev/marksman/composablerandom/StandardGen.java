@@ -4,6 +4,7 @@ import com.jnape.palatable.lambda.adt.Unit;
 import com.jnape.palatable.lambda.adt.product.Product2;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Value;
 
 import java.util.Random;
 
@@ -12,13 +13,10 @@ import static com.jnape.palatable.lambda.adt.product.Product2.product;
 import static dev.marksman.composablerandom.CacheNextGaussian.cacheNextGaussian;
 import static dev.marksman.composablerandom.Result.mapResult;
 
+@Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public final class StandardGen implements RandomGen {
-    private final long seed;
-
-    public final long getSeedValue() {
-        return seed;
-    }
+    private final long seedValue;
 
     @Override
     public final Product2<StandardGen, Integer> nextInt(int bound) {
@@ -107,7 +105,7 @@ public final class StandardGen implements RandomGen {
     }
 
     private Product2<StandardGen, Integer> next(int bits) {
-        long newSeedValue = (seed * 0x5DEECE66DL + 0xBL) & ((1L << 48) - 1);
+        long newSeedValue = (seedValue * 0x5DEECE66DL + 0xBL) & ((1L << 48) - 1);
         int result = (int) (newSeedValue >>> (48 - bits));
 
         return product(nextStandardGen(newSeedValue), result);

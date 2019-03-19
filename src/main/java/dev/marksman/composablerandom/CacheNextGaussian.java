@@ -4,12 +4,13 @@ import com.jnape.palatable.lambda.adt.Unit;
 import com.jnape.palatable.lambda.adt.product.Product2;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Value;
 
 import static com.jnape.palatable.lambda.adt.product.Product2.product;
 
+@Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 final class CacheNextGaussian implements RandomGen {
-
     private final StandardGen inner;
     private final double nextGaussian;
 

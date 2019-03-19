@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.TreeMap;
 import java.util.function.Function;
 
@@ -41,6 +42,14 @@ public class Random<A> implements Monad<A, Random> {
 
     public final Product2<? extends RandomGen, A> run(RandomGen randomGen) {
         return run.apply(randomGen);
+    }
+
+    public final A getValue(RandomGen randomGen) {
+        return run(randomGen)._2();
+    }
+
+    public final Iterable<A> infiniteStream(RandomGen initial) {
+        return () -> new InfiniteSequenceIterator(initial);
     }
 
     @Override
@@ -83,6 +92,19 @@ public class Random<A> implements Monad<A, Random> {
 
     public final Random<Maybe<A>> maybe() {
         return maybe(9);
+    }
+
+    public final Random<ArrayList<A>> times(int n) {
+        return random(rg0 -> {
+            RandomGen current = rg0;
+            ArrayList<A> result = new ArrayList<>(n);
+            for (int i = 0; i < n; i++) {
+                Product2<? extends RandomGen, A> next = run(current);
+                current = next._1();
+                result.add(next._2());
+            }
+            return product(current, result);
+        });
     }
 
     public static <A> Random<A> random(Fn1<? super RandomGen, Product2<? extends RandomGen, A>> run) {
@@ -281,6 +303,26 @@ public class Random<A> implements Monad<A, Random> {
                                                                                          Random<D> rd, Random<E> re, Random<F> rf,
                                                                                          Random<G> rg, Random<H> rh) {
         return ra.flatMap(a -> tupled(rb, rc, rd, re, rf, rg, rh).fmap(x -> x.cons(a)));
+    }
+
+    private class InfiniteSequenceIterator implements Iterator<A> {
+        private RandomGen current;
+
+        public InfiniteSequenceIterator(RandomGen initial) {
+            this.current = initial;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return true;
+        }
+
+        @Override
+        public A next() {
+            Product2<? extends RandomGen, A> result = run(current);
+            current = result._1();
+            return result._2();
+        }
     }
 
 }
