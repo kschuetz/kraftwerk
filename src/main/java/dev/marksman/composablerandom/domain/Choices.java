@@ -1,6 +1,6 @@
-package dev.marksman.random.domain;
+package dev.marksman.composablerandom.domain;
 
-import dev.marksman.random.Domain;
+import dev.marksman.composablerandom.Domain;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 

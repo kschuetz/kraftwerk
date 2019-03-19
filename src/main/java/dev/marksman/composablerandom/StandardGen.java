@@ -1,4 +1,4 @@
-package dev.marksman.random;
+package dev.marksman.composablerandom;
 
 import com.jnape.palatable.lambda.adt.Unit;
 import com.jnape.palatable.lambda.adt.product.Product2;
@@ -9,8 +9,8 @@ import java.util.Random;
 
 import static com.jnape.palatable.lambda.adt.Unit.UNIT;
 import static com.jnape.palatable.lambda.adt.product.Product2.product;
-import static dev.marksman.random.CacheNextGaussian.cacheNextGaussian;
-import static dev.marksman.random.Result.mapResult;
+import static dev.marksman.composablerandom.CacheNextGaussian.cacheNextGaussian;
+import static dev.marksman.composablerandom.Result.mapResult;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public final class StandardGen implements RandomGen {

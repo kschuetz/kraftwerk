@@ -1,4 +1,4 @@
-package dev.marksman.random;
+package dev.marksman.composablerandom;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

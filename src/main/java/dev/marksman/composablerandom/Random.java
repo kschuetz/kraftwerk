@@ -1,4 +1,4 @@
-package dev.marksman.random;
+package dev.marksman.composablerandom;
 
 import com.jnape.palatable.lambda.adt.Maybe;
 import com.jnape.palatable.lambda.adt.Unit;
@@ -19,8 +19,8 @@ import static com.jnape.palatable.lambda.adt.Maybe.nothing;
 import static com.jnape.palatable.lambda.adt.hlist.HList.tuple;
 import static com.jnape.palatable.lambda.adt.product.Product2.product;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Cons.cons;
-import static dev.marksman.random.Result.mapResult;
-import static dev.marksman.random.domain.Choices.choices;
+import static dev.marksman.composablerandom.Result.mapResult;
+import static dev.marksman.composablerandom.domain.Choices.choices;
 import static java.util.Arrays.asList;
 
 @Value
@@ -110,10 +110,7 @@ public class Random<A> implements Monad<A, Random> {
     }
 
     public static Random<Integer> randomInt(int bound) {
-        return random(s -> {
-            Product2<? extends RandomGen, Integer> integerProduct2 = s.nextInt(bound);
-            return integerProduct2;
-        });
+        return random(s -> s.nextInt(bound));
     }
 
     public static Random<Integer> randomInt(int origin, int bound) {

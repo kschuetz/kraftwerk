@@ -1,4 +1,4 @@
-package dev.marksman.random;
+package dev.marksman.composablerandom;
 
 import java.util.function.Function;
 

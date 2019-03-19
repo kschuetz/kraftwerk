@@ -1,4 +1,4 @@
-package dev.marksman.random;
+package dev.marksman.composablerandom;
 
 import com.jnape.palatable.lambda.adt.product.Product2;
 import org.junit.jupiter.api.Test;

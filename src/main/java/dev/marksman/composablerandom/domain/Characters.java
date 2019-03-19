@@ -1,8 +1,8 @@
-package dev.marksman.random.domain;
+package dev.marksman.composablerandom.domain;
 
-import dev.marksman.random.Domain;
+import dev.marksman.composablerandom.Domain;
 
-import static dev.marksman.random.Domain.domain;
+import static dev.marksman.composablerandom.Domain.domain;
 
 public class Characters {
 
