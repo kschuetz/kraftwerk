@@ -8,13 +8,13 @@ import lombok.Value;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class FrequencyEntry<A> {
     private final int weight;
-    private final Random<A> random;
+    private final Generate<A> generate;
 
-    public static <A> FrequencyEntry<A> frequencyEntry(int weight, Random<A> random) {
-        return new FrequencyEntry<>(weight, random);
+    public static <A> FrequencyEntry<A> frequencyEntry(int weight, Generate<A> generate) {
+        return new FrequencyEntry<>(weight, generate);
     }
 
     public static <A> FrequencyEntry<A> frequencyEntry(int weight, A value) {
-        return new FrequencyEntry<>(weight, Random.constant(value));
+        return new FrequencyEntry<>(weight, Generate.constant(value));
     }
 }

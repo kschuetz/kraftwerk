@@ -15,7 +15,7 @@ class StandardGenTest {
 
     @Test
     void nextInt() {
-        testAgainstUtilRandom(Random::nextInt, RandomGen::nextInt);
+        testAgainstUtilRandom(Random::nextInt, State::nextInt);
     }
 
     @Test
@@ -28,34 +28,34 @@ class StandardGenTest {
 
     @Test
     void nextIntWithInvalidBound() {
-        RandomGen randomGen = initStandardGen();
-        assertThrows(IllegalArgumentException.class, () -> randomGen.nextInt(0));
-        assertThrows(IllegalArgumentException.class, () -> randomGen.nextInt(-1));
+        State state = initStandardGen();
+        assertThrows(IllegalArgumentException.class, () -> state.nextInt(0));
+        assertThrows(IllegalArgumentException.class, () -> state.nextInt(-1));
     }
 
     @Test
     void nextDouble() {
-        testAgainstUtilRandom(Random::nextDouble, RandomGen::nextDouble);
+        testAgainstUtilRandom(Random::nextDouble, State::nextDouble);
     }
 
     @Test
     void nextFloat() {
-        testAgainstUtilRandom(Random::nextFloat, RandomGen::nextFloat);
+        testAgainstUtilRandom(Random::nextFloat, State::nextFloat);
     }
 
     @Test
     void nextLong() {
-        testAgainstUtilRandom(Random::nextLong, RandomGen::nextLong);
+        testAgainstUtilRandom(Random::nextLong, State::nextLong);
     }
 
     @Test
     void nextBoolean() {
-        testAgainstUtilRandom(Random::nextBoolean, RandomGen::nextBoolean);
+        testAgainstUtilRandom(Random::nextBoolean, State::nextBoolean);
     }
 
     @Test
     void nextGaussian() {
-        testAgainstUtilRandom(Random::nextGaussian, RandomGen::nextGaussian);
+        testAgainstUtilRandom(Random::nextGaussian, State::nextGaussian);
     }
 
     @Test
@@ -70,29 +70,29 @@ class StandardGenTest {
     @Test
     void mixed() {
         Random random = initRandom();
-        RandomGen rg = initStandardGen();
-        rg = testAgainstUtilRandom(random, rg, 1, Random::nextInt, RandomGen::nextInt);
+        State rg = initStandardGen();
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextInt, State::nextInt);
         rg = testAgainstUtilRandom(random, rg, 1, r -> r.nextInt(10), r -> r.nextInt(10));
-        rg = testAgainstUtilRandom(random, rg, 1, Random::nextDouble, RandomGen::nextDouble);
-        rg = testAgainstUtilRandom(random, rg, 1, Random::nextFloat, RandomGen::nextFloat);
-        rg = testAgainstUtilRandom(random, rg, 1, Random::nextLong, RandomGen::nextLong);
-        rg = testAgainstUtilRandom(random, rg, 1, Random::nextBoolean, RandomGen::nextBoolean);
-        testAgainstUtilRandom(random, rg, 1, Random::nextGaussian, RandomGen::nextGaussian);
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextDouble, State::nextDouble);
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextFloat, State::nextFloat);
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextLong, State::nextLong);
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextBoolean, State::nextBoolean);
+        testAgainstUtilRandom(random, rg, 1, Random::nextGaussian, State::nextGaussian);
     }
 
     @Test
     void withCachedGaussian() {
         Random random = initRandom();
-        RandomGen rg = initStandardGen();
-        rg = testAgainstUtilRandom(random, rg, 1, Random::nextGaussian, RandomGen::nextGaussian);
-        rg = testAgainstUtilRandom(random, rg, 1, Random::nextInt, RandomGen::nextInt);
+        State rg = initStandardGen();
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextGaussian, State::nextGaussian);
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextInt, State::nextInt);
         rg = testAgainstUtilRandom(random, rg, 1, r -> r.nextInt(10), r -> r.nextInt(10));
-        rg = testAgainstUtilRandom(random, rg, 1, Random::nextDouble, RandomGen::nextDouble);
-        rg = testAgainstUtilRandom(random, rg, 1, Random::nextFloat, RandomGen::nextFloat);
-        rg = testAgainstUtilRandom(random, rg, 1, Random::nextLong, RandomGen::nextLong);
-        rg = testAgainstUtilRandom(random, rg, 1, Random::nextBoolean, RandomGen::nextBoolean);
-        rg = testAgainstUtilRandom(random, rg, 1, Random::nextGaussian, RandomGen::nextGaussian);
-        testAgainstUtilRandom(random, rg, 1, Random::nextInt, RandomGen::nextInt);
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextDouble, State::nextDouble);
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextFloat, State::nextFloat);
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextLong, State::nextLong);
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextBoolean, State::nextBoolean);
+        rg = testAgainstUtilRandom(random, rg, 1, Random::nextGaussian, State::nextGaussian);
+        testAgainstUtilRandom(random, rg, 1, Random::nextInt, State::nextInt);
     }
 
     @Test
@@ -133,19 +133,19 @@ class StandardGenTest {
     }
 
     private <A> void testAgainstUtilRandom(Function<Random, A> getNextExpected,
-                                           Function<RandomGen, Product2<? extends RandomGen, A>> getNextResult) {
+                                           Function<State, Product2<? extends State, A>> getNextResult) {
         testAgainstUtilRandom(initRandom(), initStandardGen(), SEQUENCE_LENGTH, getNextExpected, getNextResult);
     }
 
-    private <A> RandomGen testAgainstUtilRandom(Random random,
-                                                RandomGen randomGen,
-                                                int times,
-                                                Function<Random, A> getNextExpected,
-                                                Function<RandomGen, Product2<? extends RandomGen, A>> getNextResult) {
-        RandomGen current = randomGen;
+    private <A> State testAgainstUtilRandom(Random random,
+                                            State state,
+                                            int times,
+                                            Function<Random, A> getNextExpected,
+                                            Function<State, Product2<? extends State, A>> getNextResult) {
+        State current = state;
         for (int i = 0; i < times; i++) {
             A expected = getNextExpected.apply(random);
-            Product2<? extends RandomGen, A> next = getNextResult.apply(current);
+            Product2<? extends State, A> next = getNextResult.apply(current);
             current = next._1();
             A actual = next._2();
 
@@ -154,12 +154,12 @@ class StandardGenTest {
         return current;
     }
 
-    private static void testNextBytes(Random random, RandomGen randomGen, int count) {
+    private static void testNextBytes(Random random, State state, int count) {
         byte[] expected = new byte[count];
         byte[] actual = new byte[count];
 
         random.nextBytes(expected);
-        randomGen.nextBytes(actual);
+        state.nextBytes(actual);
 
         assertArrayEquals(expected, actual);
     }

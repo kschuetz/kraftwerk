@@ -13,7 +13,7 @@ import static dev.marksman.composablerandom.Result.result;
 
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public final class StandardGen implements RandomGen {
+public final class StandardGen implements State {
     private final long seedValue;
 
     @Override

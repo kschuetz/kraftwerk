@@ -10,7 +10,7 @@ import java.util.function.Function;
 
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Result<R extends RandomGen, A> implements Product2<R, A>, Functor<A, Result> {
+public class Result<R extends State, A> implements Product2<R, A>, Functor<A, Result> {
     private final R nextRandomGen;
     private final A value;
 
@@ -29,11 +29,11 @@ public class Result<R extends RandomGen, A> implements Product2<R, A>, Functor<A
         return result(nextRandomGen, fn.apply(value));
     }
 
-    public static <R extends RandomGen, A> Result<R, A> result(R nextRandomGen, A value) {
+    public static <R extends State, A> Result<R, A> result(R nextRandomGen, A value) {
         return new Result<>(nextRandomGen, value);
     }
 
-    public static <R extends RandomGen, A> Result<R, A> result(Product2<R, A> p) {
+    public static <R extends State, A> Result<R, A> result(Product2<R, A> p) {
         return new Result<>(p._1(), p._2());
     }
 
