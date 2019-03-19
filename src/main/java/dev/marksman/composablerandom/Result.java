@@ -1,15 +1,40 @@
 package dev.marksman.composablerandom;
 
 import com.jnape.palatable.lambda.adt.product.Product2;
+import com.jnape.palatable.lambda.functor.Functor;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Value;
 
 import java.util.function.Function;
 
-import static com.jnape.palatable.lambda.adt.product.Product2.product;
+@Value
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+public class Result<R extends RandomGen, A> implements Product2<R, A>, Functor<A, Result> {
+    private final R nextRandomGen;
+    private final A value;
 
-class Result {
+    @Override
+    public R _1() {
+        return nextRandomGen;
+    }
 
-    static <A, B, R> Product2<R, B> mapResult(Function<A, ? extends B> fn, Product2<R, ? extends A> p) {
-        return product(p._1(), fn.apply(p._2()));
+    @Override
+    public A _2() {
+        return value;
+    }
+
+    @Override
+    public <B> Result<R, B> fmap(Function<? super A, ? extends B> fn) {
+        return result(nextRandomGen, fn.apply(value));
+    }
+
+    public static <R extends RandomGen, A> Result<R, A> result(R nextRandomGen, A value) {
+        return new Result<>(nextRandomGen, value);
+    }
+
+    public static <R extends RandomGen, A> Result<R, A> result(Product2<R, A> p) {
+        return new Result<>(p._1(), p._2());
     }
 
 }

@@ -3,7 +3,6 @@ package dev.marksman.composablerandom;
 import com.jnape.palatable.lambda.adt.Maybe;
 import com.jnape.palatable.lambda.adt.Unit;
 import com.jnape.palatable.lambda.adt.hlist.*;
-import com.jnape.palatable.lambda.adt.product.Product2;
 import com.jnape.palatable.lambda.functions.Fn1;
 import com.jnape.palatable.lambda.functions.builtin.fn2.Filter;
 import com.jnape.palatable.lambda.iteration.InfiniteIterator;
@@ -18,9 +17,8 @@ import java.util.function.Function;
 
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
 import static com.jnape.palatable.lambda.adt.hlist.HList.tuple;
-import static com.jnape.palatable.lambda.adt.product.Product2.product;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Cons.cons;
-import static dev.marksman.composablerandom.Result.mapResult;
+import static dev.marksman.composablerandom.Result.result;
 import static dev.marksman.composablerandom.domain.Choices.choices;
 import static java.util.Arrays.asList;
 
@@ -38,12 +36,28 @@ public class Random<A> implements Monad<A, Random> {
     private static final Random<Byte> RANDOM_BYTE = RANDOM_INTEGER.fmap(Integer::byteValue);
     private static final Random<Short> RANDOM_SHORT = RANDOM_INTEGER.fmap(Integer::shortValue);
 
-    private final Fn1<? super RandomGen, Product2<? extends RandomGen, A>> run;
+    private final Fn1<? super RandomGen, Result<? extends RandomGen, A>> run;
 
-    public final Product2<? extends RandomGen, A> run(RandomGen randomGen) {
+    /**
+     * Produces a value, and a new <code>RandomGen</code>
+     *
+     * @param randomGen The <code>RandomGen</code> to provide as input.  The same <code>RandomGen</code>
+     *                  will always yield the same result.
+     * @return A <code>Result</code> containing a new <code>RandomGen</code> and a random value
+     */
+    public final Result<? extends RandomGen, A> run(RandomGen randomGen) {
         return run.apply(randomGen);
     }
 
+    /**
+     * Produces a value when given a <code>RandomGen</code>.
+     * <p>
+     * Equivalent to calling <code>run</code> and discarding the <code>RandomGen</code> from the output.
+     *
+     * @param randomGen The <code>RandomGen</code> to provide as input.  The same <code>RandomGen</code>
+     *                  will always yield the same result.
+     * @return A random value
+     */
     public final A getValue(RandomGen randomGen) {
         return run(randomGen)._2();
     }
@@ -54,13 +68,13 @@ public class Random<A> implements Monad<A, Random> {
 
     @Override
     public final <B> Random<B> fmap(Function<? super A, ? extends B> fn) {
-        return random(run.fmap(a -> mapResult(fn, a)));
+        return random(run.fmap(a -> a.fmap(fn)));
     }
 
     @Override
     public final <B> Random<B> flatMap(Function<? super A, ? extends Monad<B, Random>> fn) {
         return random(rg0 -> {
-            Product2<? extends RandomGen, A> x = run.apply(rg0);
+            Result<? extends RandomGen, A> x = run.apply(rg0);
             return ((Random<B>) fn.apply(x._2())).run.apply(x._1());
         });
     }
@@ -95,31 +109,31 @@ public class Random<A> implements Monad<A, Random> {
     }
 
     public final Random<ArrayList<A>> times(int n) {
-        if(n < 0) {
+        if (n < 0) {
             throw new IllegalArgumentException("n must be >= 0");
         }
         return random(rg0 -> {
             RandomGen current = rg0;
             ArrayList<A> result = new ArrayList<>(n);
             for (int i = 0; i < n; i++) {
-                Product2<? extends RandomGen, A> next = run(current);
+                Result<? extends RandomGen, A> next = run(current);
                 current = next._1();
                 result.add(next._2());
             }
-            return product(current, result);
+            return result(current, result);
         });
     }
 
-    public static <A> Random<A> random(Fn1<? super RandomGen, Product2<? extends RandomGen, A>> run) {
+    public static <A> Random<A> random(Fn1<? super RandomGen, Result<? extends RandomGen, A>> run) {
         return new Random<>(run);
     }
 
-    public static <A> Random<A> random(Function<? super RandomGen, Product2<? extends RandomGen, A>> run) {
+    public static <A> Random<A> random(Function<? super RandomGen, Result<? extends RandomGen, A>> run) {
         return random(run::apply);
     }
 
     public static <A> Random<A> constant(A a) {
-        return random(rg -> product(rg, a));
+        return random(rg -> result(rg, a));
     }
 
     public static Random<Boolean> randomBoolean() {
@@ -150,18 +164,18 @@ public class Random<A> implements Monad<A, Random> {
             // power of two
             return randomInt().fmap(r -> (r & m) + origin);
         } else return random(rg0 -> {
-            Product2<? extends RandomGen, Integer> rg1 = rg0.nextInt();
+            Result<? extends RandomGen, Integer> rg1 = rg0.nextInt();
             RandomGen current = rg1._1();
             int r = rg1._2();
             for (int u = r >>> 1;
                  u + m - (r = u % n) < 0; ) {
-                Product2<? extends RandomGen, Integer> next = current.nextInt();
+                Result<? extends RandomGen, Integer> next = current.nextInt();
                 u = next._2() >>> 1;
                 current = next._1();
             }
             r += origin;
 
-            return product(current, r);
+            return result(current, r);
         });
     }
 
@@ -192,18 +206,18 @@ public class Random<A> implements Monad<A, Random> {
             // power of two
             return randomLong().fmap(r -> (r & m) + origin);
         } else return random(rg0 -> {
-            Product2<? extends RandomGen, Long> rg1 = rg0.nextLong();
+            Result<? extends RandomGen, Long> rg1 = rg0.nextLong();
             RandomGen current = rg1._1();
             long r = rg1._2();
             for (long u = r >>> 1;
                  u + m - (r = u % n) < 0L; ) {
-                Product2<? extends RandomGen, Long> next = current.nextLong();
+                Result<? extends RandomGen, Long> next = current.nextLong();
                 u = next._2() >>> 1;
                 current = next._1();
             }
             r += origin;
 
-            return product(current, r);
+            return result(current, r);
         });
     }
 
@@ -214,13 +228,13 @@ public class Random<A> implements Monad<A, Random> {
     public static Random<Byte[]> randomBytes(int count) {
         return random(s -> {
             byte[] buffer = new byte[count];
-            Product2<? extends RandomGen, Unit> next = s.nextBytes(buffer);
+            Result<? extends RandomGen, Unit> next = s.nextBytes(buffer);
             Byte[] result = new Byte[count];
             int i = 0;
             for (byte b : buffer) {
                 result[i++] = b;
             }
-            return product(next._1(), result);
+            return result(next._1(), result);
         });
     }
 
@@ -317,7 +331,7 @@ public class Random<A> implements Monad<A, Random> {
 
         @Override
         public A next() {
-            Product2<? extends RandomGen, A> result = run(current);
+            Result<? extends RandomGen, A> result = run(current);
             current = result._1();
             return result._2();
         }

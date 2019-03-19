@@ -1,7 +1,6 @@
 package dev.marksman.composablerandom;
 
 import com.jnape.palatable.lambda.adt.Unit;
-import com.jnape.palatable.lambda.adt.product.Product2;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
@@ -9,9 +8,8 @@ import lombok.Value;
 import java.util.Random;
 
 import static com.jnape.palatable.lambda.adt.Unit.UNIT;
-import static com.jnape.palatable.lambda.adt.product.Product2.product;
 import static dev.marksman.composablerandom.CacheNextGaussian.cacheNextGaussian;
-import static dev.marksman.composablerandom.Result.mapResult;
+import static dev.marksman.composablerandom.Result.result;
 
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -19,63 +17,63 @@ public final class StandardGen implements RandomGen {
     private final long seedValue;
 
     @Override
-    public final Product2<StandardGen, Integer> nextInt(int bound) {
+    public final Result<StandardGen, Integer> nextInt(int bound) {
         if (bound <= 0)
             throw new IllegalArgumentException("bound must be positive");
 
         if ((bound & -bound) == bound) { // bound is a power of 2
-            return mapResult(n -> (int) ((bound * (long) n) >> 31), next(31));
+            return next(31).fmap(n -> (int) ((bound * (long) n) >> 31));
         }
 
         int bits, val;
         StandardGen nextSeed;
-        Product2<StandardGen, Integer> next;
+        Result<StandardGen, Integer> next;
         do {
             next = next(31);
             nextSeed = next._1();
             bits = next._2();
             val = bits % bound;
         } while (bits - val + (bound - 1) < 0);
-        return product(nextSeed, val);
+        return result(nextSeed, val);
     }
 
     @Override
-    public final Product2<StandardGen, Integer> nextInt() {
+    public final Result<StandardGen, Integer> nextInt() {
         return next(32);
     }
 
     @Override
-    public final Product2<StandardGen, Double> nextDouble() {
-        Product2<StandardGen, Integer> s1 = next(26);
-        Product2<StandardGen, Integer> s2 = s1._1().next(27);
+    public final Result<StandardGen, Double> nextDouble() {
+        Result<StandardGen, Integer> s1 = next(26);
+        Result<StandardGen, Integer> s2 = s1._1().next(27);
         double result = (((long) s1._2() << 27) + s2._2()) / (double) (1L << 53);
-        return product(s2._1(), result);
+        return result(s2._1(), result);
     }
 
     @Override
-    public final Product2<StandardGen, Float> nextFloat() {
-        return mapResult(n -> n / ((float) (1 << 24)), next(24));
+    public final Result<StandardGen, Float> nextFloat() {
+        return next(24).fmap(n -> n / ((float) (1 << 24)));
     }
 
     @Override
-    public final Product2<StandardGen, Long> nextLong() {
-        Product2<StandardGen, Integer> s1 = next(32);
-        Product2<StandardGen, Integer> s2 = s1._1().next(32);
+    public final Result<StandardGen, Long> nextLong() {
+        Result<StandardGen, Integer> s1 = next(32);
+        Result<StandardGen, Integer> s2 = s1._1().next(32);
         long result = ((long) s1._2() << 32) + s2._2();
-        return product(s2._1(), result);
+        return result(s2._1(), result);
     }
 
     @Override
-    public final Product2<StandardGen, Boolean> nextBoolean() {
-        return mapResult(n -> n != 0, next(1));
+    public final Result<StandardGen, Boolean> nextBoolean() {
+        return next(1).fmap(n -> n != 0);
     }
 
     @Override
-    public final Product2<StandardGen, Unit> nextBytes(byte[] dest) {
+    public final Result<StandardGen, Unit> nextBytes(byte[] dest) {
         StandardGen nextSeed = this;
         int i = 0;
         while (i < dest.length) {
-            Product2<StandardGen, Integer> nextInt = nextSeed.nextInt();
+            Result<StandardGen, Integer> nextInt = nextSeed.nextInt();
             nextSeed = nextInt._1();
             int rnd = nextInt._2();
             for (int n = Math.min(dest.length - i, 4); n-- > 0; rnd >>= 8) {
@@ -83,16 +81,16 @@ public final class StandardGen implements RandomGen {
             }
         }
 
-        return product(nextSeed, UNIT);
+        return result(nextSeed, UNIT);
     }
 
     @Override
-    public final Product2<CacheNextGaussian, Double> nextGaussian() {
+    public final Result<CacheNextGaussian, Double> nextGaussian() {
         StandardGen newSeed = this;
         double v1, v2, s;
         do {
-            Product2<StandardGen, Double> d1 = newSeed.nextDouble();
-            Product2<StandardGen, Double> d2 = d1._1().nextDouble();
+            Result<StandardGen, Double> d1 = newSeed.nextDouble();
+            Result<StandardGen, Double> d2 = d1._1().nextDouble();
             newSeed = d2._1();
             v1 = 2 * d1._2() - 1;
             v2 = 2 * d2._2() - 1;
@@ -101,14 +99,14 @@ public final class StandardGen implements RandomGen {
         double multiplier = StrictMath.sqrt(-2 * StrictMath.log(s) / s);
         double result = v1 * multiplier;
         double nextResult = v2 * multiplier;
-        return product(cacheNextGaussian(newSeed, nextResult), result);
+        return result(cacheNextGaussian(newSeed, nextResult), result);
     }
 
-    private Product2<StandardGen, Integer> next(int bits) {
+    private Result<StandardGen, Integer> next(int bits) {
         long newSeedValue = (seedValue * 0x5DEECE66DL + 0xBL) & ((1L << 48) - 1);
         int result = (int) (newSeedValue >>> (48 - bits));
 
-        return product(nextStandardGen(newSeedValue), result);
+        return result(nextStandardGen(newSeedValue), result);
     }
 
     public static StandardGen initStandardGen(long seed) {
