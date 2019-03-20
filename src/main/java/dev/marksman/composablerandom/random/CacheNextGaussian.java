@@ -1,6 +1,8 @@
-package dev.marksman.composablerandom;
+package dev.marksman.composablerandom.random;
 
 import com.jnape.palatable.lambda.adt.Unit;
+import dev.marksman.composablerandom.RandomState;
+import dev.marksman.composablerandom.Result;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
