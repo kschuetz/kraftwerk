@@ -26,55 +26,55 @@ import static java.util.Arrays.asList;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Generate<A> implements Monad<A, Generate> {
 
-    private static final Generate<Boolean> GENERATE_BOOLEAN = generate(EntropySource::nextBoolean);
-    private static final Generate<Double> GENERATE_DOUBLE = generate(EntropySource::nextDouble);
-    private static final Generate<Float> GENERATE_FLOAT = generate(EntropySource::nextFloat);
-    private static final Generate<Integer> GENERATE_INTEGER = generate(EntropySource::nextInt);
-    private static final Generate<Long> GENERATE_LONG = generate(EntropySource::nextLong);
-    private static final Generate<Double> GENERATE_GAUSSIAN = generate(EntropySource::nextGaussian);
+    private static final Generate<Boolean> GENERATE_BOOLEAN = generate(RandomState::nextBoolean);
+    private static final Generate<Double> GENERATE_DOUBLE = generate(RandomState::nextDouble);
+    private static final Generate<Float> GENERATE_FLOAT = generate(RandomState::nextFloat);
+    private static final Generate<Integer> GENERATE_INTEGER = generate(RandomState::nextInt);
+    private static final Generate<Long> GENERATE_LONG = generate(RandomState::nextLong);
+    private static final Generate<Double> GENERATE_GAUSSIAN = generate(RandomState::nextGaussian);
 
     private static final Generate<Byte> GENERATE_BYTE = GENERATE_INTEGER.fmap(Integer::byteValue);
     private static final Generate<Short> GENERATE_SHORT = GENERATE_INTEGER.fmap(Integer::shortValue);
 
-    private final Fn1<? super EntropySource, Result<? extends EntropySource, A>> run;
+    private final Fn1<? super State, Result<State, A>> run;
 
     /**
-     * Produces a value, and a new <code>EntropySource</code>
+     * Produces a value, and a new <code>RandomState</code>
      *
-     * @param entropySource The <code>EntropySource</code> to provide as input.  The same <code>EntropySource</code>
-     *                  will always yield the same result.
-     * @return A <code>Result</code> containing a new <code>EntropySource</code> and a generate value
+     * @param randomState The <code>RandomState</code> to provide as input.  The same <code>RandomState</code>
+     *                    will always yield the same result.
+     * @return A <code>Result</code> containing a new <code>RandomState</code> and a generate value
      */
-    public final Result<? extends EntropySource, A> run(EntropySource entropySource) {
-        return run.apply(entropySource);
+    public final Result<State, A> run(State randomState) {
+        return run.apply(randomState);
     }
 
     /**
-     * Produces a value when given a <code>EntropySource</code>.
+     * Produces a value when given a <code>RandomState</code>.
      * <p>
-     * Equivalent to calling <code>run</code> and discarding the <code>EntropySource</code> from the output.
+     * Equivalent to calling <code>run</code> and discarding the <code>RandomState</code> from the output.
      *
-     * @param entropySource The <code>EntropySource</code> to provide as input.  The same <code>EntropySource</code>
-     *                  will always yield the same result.
+     * @param state The <code>RandomState</code> to provide as input.  The same <code>RandomState</code>
+     *                    will always yield the same result.
      * @return A generate value
      */
-    public final A getValue(EntropySource entropySource) {
-        return run(entropySource)._2();
+    public final A getValue(State state) {
+        return run(state)._2();
     }
 
-    public final Iterable<A> infiniteStream(EntropySource initial) {
+    public final Iterable<A> infiniteStream(State initial) {
         return () -> new ValuesIterator(initial);
     }
 
     @Override
     public final <B> Generate<B> fmap(Function<? super A, ? extends B> fn) {
-        return generate(run.fmap(a -> a.fmap(fn)));
+        return generateS(run.fmap(a -> a.fmap(fn)));
     }
 
     @Override
     public final <B> Generate<B> flatMap(Function<? super A, ? extends Monad<B, Generate>> fn) {
-        return generate(rg0 -> {
-            Result<? extends EntropySource, A> x = run.apply(rg0);
+        return generateS(rg0 -> {
+            Result<State, A> x = run.apply(rg0);
             return ((Generate<B>) fn.apply(x._2())).run.apply(x._1());
         });
     }
@@ -112,11 +112,11 @@ public class Generate<A> implements Monad<A, Generate> {
         if (n < 0) {
             throw new IllegalArgumentException("n must be >= 0");
         }
-        return generate(rg0 -> {
-            EntropySource current = rg0;
+        return generateS(s0 -> {
+            State current = s0;
             ArrayList<A> result = new ArrayList<>(n);
             for (int i = 0; i < n; i++) {
-                Result<? extends EntropySource, A> next = run(current);
+                Result<State, A> next = run(current);
                 current = next._1();
                 result.add(next._2());
             }
@@ -124,11 +124,17 @@ public class Generate<A> implements Monad<A, Generate> {
         });
     }
 
-    public static <A> Generate<A> generate(Fn1<? super EntropySource, Result<? extends EntropySource, A>> run) {
+    public static <A> Generate<A> generateS(Fn1<? super State, Result<State, A>> run) {
         return new Generate<>(run);
     }
 
-    public static <A> Generate<A> generate(Function<? super EntropySource, Result<? extends EntropySource, A>> run) {
+    public static <A> Generate<A> generate(Fn1<? super RandomState, Result<? extends RandomState, A>> run) {
+        return generateS(state ->
+                (Result<State, A>) run.apply(state.getRandomState())
+                        .biMapL(state::withRandomState));
+    }
+
+    public static <A> Generate<A> generate(Function<? super RandomState, Result<? extends RandomState, A>> run) {
         return generate(run::apply);
     }
 
@@ -164,12 +170,12 @@ public class Generate<A> implements Monad<A, Generate> {
             // power of two
             return generateInt().fmap(r -> (r & m) + origin);
         } else return generate(rg0 -> {
-            Result<? extends EntropySource, Integer> rg1 = rg0.nextInt();
-            EntropySource current = rg1._1();
+            Result<? extends RandomState, Integer> rg1 = rg0.nextInt();
+            RandomState current = rg1._1();
             int r = rg1._2();
             for (int u = r >>> 1;
                  u + m - (r = u % n) < 0; ) {
-                Result<? extends EntropySource, Integer> next = current.nextInt();
+                Result<? extends RandomState, Integer> next = current.nextInt();
                 u = next._2() >>> 1;
                 current = next._1();
             }
@@ -206,12 +212,12 @@ public class Generate<A> implements Monad<A, Generate> {
             // power of two
             return generateLong().fmap(r -> (r & m) + origin);
         } else return generate(rg0 -> {
-            Result<? extends EntropySource, Long> rg1 = rg0.nextLong();
-            EntropySource current = rg1._1();
+            Result<? extends RandomState, Long> rg1 = rg0.nextLong();
+            RandomState current = rg1._1();
             long r = rg1._2();
             for (long u = r >>> 1;
                  u + m - (r = u % n) < 0L; ) {
-                Result<? extends EntropySource, Long> next = current.nextLong();
+                Result<? extends RandomState, Long> next = current.nextLong();
                 u = next._2() >>> 1;
                 current = next._1();
             }
@@ -228,7 +234,7 @@ public class Generate<A> implements Monad<A, Generate> {
     public static Generate<Byte[]> generateBytes(int count) {
         return generate(s -> {
             byte[] buffer = new byte[count];
-            Result<? extends EntropySource, Unit> next = s.nextBytes(buffer);
+            Result<? extends RandomState, Unit> next = s.nextBytes(buffer);
             Byte[] result = new Byte[count];
             int i = 0;
             for (byte b : buffer) {
@@ -323,15 +329,15 @@ public class Generate<A> implements Monad<A, Generate> {
     }
 
     private class ValuesIterator extends InfiniteIterator<A> {
-        private EntropySource current;
+        private State current;
 
-        public ValuesIterator(EntropySource initial) {
+        public ValuesIterator(State initial) {
             this.current = initial;
         }
 
         @Override
         public A next() {
-            Result<? extends EntropySource, A> result = run(current);
+            Result<State, A> result = run(current);
             current = result._1();
             return result._2();
         }

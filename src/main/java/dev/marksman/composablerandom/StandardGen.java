@@ -13,7 +13,7 @@ import static dev.marksman.composablerandom.Result.result;
 
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public final class StandardGen implements EntropySource {
+public final class StandardGen implements RandomState {
     private final long seedValue;
 
     @Override
