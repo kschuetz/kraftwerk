@@ -20,7 +20,7 @@ import static dev.marksman.composablerandom.builtin.Tuples.tupled;
 
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Generate<A> implements Monad<A, Generate> {
+public class Generator<A> implements Monad<A, Generator> {
 
     private final Fn1<? super State, Result<State, A>> run;
 
@@ -53,48 +53,48 @@ public class Generate<A> implements Monad<A, Generate> {
     }
 
     @Override
-    public final <B> Generate<B> fmap(Function<? super A, ? extends B> fn) {
+    public final <B> Generator<B> fmap(Function<? super A, ? extends B> fn) {
         return generateS(run.fmap(a -> a.fmap(fn)));
     }
 
     @Override
-    public final <B> Generate<B> flatMap(Function<? super A, ? extends Monad<B, Generate>> fn) {
+    public final <B> Generator<B> flatMap(Function<? super A, ? extends Monad<B, Generator>> fn) {
         return generateS(s0 -> {
             Result<State, A> x = run.apply(s0);
-            return ((Generate<B>) fn.apply(x._2())).run.apply(x._1());
+            return ((Generator<B>) fn.apply(x._2())).run.apply(x._1());
         });
     }
 
     @Override
-    public final <B> Generate<B> pure(B b) {
+    public final <B> Generator<B> pure(B b) {
         return constant(b);
     }
 
-    public final Generate<Tuple2<A, A>> pair() {
+    public final Generator<Tuple2<A, A>> pair() {
         return tupled(this, this);
     }
 
-    public final Generate<Tuple3<A, A, A>> triple() {
+    public final Generator<Tuple3<A, A, A>> triple() {
         return tupled(this, this, this);
     }
 
-    public final Generate<Maybe<A>> maybe(int justFrequency) {
+    public final Generator<Maybe<A>> maybe(int justFrequency) {
         if (justFrequency < 0) {
             throw new IllegalArgumentException("justFrequency must be >= 0");
         } else if (justFrequency == 0) {
             return constant(nothing());
         }
-        Generate<Maybe<A>> just = fmap(Maybe::just);
-        Generate<Maybe<A>> nothing = constant(nothing());
+        Generator<Maybe<A>> just = fmap(Maybe::just);
+        Generator<Maybe<A>> nothing = constant(nothing());
         return generateIntExclusive(1 + justFrequency)
                 .flatMap(n -> n == 0 ? nothing : just);
     }
 
-    public final Generate<Maybe<A>> maybe() {
+    public final Generator<Maybe<A>> maybe() {
         return maybe(9);
     }
 
-    public final Generate<ArrayList<A>> listOfN(int n) {
+    public final Generator<ArrayList<A>> listOfN(int n) {
         if (n < 0) {
             throw new IllegalArgumentException("n must be >= 0");
         }
@@ -110,21 +110,21 @@ public class Generate<A> implements Monad<A, Generate> {
         });
     }
 
-    public static <A> Generate<A> generateS(Fn1<? super State, Result<State, A>> run) {
-        return new Generate<>(run);
+    public static <A> Generator<A> generateS(Fn1<? super State, Result<State, A>> run) {
+        return new Generator<>(run);
     }
 
-    public static <A> Generate<A> generate(Fn1<? super RandomState, Result<? extends RandomState, A>> run) {
+    public static <A> Generator<A> generate(Fn1<? super RandomState, Result<? extends RandomState, A>> run) {
         return generateS(state ->
                 (Result<State, A>) run.apply(state.getRandomState())
                         .biMapL(state::withRandomState));
     }
 
-    public static <A> Generate<A> generate(Function<? super RandomState, Result<? extends RandomState, A>> run) {
+    public static <A> Generator<A> generate(Function<? super RandomState, Result<? extends RandomState, A>> run) {
         return generate(run::apply);
     }
 
-    public static <A> Generate<A> constant(A a) {
+    public static <A> Generator<A> constant(A a) {
         return generate(rg -> result(rg, a));
     }
 

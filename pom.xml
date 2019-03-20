@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>dev.marksman</groupId>
-    <artifactId>composable-generate</artifactId>
+    <artifactId>composable-generator</artifactId>
     <version>0.1.0-SNAPSHOT</version>
 
     <properties>
