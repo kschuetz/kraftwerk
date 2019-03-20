@@ -4,7 +4,6 @@ import com.jnape.palatable.lambda.adt.Maybe;
 import com.jnape.palatable.lambda.adt.hlist.Tuple2;
 import com.jnape.palatable.lambda.adt.hlist.Tuple3;
 import com.jnape.palatable.lambda.functions.Fn1;
-import com.jnape.palatable.lambda.functions.builtin.fn2.Filter;
 import com.jnape.palatable.lambda.iteration.InfiniteIterator;
 import com.jnape.palatable.lambda.monad.Monad;
 import lombok.AccessLevel;
@@ -12,17 +11,12 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 
 import java.util.ArrayList;
-import java.util.TreeMap;
 import java.util.function.Function;
 
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
-import static com.jnape.palatable.lambda.functions.builtin.fn2.Cons.cons;
 import static dev.marksman.composablerandom.Result.result;
 import static dev.marksman.composablerandom.builtin.Primitives.generateInt;
-import static dev.marksman.composablerandom.builtin.Primitives.generateLong;
 import static dev.marksman.composablerandom.builtin.Tuples.tupled;
-import static dev.marksman.composablerandom.domain.Choices.choices;
-import static java.util.Arrays.asList;
 
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -47,7 +41,7 @@ public class Generate<A> implements Monad<A, Generate> {
      * Equivalent to calling <code>run</code> and discarding the <code>RandomState</code> from the output.
      *
      * @param state The <code>RandomState</code> to provide as input.  The same <code>RandomState</code>
-     *                    will always yield the same result.
+     *              will always yield the same result.
      * @return A generate value
      */
     public final A getValue(State state) {
@@ -65,8 +59,8 @@ public class Generate<A> implements Monad<A, Generate> {
 
     @Override
     public final <B> Generate<B> flatMap(Function<? super A, ? extends Monad<B, Generate>> fn) {
-        return generateS(rg0 -> {
-            Result<State, A> x = run.apply(rg0);
+        return generateS(s0 -> {
+            Result<State, A> x = run.apply(s0);
             return ((Generate<B>) fn.apply(x._2())).run.apply(x._1());
         });
     }
@@ -132,48 +126,6 @@ public class Generate<A> implements Monad<A, Generate> {
 
     public static <A> Generate<A> constant(A a) {
         return generate(rg -> result(rg, a));
-    }
-
-    @SafeVarargs
-    public static <A> Generate<A> oneOf(A first, A... more) {
-        ArrayList<A> choices = new ArrayList<>();
-        choices.add(first);
-        choices.addAll(asList(more));
-        return chooseFrom(choices);
-    }
-
-    public static <A> Generate<A> chooseFrom(Iterable<A> items) {
-        if (!items.iterator().hasNext()) {
-            throw new IllegalArgumentException("chooseFrom requires at least one choice");
-        }
-        return fromDomain(choices(items));
-    }
-
-    public static <A> Generate<A> fromDomain(Domain<A> domain) {
-        long size = domain.getSize();
-        if (size == 1) {
-            return constant(domain.getValue(1));
-        } else {
-            return generateLong(size).fmap(domain::getValue);
-        }
-    }
-
-    @SafeVarargs
-    @SuppressWarnings("unchecked")
-    public static <A> Generate<A> frequency(FrequencyEntry<? extends A> first, FrequencyEntry<? extends A>... more) {
-        Iterable<FrequencyEntry<? extends A>> fs = Filter.filter(f -> f.getWeight() > 0, cons(first, asList(more)));
-        if (!fs.iterator().hasNext()) {
-            throw new IllegalArgumentException("no items with positive weights");
-        }
-        long total = 0L;
-        TreeMap<Long, Generate<? extends A>> tree = new TreeMap<>();
-        for (FrequencyEntry<? extends A> f : fs) {
-            total += f.getWeight();
-            tree.put(total, f.getGenerate());
-        }
-
-        return (Generate<A>) generateLong(total)
-                .flatMap(n -> tree.ceilingEntry(1 + n).getValue());
     }
 
     private class ValuesIterator extends InfiniteIterator<A> {

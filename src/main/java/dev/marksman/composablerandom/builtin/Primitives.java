@@ -5,6 +5,7 @@ import dev.marksman.composablerandom.Generate;
 import dev.marksman.composablerandom.RandomState;
 import dev.marksman.composablerandom.Result;
 
+import static dev.marksman.composablerandom.Generate.constant;
 import static dev.marksman.composablerandom.Generate.generate;
 import static dev.marksman.composablerandom.Result.result;
 
@@ -22,6 +23,26 @@ public class Primitives {
 
     public static Generate<Boolean> generateBoolean() {
         return GENERATE_BOOLEAN;
+    }
+
+    public static Generate<Boolean> generateBoolean(int trueWeight, int falseWeight) {
+        if(trueWeight < 0) {
+            throw new IllegalArgumentException("trueWeight must be >= 0");
+        }
+        if(falseWeight < 0) {
+            throw new IllegalArgumentException("falseWeight must be >= 0");
+        }
+        int total = trueWeight + falseWeight;
+        if(total < 1) {
+            throw new IllegalArgumentException("sum of weights must be >= 1");
+        }
+        if(trueWeight == 0) {
+            return constant(false);
+        } else if(falseWeight == 0) {
+            return constant(true);
+        } else {
+            return generateInt(total).fmap(n -> n < trueWeight);
+        }
     }
 
     public static Generate<Double> generateDouble() {
