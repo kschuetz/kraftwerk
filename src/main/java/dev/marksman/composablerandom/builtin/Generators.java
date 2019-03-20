@@ -106,12 +106,12 @@ public class Generators {
     }
 
     @SafeVarargs
-    public static <A> Generator<A> oneOf(A first, A... more) {
-        return Choose.oneOf(first, more);
+    public static <A> Generator<A> chooseOneOf(A first, A... more) {
+        return Choose.chooseOneOf(first, more);
     }
 
-    public static <A> Generator<A> chooseFrom(Iterable<A> items) {
-        return Choose.chooseFrom(items);
+    public static <A> Generator<A> chooseOneFrom(Iterable<A> items) {
+        return Choose.chooseOneFrom(items);
     }
 
     public static <A> Generator<A> fromDomain(DiscreteDomain<A> domain) {

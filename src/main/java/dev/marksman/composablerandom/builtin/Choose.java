@@ -16,18 +16,41 @@ import static java.util.Arrays.asList;
 class Choose {
 
     @SafeVarargs
-    static <A> Generator<A> oneOf(A first, A... more) {
+    static <A> Generator<A> chooseOneOf(A first, A... more) {
         ArrayList<A> choices = new ArrayList<>();
         choices.add(first);
         choices.addAll(asList(more));
-        return chooseFrom(choices);
+        return chooseOneFrom(choices);
     }
 
-    static <A> Generator<A> chooseFrom(Iterable<A> items) {
+    @SafeVarargs
+    static <A> Generator<A> chooseOneOf(Generator<? extends A> first, Generator<? extends A>... more) {
+        return null;
+    }
+
+    @SafeVarargs
+    static <A> Generator<ArrayList<A>> chooseAtLeastOneOf(Generator<? extends A> first, Generator<? extends A>... more) {
+        return null;
+    }
+
+    @SafeVarargs
+    static <A> Generator<ArrayList<A>> chooseSomeOf(Generator<? extends A> first, Generator<? extends A>... more) {
+        return null;
+    }
+
+    static <A> Generator<A> chooseOneFrom(Iterable<A> items) {
         if (!items.iterator().hasNext()) {
-            throw new IllegalArgumentException("chooseFrom requires at least one choice");
+            throw new IllegalArgumentException("chooseOneFrom requires at least one choice");
         }
         return fromDomain(choices(items));
+    }
+
+    static <A> Generator<ArrayList<A>> chooseAtLeastOneFrom(Iterable<A> items) {
+        return null;
+    }
+
+    static <A> Generator<ArrayList<A>> chooseSomeFrom(Iterable<A> items) {
+        return null;
     }
 
     static <A> Generator<A> fromDomain(DiscreteDomain<A> domain) {
