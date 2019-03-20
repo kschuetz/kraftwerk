@@ -9,7 +9,7 @@ import static dev.marksman.composablerandom.Generator.constant;
 import static dev.marksman.composablerandom.Generator.generate;
 import static dev.marksman.composablerandom.Result.result;
 
-public class Primitives {
+class Primitives {
 
     private static final Generator<Boolean> GENERATE_BOOLEAN = generate(RandomState::nextBoolean);
     private static final Generator<Double> GENERATE_DOUBLE = generate(RandomState::nextDouble);
@@ -21,11 +21,11 @@ public class Primitives {
     private static final Generator<Byte> GENERATE_BYTE = GENERATE_INTEGER.fmap(Integer::byteValue);
     private static final Generator<Short> GENERATE_SHORT = GENERATE_INTEGER.fmap(Integer::shortValue);
 
-    public static Generator<Boolean> generateBoolean() {
+    static Generator<Boolean> generateBoolean() {
         return GENERATE_BOOLEAN;
     }
 
-    public static Generator<Boolean> generateBoolean(int trueWeight, int falseWeight) {
+    static Generator<Boolean> generateBoolean(int trueWeight, int falseWeight) {
         if (trueWeight < 0) {
             throw new IllegalArgumentException("trueWeight must be >= 0");
         }
@@ -45,15 +45,15 @@ public class Primitives {
         }
     }
 
-    public static Generator<Double> generateDouble() {
+    static Generator<Double> generateDouble() {
         return GENERATE_DOUBLE;
     }
 
-    public static Generator<Integer> generateInt() {
+    static Generator<Integer> generateInt() {
         return GENERATE_INTEGER;
     }
 
-    public static Generator<Integer> generateInt(int min, int max) {
+    static Generator<Integer> generateInt(int min, int max) {
         if (min > max) {
             throw new IllegalArgumentException("max must be >= min");
         }
@@ -69,11 +69,11 @@ public class Primitives {
         }
     }
 
-    public static Generator<Integer> generateIntExclusive(int bound) {
+    static Generator<Integer> generateIntExclusive(int bound) {
         return generate(s -> s.nextInt(bound));
     }
 
-    public static Generator<Integer> generateIntExclusive(int origin, int bound) {
+    static Generator<Integer> generateIntExclusive(int origin, int bound) {
         if (origin >= bound) {
             throw new IllegalArgumentException("bound must be greater than origin");
         }
@@ -100,15 +100,15 @@ public class Primitives {
         });
     }
 
-    public static Generator<Float> generateFloat() {
+    static Generator<Float> generateFloat() {
         return GENERATE_FLOAT;
     }
 
-    public static Generator<Long> generateLong() {
+    static Generator<Long> generateLong() {
         return GENERATE_LONG;
     }
 
-    public static Generator<Long> generateLong(long min, long max) {
+    static Generator<Long> generateLong(long min, long max) {
         if (min > max) {
             throw new IllegalArgumentException("max must be >= min");
         }
@@ -124,7 +124,7 @@ public class Primitives {
         }
     }
 
-    public static Generator<Long> generateLongExclusive(long bound) {
+    static Generator<Long> generateLongExclusive(long bound) {
         if (bound <= Integer.MAX_VALUE) {
             return generateIntExclusive((int) bound).fmap(Integer::longValue);
         } else {
@@ -132,7 +132,7 @@ public class Primitives {
         }
     }
 
-    public static Generator<Long> generateLongExclusive(long origin, long bound) {
+    static Generator<Long> generateLongExclusive(long origin, long bound) {
         if (origin >= bound) {
             throw new IllegalArgumentException("bound must be greater than origin");
         }
@@ -158,11 +158,11 @@ public class Primitives {
         });
     }
 
-    public static Generator<Double> generateGaussian() {
+    static Generator<Double> generateGaussian() {
         return GENERATE_GAUSSIAN;
     }
 
-    public static Generator<Byte[]> generateBytes(int count) {
+    static Generator<Byte[]> generateBytes(int count) {
         return generate(s -> {
             byte[] buffer = new byte[count];
             Result<? extends RandomState, Unit> next = s.nextBytes(buffer);
@@ -175,11 +175,11 @@ public class Primitives {
         });
     }
 
-    public static Generator<Byte> generateByte() {
+    static Generator<Byte> generateByte() {
         return GENERATE_BYTE;
     }
 
-    public static Generator<Short> generateShort() {
+    static Generator<Short> generateShort() {
         return GENERATE_SHORT;
     }
 }

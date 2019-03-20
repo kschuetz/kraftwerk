@@ -5,40 +5,40 @@ import dev.marksman.composablerandom.Generator;
 
 import static com.jnape.palatable.lambda.adt.hlist.HList.tuple;
 
-public class Tuples {
+class Tuples {
 
-    public static <A, B> Generator<Tuple2<A, B>> tupled(Generator<A> ra, Generator<B> rb) {
-        return ra.flatMap(a -> rb.fmap(b -> tuple(a, b)));
+    static <A, B> Generator<Tuple2<A, B>> tupled(Generator<A> ga, Generator<B> gb) {
+        return ga.flatMap(a -> gb.fmap(b -> tuple(a, b)));
     }
 
-    public static <A, B, C> Generator<Tuple3<A, B, C>> tupled(Generator<A> ra, Generator<B> rb, Generator<C> rc) {
-        return ra.flatMap(a -> tupled(rb, rc).fmap(x -> x.cons(a)));
+    static <A, B, C> Generator<Tuple3<A, B, C>> tupled(Generator<A> ga, Generator<B> gb, Generator<C> gc) {
+        return ga.flatMap(a -> tupled(gb, gc).fmap(x -> x.cons(a)));
     }
 
-    public static <A, B, C, D> Generator<Tuple4<A, B, C, D>> tupled(Generator<A> ra, Generator<B> rb, Generator<C> rc, Generator<D> rd) {
-        return ra.flatMap(a -> tupled(rb, rc, rd).fmap(x -> x.cons(a)));
+    static <A, B, C, D> Generator<Tuple4<A, B, C, D>> tupled(Generator<A> ga, Generator<B> gb, Generator<C> gc, Generator<D> gd) {
+        return ga.flatMap(a -> tupled(gb, gc, gd).fmap(x -> x.cons(a)));
     }
 
-    public static <A, B, C, D, E> Generator<Tuple5<A, B, C, D, E>> tupled(Generator<A> ra, Generator<B> rb, Generator<C> rc,
-                                                                          Generator<D> rd, Generator<E> re) {
-        return ra.flatMap(a -> tupled(rb, rc, rd, re).fmap(x -> x.cons(a)));
+    static <A, B, C, D, E> Generator<Tuple5<A, B, C, D, E>> tupled(Generator<A> ga, Generator<B> gb, Generator<C> gc,
+                                                                   Generator<D> gd, Generator<E> ge) {
+        return ga.flatMap(a -> tupled(gb, gc, gd, ge).fmap(x -> x.cons(a)));
     }
 
-    public static <A, B, C, D, E, F> Generator<Tuple6<A, B, C, D, E, F>> tupled(Generator<A> ra, Generator<B> rb, Generator<C> rc,
-                                                                                Generator<D> rd, Generator<E> re, Generator<F> rf) {
-        return ra.flatMap(a -> tupled(rb, rc, rd, re, rf).fmap(x -> x.cons(a)));
+    static <A, B, C, D, E, F> Generator<Tuple6<A, B, C, D, E, F>> tupled(Generator<A> ga, Generator<B> gb, Generator<C> gc,
+                                                                         Generator<D> gd, Generator<E> ge, Generator<F> gf) {
+        return ga.flatMap(a -> tupled(gb, gc, gd, ge, gf).fmap(x -> x.cons(a)));
     }
 
-    public static <A, B, C, D, E, F, G> Generator<Tuple7<A, B, C, D, E, F, G>> tupled(Generator<A> ra, Generator<B> rb, Generator<C> rc,
-                                                                                      Generator<D> rd, Generator<E> re, Generator<F> rf,
-                                                                                      Generator<G> rg) {
-        return ra.flatMap(a -> tupled(rb, rc, rd, re, rf, rg).fmap(x -> x.cons(a)));
+    static <A, B, C, D, E, F, G> Generator<Tuple7<A, B, C, D, E, F, G>> tupled(Generator<A> ga, Generator<B> gb, Generator<C> gc,
+                                                                               Generator<D> gd, Generator<E> ge, Generator<F> gf,
+                                                                               Generator<G> gg) {
+        return ga.flatMap(a -> tupled(gb, gc, gd, ge, gf, gg).fmap(x -> x.cons(a)));
     }
 
-    public static <A, B, C, D, E, F, G, H> Generator<Tuple8<A, B, C, D, E, F, G, H>> tupled(Generator<A> ra, Generator<B> rb, Generator<C> rc,
-                                                                                            Generator<D> rd, Generator<E> re, Generator<F> rf,
-                                                                                            Generator<G> rg, Generator<H> rh) {
-        return ra.flatMap(a -> tupled(rb, rc, rd, re, rf, rg, rh).fmap(x -> x.cons(a)));
+    static <A, B, C, D, E, F, G, H> Generator<Tuple8<A, B, C, D, E, F, G, H>> tupled(Generator<A> ga, Generator<B> gb, Generator<C> gc,
+                                                                                     Generator<D> gd, Generator<E> ge, Generator<F> gf,
+                                                                                     Generator<G> gg, Generator<H> gh) {
+        return ga.flatMap(a -> tupled(gb, gc, gd, ge, gf, gg, gh).fmap(x -> x.cons(a)));
     }
 
 }

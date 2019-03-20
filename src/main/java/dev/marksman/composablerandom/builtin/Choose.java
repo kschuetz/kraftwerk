@@ -13,35 +13,35 @@ import static dev.marksman.composablerandom.Generator.constant;
 import static dev.marksman.composablerandom.domain.Choices.choices;
 import static java.util.Arrays.asList;
 
-public class Choose {
+class Choose {
 
     @SafeVarargs
-    public static <A> Generator<A> oneOf(A first, A... more) {
+    static <A> Generator<A> oneOf(A first, A... more) {
         ArrayList<A> choices = new ArrayList<>();
         choices.add(first);
         choices.addAll(asList(more));
         return chooseFrom(choices);
     }
 
-    public static <A> Generator<A> chooseFrom(Iterable<A> items) {
+    static <A> Generator<A> chooseFrom(Iterable<A> items) {
         if (!items.iterator().hasNext()) {
             throw new IllegalArgumentException("chooseFrom requires at least one choice");
         }
         return fromDomain(choices(items));
     }
 
-    public static <A> Generator<A> fromDomain(DiscreteDomain<A> discreteDomain) {
-        long size = discreteDomain.getSize();
+    static <A> Generator<A> fromDomain(DiscreteDomain<A> domain) {
+        long size = domain.getSize();
         if (size == 1) {
-            return constant(discreteDomain.getValue(1));
+            return constant(domain.getValue(1));
         } else {
-            return Primitives.generateLongExclusive(size).fmap(discreteDomain::getValue);
+            return Primitives.generateLongExclusive(size).fmap(domain::getValue);
         }
     }
 
     @SafeVarargs
     @SuppressWarnings("unchecked")
-    public static <A> Generator<A> frequency(FrequencyEntry<? extends A> first, FrequencyEntry<? extends A>... more) {
+    static <A> Generator<A> frequency(FrequencyEntry<? extends A> first, FrequencyEntry<? extends A>... more) {
         Iterable<FrequencyEntry<? extends A>> fs = Filter.filter(f -> f.getWeight() > 0, cons(first, asList(more)));
         if (!fs.iterator().hasNext()) {
             throw new IllegalArgumentException("no items with positive weights");

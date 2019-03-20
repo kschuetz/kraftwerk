@@ -15,8 +15,8 @@ import java.util.function.Function;
 
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
 import static dev.marksman.composablerandom.Result.result;
-import static dev.marksman.composablerandom.builtin.Primitives.generateIntExclusive;
-import static dev.marksman.composablerandom.builtin.Tuples.tupled;
+import static dev.marksman.composablerandom.builtin.Generators.generateIntExclusive;
+import static dev.marksman.composablerandom.builtin.Generators.tupled;
 
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
