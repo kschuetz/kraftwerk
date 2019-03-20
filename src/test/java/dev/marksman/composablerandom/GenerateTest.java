@@ -11,8 +11,10 @@ import java.util.ArrayList;
 import static com.jnape.palatable.lambda.adt.hlist.HList.tuple;
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
 import static dev.marksman.composablerandom.FrequencyEntry.frequencyEntry;
-import static dev.marksman.composablerandom.Generate.*;
+import static dev.marksman.composablerandom.Generate.frequency;
 import static dev.marksman.composablerandom.StandardGen.initStandardGen;
+import static dev.marksman.composablerandom.builtin.Primitives.generateGaussian;
+import static dev.marksman.composablerandom.builtin.Primitives.generateInt;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class GenerateTest {
@@ -87,7 +89,7 @@ class GenerateTest {
 
         Result<State, ArrayList<A>> result1 = generate1.listOfN(SEQUENCE_LENGTH).run(initial);
         Result<State, ArrayList<A>> result2 = generate2.listOfN(SEQUENCE_LENGTH).run(initial);
-
+                                                    
         assertEquals(result1.getNextState().getRandomState(),
                 result2.getNextState().getRandomState(), "outbound RandomGens don't match");
         assertEquals(result1.getValue(), result2.getValue(), "values don't match");
