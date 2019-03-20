@@ -1,7 +1,7 @@
 package dev.marksman.composablerandom.builtin;
 
 import com.jnape.palatable.lambda.functions.builtin.fn2.Filter;
-import dev.marksman.composablerandom.Domain;
+import dev.marksman.composablerandom.DiscreteDomain;
 import dev.marksman.composablerandom.FrequencyEntry;
 import dev.marksman.composablerandom.Generate;
 
@@ -30,12 +30,12 @@ public class Choose {
         return fromDomain(choices(items));
     }
 
-    public static <A> Generate<A> fromDomain(Domain<A> domain) {
-        long size = domain.getSize();
+    public static <A> Generate<A> fromDomain(DiscreteDomain<A> discreteDomain) {
+        long size = discreteDomain.getSize();
         if (size == 1) {
-            return constant(domain.getValue(1));
+            return constant(discreteDomain.getValue(1));
         } else {
-            return Primitives.generateLongExclusive(size).fmap(domain::getValue);
+            return Primitives.generateLongExclusive(size).fmap(discreteDomain::getValue);
         }
     }
 

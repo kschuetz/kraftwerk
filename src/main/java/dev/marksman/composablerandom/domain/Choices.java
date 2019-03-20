@@ -1,13 +1,13 @@
 package dev.marksman.composablerandom.domain;
 
-import dev.marksman.composablerandom.Domain;
+import dev.marksman.composablerandom.DiscreteDomain;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 import java.util.ArrayList;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Choices<A> implements Domain<A> {
+public class Choices<A> implements DiscreteDomain<A> {
     private final ArrayList<A> items;
 
     @Override
