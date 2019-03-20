@@ -9,7 +9,7 @@ import static com.jnape.palatable.lambda.adt.Maybe.just;
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
 import static dev.marksman.composablerandom.Generate.generateS;
 import static dev.marksman.composablerandom.builtin.Primitives.generateBoolean;
-import static dev.marksman.composablerandom.builtin.Primitives.generateInt;
+import static dev.marksman.composablerandom.builtin.Primitives.generateIntExclusive;
 
 public class Sized {
 
@@ -65,7 +65,7 @@ public class Sized {
     }
 
     private static <A> Generate<A> maxOnly(int max, Fn1<Maybe<Integer>, Generate<A>> g) {
-        return generateInt(max).flatMap(n -> g.apply(just(n)));
+        return generateIntExclusive(max).flatMap(n -> g.apply(just(n)));
     }
 
     private static <A> Generate<A> preferredOnly(int preferred, Fn1<Maybe<Integer>, Generate<A>> g) {

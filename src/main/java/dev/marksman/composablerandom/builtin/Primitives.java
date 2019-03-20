@@ -26,22 +26,22 @@ public class Primitives {
     }
 
     public static Generate<Boolean> generateBoolean(int trueWeight, int falseWeight) {
-        if(trueWeight < 0) {
+        if (trueWeight < 0) {
             throw new IllegalArgumentException("trueWeight must be >= 0");
         }
-        if(falseWeight < 0) {
+        if (falseWeight < 0) {
             throw new IllegalArgumentException("falseWeight must be >= 0");
         }
         int total = trueWeight + falseWeight;
-        if(total < 1) {
+        if (total < 1) {
             throw new IllegalArgumentException("sum of weights must be >= 1");
         }
-        if(trueWeight == 0) {
+        if (trueWeight == 0) {
             return constant(false);
-        } else if(falseWeight == 0) {
+        } else if (falseWeight == 0) {
             return constant(true);
         } else {
-            return generateInt(total).fmap(n -> n < trueWeight);
+            return generateIntExclusive(total).fmap(n -> n < trueWeight);
         }
     }
 
@@ -53,18 +53,34 @@ public class Primitives {
         return GENERATE_INTEGER;
     }
 
-    public static Generate<Integer> generateInt(int bound) {
+    public static Generate<Integer> generateInt(int min, int max) {
+        if (min > max) {
+            throw new IllegalArgumentException("max must be >= min");
+        }
+        if (max == Integer.MAX_VALUE) {
+            if (min == Integer.MIN_VALUE) {
+                return generateInt();
+            } else {
+                return generateIntExclusive(min - 1, max)
+                        .fmap(n -> n + 1);
+            }
+        } else {
+            return generateIntExclusive(min, max + 1);
+        }
+    }
+
+    public static Generate<Integer> generateIntExclusive(int bound) {
         return generate(s -> s.nextInt(bound));
     }
 
-    public static Generate<Integer> generateInt(int origin, int bound) {
+    public static Generate<Integer> generateIntExclusive(int origin, int bound) {
         if (origin >= bound) {
             throw new IllegalArgumentException("bound must be greater than origin");
         }
         int n = bound - origin;
         int m = n - 1;
         if (n < Integer.MAX_VALUE) {
-            return generateInt(n).fmap(r -> origin + r);
+            return generateIntExclusive(n).fmap(r -> origin + r);
         } else if ((n & m) == 0) {
             // power of two
             return generateInt().fmap(r -> (r & m) + origin);
@@ -92,15 +108,31 @@ public class Primitives {
         return GENERATE_LONG;
     }
 
-    public static Generate<Long> generateLong(long bound) {
-        if (bound <= Integer.MAX_VALUE) {
-            return generateInt((int) bound).fmap(Integer::longValue);
+    public static Generate<Long> generateLong(long min, long max) {
+        if (min > max) {
+            throw new IllegalArgumentException("max must be >= min");
+        }
+        if (max == Long.MAX_VALUE) {
+            if (min == Long.MIN_VALUE) {
+                return generateLong();
+            } else {
+                return generateLongExclusive(min - 1, max)
+                        .fmap(n -> n + 1);
+            }
         } else {
-            return generateLong(0, bound);
+            return generateLongExclusive(min, max + 1);
         }
     }
 
-    public static Generate<Long> generateLong(long origin, long bound) {
+    public static Generate<Long> generateLongExclusive(long bound) {
+        if (bound <= Integer.MAX_VALUE) {
+            return generateIntExclusive((int) bound).fmap(Integer::longValue);
+        } else {
+            return generateLongExclusive(0, bound);
+        }
+    }
+
+    public static Generate<Long> generateLongExclusive(long origin, long bound) {
         if (origin >= bound) {
             throw new IllegalArgumentException("bound must be greater than origin");
         }

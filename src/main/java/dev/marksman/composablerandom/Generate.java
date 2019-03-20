@@ -15,7 +15,7 @@ import java.util.function.Function;
 
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
 import static dev.marksman.composablerandom.Result.result;
-import static dev.marksman.composablerandom.builtin.Primitives.generateInt;
+import static dev.marksman.composablerandom.builtin.Primitives.generateIntExclusive;
 import static dev.marksman.composablerandom.builtin.Tuples.tupled;
 
 @Value
@@ -86,7 +86,7 @@ public class Generate<A> implements Monad<A, Generate> {
         }
         Generate<Maybe<A>> just = fmap(Maybe::just);
         Generate<Maybe<A>> nothing = constant(nothing());
-        return generateInt(1 + justFrequency)
+        return generateIntExclusive(1 + justFrequency)
                 .flatMap(n -> n == 0 ? nothing : just);
     }
 

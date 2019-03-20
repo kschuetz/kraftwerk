@@ -1,6 +1,7 @@
 package dev.marksman.composablerandom;
 
 import com.jnape.palatable.lambda.adt.product.Product2;
+import dev.marksman.composablerandom.random.StandardGen;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;

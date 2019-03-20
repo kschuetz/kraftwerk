@@ -10,7 +10,6 @@ import java.util.TreeMap;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Cons.cons;
 import static dev.marksman.composablerandom.Generate.constant;
-import static dev.marksman.composablerandom.builtin.Primitives.generateLong;
 import static dev.marksman.composablerandom.domain.Choices.choices;
 import static java.util.Arrays.asList;
 
@@ -36,7 +35,7 @@ public class Choose {
         if (size == 1) {
             return constant(domain.getValue(1));
         } else {
-            return generateLong(size).fmap(domain::getValue);
+            return Primitives.generateLongExclusive(size).fmap(domain::getValue);
         }
     }
 
@@ -54,7 +53,7 @@ public class Choose {
             tree.put(total, f.getGenerate());
         }
 
-        return (Generate<A>) generateLong(total)
+        return (Generate<A>) Primitives.generateLongExclusive(total)
                 .flatMap(n -> tree.ceilingEntry(1 + n).getValue());
     }
 
