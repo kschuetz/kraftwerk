@@ -5,6 +5,8 @@ import dev.marksman.composablerandom.DiscreteDomain;
 import dev.marksman.composablerandom.FrequencyEntry;
 import dev.marksman.composablerandom.Generator;
 
+import java.util.function.Function;
+
 public class Generators {
 
     public static Generator<Boolean> generateBoolean() {
@@ -122,6 +124,10 @@ public class Generators {
     public static <A> Generator<A> frequency(FrequencyEntry<? extends A> first, FrequencyEntry<? extends A>... more) {
         return Choose.frequency(first, more);
 
+    }
+
+    public static <A> Generator<A> sized(Function<Integer, Generator<A>> g) {
+        return Sized.sized(g);
     }
 
 }
