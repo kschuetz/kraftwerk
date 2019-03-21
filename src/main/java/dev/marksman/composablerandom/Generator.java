@@ -6,6 +6,7 @@ import com.jnape.palatable.lambda.adt.hlist.Tuple3;
 import com.jnape.palatable.lambda.functions.Fn1;
 import com.jnape.palatable.lambda.iteration.InfiniteIterator;
 import com.jnape.palatable.lambda.monad.Monad;
+import dev.marksman.composablerandom.builtin.Generators;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
@@ -13,9 +14,7 @@ import lombok.Value;
 import java.util.ArrayList;
 import java.util.function.Function;
 
-import static com.jnape.palatable.lambda.adt.Maybe.nothing;
 import static dev.marksman.composablerandom.Result.result;
-import static dev.marksman.composablerandom.builtin.Generators.generateIntExclusive;
 import static dev.marksman.composablerandom.builtin.Generators.tupled;
 
 @Value
@@ -79,19 +78,15 @@ public class Generator<A> implements Monad<A, Generator> {
     }
 
     public final Generator<Maybe<A>> maybe(int justFrequency) {
-        if (justFrequency < 0) {
-            throw new IllegalArgumentException("justFrequency must be >= 0");
-        } else if (justFrequency == 0) {
-            return constant(nothing());
-        }
-        Generator<Maybe<A>> just = fmap(Maybe::just);
-        Generator<Maybe<A>> nothing = constant(nothing());
-        return generateIntExclusive(1 + justFrequency)
-                .flatMap(n -> n == 0 ? nothing : just);
+        return Generators.maybe(justFrequency, this);
     }
 
     public final Generator<Maybe<A>> maybe() {
-        return maybe(9);
+        return Generators.maybe(this);
+    }
+
+    public final Generator<Maybe<A>> just() {
+        return Generators.just(this);
     }
 
     public final Generator<ArrayList<A>> listOfN(int n) {

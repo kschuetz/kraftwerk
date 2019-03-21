@@ -1,5 +1,6 @@
 package dev.marksman.composablerandom.builtin;
 
+import com.jnape.palatable.lambda.adt.Maybe;
 import com.jnape.palatable.lambda.adt.hlist.*;
 import dev.marksman.composablerandom.DiscreteDomain;
 import dev.marksman.composablerandom.FrequencyEntry;
@@ -71,6 +72,18 @@ public class Generators {
 
     public static Generator<Short> generateShort() {
         return Primitives.generateShort();
+    }
+
+    public static <A> Generator<Maybe<A>> maybe(int justFrequency, Generator<A> g) {
+        return CoProducts.maybe(justFrequency, g);
+    }
+
+    public static <A> Generator<Maybe<A>> maybe(Generator<A> g) {
+        return CoProducts.maybe(g);
+    }
+
+    public static <A> Generator<Maybe<A>> just(Generator<A> g) {
+        return CoProducts.just(g);
     }
 
     public static <A, B> Generator<Tuple2<A, B>> tupled(Generator<A> ga, Generator<B> gb) {
