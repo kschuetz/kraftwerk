@@ -5,7 +5,7 @@ import dev.marksman.composablerandom.SizeParameters;
 
 import java.util.function.Function;
 
-import static dev.marksman.composablerandom.Generator.generateS;
+import static dev.marksman.composablerandom.Generator.contextDependent;
 import static dev.marksman.composablerandom.builtin.Primitives.*;
 
 class Sized {
@@ -15,7 +15,7 @@ class Sized {
     private static Generator<Boolean> BOOST_PREFERRED = generateBoolean(2, 7);
 
     static <A> Generator<A> sized(Function<Integer, Generator<A>> g) {
-        return generateS(s0 -> {
+        return contextDependent(s0 -> {
             SizeParameters sp = s0.getContext().getSizeParameters();
 
             return sp.getMinSize()

@@ -6,17 +6,16 @@ import dev.marksman.composablerandom.RandomState;
 import dev.marksman.composablerandom.Result;
 
 import static dev.marksman.composablerandom.Generator.constant;
-import static dev.marksman.composablerandom.Generator.generate;
 import static dev.marksman.composablerandom.Result.result;
 
 class Primitives {
 
-    private static final Generator<Boolean> GENERATE_BOOLEAN = generate(RandomState::nextBoolean);
-    private static final Generator<Double> GENERATE_DOUBLE = generate(RandomState::nextDouble);
-    private static final Generator<Float> GENERATE_FLOAT = generate(RandomState::nextFloat);
-    private static final Generator<Integer> GENERATE_INTEGER = generate(RandomState::nextInt);
-    private static final Generator<Long> GENERATE_LONG = generate(RandomState::nextLong);
-    private static final Generator<Double> GENERATE_GAUSSIAN = generate(RandomState::nextGaussian);
+    private static final Generator<Boolean> GENERATE_BOOLEAN = Generator.generator(RandomState::nextBoolean);
+    private static final Generator<Double> GENERATE_DOUBLE = Generator.generator(RandomState::nextDouble);
+    private static final Generator<Float> GENERATE_FLOAT = Generator.generator(RandomState::nextFloat);
+    private static final Generator<Integer> GENERATE_INTEGER = Generator.generator(RandomState::nextInt);
+    private static final Generator<Long> GENERATE_LONG = Generator.generator(RandomState::nextLong);
+    private static final Generator<Double> GENERATE_GAUSSIAN = Generator.generator(RandomState::nextGaussian);
 
     private static final Generator<Byte> GENERATE_BYTE = GENERATE_INTEGER.fmap(Integer::byteValue);
     private static final Generator<Short> GENERATE_SHORT = GENERATE_INTEGER.fmap(Integer::shortValue);
@@ -70,7 +69,7 @@ class Primitives {
     }
 
     static Generator<Integer> generateIntExclusive(int bound) {
-        return generate(s -> s.nextInt(bound));
+        return Generator.generator(s -> s.nextInt(bound));
     }
 
     static Generator<Integer> generateIntExclusive(int origin, int bound) {
@@ -84,7 +83,7 @@ class Primitives {
         } else if ((n & m) == 0) {
             // power of two
             return generateInt().fmap(r -> (r & m) + origin);
-        } else return generate(rg0 -> {
+        } else return Generator.generator(rg0 -> {
             Result<? extends RandomState, Integer> rg1 = rg0.nextInt();
             RandomState current = rg1._1();
             int r = rg1._2();
@@ -142,7 +141,7 @@ class Primitives {
         if ((n & m) == 0L) {
             // power of two
             return generateLong().fmap(r -> (r & m) + origin);
-        } else return generate(rg0 -> {
+        } else return Generator.generator(rg0 -> {
             Result<? extends RandomState, Long> rg1 = rg0.nextLong();
             RandomState current = rg1._1();
             long r = rg1._2();
@@ -163,7 +162,7 @@ class Primitives {
     }
 
     static Generator<Byte[]> generateBytes(int count) {
-        return generate(s -> {
+        return Generator.generator(s -> {
             byte[] buffer = new byte[count];
             Result<? extends RandomState, Unit> next = s.nextBytes(buffer);
             Byte[] result = new Byte[count];

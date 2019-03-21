@@ -54,12 +54,12 @@ public class Generator<A> implements Monad<A, Generator> {
 
     @Override
     public final <B> Generator<B> fmap(Function<? super A, ? extends B> fn) {
-        return generateS(run.fmap(a -> a.fmap(fn)));
+        return contextDependent(run.fmap(a -> a.fmap(fn)));
     }
 
     @Override
     public final <B> Generator<B> flatMap(Function<? super A, ? extends Monad<B, Generator>> fn) {
-        return generateS(s0 -> {
+        return contextDependent(s0 -> {
             Result<State, A> x = run.apply(s0);
             return ((Generator<B>) fn.apply(x._2())).run.apply(x._1());
         });
@@ -98,7 +98,7 @@ public class Generator<A> implements Monad<A, Generator> {
         if (n < 0) {
             throw new IllegalArgumentException("n must be >= 0");
         }
-        return generateS(s0 -> {
+        return contextDependent(s0 -> {
             State current = s0;
             ArrayList<A> result = new ArrayList<>(n);
             for (int i = 0; i < n; i++) {
@@ -110,22 +110,26 @@ public class Generator<A> implements Monad<A, Generator> {
         });
     }
 
-    public static <A> Generator<A> generateS(Fn1<? super State, Result<State, A>> run) {
+    public static <A> Generator<A> contextDependent(Fn1<? super State, Result<State, A>> run) {
         return new Generator<>(run);
     }
 
-    public static <A> Generator<A> generate(Fn1<? super RandomState, Result<? extends RandomState, A>> run) {
-        return generateS(state ->
+    public static <A> Generator<A> contextDependent(Function<? super State, Result<State, A>> run) {
+        return new Generator<>(run::apply);
+    }
+
+    public static <A> Generator<A> generator(Fn1<? super RandomState, Result<? extends RandomState, A>> run) {
+        return contextDependent(state ->
                 (Result<State, A>) run.apply(state.getRandomState())
                         .biMapL(state::withRandomState));
     }
 
-    public static <A> Generator<A> generate(Function<? super RandomState, Result<? extends RandomState, A>> run) {
-        return generate(run::apply);
+    public static <A> Generator<A> generator(Function<? super RandomState, Result<? extends RandomState, A>> run) {
+        return generator(run::apply);
     }
 
     public static <A> Generator<A> constant(A a) {
-        return generate(rg -> result(rg, a));
+        return generator(rg -> result(rg, a));
     }
 
     private class ValuesIterator extends InfiniteIterator<A> {
