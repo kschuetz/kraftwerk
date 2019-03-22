@@ -11,11 +11,15 @@ import java.util.ArrayList;
 
 import static com.jnape.palatable.lambda.adt.hlist.HList.tuple;
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
+import static com.jnape.palatable.lambda.functions.builtin.fn2.All.all;
+import static com.jnape.palatable.lambda.functions.builtin.fn2.Eq.eq;
 import static dev.marksman.composablerandom.FrequencyEntry.frequencyEntry;
+import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
 import static dev.marksman.composablerandom.builtin.Generators.frequency;
 import static dev.marksman.composablerandom.builtin.Generators.generateGaussian;
 import static dev.marksman.composablerandom.random.StandardGen.initStandardGen;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GeneratorTest {
 
@@ -57,6 +61,11 @@ class GeneratorTest {
         testMonadRightIdentity(gen2);
         testMonadRightIdentity(gen3);
         testMonadRightIdentity(gen4);
+    }
+
+    @Test
+    void generateConstant() {
+        assertTrue(all(eq(1), streamFrom(Generator.constant(1)).next(1000)));
     }
 
     private static <A> void testFunctorIdentity(Generator<A> generator1) {

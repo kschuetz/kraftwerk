@@ -69,6 +69,9 @@ class Primitives {
     }
 
     static Generator<Integer> generateIntExclusive(int bound) {
+        if (bound <= 0) {
+            throw new IllegalArgumentException("bound must be positive");
+        }
         return Generator.generator(s -> s.nextInt(bound));
     }
 
@@ -76,19 +79,19 @@ class Primitives {
         if (origin >= bound) {
             throw new IllegalArgumentException("bound must be greater than origin");
         }
-        int n = bound - origin;
-        int m = n - 1;
+        long n = (long) bound - origin;
+        long m = n - 1;
         if (n < Integer.MAX_VALUE) {
-            return generateIntExclusive(n).fmap(r -> origin + r);
+            return generateIntExclusive((int) n).fmap(r -> origin + r);
         } else if ((n & m) == 0) {
             // power of two
-            return generateInt().fmap(r -> (r & m) + origin);
+            return generateInt().fmap(r -> (r & (int) m) + origin);
         } else return Generator.generator(rg0 -> {
             Result<? extends RandomState, Integer> rg1 = rg0.nextInt();
             RandomState current = rg1._1();
             int r = rg1._2();
             for (int u = r >>> 1;
-                 u + m - (r = u % n) < 0; ) {
+                 u + m - (r = u % (int) n) < 0; ) {
                 Result<? extends RandomState, Integer> next = current.nextInt();
                 u = next._2() >>> 1;
                 current = next._1();

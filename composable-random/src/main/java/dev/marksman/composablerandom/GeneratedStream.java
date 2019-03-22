@@ -30,7 +30,7 @@ public class GeneratedStream<A> implements Iterator<A> {
         return run.getValue();
     }
 
-    public ArrayList<A> take(int n) {
+    public ArrayList<A> next(int n) {
         if (n > 0) {
             ArrayList<A> result = new ArrayList<>(n);
             for (int i = 0; i < n; i++) {

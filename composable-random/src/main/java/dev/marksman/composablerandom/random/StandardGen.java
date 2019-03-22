@@ -27,7 +27,7 @@ public final class StandardGen implements RandomState {
             return next(31).fmap(n -> (int) ((bound * (long) n) >> 31));
         }
 
-        int bits, val;
+        long bits, val;
         StandardGen nextSeed;
         Result<StandardGen, Integer> next;
         do {
@@ -36,7 +36,7 @@ public final class StandardGen implements RandomState {
             bits = next._2();
             val = bits % bound;
         } while (bits - val + (bound - 1) < 0);
-        return result(nextSeed, val);
+        return result(nextSeed, (int) val);
     }
 
     @Override
