@@ -32,12 +32,6 @@
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-math3</artifactId>
-                <version>${commons-math.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
                 <groupId>com.jnape.palatable</groupId>
                 <artifactId>lambda</artifactId>
                 <version>${lambda.version}</version>

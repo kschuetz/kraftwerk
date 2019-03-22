@@ -18,11 +18,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-math3</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>com.jnape.palatable</groupId>
             <artifactId>lambda</artifactId>
         </dependency>
@@ -33,7 +28,4 @@
         </dependency>
     </dependencies>
 
-
-
 </project>
-
