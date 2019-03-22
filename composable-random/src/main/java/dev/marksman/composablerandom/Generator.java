@@ -14,6 +14,7 @@ import lombok.Value;
 import java.util.ArrayList;
 import java.util.function.Function;
 
+import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
 import static dev.marksman.composablerandom.Result.result;
 import static dev.marksman.composablerandom.builtin.Generators.tupled;
 
@@ -48,7 +49,7 @@ public class Generator<A> implements Monad<A, Generator> {
     }
 
     public final Iterable<A> infiniteStream(State initial) {
-        return () -> new ValuesIterator(initial);
+        return () -> streamFrom(this, initial);
     }
 
     @Override
