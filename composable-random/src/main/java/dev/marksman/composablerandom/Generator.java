@@ -80,15 +80,15 @@ public class Generator<A> implements Monad<A, Generator> {
     }
 
     public final Generator<Maybe<A>> maybe(int justFrequency) {
-        return Generators.maybe(justFrequency, this);
+        return Generators.generateMaybe(justFrequency, this);
     }
 
     public final Generator<Maybe<A>> maybe() {
-        return Generators.maybe(this);
+        return Generators.generateMaybe(this);
     }
 
     public final Generator<Maybe<A>> just() {
-        return Generators.just(this);
+        return Generators.generateJust(this);
     }
 
     public final Generator<ArrayList<A>> listOfN(int n) {

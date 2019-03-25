@@ -20,28 +20,17 @@ class Primitives {
     private static final Generator<Byte> GENERATE_BYTE = GENERATE_INTEGER.fmap(Integer::byteValue);
     private static final Generator<Short> GENERATE_SHORT = GENERATE_INTEGER.fmap(Integer::shortValue);
 
+    private static final Generator<Boolean> GENERATE_TRUE = constant(true);
+    private static final Generator<Boolean> GENERATE_FALSE = constant(false);
+
     static Generator<Boolean> generateBoolean() {
         return GENERATE_BOOLEAN;
     }
 
     static Generator<Boolean> generateBoolean(int trueWeight, int falseWeight) {
-        if (trueWeight < 0) {
-            throw new IllegalArgumentException("trueWeight must be >= 0");
-        }
-        if (falseWeight < 0) {
-            throw new IllegalArgumentException("falseWeight must be >= 0");
-        }
-        int total = trueWeight + falseWeight;
-        if (total < 1) {
-            throw new IllegalArgumentException("sum of weights must be >= 1");
-        }
-        if (trueWeight == 0) {
-            return constant(false);
-        } else if (falseWeight == 0) {
-            return constant(true);
-        } else {
-            return generateIntExclusive(total).fmap(n -> n < trueWeight);
-        }
+        return Weighted.leftRight(trueWeight, falseWeight,
+                "trueWeight", "falseWeight",
+                () -> GENERATE_TRUE, () -> GENERATE_FALSE);
     }
 
     static Generator<Double> generateDouble() {

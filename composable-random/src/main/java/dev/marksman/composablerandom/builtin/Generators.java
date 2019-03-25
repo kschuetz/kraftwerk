@@ -1,6 +1,8 @@
 package dev.marksman.composablerandom.builtin;
 
+import com.jnape.palatable.lambda.adt.Either;
 import com.jnape.palatable.lambda.adt.Maybe;
+import com.jnape.palatable.lambda.adt.Unit;
 import com.jnape.palatable.lambda.adt.hlist.*;
 import dev.marksman.composablerandom.DiscreteDomain;
 import dev.marksman.composablerandom.FrequencyEntry;
@@ -77,16 +79,48 @@ public class Generators {
         return Primitives.generateShort();
     }
 
-    public static <A> Generator<Maybe<A>> maybe(int justFrequency, Generator<A> g) {
-        return CoProducts.maybe(justFrequency, g);
+    static Generator<Unit> generateUnit() {
+        return CoProducts.generateUnit();
     }
 
-    public static <A> Generator<Maybe<A>> maybe(Generator<A> g) {
-        return CoProducts.maybe(g);
+    public static <A> Generator<Maybe<A>> generateMaybe(int nothingWeight, int justWeight, Generator<A> g) {
+        return CoProducts.generateMaybe(nothingWeight, justWeight, g);
     }
 
-    public static <A> Generator<Maybe<A>> just(Generator<A> g) {
-        return CoProducts.just(g);
+    public static <A> Generator<Maybe<A>> generateMaybe(int justWeight, Generator<A> g) {
+        return CoProducts.generateMaybe(justWeight, g);
+    }
+
+    public static <A> Generator<Maybe<A>> generateMaybe(Generator<A> g) {
+        return CoProducts.generateMaybe(g);
+    }
+
+    public static <A> Generator<Maybe<A>> generateJust(Generator<A> g) {
+        return CoProducts.generateJust(g);
+    }
+
+    public static <A> Generator<Maybe<A>> generateNothing() {
+        return CoProducts.generateNothing();
+    }
+
+    public static <L, R> Generator<Either<L, R>> generateEither(int leftWeight, int rightWeight, Generator<L> leftGenerator, Generator<R> rightGenerator) {
+        return CoProducts.generateEither(leftWeight, rightWeight, leftGenerator, rightGenerator);
+    }
+
+    public static <L, R> Generator<Either<L, R>> generateEither(int rightWeight, Generator<L> leftGenerator, Generator<R> rightGenerator) {
+        return CoProducts.generateEither(rightWeight, leftGenerator, rightGenerator);
+    }
+
+    public static <L, R> Generator<Either<L, R>> generateEither(Generator<L> leftGenerator, Generator<R> rightGenerator) {
+        return CoProducts.generateEither(leftGenerator, rightGenerator);
+    }
+
+    public static <L, R> Generator<Either<L, R>> generateLeft(Generator<L> g) {
+        return CoProducts.generateLeft(g);
+    }
+
+    public static <L, R> Generator<Either<L, R>> generateRight(Generator<R> g) {
+        return CoProducts.generateRight(g);
     }
 
     public static <A, B> Generator<Tuple2<A, B>> tupled(Generator<A> ga, Generator<B> gb) {
