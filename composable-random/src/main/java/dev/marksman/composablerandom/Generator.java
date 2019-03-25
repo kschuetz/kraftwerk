@@ -13,6 +13,7 @@ import lombok.Value;
 
 import java.util.ArrayList;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
 import static dev.marksman.composablerandom.Result.result;
@@ -126,6 +127,10 @@ public class Generator<A> implements Monad<A, Generator> {
 
     public static <A> Generator<A> constant(A a) {
         return generator(rg -> result(rg, a));
+    }
+
+    public static <A> Generator<A> lazy(Supplier<A> supplier) {
+        return generator(rg -> result(rg, supplier.get()));
     }
 
     private class ValuesIterator extends InfiniteIterator<A> {
