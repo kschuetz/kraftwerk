@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -133,8 +134,19 @@ public class Generator<A> implements Monad<A, Generator> {
         return generator(rg -> result(rg, a));
     }
 
+    // TODO: experimental
     public static <A> Generator<A> lazy(Supplier<A> supplier) {
-        return generator(rg -> result(rg, supplier.get()));
+        AtomicReference<A> cache = new AtomicReference<>();
+        return generator(rg -> {
+            A result = cache.get();
+            if (result == null) {
+                result = supplier.get();
+                if (!cache.compareAndSet(null, result)) {
+                    result = cache.get();
+                }
+            }
+            return result(rg, result);
+        });
     }
 
     private class ValuesIterator extends InfiniteIterator<A> {
