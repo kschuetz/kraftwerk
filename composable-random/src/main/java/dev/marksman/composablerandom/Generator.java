@@ -79,8 +79,12 @@ public class Generator<A> implements Monad<A, Generator> {
         return tupled(this, this, this);
     }
 
-    public final Generator<Maybe<A>> maybe(int justFrequency) {
-        return Generators.generateMaybe(justFrequency, this);
+    public final Generator<Maybe<A>> maybe(int nothingWeight, int justWeight) {
+        return Generators.generateMaybe(nothingWeight, justWeight, this);
+    }
+
+    public final Generator<Maybe<A>> maybe(int justWeight) {
+        return Generators.generateMaybe(justWeight, this);
     }
 
     public final Generator<Maybe<A>> maybe() {
