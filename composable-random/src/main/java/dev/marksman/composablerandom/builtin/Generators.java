@@ -83,6 +83,23 @@ public class Generators {
         return CoProducts.generateUnit();
     }
 
+    public static Generator<String> generateString(int length, Generator<String> g) {
+        return Strings.generateString(length, g);
+    }
+
+    public static Generator<String> generateStringFromCharacters(int length, Generator<Character> g) {
+        return Strings.generateStringFromCharacters(length, g);
+    }
+
+    public static Generator<String> generateStringFromCharacters(Generator<Character> g) {
+        return Strings.generateStringFromCharacters(g);
+    }
+
+    @SafeVarargs
+    public static Generator<String> generateString(Generator<String> first, Generator<String>... more) {
+        return Strings.generateString(first, more);
+    }
+
     public static <A> Generator<Maybe<A>> generateMaybe(int nothingWeight, int justWeight, Generator<A> g) {
         return CoProducts.generateMaybe(nothingWeight, justWeight, g);
     }
