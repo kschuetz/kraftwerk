@@ -100,7 +100,16 @@ class Choose {
     @SafeVarargs
     @SuppressWarnings("unchecked")
     static <A> Generator<A> frequency(FrequencyEntry<? extends A> first, FrequencyEntry<? extends A>... more) {
-        Iterable<FrequencyEntry<? extends A>> fs = Filter.filter(f -> f.getWeight() > 0, cons(first, asList(more)));
+        return frequencyImpl(cons(first, asList(more)));
+    }
+
+    static <A> Generator<A> frequency(Collection<FrequencyEntry<? extends A>> entries) {
+        return frequencyImpl(entries);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <A> Generator<A> frequencyImpl(Iterable<FrequencyEntry<? extends A>> entries) {
+        Iterable<FrequencyEntry<? extends A>> fs = Filter.filter(f -> f.getWeight() > 0, entries);
         if (!fs.iterator().hasNext()) {
             throw new IllegalArgumentException("no items with positive weights");
         }

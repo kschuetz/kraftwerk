@@ -79,7 +79,7 @@ public class Generators {
         return Primitives.generateShort();
     }
 
-    static Generator<Unit> generateUnit() {
+    public static Generator<Unit> generateUnit() {
         return CoProducts.generateUnit();
     }
 
@@ -226,6 +226,10 @@ public class Generators {
     @SafeVarargs
     public static <A> Generator<A> frequency(FrequencyEntry<? extends A> first, FrequencyEntry<? extends A>... more) {
         return Choose.frequency(first, more);
+    }
+
+    public static <A> Generator<A> frequency(Collection<FrequencyEntry<? extends A>> entries) {
+        return Choose.frequency(entries);
     }
 
     public static <A> Generator<A> sized(Function<Integer, Generator<A>> g) {
