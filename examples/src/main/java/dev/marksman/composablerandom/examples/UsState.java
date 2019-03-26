@@ -11,15 +11,15 @@ import static dev.marksman.composablerandom.builtin.Generators.frequency;
 
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class State {
+public class UsState {
     private final String code;
 
-    public static State state(String code) {
-        return new State(code);
+    public static UsState usState(String code) {
+        return new UsState(code);
     }
 
     private static class Generators {
-        private static final Generator<State> state = frequency(
+        private static final Generator<UsState> usState = frequency(
                 entry(39, "CA"), entry(28, "TX"), entry(21, "FL"),
                 entry(19, "NY"), entry(12, "PA"), entry(12, "IL"),
                 entry(11, "OH"), entry(10, "GA"), entry(10, "NC"),
@@ -37,14 +37,14 @@ public class State {
                 entry(1, "MO"), entry(1, "RI"), entry(1, "DE"),
                 entry(1, "SD"), entry(1, "ND"), entry(1, "AK"),
                 entry(1, "VT"), entry(1, "WY"))
-                .fmap(State::state);
+                .fmap(UsState::usState);
     }
 
-    public static Generator<State> generateState() {
-        return Generators.state;
+    public static Generator<UsState> generateUsState() {
+        return Generators.usState;
     }
 
     public static void main(String[] args) {
-        streamFrom(generateState().fmap(State::getCode)).next(100).forEach(System.out::println);
+        streamFrom(generateUsState().fmap(UsState::getCode)).next(100).forEach(System.out::println);
     }
 }
