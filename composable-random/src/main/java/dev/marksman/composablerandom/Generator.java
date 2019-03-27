@@ -37,6 +37,15 @@ public class Generator<A> implements Monad<A, Generator> {
         return run.apply(inputState);
     }
 
+    // if tracing enabled:
+    //  - save existing TraceBuilder
+    //  - create new TraceBuilder, assign to context
+    //  - call run.apply
+    //  - pull TraceBuilder off of context
+    //  - using result, and TraceBuilder, build Trace
+    //  - add Trace to saved TraceBuilder
+    //  - restore saved TraceBuilder to context
+
     /**
      * Produces a value when given a <code>State</code>.
      * <p>
