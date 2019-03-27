@@ -11,8 +11,4 @@ public interface Context {
     Context withSizeParameters(SizeParameters sizeParameters);
 
     Context withApplicationData(Object applicationData);
-
-    Context restoreSizeParameters();
-
-    Context restoreApplicationData();
 }
