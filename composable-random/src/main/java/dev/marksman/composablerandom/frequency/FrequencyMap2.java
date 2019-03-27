@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 import static dev.marksman.composablerandom.builtin.Generators.generateLongExclusive;
+import static dev.marksman.composablerandom.frequency.FrequencyMap1.checkMultiplier;
 import static dev.marksman.composablerandom.frequency.FrequencyMap3.frequencyMap3;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -32,6 +33,19 @@ class FrequencyMap2<A> implements FrequencyMap<A> {
             Generator<A> generatorC = (Generator<A>) generator;
             return frequencyMap3(weightA, generatorA, weightB, generatorB, weight, generatorC);
         }
+    }
+
+    @Override
+    public FrequencyMap<A> combine(FrequencyMap<A> other) {
+        return other.add(weightA, generatorA).add(weightB, generatorB);
+    }
+
+    @Override
+    public FrequencyMap<A> multiply(int positiveFactor) {
+        checkMultiplier(positiveFactor);
+        if (positiveFactor == 1) return this;
+        else return frequencyMap2(positiveFactor * weightA, generatorA,
+                positiveFactor * weightB, generatorB);
     }
 
     static <A> FrequencyMap2<A> frequencyMap2(int weightA, Generator<A> generatorA,

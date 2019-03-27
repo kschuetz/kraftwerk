@@ -26,8 +26,24 @@ class FrequencyMap1<A> implements FrequencyMap<A> {
         }
     }
 
+    @Override
+    public FrequencyMap<A> combine(FrequencyMap<A> other) {
+        return other.add(weight, generator);
+    }
+
+    @Override
+    public FrequencyMap<A> multiply(int positiveFactor) {
+        checkMultiplier(positiveFactor);
+        if (positiveFactor == 1) return this;
+        else return frequencyMap1(positiveFactor * weight, generator);
+    }
+
     static <A> FrequencyMap1<A> frequencyMap1(int weight, Generator<A> generator) {
         if (weight < 1) throw new IllegalArgumentException("initial weight must be >= 1");
         return new FrequencyMap1<>(weight, generator);
+    }
+
+    static void checkMultiplier(int factor) {
+        if (factor < 1) throw new IllegalArgumentException("factor must be positive");
     }
 }

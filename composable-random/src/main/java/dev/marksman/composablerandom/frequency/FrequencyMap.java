@@ -11,6 +11,18 @@ public interface FrequencyMap<A> {
 
     FrequencyMap<A> add(int weight, Generator<? extends A> generator);
 
+    FrequencyMap<A> combine(FrequencyMap<A> other);
+
+    /**
+     * Multiplies existing weights by `positiveFactor`.  Useful for combining with
+     * other `FrequencyMap`s.
+     *
+     * @param positiveFactor number to multiply by.  Must be >= 1.
+     * @return a new `FrequencyMap` containing the same entries with the weights multiplied.
+     * @throws IllegalArgumentException if positiveFactor is < 1.
+     */
+    FrequencyMap<A> multiply(int positiveFactor);
+
     default FrequencyMap<A> add(int weight, A value) {
         return add(weight, constant(value));
     }
