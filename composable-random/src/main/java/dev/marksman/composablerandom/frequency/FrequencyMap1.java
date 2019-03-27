@@ -4,6 +4,8 @@ import dev.marksman.composablerandom.Generator;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
+import java.util.function.Function;
+
 import static dev.marksman.composablerandom.frequency.FrequencyMap2.frequencyMap2;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -36,6 +38,11 @@ class FrequencyMap1<A> implements FrequencyMap<A> {
         checkMultiplier(positiveFactor);
         if (positiveFactor == 1) return this;
         else return frequencyMap1(positiveFactor * weight, generator);
+    }
+
+    @Override
+    public <B> FrequencyMap<B> fmap(Function<? super A, ? extends B> fn) {
+        return frequencyMap1(weight, generator.fmap(fn));
     }
 
     static <A> FrequencyMap1<A> frequencyMap1(int weight, Generator<A> generator) {

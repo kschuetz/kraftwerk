@@ -2,6 +2,8 @@ package dev.marksman.composablerandom.frequency;
 
 import dev.marksman.composablerandom.Generator;
 
+import java.util.function.Function;
+
 import static dev.marksman.composablerandom.Generator.constant;
 import static dev.marksman.composablerandom.frequency.FrequencyMap1.frequencyMap1;
 
@@ -12,6 +14,8 @@ public interface FrequencyMap<A> {
     FrequencyMap<A> add(int weight, Generator<? extends A> generator);
 
     FrequencyMap<A> combine(FrequencyMap<A> other);
+
+    <B> FrequencyMap<B> fmap(Function<? super A, ? extends B> fn);
 
     /**
      * Multiplies existing weights by `positiveFactor`.  Useful for combining with

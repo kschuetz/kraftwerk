@@ -6,6 +6,7 @@ import dev.marksman.composablerandom.Generator;
 import dev.marksman.composablerandom.builtin.Generators;
 
 import java.util.TreeMap;
+import java.util.function.Function;
 
 import static com.jnape.palatable.lambda.adt.hlist.HList.tuple;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Cons.cons;
@@ -54,6 +55,11 @@ class FrequencyMapN<A> implements FrequencyMap<A> {
     @Override
     public FrequencyMap<A> combine(FrequencyMap<A> other) {
         return foldLeft((acc, entry) -> acc.add(entry._1(), entry._2()), other, entries);
+    }
+
+    @Override
+    public <B> FrequencyMap<B> fmap(Function<? super A, ? extends B> fn) {
+        return new FrequencyMapN<>(Map.map(t -> tuple(t._1(), t._2().fmap(fn)), entries));
     }
 
     @Override
