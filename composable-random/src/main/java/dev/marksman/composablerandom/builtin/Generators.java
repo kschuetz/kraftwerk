@@ -11,6 +11,7 @@ import dev.marksman.composablerandom.Generator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
 public class Generators {
@@ -251,6 +252,46 @@ public class Generators {
 
     public static <A> Generator<A> sized(Function<Integer, Generator<A>> g) {
         return Sized.sized(g);
+    }
+
+    public static <A> Generator<ArrayList<A>> generateList(Generator<A> g) {
+        return Collections.generateList(g);
+    }
+
+    public static <A> Generator<ArrayList<A>> generateNonEmptyList(Generator<A> g) {
+        return Collections.generateNonEmptyList(g);
+    }
+
+    public static <A> Generator<ArrayList<A>> generateListOfN(int n, Generator<A> g) {
+        return Collections.generateListOfN(n, g);
+    }
+
+    public static <A> Generator<Set<A>> generateSet(Generator<A> g) {
+        return Collections.generateSet(g);
+    }
+
+    public static <A> Generator<Set<A>> generateNonEmptySet(Generator<A> g) {
+        return Collections.generateNonEmptySet(g);
+    }
+
+    public static <K, V> Generator<Map<K, V>> generateMap(Generator<K> keyGenerator,
+                                                          Generator<V> valueGenerator) {
+        return Collections.generateMap(keyGenerator, valueGenerator);
+    }
+
+    public static <K, V> Generator<Map<K, V>> generateMap(Collection<K> keys,
+                                                          Generator<V> valueGenerator) {
+        return Collections.generateMap(keys, valueGenerator);
+    }
+
+    public static <K, V> Generator<Map<K, V>> generateMap(DiscreteDomain<K> keys,
+                                                          Generator<V> valueGenerator) {
+        return Collections.generateMap(keys, valueGenerator);
+    }
+
+    public static <K, V> Generator<Map<K, V>> generateNonEmptyMap(Generator<K> keyGenerator,
+                                                                  Generator<V> valueGenerator) {
+        return Collections.generateNonEmptyMap(keyGenerator, valueGenerator);
     }
 
 }

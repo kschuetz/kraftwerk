@@ -27,24 +27,24 @@ public class Generator<A> implements Monad<A, Generator> {
     private final Fn1<? super State, Result<State, A>> run;
 
     /**
-     * Produces a value, and a new <code>RandomState</code>
+     * Produces a value, and a new <code>State</code>
      *
-     * @param randomState The <code>RandomState</code> to provide as input.  The same <code>RandomState</code>
+     * @param inputState The <code>State</code> to provide as input.  The same <code>State</code>
      *                    will always yield the same result.
-     * @return A <code>Result</code> containing a new <code>RandomState</code> and a generate value
+     * @return A <code>Result</code> containing a new <code>State</code> and a generated value
      */
-    public final Result<State, A> run(State randomState) {
-        return run.apply(randomState);
+    public final Result<State, A> run(State inputState) {
+        return run.apply(inputState);
     }
 
     /**
-     * Produces a value when given a <code>RandomState</code>.
+     * Produces a value when given a <code>State</code>.
      * <p>
-     * Equivalent to calling <code>run</code> and discarding the <code>RandomState</code> from the output.
+     * Equivalent to calling <code>run</code> and discarding the <code>State</code> from the output.
      *
-     * @param state The <code>RandomState</code> to provide as input.  The same <code>RandomState</code>
+     * @param state The <code>State</code> to provide as input.  The same <code>State</code>
      *              will always yield the same result.
-     * @return A generate value
+     * @return A generated value
      */
     public final A getValue(State state) {
         return run(state)._2();
@@ -62,8 +62,8 @@ public class Generator<A> implements Monad<A, Generator> {
     @Override
     public final <B> Generator<B> flatMap(Function<? super A, ? extends Monad<B, Generator>> fn) {
         return contextDependent(s0 -> {
-            Result<State, A> x = run.apply(s0);
-            return ((Generator<B>) fn.apply(x._2())).run.apply(x._1());
+            Result<State, A> x = run(s0);
+            return ((Generator<B>) fn.apply(x._2())).run(x._1());
         });
     }
 
@@ -97,19 +97,7 @@ public class Generator<A> implements Monad<A, Generator> {
     }
 
     public final Generator<ArrayList<A>> listOfN(int n) {
-        if (n < 0) {
-            throw new IllegalArgumentException("n must be >= 0");
-        }
-        return contextDependent(s0 -> {
-            State current = s0;
-            ArrayList<A> result = new ArrayList<>(n);
-            for (int i = 0; i < n; i++) {
-                Result<State, A> next = run(current);
-                current = next._1();
-                result.add(next._2());
-            }
-            return result(current, result);
-        });
+        return Generators.generateListOfN(n, this);
     }
 
     public static <A> Generator<A> contextDependent(Fn1<? super State, Result<State, A>> run) {
