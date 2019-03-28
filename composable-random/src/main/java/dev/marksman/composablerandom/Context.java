@@ -14,4 +14,5 @@ public interface Context {
     Context withTraceContext(TraceContext traceContext);
 
     Context withApplicationData(Object applicationData);
+
 }

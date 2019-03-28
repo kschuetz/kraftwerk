@@ -9,9 +9,6 @@ import com.jnape.palatable.lambda.monad.Monad;
 import dev.marksman.composablerandom.builtin.Generators;
 import dev.marksman.composablerandom.metadata.Metadata;
 import dev.marksman.composablerandom.metadata.StandardMetadata;
-import dev.marksman.composablerandom.tracing.Trace;
-import dev.marksman.composablerandom.tracing.TraceCollector;
-import dev.marksman.composablerandom.tracing.TraceContext;
 import lombok.Value;
 
 import java.util.ArrayList;
@@ -19,13 +16,12 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.jnape.palatable.lambda.functions.builtin.fn1.Reverse.reverse;
 import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
 import static dev.marksman.composablerandom.Result.result;
 import static dev.marksman.composablerandom.builtin.Generators.tupled;
 import static dev.marksman.composablerandom.metadata.StandardMetadata.defaultMetadata;
 import static dev.marksman.composablerandom.metadata.StandardMetadata.labeled;
-import static dev.marksman.composablerandom.tracing.TraceContext.tracing;
+import static dev.marksman.composablerandom.tracing.RunWithTrace.runWithTrace;
 
 @Value
 public class Generator<A> implements Monad<A, Generator> {
@@ -52,33 +48,12 @@ public class Generator<A> implements Monad<A, Generator> {
      * @return A <code>Result</code> containing a new <code>State</code> and a generated value
      */
     public final Result<State, A> run(State inputState) {
-        return inputState.getContext().getTraceContext()
-                .match(__ -> run.apply(inputState),
-                        tc -> runWithTrace(tc, inputState));
+        if (inputState.getContext().getTraceContext().isTracingEnabled()) {
+            return runWithTrace(run, metadata, inputState);
+        } else {
+            return run.apply(inputState);
+        }
     }
-
-    private Result<State, A> runWithTrace(TraceContext.Tracing traceContext, State inputState) {
-        // TODO: use lenses here
-        TraceCollector save = traceContext.getCollector();
-        State newInput = inputState.modifyContext(ctx -> ctx.withTraceContext(tracing()));
-        Result<State, A> result = run.apply(newInput);
-        State state1 = result._1();
-        Context context1 = state1.getContext();
-        TraceCollector collected = context1.getTraceContext().getCollector();
-        Iterable<Trace<Object>> children = reverse(collected.getCollectedTraces());
-        State state2 = state1.withContext(context1
-                .withTraceContext(tracing(save.add(Trace.trace(result._2(), metadata, children)))));
-        return result(state2, result._2());
-    }
-
-    // if tracing enabled:
-    //  - save existing TraceCollector
-    //  - create new TraceCollector, assign to context
-    //  - call run.apply
-    //  - pull TraceCollector off of context
-    //  - using result, and TraceCollector, build Trace
-    //  - add Trace to saved TraceCollector
-    //  - restore saved TraceCollector to context
 
     /**
      * Produces a value when given a <code>State</code>.

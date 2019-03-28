@@ -25,6 +25,14 @@ public class Result<S, A> implements Product2<S, A>, Functor<A, Result>, Bifunct
         return value;
     }
 
+    public Result<S, A> withNextState(S newNextState) {
+        return result(newNextState, value);
+    }
+
+    public Result<S, A> withValue(A newValue) {
+        return result(nextState, newValue);
+    }
+
     @Override
     public <B> Result<S, B> fmap(Function<? super A, ? extends B> fn) {
         return result(nextState, fn.apply(value));
@@ -35,13 +43,12 @@ public class Result<S, A> implements Product2<S, A>, Functor<A, Result>, Bifunct
         return result(lFn.apply(nextState), rFn.apply(value));
     }
 
-    public static <S, A> Result<S, A> result(S nextRandomGen, A value) {
-        return new Result<>(nextRandomGen, value);
+    public static <S, A> Result<S, A> result(S nextState, A value) {
+        return new Result<>(nextState, value);
     }
 
     public static <S, A> Result<S, A> result(Product2<S, A> p) {
         return new Result<>(p._1(), p._2());
     }
-
 
 }
