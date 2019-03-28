@@ -1,4 +1,4 @@
-package dev.marksman.composablerandom.trace;
+package dev.marksman.composablerandom.tracing;
 
 import com.jnape.palatable.lambda.adt.Maybe;
 import lombok.AllArgsConstructor;
