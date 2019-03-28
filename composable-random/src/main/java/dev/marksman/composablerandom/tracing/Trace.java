@@ -12,9 +12,9 @@ import static java.util.Collections.emptyList;
 public class Trace<A> {
     private final A result;
     private final Metadata metadata;
-    private final Iterable<Trace<Object>> children;
+    private final Iterable<Trace<?>> children;
 
-    public static <A> Trace<A> trace(A result, Metadata metadata, Iterable<Trace<Object>> children) {
+    public static <A> Trace<A> trace(A result, Metadata metadata, Iterable<Trace<?>> children) {
         return new Trace<>(result, metadata, children);
     }
 

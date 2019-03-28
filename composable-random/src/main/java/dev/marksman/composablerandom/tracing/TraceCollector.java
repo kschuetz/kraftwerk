@@ -12,13 +12,13 @@ import static java.util.Collections.emptyList;
 public class TraceCollector {
     private static final TraceCollector EMPTY = traceCollector(emptyList());
 
-    private final Iterable<Trace<Object>> collectedTraces;
+    private final Iterable<Trace<?>> collectedTraces;
 
-    public TraceCollector add(Trace<Object> trace) {
+    public TraceCollector add(Trace<?> trace) {
         return traceCollector(cons(trace, collectedTraces));
     }
 
-    public static TraceCollector traceCollector(Iterable<Trace<Object>> collectedTraces) {
+    public static TraceCollector traceCollector(Iterable<Trace<?>> collectedTraces) {
         return new TraceCollector(collectedTraces);
     }
 

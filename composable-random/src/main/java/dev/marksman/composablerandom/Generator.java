@@ -18,10 +18,10 @@ import java.util.function.Supplier;
 
 import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
 import static dev.marksman.composablerandom.Result.result;
+import static dev.marksman.composablerandom.RunWithTrace.innerTrace;
 import static dev.marksman.composablerandom.builtin.Generators.tupled;
 import static dev.marksman.composablerandom.metadata.StandardMetadata.defaultMetadata;
 import static dev.marksman.composablerandom.metadata.StandardMetadata.labeled;
-import static dev.marksman.composablerandom.tracing.RunWithTrace.runWithTrace;
 
 @Value
 public class Generator<A> implements Monad<A, Generator> {
@@ -49,7 +49,7 @@ public class Generator<A> implements Monad<A, Generator> {
      */
     public final Result<State, A> run(State inputState) {
         if (inputState.getContext().getTraceContext().isTracingEnabled()) {
-            return runWithTrace(run, metadata, inputState);
+            return innerTrace(run, metadata, inputState);
         } else {
             return run.apply(inputState);
         }
