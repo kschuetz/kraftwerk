@@ -35,4 +35,8 @@ public class StandardMetadata implements Metadata {
     public static StandardMetadata defaultMetadata() {
         return DEFAULT;
     }
+
+    public static StandardMetadata labeled(String text) {
+        return defaultMetadata().withLabel(text);
+    }
 }
