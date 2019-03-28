@@ -1,11 +1,24 @@
 package dev.marksman.composablerandom.tracing;
 
-import com.jnape.palatable.lambda.adt.Maybe;
+import dev.marksman.composablerandom.metadata.Metadata;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Value;
 
-@AllArgsConstructor
+import static java.util.Collections.emptyList;
+
+@Value
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Trace<A> {
-    private final A value;
-    private final Maybe<String> label;
+    private final A result;
+    private final Metadata metadata;
     private final Iterable<Trace<Object>> children;
+
+    public static <A> Trace<A> trace(A result, Metadata metadata, Iterable<Trace<Object>> children) {
+        return new Trace<>(result, metadata, children);
+    }
+
+    public static <A> Trace<A> trace(A result, Metadata metadata) {
+        return new Trace<>(result, metadata, emptyList());
+    }
 }

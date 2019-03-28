@@ -1,14 +1,17 @@
 package dev.marksman.composablerandom;
 
-// TODO: stacks and restore methods not necessary
-// updater of context should be responsible for remembering old value
+import dev.marksman.composablerandom.tracing.TraceContext;
 
 public interface Context {
     SizeParameters getSizeParameters();
 
+    TraceContext getTraceContext();
+
     Object getApplicationData();
 
     Context withSizeParameters(SizeParameters sizeParameters);
+
+    Context withTraceContext(TraceContext traceContext);
 
     Context withApplicationData(Object applicationData);
 }

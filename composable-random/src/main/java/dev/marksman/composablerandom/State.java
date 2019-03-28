@@ -16,7 +16,7 @@ public class State {
         return state(newState, context);
     }
 
-    public final State withContext(StandardContext newContext) {
+    public final State withContext(Context newContext) {
         return state(randomState, newContext);
     }
 
