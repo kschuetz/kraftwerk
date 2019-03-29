@@ -1,17 +1,12 @@
 package dev.marksman.composablerandom;
 
-import com.jnape.palatable.lambda.adt.Maybe;
-import com.jnape.palatable.lambda.adt.hlist.Tuple2;
-import com.jnape.palatable.lambda.adt.hlist.Tuple3;
 import com.jnape.palatable.lambda.functions.Fn1;
 import com.jnape.palatable.lambda.iteration.InfiniteIterator;
 import com.jnape.palatable.lambda.monad.Monad;
-import dev.marksman.composablerandom.builtin.Generators;
 import dev.marksman.composablerandom.metadata.Metadata;
 import dev.marksman.composablerandom.metadata.StandardMetadata;
 import lombok.Value;
 
-import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -19,7 +14,6 @@ import java.util.function.Supplier;
 import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
 import static dev.marksman.composablerandom.Result.result;
 import static dev.marksman.composablerandom.RunWithTrace.innerTrace;
-import static dev.marksman.composablerandom.builtin.Generators.tupled;
 import static dev.marksman.composablerandom.metadata.StandardMetadata.defaultMetadata;
 import static dev.marksman.composablerandom.metadata.StandardMetadata.labeled;
 
@@ -88,34 +82,6 @@ public class Generator<A> implements Monad<A, Generator> {
     @Override
     public final <B> Generator<B> pure(B b) {
         return constant(b);
-    }
-
-    public final Generator<Tuple2<A, A>> pair() {
-        return tupled(this, this);
-    }
-
-    public final Generator<Tuple3<A, A, A>> triple() {
-        return tupled(this, this, this);
-    }
-
-    public final Generator<Maybe<A>> maybe(int nothingWeight, int justWeight) {
-        return Generators.generateMaybe(nothingWeight, justWeight, this);
-    }
-
-    public final Generator<Maybe<A>> maybe(int justWeight) {
-        return Generators.generateMaybe(justWeight, this);
-    }
-
-    public final Generator<Maybe<A>> maybe() {
-        return Generators.generateMaybe(this);
-    }
-
-    public final Generator<Maybe<A>> just() {
-        return Generators.generateJust(this);
-    }
-
-    public final Generator<ArrayList<A>> listOfN(int n) {
-        return Generators.generateListOfN(n, this);
     }
 
     public final Generator<A> withLabel(String text) {

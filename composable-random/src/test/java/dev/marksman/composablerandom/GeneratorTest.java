@@ -15,8 +15,7 @@ import static com.jnape.palatable.lambda.functions.builtin.fn2.All.all;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Eq.eq;
 import static dev.marksman.composablerandom.FrequencyEntry.entry;
 import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
-import static dev.marksman.composablerandom.builtin.Generators.frequency;
-import static dev.marksman.composablerandom.builtin.Generators.generateGaussian;
+import static dev.marksman.composablerandom.builtin.Generators.*;
 import static dev.marksman.composablerandom.random.StandardGen.initStandardGen;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -96,9 +95,9 @@ class GeneratorTest {
     private static <A> void testEquivalent(Generator<A> generator1, Generator<A> generator2) {
         State initial = State.state(initStandardGen());
 
-        Result<State, ArrayList<A>> result1 = generator1.listOfN(SEQUENCE_LENGTH).run(initial);
-        Result<State, ArrayList<A>> result2 = generator2.listOfN(SEQUENCE_LENGTH).run(initial);
-                                                    
+        Result<State, ArrayList<A>> result1 = generateListOfN(SEQUENCE_LENGTH, generator1).run(initial);
+        Result<State, ArrayList<A>> result2 = generateListOfN(SEQUENCE_LENGTH, generator2).run(initial);
+
         assertEquals(result1.getNextState().getRandomState(),
                 result2.getNextState().getRandomState(), "outbound RandomGens don't match");
         assertEquals(result1.getValue(), result2.getValue(), "values don't match");

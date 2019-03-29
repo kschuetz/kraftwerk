@@ -60,9 +60,9 @@ public class Name {
 
         private static final Generator<Name> name = tupled(
                 first,
-                middle.maybe(6, 1),
+                generateMaybe(6, 1, middle),
                 last,
-                suffix.maybe(19, 1)
+                generateMaybe(19, 1, suffix)
         ).fmap(into4(Name::name));
 
     }

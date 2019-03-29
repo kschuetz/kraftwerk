@@ -63,7 +63,7 @@ public class Street {
                         entry(2, president));
 
         private static final Generator<Street> street = tupled(
-                compass.maybe(3, 1),
+                generateMaybe(3, 1, compass),
                 name,
                 suffix)
                 .fmap(into3(Street::street));

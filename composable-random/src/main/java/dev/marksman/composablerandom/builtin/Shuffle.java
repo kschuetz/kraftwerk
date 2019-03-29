@@ -11,7 +11,7 @@ import java.util.function.Function;
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
 import static dev.marksman.composablerandom.Result.result;
 
-public class Shuffle {
+class Shuffle {
 
     public static Generator<ArrayList<Integer>> generateShuffled(int count) {
         return generateShuffled(count, id());

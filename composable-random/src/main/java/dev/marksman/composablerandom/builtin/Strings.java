@@ -7,7 +7,7 @@ import dev.marksman.composablerandom.State;
 import static dev.marksman.composablerandom.Generator.constant;
 import static dev.marksman.composablerandom.Result.result;
 
-public class Strings {
+class Strings {
 
     static Generator<String> generateString(int length, Generator<String> g) {
         if (length <= 0) return constant("");

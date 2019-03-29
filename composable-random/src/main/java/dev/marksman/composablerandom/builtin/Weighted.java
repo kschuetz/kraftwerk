@@ -8,6 +8,8 @@ import static dev.marksman.composablerandom.builtin.Primitives.generateIntExclus
 
 class Weighted {
 
+    // TODO: get rid of this;  use new FrequencyMap
+
     static <A> Generator<A> leftRight(int leftWeight, int rightWeight,
                                       String leftName, String rightName,
                                       Supplier<Generator<A>> leftGenerator,

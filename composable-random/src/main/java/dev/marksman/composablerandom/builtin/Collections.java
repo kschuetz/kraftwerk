@@ -12,7 +12,7 @@ import java.util.Set;
 
 import static dev.marksman.composablerandom.Result.result;
 
-public class Collections {
+class Collections {
 
     static <A> Generator<ArrayList<A>> generateList(Generator<A> g) {
         return null;

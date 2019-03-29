@@ -141,6 +141,14 @@ public class Generators {
         return CoProducts.generateRight(g);
     }
 
+    public static <A> Generator<Tuple2<A, A>> pair(Generator<A> g) {
+        return tupled(g, g);
+    }
+
+    public static <A> Generator<Tuple3<A, A, A>> triple(Generator<A> g) {
+        return tupled(g, g, g);
+    }
+
     public static <A, B> Generator<Tuple2<A, B>> tupled(Generator<A> ga, Generator<B> gb) {
         return Tuples.tupled(ga, gb);
     }
