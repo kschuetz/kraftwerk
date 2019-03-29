@@ -7,9 +7,13 @@ import dev.marksman.composablerandom.tracing.Trace;
 import dev.marksman.composablerandom.tracing.TraceCollector;
 import dev.marksman.composablerandom.tracing.TraceContext;
 
+import java.util.ArrayList;
+
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Reverse.reverse;
+import static com.jnape.palatable.lambda.functions.builtin.fn2.ToCollection.toCollection;
 import static com.jnape.palatable.lambda.lens.functions.Set.set;
 import static com.jnape.palatable.lambda.lens.functions.View.view;
+import static dev.marksman.composablerandom.Generator.contextDependent;
 import static dev.marksman.composablerandom.Result.result;
 import static dev.marksman.composablerandom.tracing.TraceContext.tracing;
 
@@ -18,8 +22,13 @@ class RunWithTrace {
     private static Lens.Simple<State, TraceContext> stateTraceContextLens =
             StateLens.context.andThen(ContextLens.traceContext);
 
-    static <A> Generator<Trace<A>> withTracing(Generator<A> g) {
-        return null;
+    static <A> Generator<Trace<A>> outerTrace(Generator<A> g) {
+        return contextDependent((State s0) -> {
+            TraceContext previous = view(stateTraceContextLens, s0);
+            State newInput = set(stateTraceContextLens, tracing(), s0);
+            Result<State, Trace<A>> stateTraceResult = traceImpl(g.getRun(), g.getMetadata(), newInput);
+            return (Result<State, Trace<A>>) stateTraceResult.biMapL(set(stateTraceContextLens, previous));
+        });
     }
 
     static <A> Result<State, A> innerTrace(Fn1<? super State, Result<State, A>> run,
@@ -40,8 +49,8 @@ class RunWithTrace {
         Result<State, A> result = run.apply(set(stateTraceContextLens, tracing(), inputState));
         State outputState = result.getNextState();
 
-        Iterable<Trace<?>> collectedTraces = reverse(view(stateTraceContextLens, outputState)
-                .getCollector().getCollectedTraces());
+        Iterable<Trace<?>> collectedTraces = toCollection(ArrayList::new, reverse(view(stateTraceContextLens, outputState)
+                .getCollector().getCollectedTraces()));
 
         Trace<A> traceResult = Trace.trace(result.getValue(), metadata, collectedTraces);
         return result(outputState, traceResult);

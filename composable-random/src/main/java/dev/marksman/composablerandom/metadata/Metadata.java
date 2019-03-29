@@ -9,4 +9,5 @@ public interface Metadata {
     Metadata withLabel(String text);
 
     Metadata removeLabel();
+
 }

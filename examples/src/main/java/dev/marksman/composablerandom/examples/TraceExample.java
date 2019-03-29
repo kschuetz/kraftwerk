@@ -1,18 +1,23 @@
 package dev.marksman.composablerandom.examples;
 
-import com.jnape.palatable.lambda.lens.Lens;
-import dev.marksman.composablerandom.ContextLens;
-import dev.marksman.composablerandom.State;
-import dev.marksman.composablerandom.StateLens;
-import dev.marksman.composablerandom.tracing.TraceContext;
+import dev.marksman.composablerandom.TracePrinter;
+import dev.marksman.composablerandom.tracing.Trace;
+
+import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
+import static dev.marksman.composablerandom.TracePrinter.tracePrinter;
+import static dev.marksman.composablerandom.builtin.Generators.generateInt;
+import static dev.marksman.composablerandom.builtin.Generators.pair;
+import static dev.marksman.composablerandom.examples.Street.generateStreet;
 
 public class TraceExample {
 
-    private static Lens.Simple<State, TraceContext> stateTraceContextLens =
-            StateLens.context.andThen(ContextLens.traceContext);
-
-
     public static void main(String[] args) {
+        TracePrinter tracePrinter = tracePrinter();
+        Trace<Street> result = streamFrom(generateStreet().withTrace()).next();
+        tracePrinter.render(result).forEach(System.out::println);
 
+        Trace<?> next = streamFrom(pair(generateInt()).withTrace()).next();
+        System.out.println("next = " + next);
+        tracePrinter.render(next).forEach(System.out::println);
     }
 }

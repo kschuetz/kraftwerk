@@ -1,10 +1,10 @@
 package dev.marksman.composablerandom;
 
 import com.jnape.palatable.lambda.functions.Fn1;
-import com.jnape.palatable.lambda.iteration.InfiniteIterator;
 import com.jnape.palatable.lambda.monad.Monad;
 import dev.marksman.composablerandom.metadata.Metadata;
 import dev.marksman.composablerandom.metadata.StandardMetadata;
+import dev.marksman.composablerandom.tracing.Trace;
 import lombok.Value;
 
 import java.util.concurrent.atomic.AtomicReference;
@@ -14,6 +14,7 @@ import java.util.function.Supplier;
 import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
 import static dev.marksman.composablerandom.Result.result;
 import static dev.marksman.composablerandom.RunWithTrace.innerTrace;
+import static dev.marksman.composablerandom.RunWithTrace.outerTrace;
 import static dev.marksman.composablerandom.metadata.StandardMetadata.defaultMetadata;
 import static dev.marksman.composablerandom.metadata.StandardMetadata.labeled;
 
@@ -92,8 +93,8 @@ public class Generator<A> implements Monad<A, Generator> {
         return new Generator<>(metadata, run);
     }
 
-    public final Generator<A> modifyMetadata(Function<Metadata, Metadata> fn) {
-        return new Generator<>(fn.apply(metadata), run);
+    public final Generator<Trace<A>> withTrace() {
+        return outerTrace(this);
     }
 
     public static <A> Generator<A> contextDependent(Fn1<? super State, Result<State, A>> run) {
@@ -149,21 +150,6 @@ public class Generator<A> implements Monad<A, Generator> {
             }
             return result(rg, result);
         });
-    }
-
-    private class ValuesIterator extends InfiniteIterator<A> {
-        private State current;
-
-        public ValuesIterator(State initial) {
-            this.current = initial;
-        }
-
-        @Override
-        public A next() {
-            Result<State, A> result = run(current);
-            current = result._1();
-            return result._2();
-        }
     }
 
 }

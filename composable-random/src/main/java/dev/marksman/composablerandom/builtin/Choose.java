@@ -57,7 +57,7 @@ class Choose {
         if (size == 1) {
             return constant(domain.getValue(0));
         } else {
-            return Primitives.generateLongExclusive(size).fmap(domain::getValue);
+            return Primitives.generateLongExclusive(size).fmap(domain::getValue).withLabel("chooseOneFrom");
         }
     }
 
