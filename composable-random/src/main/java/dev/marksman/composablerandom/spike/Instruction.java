@@ -238,7 +238,7 @@ public abstract class Instruction<A> {
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextIntExclusive extends Instruction<Integer> {
+    public static class NextIntExclusive extends Instruction<Integer> implements HasIntExclusiveBound {
         private final int bound;
 
         @Override
@@ -268,7 +268,7 @@ public abstract class Instruction<A> {
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextIntBetween extends Instruction<Integer> {
+    public static class NextIntBetween extends Instruction<Integer> implements HasIntInclusiveRange {
         private final int min;
         private final int max;
 
@@ -298,7 +298,7 @@ public abstract class Instruction<A> {
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextIntIndex extends Instruction<Integer> {
+    public static class NextIntIndex extends Instruction<Integer> implements HasIntExclusiveBound {
         private final int bound;
 
         @Override
@@ -356,7 +356,7 @@ public abstract class Instruction<A> {
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextLongExclusive extends Instruction<Long> {
+    public static class NextLongExclusive extends Instruction<Long> implements HasLongExclusiveBound {
         private final long bound;
 
         @Override
@@ -385,7 +385,7 @@ public abstract class Instruction<A> {
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextLongBetween extends Instruction<Long> {
+    public static class NextLongBetween extends Instruction<Long> implements HasLongInclusiveRange {
         private final long min;
         private final long max;
 
@@ -415,7 +415,7 @@ public abstract class Instruction<A> {
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextLongIndex extends Instruction<Long> {
+    public static class NextLongIndex extends Instruction<Long> implements HasLongExclusiveBound {
         private final long bound;
 
         @Override
@@ -473,7 +473,7 @@ public abstract class Instruction<A> {
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextBytes extends Instruction<Byte[]> {
+    public static class NextBytes extends Instruction<Byte[]> implements HasIntCount {
         private final int count;
 
         @Override
