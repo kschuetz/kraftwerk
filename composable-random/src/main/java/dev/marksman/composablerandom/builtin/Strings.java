@@ -1,19 +1,19 @@
 package dev.marksman.composablerandom.builtin;
 
-import dev.marksman.composablerandom.Generator;
+import dev.marksman.composablerandom.OldGenerator;
 import dev.marksman.composablerandom.Result;
 import dev.marksman.composablerandom.State;
 
-import static dev.marksman.composablerandom.Generator.constant;
+import static dev.marksman.composablerandom.OldGenerator.constant;
 import static dev.marksman.composablerandom.Result.result;
 
 class Strings {
 
-    static Generator<String> generateString(int length, Generator<String> g) {
+    static OldGenerator<String> generateString(int length, OldGenerator<String> g) {
         if (length <= 0) return constant("");
         else if (length == 1) return g;
         else {
-            return Generator.contextDependent(s0 -> {
+            return OldGenerator.contextDependent(s0 -> {
                 State current = s0;
                 StringBuilder output = new StringBuilder();
                 for (int i = 0; i < length; i += 1) {
@@ -26,15 +26,15 @@ class Strings {
         }
     }
 
-    static Generator<String> generateStringFromCharacters(Generator<Character> g) {
+    static OldGenerator<String> generateStringFromCharacters(OldGenerator<Character> g) {
         return Generators.sized(size -> generateStringFromCharacters(size, g));
     }
 
-    static Generator<String> generateStringFromCharacters(int length, Generator<Character> g) {
+    static OldGenerator<String> generateStringFromCharacters(int length, OldGenerator<Character> g) {
         if (length <= 0) return constant("");
         else if (length == 1) return g.fmap(Object::toString);
         else {
-            return Generator.contextDependent(s0 -> {
+            return OldGenerator.contextDependent(s0 -> {
                 State current = s0;
                 StringBuilder output = new StringBuilder();
                 for (int i = 0; i < length; i += 1) {
@@ -48,13 +48,13 @@ class Strings {
     }
 
     @SafeVarargs
-    static Generator<String> generateString(Generator<String> first, Generator<String>... more) {
+    static OldGenerator<String> generateString(OldGenerator<String> first, OldGenerator<String>... more) {
         if (more.length == 0) return first;
         else {
-            return Generator.contextDependent(s0 -> {
+            return OldGenerator.contextDependent(s0 -> {
                 Result<State, String> current = first.run(s0);
                 StringBuilder output = new StringBuilder(current.getValue());
-                for (Generator<String> g : more) {
+                for (OldGenerator<String> g : more) {
                     current = g.run(current.getNextState());
                     output.append(current.getValue());
                 }

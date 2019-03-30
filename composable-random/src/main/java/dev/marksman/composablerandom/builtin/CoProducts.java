@@ -3,60 +3,60 @@ package dev.marksman.composablerandom.builtin;
 import com.jnape.palatable.lambda.adt.Either;
 import com.jnape.palatable.lambda.adt.Maybe;
 import com.jnape.palatable.lambda.adt.Unit;
-import dev.marksman.composablerandom.Generator;
+import dev.marksman.composablerandom.OldGenerator;
 
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
-import static dev.marksman.composablerandom.Generator.constant;
+import static dev.marksman.composablerandom.OldGenerator.constant;
 
 class CoProducts {
 
-    private static final Generator<Unit> GENERATE_UNIT = constant(Unit.UNIT);
+    private static final OldGenerator<Unit> GENERATE_UNIT = constant(Unit.UNIT);
 
-    static Generator<Unit> generateUnit() {
+    static OldGenerator<Unit> generateUnit() {
         return GENERATE_UNIT;
     }
 
-    static <A> Generator<Maybe<A>> generateMaybe(int nothingWeight, int justWeight, Generator<A> g) {
+    static <A> OldGenerator<Maybe<A>> generateMaybe(int nothingWeight, int justWeight, OldGenerator<A> g) {
         return Weighted.leftRight(justWeight, nothingWeight,
                 "justWeight", "nothingWeight",
                 () -> generateJust(g), CoProducts::generateNothing);
     }
 
-    static <A> Generator<Maybe<A>> generateMaybe(int justWeight, Generator<A> g) {
+    static <A> OldGenerator<Maybe<A>> generateMaybe(int justWeight, OldGenerator<A> g) {
         return generateMaybe(justWeight, 1, g);
     }
 
-    static <A> Generator<Maybe<A>> generateMaybe(Generator<A> g) {
+    static <A> OldGenerator<Maybe<A>> generateMaybe(OldGenerator<A> g) {
         return generateMaybe(9, g);
     }
 
-    static <A> Generator<Maybe<A>> generateJust(Generator<A> g) {
+    static <A> OldGenerator<Maybe<A>> generateJust(OldGenerator<A> g) {
         return g.fmap(Maybe::just);
     }
 
-    static <A> Generator<Maybe<A>> generateNothing() {
+    static <A> OldGenerator<Maybe<A>> generateNothing() {
         return constant(nothing());
     }
 
-    static <L, R> Generator<Either<L, R>> generateEither(int leftWeight, int rightWeight, Generator<L> leftGenerator, Generator<R> rightGenerator) {
+    static <L, R> OldGenerator<Either<L, R>> generateEither(int leftWeight, int rightWeight, OldGenerator<L> leftGenerator, OldGenerator<R> rightGenerator) {
         return Weighted.leftRight(leftWeight, rightWeight,
                 "leftWeight", "rightWeight",
                 () -> generateLeft(leftGenerator), () -> generateRight(rightGenerator));
     }
 
-    static <L, R> Generator<Either<L, R>> generateEither(int rightWeight, Generator<L> leftGenerator, Generator<R> rightGenerator) {
+    static <L, R> OldGenerator<Either<L, R>> generateEither(int rightWeight, OldGenerator<L> leftGenerator, OldGenerator<R> rightGenerator) {
         return generateEither(1, rightWeight, leftGenerator, rightGenerator);
     }
 
-    static <L, R> Generator<Either<L, R>> generateEither(Generator<L> leftGenerator, Generator<R> rightGenerator) {
+    static <L, R> OldGenerator<Either<L, R>> generateEither(OldGenerator<L> leftGenerator, OldGenerator<R> rightGenerator) {
         return generateEither(9, leftGenerator, rightGenerator);
     }
 
-    static <L, R> Generator<Either<L, R>> generateLeft(Generator<L> g) {
+    static <L, R> OldGenerator<Either<L, R>> generateLeft(OldGenerator<L> g) {
         return g.fmap(Either::left);
     }
 
-    static <L, R> Generator<Either<L, R>> generateRight(Generator<R> g) {
+    static <L, R> OldGenerator<Either<L, R>> generateRight(OldGenerator<R> g) {
         return g.fmap(Either::right);
     }
 

@@ -1,9 +1,7 @@
-package dev.marksman.composablerandom.spike;
+package dev.marksman.composablerandom;
 
 import com.jnape.palatable.lambda.adt.Unit;
 import com.jnape.palatable.lambda.functions.Fn1;
-import dev.marksman.composablerandom.RandomState;
-import dev.marksman.composablerandom.Result;
 import lombok.AllArgsConstructor;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Constantly.constantly;

@@ -1,6 +1,6 @@
 package dev.marksman.composablerandom.examples;
 
-import dev.marksman.composablerandom.Generator;
+import dev.marksman.composablerandom.OldGenerator;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
@@ -19,7 +19,7 @@ public class UsState {
     }
 
     private static class Generators {
-        private static final Generator<UsState> usState = frequency(
+        private static final OldGenerator<UsState> usState = frequency(
                 entry(39, "CA"), entry(28, "TX"), entry(21, "FL"),
                 entry(19, "NY"), entry(12, "PA"), entry(12, "IL"),
                 entry(11, "OH"), entry(10, "GA"), entry(10, "NC"),
@@ -40,7 +40,7 @@ public class UsState {
                 .fmap(UsState::usState);
     }
 
-    public static Generator<UsState> generateUsState() {
+    public static OldGenerator<UsState> generateUsState() {
         return Generators.usState;
     }
 

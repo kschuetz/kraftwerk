@@ -1,6 +1,6 @@
 package dev.marksman.composablerandom.builtin;
 
-import dev.marksman.composablerandom.Generator;
+import dev.marksman.composablerandom.OldGenerator;
 
 import java.util.function.Supplier;
 
@@ -10,10 +10,10 @@ class Weighted {
 
     // TODO: get rid of this;  use new FrequencyMap
 
-    static <A> Generator<A> leftRight(int leftWeight, int rightWeight,
-                                      String leftName, String rightName,
-                                      Supplier<Generator<A>> leftGenerator,
-                                      Supplier<Generator<A>> rightGenerator) {
+    static <A> OldGenerator<A> leftRight(int leftWeight, int rightWeight,
+                                         String leftName, String rightName,
+                                         Supplier<OldGenerator<A>> leftGenerator,
+                                         Supplier<OldGenerator<A>> rightGenerator) {
         if (leftWeight < 0) {
             throw new IllegalArgumentException(leftName + " must be >= 0");
         }
@@ -29,8 +29,8 @@ class Weighted {
         } else if (rightWeight == 0) {
             return leftGenerator.get();
         } else {
-            Generator<A> left = leftGenerator.get();
-            Generator<A> right = rightGenerator.get();
+            OldGenerator<A> left = leftGenerator.get();
+            OldGenerator<A> right = rightGenerator.get();
             return generateIntExclusive(total)
                     .flatMap(n -> n < leftWeight ? left : right);
         }

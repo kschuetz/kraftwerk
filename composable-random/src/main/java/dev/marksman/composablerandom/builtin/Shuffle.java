@@ -1,7 +1,7 @@
 package dev.marksman.composablerandom.builtin;
 
 import dev.marksman.composablerandom.DiscreteDomain;
-import dev.marksman.composablerandom.Generator;
+import dev.marksman.composablerandom.OldGenerator;
 import dev.marksman.composablerandom.RandomState;
 
 import java.util.ArrayList;
@@ -13,25 +13,25 @@ import static dev.marksman.composablerandom.Result.result;
 
 class Shuffle {
 
-    public static Generator<ArrayList<Integer>> generateShuffled(int count) {
+    public static OldGenerator<ArrayList<Integer>> generateShuffled(int count) {
         return generateShuffled(count, id());
     }
 
-    public static <A> Generator<ArrayList<A>> generateShuffled(int count, Function<Integer, A> fn) {
-        return Generator.generator(stateIn -> {
+    public static <A> OldGenerator<ArrayList<A>> generateShuffled(int count, Function<Integer, A> fn) {
+        return OldGenerator.generator(stateIn -> {
             ArrayList<A> target = newInputInstance(count, fn);
             RandomState stateOut = shuffleInPlace(stateIn, target);
             return result(stateOut, target);
         });
     }
 
-    public static <A> Generator<ArrayList<A>> generateShuffled(Collection<A> input) {
+    public static <A> OldGenerator<ArrayList<A>> generateShuffled(Collection<A> input) {
         ArrayList<A> inputList = new ArrayList<A>(input.size());
         inputList.addAll(input);
         return generateShuffled(inputList.size(), inputList::get);
     }
 
-    public static <A> Generator<ArrayList<A>> generateShuffled(A[] input) {
+    public static <A> OldGenerator<ArrayList<A>> generateShuffled(A[] input) {
         int size = input.length;
         ArrayList<A> inputList = new ArrayList<>(size);
         for (A a : input) {
@@ -40,7 +40,7 @@ class Shuffle {
         return generateShuffled(inputList.size(), inputList::get);
     }
 
-    public static <A> Generator<ArrayList<A>> generateShuffled(DiscreteDomain<A> domain) {
+    public static <A> OldGenerator<ArrayList<A>> generateShuffled(DiscreteDomain<A> domain) {
         long size = Math.max(domain.getSize(), 0);
         if (size > Integer.MAX_VALUE) {
             throw new IllegalArgumentException("DiscreteDomain too large; size should not exceed Integer.MAX_VALUE");

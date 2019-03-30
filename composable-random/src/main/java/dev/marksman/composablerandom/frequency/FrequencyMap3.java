@@ -1,6 +1,6 @@
 package dev.marksman.composablerandom.frequency;
 
-import dev.marksman.composablerandom.Generator;
+import dev.marksman.composablerandom.OldGenerator;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
@@ -12,14 +12,14 @@ import static dev.marksman.composablerandom.frequency.FrequencyMap1.checkMultipl
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 class FrequencyMap3<A> implements FrequencyMap<A> {
     private final int weightA;
-    private final Generator<A> generatorA;
+    private final OldGenerator<A> generatorA;
     private final int weightB;
-    private final Generator<A> generatorB;
+    private final OldGenerator<A> generatorB;
     private final int weightC;
-    private final Generator<A> generatorC;
+    private final OldGenerator<A> generatorC;
 
     @Override
-    public Generator<A> generator() {
+    public OldGenerator<A> generator() {
         long thresholdB = weightA + weightB;
         return generateLongExclusive(weightA + weightB + weightC)
                 .flatMap(n -> n < weightA
@@ -37,7 +37,7 @@ class FrequencyMap3<A> implements FrequencyMap<A> {
     }
 
     @Override
-    public FrequencyMap<A> add(int weight, Generator<? extends A> generator) {
+    public FrequencyMap<A> add(int weight, OldGenerator<? extends A> generator) {
         return null;
     }
 
@@ -57,9 +57,9 @@ class FrequencyMap3<A> implements FrequencyMap<A> {
                 weightC, generatorC.fmap(fn));
     }
 
-    static <A> FrequencyMap3<A> frequencyMap3(int weightA, Generator<A> generatorA,
-                                              int weightB, Generator<A> generatorB,
-                                              int weightC, Generator<A> generatorC) {
+    static <A> FrequencyMap3<A> frequencyMap3(int weightA, OldGenerator<A> generatorA,
+                                              int weightB, OldGenerator<A> generatorB,
+                                              int weightC, OldGenerator<A> generatorC) {
         return new FrequencyMap3<>(weightA, generatorA, weightB, generatorB, weightC, generatorC);
     }
 }

@@ -1,4 +1,4 @@
-package dev.marksman.composablerandom.spike;
+package dev.marksman.composablerandom;
 
 import com.jnape.palatable.lambda.functions.Fn1;
 import lombok.AccessLevel;
