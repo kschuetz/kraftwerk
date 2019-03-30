@@ -1,4 +1,4 @@
-package dev.marksman.composablerandom.builtin;
+package dev.marksman.composablerandom.legacy.builtin;
 
 import dev.marksman.composablerandom.OldGenerator;
 import dev.marksman.composablerandom.Result;

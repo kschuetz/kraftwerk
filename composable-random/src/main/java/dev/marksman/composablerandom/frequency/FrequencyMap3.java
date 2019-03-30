@@ -6,8 +6,8 @@ import lombok.AllArgsConstructor;
 
 import java.util.function.Function;
 
-import static dev.marksman.composablerandom.builtin.Generators.generateLongExclusive;
 import static dev.marksman.composablerandom.frequency.FrequencyMap1.checkMultiplier;
+import static dev.marksman.composablerandom.legacy.builtin.Generators.generateLongExclusive;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 class FrequencyMap3<A> implements FrequencyMap<A> {

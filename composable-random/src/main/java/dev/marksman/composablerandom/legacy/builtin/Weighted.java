@@ -1,10 +1,10 @@
-package dev.marksman.composablerandom.builtin;
+package dev.marksman.composablerandom.legacy.builtin;
 
 import dev.marksman.composablerandom.OldGenerator;
 
 import java.util.function.Supplier;
 
-import static dev.marksman.composablerandom.builtin.Primitives.generateIntExclusive;
+import static dev.marksman.composablerandom.legacy.builtin.Primitives.generateIntExclusive;
 
 class Weighted {
 
