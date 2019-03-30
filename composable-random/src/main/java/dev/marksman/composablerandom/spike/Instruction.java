@@ -93,7 +93,7 @@ public abstract class Instruction<A> {
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class FlatMapped<In, A> extends Instruction<A> {
-        private final Fn1<In, Instruction<A>> fn;
+        private final Fn1<? super In, ? extends Instruction<A>> fn;
         private final Instruction<In> operand;
 
         @Override
@@ -562,11 +562,11 @@ public abstract class Instruction<A> {
         return new Pure<>(a);
     }
 
-    public static <A, B> Mapped<A, B> mapped(Function<A, B> fn, Instruction<A> operand) {
+    public static <A, B> Mapped<A, B> mapped(Function<? super A, ? extends B> fn, Instruction<A> operand) {
         return new Mapped<>(fn::apply, operand);
     }
 
-    public static <A, B> FlatMapped<A, B> flatMapped(Function<A, Instruction<B>> fn, Instruction<A> operand) {
+    public static <A, B> FlatMapped<A, B> flatMapped(Function<? super A, ? extends Instruction<B>> fn, Instruction<A> operand) {
         return new FlatMapped<>(fn::apply, operand);
     }
 
