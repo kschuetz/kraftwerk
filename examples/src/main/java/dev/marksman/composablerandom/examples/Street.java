@@ -9,7 +9,7 @@ import lombok.Value;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into3.into3;
 import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
 import static dev.marksman.composablerandom.legacy.OldFrequencyEntry.entry;
-import static dev.marksman.composablerandom.legacy.builtin.Generators.*;
+import static dev.marksman.composablerandom.legacy.builtin.OldGenerators.*;
 
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

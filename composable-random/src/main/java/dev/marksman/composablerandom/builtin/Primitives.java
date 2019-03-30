@@ -17,6 +17,7 @@ class Primitives {
 
     private static final Generator<Byte> GENERATE_BYTE = GENERATE_INTEGER.fmap(Integer::byteValue);
     private static final Generator<Short> GENERATE_SHORT = GENERATE_INTEGER.fmap(Integer::shortValue);
+//    private static final Generator<Short> GENERATE_SHORT = generator(Instruction.mapped(Integer::shortValue, Instruction.nextInt()));
 
     private static final Generator<Boolean> GENERATE_TRUE = constant(true);
     private static final Generator<Boolean> GENERATE_FALSE = constant(false);

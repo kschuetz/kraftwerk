@@ -3,7 +3,7 @@ package dev.marksman.composablerandom.frequency;
 import com.jnape.palatable.lambda.adt.hlist.Tuple2;
 import com.jnape.palatable.lambda.functions.builtin.fn2.Map;
 import dev.marksman.composablerandom.OldGenerator;
-import dev.marksman.composablerandom.legacy.builtin.Generators;
+import dev.marksman.composablerandom.legacy.builtin.OldGenerators;
 
 import java.util.TreeMap;
 import java.util.function.Function;
@@ -38,7 +38,7 @@ class FrequencyMapN<A> implements FrequencyMap<A> {
             tree.put(total, entry._2());
         }
 
-        return Generators.generateLongExclusive(total)
+        return OldGenerators.generateLongExclusive(total)
                 .flatMap(n -> tree.ceilingEntry(1 + n).getValue());
     }
 

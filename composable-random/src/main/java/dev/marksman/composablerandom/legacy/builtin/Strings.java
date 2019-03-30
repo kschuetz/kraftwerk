@@ -27,7 +27,7 @@ class Strings {
     }
 
     static OldGenerator<String> generateStringFromCharacters(OldGenerator<Character> g) {
-        return Generators.sized(size -> generateStringFromCharacters(size, g));
+        return OldGenerators.sized(size -> generateStringFromCharacters(size, g));
     }
 
     static OldGenerator<String> generateStringFromCharacters(int length, OldGenerator<Character> g) {

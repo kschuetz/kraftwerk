@@ -4,7 +4,7 @@ import com.jnape.palatable.lambda.adt.hlist.Tuple2;
 import com.jnape.palatable.lambda.adt.hlist.Tuple3;
 import com.jnape.palatable.lambda.functions.Fn1;
 import com.jnape.palatable.lambda.functions.builtin.fn1.Id;
-import dev.marksman.composablerandom.legacy.builtin.Generators;
+import dev.marksman.composablerandom.legacy.builtin.OldGenerators;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import static com.jnape.palatable.lambda.functions.builtin.fn2.All.all;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Eq.eq;
 import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
 import static dev.marksman.composablerandom.legacy.OldFrequencyEntry.entry;
-import static dev.marksman.composablerandom.legacy.builtin.Generators.*;
+import static dev.marksman.composablerandom.legacy.builtin.OldGenerators.*;
 import static dev.marksman.composablerandom.random.StandardGen.initStandardGen;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -24,9 +24,9 @@ class OldGeneratorTest {
 
     private static int SEQUENCE_LENGTH = 17;
 
-    private static final OldGenerator<Integer> gen1 = Generators.generateInt();
+    private static final OldGenerator<Integer> gen1 = OldGenerators.generateInt();
     private static final OldGenerator<Double> gen2 = generateGaussian();
-    private static final OldGenerator<Integer> gen3 = Generators.generateIntExclusive(1, 10);
+    private static final OldGenerator<Integer> gen3 = OldGenerators.generateIntExclusive(1, 10);
     private static final OldGenerator<String> gen4 = frequency(entry(3, "foo"),
             entry(7, "bar"));
 

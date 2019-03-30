@@ -7,7 +7,7 @@ import lombok.Value;
 
 import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
 import static dev.marksman.composablerandom.legacy.OldFrequencyEntry.entry;
-import static dev.marksman.composablerandom.legacy.builtin.Generators.frequency;
+import static dev.marksman.composablerandom.legacy.builtin.OldGenerators.frequency;
 
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

@@ -9,7 +9,7 @@ import static com.jnape.palatable.lambda.functions.builtin.fn2.GTE.gte;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.LT.lt;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.LTE.lte;
 import static dev.marksman.composablerandom.Initialize.randomInitialState;
-import static dev.marksman.composablerandom.legacy.builtin.Generators.generateInt;
+import static dev.marksman.composablerandom.legacy.builtin.OldGenerators.generateInt;
 import static dev.marksman.composablerandom.legacy.builtin.Primitives.generateIntExclusive;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
