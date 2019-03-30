@@ -37,4 +37,8 @@ public class NewGenerator<A> implements Monad<A, NewGenerator> {
         return new NewGenerator<>(instruction);
     }
 
+    public static <A> NewGenerator<A> constant(A a) {
+        return generator(Instruction.pure(a));
+    }
+
 }

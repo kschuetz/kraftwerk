@@ -694,6 +694,11 @@ public abstract class Instruction<A> {
         return new NextIntBounded(bound);
     }
 
+    public static NextIntExclusive nextIntExclusive(int origin, int bound) {
+        checkOriginBound(origin, bound);
+        return new NextIntExclusive(origin, bound);
+    }
+
     public static NextIntBetween nextIntBetween(int min, int max) {
         checkMinMax(min, max);
         return new NextIntBetween(min, max);
@@ -711,6 +716,11 @@ public abstract class Instruction<A> {
     public static NextLongBounded nextLongBounded(long bound) {
         checkBound(bound);
         return new NextLongBounded(bound);
+    }
+
+    public static NextLongExclusive nextLongExclusive(long origin, long bound) {
+        checkOriginBound(origin, bound);
+        return new NextLongExclusive(origin, bound);
     }
 
     public static NextLongBetween nextLongBetween(long min, long max) {
@@ -742,6 +752,10 @@ public abstract class Instruction<A> {
 
     private static void checkBound(long bound) {
         if (bound < 1) throw new IllegalArgumentException("bound must be > 0");
+    }
+
+    private static void checkOriginBound(long origin, long bound) {
+        if (origin >= bound) throw new IllegalArgumentException("bound must be > origin");
     }
 
     private static void checkMinMax(long min, long max) {
