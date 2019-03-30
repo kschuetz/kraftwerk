@@ -5,9 +5,9 @@ import dev.marksman.composablerandom.tracing.Trace;
 
 import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
 import static dev.marksman.composablerandom.TracePrinter.tracePrinter;
-import static dev.marksman.composablerandom.builtin.Generators.generateInt;
-import static dev.marksman.composablerandom.builtin.Generators.pair;
 import static dev.marksman.composablerandom.examples.Street.generateStreet;
+import static dev.marksman.composablerandom.legacy.builtin.Generators.generateInt;
+import static dev.marksman.composablerandom.legacy.builtin.Generators.pair;
 
 public class TraceExample {
 

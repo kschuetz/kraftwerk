@@ -1,4 +1,4 @@
-package dev.marksman.composablerandom.builtin;
+package dev.marksman.composablerandom.legacy.builtin;
 
 import com.jnape.palatable.lambda.adt.hlist.*;
 import dev.marksman.composablerandom.OldGenerator;

@@ -3,7 +3,7 @@ package dev.marksman.composablerandom.frequency;
 import com.jnape.palatable.lambda.adt.hlist.Tuple2;
 import com.jnape.palatable.lambda.functions.builtin.fn2.Map;
 import dev.marksman.composablerandom.OldGenerator;
-import dev.marksman.composablerandom.builtin.Generators;
+import dev.marksman.composablerandom.legacy.builtin.Generators;
 
 import java.util.TreeMap;
 import java.util.function.Function;

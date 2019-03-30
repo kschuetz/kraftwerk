@@ -1,4 +1,4 @@
-package dev.marksman.composablerandom.builtin;
+package dev.marksman.composablerandom.legacy.builtin;
 
 import dev.marksman.composablerandom.OldGenerator;
 import dev.marksman.composablerandom.SizeParameters;
@@ -6,7 +6,7 @@ import dev.marksman.composablerandom.SizeParameters;
 import java.util.function.Function;
 
 import static dev.marksman.composablerandom.OldGenerator.contextDependent;
-import static dev.marksman.composablerandom.builtin.Primitives.*;
+import static dev.marksman.composablerandom.legacy.builtin.Primitives.*;
 
 class Sized {
 
