@@ -24,19 +24,19 @@ public final class StandardGen implements RandomState {
             throw new IllegalArgumentException("bound must be positive");
 
         if ((bound & -bound) == bound) { // bound is a power of 2
-            return next(31).fmap(n -> (int) ((bound * (long) n) >> 31));
+            long s1 = getNextSeed(seedValue);
+            int n = bitsFrom(31, s1);
+            return result(nextStandardGen(s1), (int) ((bound * (long) n) >> 31));
         }
 
         long bits, val;
-        StandardGen nextSeed;
-        Result<StandardGen, Integer> next;
+        long nextSeed = seedValue;
         do {
-            next = next(31);
-            nextSeed = next._1();
-            bits = next._2();
+            nextSeed = getNextSeed(nextSeed);
+            bits = bitsFrom(31, nextSeed);
             val = bits % bound;
         } while (bits - val + (bound - 1) < 0);
-        return result(nextSeed, (int) val);
+        return result(nextStandardGen(nextSeed), (int) val);
     }
 
     @Override
@@ -91,23 +91,30 @@ public final class StandardGen implements RandomState {
 
     @Override
     public final Result<StandardGen, Double> nextDouble() {
-        Result<StandardGen, Integer> s1 = next(26);
-        Result<StandardGen, Integer> s2 = s1._1().next(27);
-        double result = (((long) s1._2() << 27) + s2._2()) / (double) (1L << 53);
-        return result(s2._1(), result);
+        long s1 = getNextSeed(seedValue);
+        long s2 = getNextSeed(s1);
+        int i1 = bitsFrom(26, s1);
+        int i2 = bitsFrom(27, s2);
+        double result = (((long) i1 << 27) + i2) / (double) (1L << 53);
+        return result(nextStandardGen(s2), result);
     }
 
     @Override
     public final Result<StandardGen, Float> nextFloat() {
-        return next(24).fmap(n -> n / ((float) (1 << 24)));
+        long s1 = getNextSeed(seedValue);
+        int n = bitsFrom(24, s1);
+        float result = (n / ((float) (1 << 24)));
+        return result(nextStandardGen(s1), result);
     }
 
     @Override
     public final Result<StandardGen, Long> nextLong() {
-        Result<StandardGen, Integer> s1 = next(32);
-        Result<StandardGen, Integer> s2 = s1._1().next(32);
-        long result = ((long) s1._2() << 32) + s2._2();
-        return result(s2._1(), result);
+        long s1 = getNextSeed(seedValue);
+        long s2 = getNextSeed(s1);
+        int i1 = bitsFrom(32, s1);
+        int i2 = bitsFrom(32, s2);
+        long result = ((long) i1 << 32) + i2;
+        return result(nextStandardGen(s2), result);
     }
 
     @Override
@@ -167,7 +174,18 @@ public final class StandardGen implements RandomState {
 
     @Override
     public final Result<StandardGen, Boolean> nextBoolean() {
-        return next(1).fmap(n -> n != 0);
+        long newSeedValue = getNextSeed(seedValue);
+        boolean b = (((int) (newSeedValue >>> 47)) & 1) != 0;
+
+        return result(nextStandardGen(newSeedValue), b);
+    }
+
+    private static long getNextSeed(long seedValue) {
+        return (seedValue * 0x5DEECE66DL + 0xBL) & ((1L << 48) - 1);
+    }
+
+    private static int bitsFrom(int bits, long seed) {
+        return (int) (seed >>> (48 - bits));
     }
 
     @Override
