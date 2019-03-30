@@ -1,9 +1,11 @@
 package dev.marksman.composablerandom;
 
 import com.jnape.palatable.lambda.adt.Unit;
+import com.jnape.palatable.lambda.adt.hlist.Tuple8;
 import com.jnape.palatable.lambda.functions.Fn1;
 import lombok.AllArgsConstructor;
 
+import static com.jnape.palatable.lambda.adt.hlist.HList.tuple;
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Constantly.constantly;
 import static dev.marksman.composablerandom.Result.result;
 
@@ -50,7 +52,8 @@ public class DefaultInterpreter {
                 HANDLE_NEXT_GAUSSIAN,
                 this::handleNextBytes,
                 this::handleSized,
-                this::handleLabeled);
+                this::handleLabeled,
+                this::handleProduct8);
         Result<? extends RandomState, ?> result = inputFn.apply(input);
 
         //noinspection unchecked
@@ -114,6 +117,22 @@ public class DefaultInterpreter {
 
     private <A> Fn1<RandomState, Result<? extends RandomState, A>> handleLabeled(Instruction.Labeled<A> instruction) {
         return input -> execute(input, instruction.getOperand());
+    }
+
+    private <A, B, C, D, E, F, G, H> Fn1<RandomState, Result<? extends RandomState, Tuple8<A, B, C, D, E, F, G, H>>> handleProduct8(Instruction.Product8<A, B, C, D, E, F, G, H> instruction) {
+        return input -> {
+            Result<RandomState, A> r1 = execute(input, instruction.getA());
+            Result<RandomState, B> r2 = execute(r1.getNextState(), instruction.getB());
+            Result<RandomState, C> r3 = execute(r2.getNextState(), instruction.getC());
+            Result<RandomState, D> r4 = execute(r3.getNextState(), instruction.getD());
+            Result<RandomState, E> r5 = execute(r4.getNextState(), instruction.getE());
+            Result<RandomState, F> r6 = execute(r5.getNextState(), instruction.getF());
+            Result<RandomState, G> r7 = execute(r6.getNextState(), instruction.getG());
+            Result<RandomState, H> r8 = execute(r7.getNextState(), instruction.getH());
+            Tuple8<A, B, C, D, E, F, G, H> result = tuple(r1.getValue(), r2.getValue(), r3.getValue(), r4.getValue(),
+                    r5.getValue(), r6.getValue(), r7.getValue(), r8.getValue());
+            return result(r8.getNextState(), result);
+        };
     }
 
 }

@@ -1,5 +1,6 @@
 package dev.marksman.composablerandom;
 
+import com.jnape.palatable.lambda.adt.hlist.Tuple8;
 import com.jnape.palatable.lambda.functions.Fn1;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -29,7 +30,8 @@ public abstract class Instruction<A> {
                                 Function<NextGaussian, R> nextGaussianFn,
                                 Function<NextBytes, R> nextBytesFn,
                                 Function<Sized<A>, R> sizedFn,
-                                Function<Labeled<A>, R> labeledFn);
+                                Function<Labeled<A>, R> labeledFn,
+                                Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn);
 
 
     @EqualsAndHashCode(callSuper = true)
@@ -58,7 +60,8 @@ public abstract class Instruction<A> {
                            Function<NextGaussian, R> nextGaussianFn,
                            Function<NextBytes, R> nextBytesFn,
                            Function<Sized<A>, R> sizedFn,
-                           Function<Labeled<A>, R> labeledFn) {
+                           Function<Labeled<A>, R> labeledFn,
+                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
             return pureFn.apply(this);
         }
     }
@@ -90,7 +93,8 @@ public abstract class Instruction<A> {
                            Function<NextGaussian, R> nextGaussianFn,
                            Function<NextBytes, R> nextBytesFn,
                            Function<Sized<A>, R> sizedFn,
-                           Function<Labeled<A>, R> labeledFn) {
+                           Function<Labeled<A>, R> labeledFn,
+                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
             return mappedFn.apply(this);
         }
     }
@@ -122,7 +126,8 @@ public abstract class Instruction<A> {
                            Function<NextGaussian, R> nextGaussianFn,
                            Function<NextBytes, R> nextBytesFn,
                            Function<Sized<A>, R> sizedFn,
-                           Function<Labeled<A>, R> labeledFn) {
+                           Function<Labeled<A>, R> labeledFn,
+                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
             return flatMappedFn.apply(this);
         }
     }
@@ -153,7 +158,8 @@ public abstract class Instruction<A> {
                            Function<NextGaussian, R> nextGaussianFn,
                            Function<NextBytes, R> nextBytesFn,
                            Function<Sized<Boolean>, R> sizedFn,
-                           Function<Labeled<Boolean>, R> labeledFn) {
+                           Function<Labeled<Boolean>, R> labeledFn,
+                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
             return nextBooleanFn.apply(this);
         }
     }
@@ -184,7 +190,8 @@ public abstract class Instruction<A> {
                            Function<NextGaussian, R> nextGaussianFn,
                            Function<NextBytes, R> nextBytesFn,
                            Function<Sized<Double>, R> sizedFn,
-                           Function<Labeled<Double>, R> labeledFn) {
+                           Function<Labeled<Double>, R> labeledFn,
+                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
             return nextDoubleFn.apply(this);
         }
     }
@@ -215,7 +222,8 @@ public abstract class Instruction<A> {
                            Function<NextGaussian, R> nextGaussianFn,
                            Function<NextBytes, R> nextBytesFn,
                            Function<Sized<Float>, R> sizedFn,
-                           Function<Labeled<Float>, R> labeledFn) {
+                           Function<Labeled<Float>, R> labeledFn,
+                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
             return nextFloatFn.apply(this);
         }
     }
@@ -246,7 +254,8 @@ public abstract class Instruction<A> {
                            Function<NextGaussian, R> nextGaussianFn,
                            Function<NextBytes, R> nextBytesFn,
                            Function<Sized<Integer>, R> sizedFn,
-                           Function<Labeled<Integer>, R> labeledFn) {
+                           Function<Labeled<Integer>, R> labeledFn,
+                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
             return nextIntFn.apply(this);
         }
     }
@@ -277,7 +286,8 @@ public abstract class Instruction<A> {
                            Function<NextGaussian, R> nextGaussianFn,
                            Function<NextBytes, R> nextBytesFn,
                            Function<Sized<Integer>, R> sizedFn,
-                           Function<Labeled<Integer>, R> labeledFn) {
+                           Function<Labeled<Integer>, R> labeledFn,
+                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
             return nextIntBoundedFn.apply(this);
         }
 
@@ -310,7 +320,8 @@ public abstract class Instruction<A> {
                            Function<NextGaussian, R> nextGaussianFn,
                            Function<NextBytes, R> nextBytesFn,
                            Function<Sized<Integer>, R> sizedFn,
-                           Function<Labeled<Integer>, R> labeledFn) {
+                           Function<Labeled<Integer>, R> labeledFn,
+                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
             return nextIntExclusiveFn.apply(this);
         }
 
@@ -343,7 +354,8 @@ public abstract class Instruction<A> {
                            Function<NextGaussian, R> nextGaussianFn,
                            Function<NextBytes, R> nextBytesFn,
                            Function<Sized<Integer>, R> sizedFn,
-                           Function<Labeled<Integer>, R> labeledFn) {
+                           Function<Labeled<Integer>, R> labeledFn,
+                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
             return nextIntBetweenFn.apply(this);
         }
     }
@@ -374,7 +386,8 @@ public abstract class Instruction<A> {
                            Function<NextGaussian, R> nextGaussianFn,
                            Function<NextBytes, R> nextBytesFn,
                            Function<Sized<Integer>, R> sizedFn,
-                           Function<Labeled<Integer>, R> labeledFn) {
+                           Function<Labeled<Integer>, R> labeledFn,
+                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
             return nextIntIndexFn.apply(this);
         }
     }
@@ -405,7 +418,8 @@ public abstract class Instruction<A> {
                            Function<NextGaussian, R> nextGaussianFn,
                            Function<NextBytes, R> nextBytesFn,
                            Function<Sized<Long>, R> sizedFn,
-                           Function<Labeled<Long>, R> labeledFn) {
+                           Function<Labeled<Long>, R> labeledFn,
+                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
             return nextLongFn.apply(this);
         }
     }
@@ -436,7 +450,8 @@ public abstract class Instruction<A> {
                            Function<NextGaussian, R> nextGaussianFn,
                            Function<NextBytes, R> nextBytesFn,
                            Function<Sized<Long>, R> sizedFn,
-                           Function<Labeled<Long>, R> labeledFn) {
+                           Function<Labeled<Long>, R> labeledFn,
+                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
             return nextLongBoundedFn.apply(this);
         }
     }
@@ -468,7 +483,8 @@ public abstract class Instruction<A> {
                            Function<NextGaussian, R> nextGaussianFn,
                            Function<NextBytes, R> nextBytesFn,
                            Function<Sized<Long>, R> sizedFn,
-                           Function<Labeled<Long>, R> labeledFn) {
+                           Function<Labeled<Long>, R> labeledFn,
+                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
             return nextLongExclusiveFn.apply(this);
         }
     }
@@ -500,7 +516,8 @@ public abstract class Instruction<A> {
                            Function<NextGaussian, R> nextGaussianFn,
                            Function<NextBytes, R> nextBytesFn,
                            Function<Sized<Long>, R> sizedFn,
-                           Function<Labeled<Long>, R> labeledFn) {
+                           Function<Labeled<Long>, R> labeledFn,
+                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
             return nextLongBetweenFn.apply(this);
         }
     }
@@ -531,7 +548,8 @@ public abstract class Instruction<A> {
                            Function<NextGaussian, R> nextGaussianFn,
                            Function<NextBytes, R> nextBytesFn,
                            Function<Sized<Long>, R> sizedFn,
-                           Function<Labeled<Long>, R> labeledFn) {
+                           Function<Labeled<Long>, R> labeledFn,
+                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
             return nextLongIndexFn.apply(this);
         }
     }
@@ -562,7 +580,8 @@ public abstract class Instruction<A> {
                            Function<NextGaussian, R> nextGaussianFn,
                            Function<NextBytes, R> nextBytesFn,
                            Function<Sized<Double>, R> sizedFn,
-                           Function<Labeled<Double>, R> labeledFn) {
+                           Function<Labeled<Double>, R> labeledFn,
+                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
             return nextGaussianFn.apply(this);
         }
     }
@@ -593,7 +612,8 @@ public abstract class Instruction<A> {
                            Function<NextGaussian, R> nextGaussianFn,
                            Function<NextBytes, R> nextBytesFn,
                            Function<Sized<Byte[]>, R> sizedFn,
-                           Function<Labeled<Byte[]>, R> labeledFn) {
+                           Function<Labeled<Byte[]>, R> labeledFn,
+                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
             return nextBytesFn.apply(this);
         }
     }
@@ -624,7 +644,8 @@ public abstract class Instruction<A> {
                            Function<NextGaussian, R> nextGaussianFn,
                            Function<NextBytes, R> nextBytesFn,
                            Function<Sized<A>, R> sizedFn,
-                           Function<Labeled<A>, R> labeledFn) {
+                           Function<Labeled<A>, R> labeledFn,
+                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
             return sizedFn.apply(this);
         }
     }
@@ -656,10 +677,31 @@ public abstract class Instruction<A> {
                            Function<NextGaussian, R> nextGaussianFn,
                            Function<NextBytes, R> nextBytesFn,
                            Function<Sized<A>, R> sizedFn,
-                           Function<Labeled<A>, R> labeledFn) {
+                           Function<Labeled<A>, R> labeledFn,
+                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
             return labeledFn.apply(this);
         }
     }
+
+    @EqualsAndHashCode(callSuper = true)
+    @Value
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class Product8<A, B, C, D, E, F, G, H> extends Instruction<Tuple8<A, B, C, D, E, F, G, H>> {
+        private final Instruction<A> a;
+        private final Instruction<B> b;
+        private final Instruction<C> c;
+        private final Instruction<D> d;
+        private final Instruction<E> e;
+        private final Instruction<F> f;
+        private final Instruction<G> g;
+        private final Instruction<H> h;
+
+        @Override
+        public <R> R match(Function<Pure<Tuple8<A, B, C, D, E, F, G, H>>, R> pureFn, Function<Mapped<?, Tuple8<A, B, C, D, E, F, G, H>>, R> mappedFn, Function<FlatMapped<?, Tuple8<A, B, C, D, E, F, G, H>>, R> flatMappedFn, Function<NextBoolean, R> nextBooleanFn, Function<NextDouble, R> nextDoubleFn, Function<NextFloat, R> nextFloatFn, Function<NextInt, R> nextIntFn, Function<NextIntBounded, R> nextIntBoundedFn, Function<NextIntExclusive, R> nextIntExclusiveFn, Function<NextIntBetween, R> nextIntBetweenFn, Function<NextIntIndex, R> nextIntIndexFn, Function<NextLong, R> nextLongFn, Function<NextLongBounded, R> nextLongBoundedFn, Function<NextLongExclusive, R> nextLongExclusiveFn, Function<NextLongBetween, R> nextLongBetweenFn, Function<NextLongIndex, R> nextLongIndexFn, Function<NextGaussian, R> nextGaussianFn, Function<NextBytes, R> nextBytesFn, Function<Sized<Tuple8<A, B, C, D, E, F, G, H>>, R> sizedFn, Function<Labeled<Tuple8<A, B, C, D, E, F, G, H>>, R> labeledFn, Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
+            return product8Fn.apply(this);
+        }
+    }
+
 
     public static <A> Pure<A> pure(A a) {
         return new Pure<>(a);
@@ -748,6 +790,17 @@ public abstract class Instruction<A> {
 
     public static <A> Labeled<A> labeled(String label, Instruction<A> operand) {
         return new Labeled<>(label, operand);
+    }
+
+    public static <A, B, C, D, E, F, G, H> Product8<A, B, C, D, E, F, G, H> product8(Instruction<A> a,
+                                                                                     Instruction<B> b,
+                                                                                     Instruction<C> c,
+                                                                                     Instruction<D> d,
+                                                                                     Instruction<E> e,
+                                                                                     Instruction<F> f,
+                                                                                     Instruction<G> g,
+                                                                                     Instruction<H> h) {
+        return new Product8<>(a, b, c, d, e, f, g, h);
     }
 
     private static void checkBound(long bound) {
