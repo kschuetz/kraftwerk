@@ -4,6 +4,8 @@ import com.jnape.palatable.lambda.adt.hlist.*;
 import dev.marksman.composablerandom.Generator;
 
 import static com.jnape.palatable.lambda.adt.hlist.HList.tuple;
+import static dev.marksman.composablerandom.Generator.generator;
+import static dev.marksman.composablerandom.Instruction.product8;
 
 class Tuples {
 
@@ -38,7 +40,9 @@ class Tuples {
     static <A, B, C, D, E, F, G, H> Generator<Tuple8<A, B, C, D, E, F, G, H>> tupled(Generator<A> ga, Generator<B> gb, Generator<C> gc,
                                                                                      Generator<D> gd, Generator<E> ge, Generator<F> gf,
                                                                                      Generator<G> gg, Generator<H> gh) {
-        return ga.flatMap(a -> tupled(gb, gc, gd, ge, gf, gg, gh).fmap(x -> x.cons(a)));
+//        return ga.flatMap(a -> tupled(gb, gc, gd, ge, gf, gg, gh).fmap(x -> x.cons(a)));
+        return generator(product8(ga.getInstruction(), gb.getInstruction(), gc.getInstruction(), gd.getInstruction(),
+                ge.getInstruction(), gf.getInstruction(), gg.getInstruction(), gh.getInstruction()));
     }
 
 }
