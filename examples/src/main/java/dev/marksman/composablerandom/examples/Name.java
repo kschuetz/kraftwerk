@@ -1,7 +1,7 @@
 package dev.marksman.composablerandom.examples;
 
 import com.jnape.palatable.lambda.adt.Maybe;
-import dev.marksman.composablerandom.Generator;
+import dev.marksman.composablerandom.OldGenerator;
 import dev.marksman.composablerandom.domain.Characters;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -33,22 +33,22 @@ public class Name {
     }
 
     private static class Generators {
-        private static final Generator<String> initial = chooseOneFrom(Characters.alphaUpper()).fmap(c -> c + ".");
+        private static final OldGenerator<String> initial = chooseOneFrom(Characters.alphaUpper()).fmap(c -> c + ".");
 
-        private static final Generator<String> givenNames =
+        private static final OldGenerator<String> givenNames =
                 chooseOneOf("Alice", "Barbara", "Bart", "Billy", "Bobby", "Carol", "Cindy", "Elizabeth",
                         "Eric", "George", "Greg", "Homer", "James", "Jan", "John", "Kenny", "Kyle", "Linda", "Lisa",
                         "Maggie", "Marcia", "Marge", "Mary", "Mike", "Oliver", "Patricia", "Peter", "Stan");
 
-        private static final Generator<String> first =
+        private static final OldGenerator<String> first =
                 frequency(entry(15, givenNames),
                         entry(1, initial));
 
-        private static final Generator<String> middle =
+        private static final OldGenerator<String> middle =
                 frequency(entry(1, givenNames),
                         entry(5, initial));
 
-        private static final Generator<String> last =
+        private static final OldGenerator<String> last =
                 chooseOneFrom(asList(
                         "Allen", "Anderson", "Brown", "Clark", "Davis", "Foobar", "Garcia", "Hall", "Harris",
                         "Hernandez", "Jackson", "Johnson", "Jones", "King", "Lee", "Lewis", "Lopez", "Martin",
@@ -56,9 +56,9 @@ public class Name {
                         "Thomas", "Thompson", "Walker", "White", "Williams", "Wilson", "Wright", "Young"
                 ));
 
-        private static final Generator<String> suffix = chooseOneOf("Jr.", "III", "Sr.");
+        private static final OldGenerator<String> suffix = chooseOneOf("Jr.", "III", "Sr.");
 
-        private static final Generator<Name> name = tupled(
+        private static final OldGenerator<Name> name = tupled(
                 first,
                 generateMaybe(6, 1, middle),
                 last,
@@ -67,7 +67,7 @@ public class Name {
 
     }
 
-    public static Generator<Name> generateName() {
+    public static OldGenerator<Name> generateName() {
         return Generators.name;
     }
 

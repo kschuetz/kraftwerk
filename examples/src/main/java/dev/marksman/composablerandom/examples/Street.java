@@ -1,7 +1,7 @@
 package dev.marksman.composablerandom.examples;
 
 import com.jnape.palatable.lambda.adt.Maybe;
-import dev.marksman.composablerandom.Generator;
+import dev.marksman.composablerandom.OldGenerator;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
@@ -29,11 +29,11 @@ public class Street {
     }
 
     private static class Generators {
-        private static final Generator<String> compass =
+        private static final OldGenerator<String> compass =
                 frequency(entry(8, chooseOneOf("N.", "S.", "W.", "E.")),
                         entry(1, chooseOneOf("NW", "NE", "SW", "SE")));
 
-        private static final Generator<String> ordinal =
+        private static final OldGenerator<String> ordinal =
                 generateInt(1, 99).fmap(n -> {
                     if (n == 11) return "11th";
                     else if (n % 10 == 1) return n + "st";
@@ -42,13 +42,13 @@ public class Street {
                     else return n + "th";
                 });
 
-        private static final Generator<String> president =
+        private static final OldGenerator<String> president =
                 chooseOneOf("Washington", "Adams", "Jefferson", "Madison", "Monroe", "Lincoln");
 
-        private static final Generator<String> tree =
+        private static final OldGenerator<String> tree =
                 chooseOneOf("Oak", "Maple", "Elm", "Pine", "Spruce", "Sycamore", "Birch", "Apple", "Peach");
 
-        private static final Generator<String> suffix =
+        private static final OldGenerator<String> suffix =
                 frequency(entry(10, "St."),
                         entry(7, "Ave."),
                         entry(5, "Rd."),
@@ -57,19 +57,19 @@ public class Street {
                         entry(2, "Blvd."),
                         entry(1, "Ct."));
 
-        private static final Generator<String> name =
+        private static final OldGenerator<String> name =
                 frequency(entry(3, ordinal),
                         entry(2, tree),
                         entry(2, president));
 
-        private static final Generator<Street> street = tupled(
+        private static final OldGenerator<Street> street = tupled(
                 generateMaybe(3, 1, compass),
                 name,
                 suffix)
                 .fmap(into3(Street::street));
     }
 
-    public static Generator<Street> generateStreet() {
+    public static OldGenerator<Street> generateStreet() {
         return Generators.street;
     }
 

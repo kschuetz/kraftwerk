@@ -7,10 +7,10 @@ import static dev.marksman.composablerandom.Initialize.createInitialState;
 import static dev.marksman.composablerandom.Initialize.randomInitialState;
 
 public class GeneratedStream<A> implements Iterator<A> {
-    private final Generator<A> generator;
+    private final OldGenerator<A> generator;
     private State currentState;
 
-    private GeneratedStream(Generator<A> generator, State initialState) {
+    private GeneratedStream(OldGenerator<A> generator, State initialState) {
         this.generator = generator;
         this.currentState = initialState;
     }
@@ -63,27 +63,27 @@ public class GeneratedStream<A> implements Iterator<A> {
         }
     }
 
-    public static <A> GeneratedStream<A> streamFrom(Generator<A> generator, State initialState) {
+    public static <A> GeneratedStream<A> streamFrom(OldGenerator<A> generator, State initialState) {
         return new GeneratedStream<>(generator, initialState);
     }
 
-    public static <A> GeneratedStream<A> streamFrom(Generator<A> generator, RandomState initialState) {
+    public static <A> GeneratedStream<A> streamFrom(OldGenerator<A> generator, RandomState initialState) {
         return streamFrom(generator, createInitialState(initialState));
     }
 
-    public static <A> GeneratedStream<A> streamFrom(Generator<A> generator, long initialSeedValue) {
+    public static <A> GeneratedStream<A> streamFrom(OldGenerator<A> generator, long initialSeedValue) {
         return streamFrom(generator, createInitialState(initialSeedValue));
     }
 
-    public static <A> GeneratedStream<A> streamFrom(Generator<A> generator, Context context) {
+    public static <A> GeneratedStream<A> streamFrom(OldGenerator<A> generator, Context context) {
         return streamFrom(generator, randomInitialState(context));
     }
 
-    public static <A> GeneratedStream<A> streamFrom(Generator<A> generator, Context context, long initialSeedValue) {
+    public static <A> GeneratedStream<A> streamFrom(OldGenerator<A> generator, Context context, long initialSeedValue) {
         return streamFrom(generator, createInitialState(initialSeedValue, context));
     }
 
-    public static <A> GeneratedStream<A> streamFrom(Generator<A> generator) {
+    public static <A> GeneratedStream<A> streamFrom(OldGenerator<A> generator) {
         return streamFrom(generator, randomInitialState());
     }
 

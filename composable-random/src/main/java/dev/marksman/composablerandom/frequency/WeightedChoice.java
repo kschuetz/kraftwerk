@@ -1,7 +1,7 @@
 package dev.marksman.composablerandom.frequency;
 
 import com.jnape.palatable.lambda.adt.choice.*;
-import dev.marksman.composablerandom.Generator;
+import dev.marksman.composablerandom.OldGenerator;
 import lombok.AllArgsConstructor;
 
 public class WeightedChoice {
@@ -10,7 +10,7 @@ public class WeightedChoice {
     public static class WeightedChoice2<A, B> {
         private final FrequencyMap<Choice2<A, B>> frequencyMap;
 
-        public <C> WeightedChoice3<A, B, C> or(int weight, Generator<C> generator) {
+        public <C> WeightedChoice3<A, B, C> or(int weight, OldGenerator<C> generator) {
             FrequencyMap<Choice3<A, B, C>> newFrequencyMap = frequencyMap
                     .<Choice3<A, B, C>>fmap(c2 ->
                             c2.match(Choice3::a, Choice3::b))
@@ -24,7 +24,7 @@ public class WeightedChoice {
     public static class WeightedChoice3<A, B, C> {
         private final FrequencyMap<Choice3<A, B, C>> frequencyMap;
 
-        public <D> WeightedChoice4<A, B, C, D> or(int weight, Generator<D> generator) {
+        public <D> WeightedChoice4<A, B, C, D> or(int weight, OldGenerator<D> generator) {
             FrequencyMap<Choice4<A, B, C, D>> newFrequencyMap = frequencyMap
                     .<Choice4<A, B, C, D>>fmap(c3 ->
                             c3.match(Choice4::a, Choice4::b, Choice4::c))
@@ -38,7 +38,7 @@ public class WeightedChoice {
     public static class WeightedChoice4<A, B, C, D> {
         private final FrequencyMap<Choice4<A, B, C, D>> frequencyMap;
 
-        public <E> WeightedChoice5<A, B, C, D, E> or(int weight, Generator<E> generator) {
+        public <E> WeightedChoice5<A, B, C, D, E> or(int weight, OldGenerator<E> generator) {
             FrequencyMap<Choice5<A, B, C, D, E>> newFrequencyMap = frequencyMap
                     .<Choice5<A, B, C, D, E>>fmap(c4 ->
                             c4.match(Choice5::a, Choice5::b, Choice5::c, Choice5::d))
@@ -52,7 +52,7 @@ public class WeightedChoice {
     public static class WeightedChoice5<A, B, C, D, E> {
         private final FrequencyMap<Choice5<A, B, C, D, E>> frequencyMap;
 
-        public <F> WeightedChoice6<A, B, C, D, E, F> or(int weight, Generator<F> generator) {
+        public <F> WeightedChoice6<A, B, C, D, E, F> or(int weight, OldGenerator<F> generator) {
             return null;
         }
     }
@@ -61,7 +61,7 @@ public class WeightedChoice {
     public static class WeightedChoice6<A, B, C, D, E, F> {
         private final FrequencyMap<Choice6<A, B, C, D, E, F>> frequencyMap;
 
-        public <G> WeightedChoice7<A, B, C, D, E, F, G> or(int weight, Generator<G> generator) {
+        public <G> WeightedChoice7<A, B, C, D, E, F, G> or(int weight, OldGenerator<G> generator) {
             return null;
         }
     }
@@ -70,7 +70,7 @@ public class WeightedChoice {
     public static class WeightedChoice7<A, B, C, D, E, F, G> {
         private final FrequencyMap<Choice7<A, B, C, D, E, F, G>> frequencyMap;
 
-        public <H> WeightedChoice8<A, B, C, D, E, F, G, H> or(int weight, Generator<H> generator) {
+        public <H> WeightedChoice8<A, B, C, D, E, F, G, H> or(int weight, OldGenerator<H> generator) {
             return null;
         }
     }

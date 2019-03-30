@@ -13,7 +13,7 @@ import static com.jnape.palatable.lambda.functions.builtin.fn1.Reverse.reverse;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.ToCollection.toCollection;
 import static com.jnape.palatable.lambda.lens.functions.Set.set;
 import static com.jnape.palatable.lambda.lens.functions.View.view;
-import static dev.marksman.composablerandom.Generator.contextDependent;
+import static dev.marksman.composablerandom.OldGenerator.contextDependent;
 import static dev.marksman.composablerandom.Result.result;
 import static dev.marksman.composablerandom.tracing.TraceContext.tracing;
 
@@ -22,7 +22,7 @@ class RunWithTrace {
     private static Lens.Simple<State, TraceContext> stateTraceContextLens =
             StateLens.context.andThen(ContextLens.traceContext);
 
-    static <A> Generator<Trace<A>> outerTrace(Generator<A> g) {
+    static <A> OldGenerator<Trace<A>> outerTrace(OldGenerator<A> g) {
         return contextDependent((State s0) -> {
             TraceContext previous = view(stateTraceContextLens, s0);
             State newInput = set(stateTraceContextLens, tracing(), s0);

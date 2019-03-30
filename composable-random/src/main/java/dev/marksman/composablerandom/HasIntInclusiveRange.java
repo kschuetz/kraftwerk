@@ -1,4 +1,4 @@
-package dev.marksman.composablerandom.spike;
+package dev.marksman.composablerandom;
 
 public interface HasIntInclusiveRange {
     int getMin();

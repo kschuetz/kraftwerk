@@ -20,14 +20,14 @@ import static dev.marksman.composablerandom.random.StandardGen.initStandardGen;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class GeneratorTest {
+class OldGeneratorTest {
 
     private static int SEQUENCE_LENGTH = 17;
 
-    private static final Generator<Integer> gen1 = Generators.generateInt();
-    private static final Generator<Double> gen2 = generateGaussian();
-    private static final Generator<Integer> gen3 = Generators.generateIntExclusive(1, 10);
-    private static final Generator<String> gen4 = frequency(entry(3, "foo"),
+    private static final OldGenerator<Integer> gen1 = Generators.generateInt();
+    private static final OldGenerator<Double> gen2 = generateGaussian();
+    private static final OldGenerator<Integer> gen3 = Generators.generateIntExclusive(1, 10);
+    private static final OldGenerator<String> gen4 = frequency(entry(3, "foo"),
             entry(7, "bar"));
 
     @Test
@@ -64,35 +64,35 @@ class GeneratorTest {
 
     @Test
     void generateConstant() {
-        assertTrue(all(eq(1), streamFrom(Generator.constant(1)).next(1000)));
+        assertTrue(all(eq(1), streamFrom(OldGenerator.constant(1)).next(1000)));
     }
 
-    private static <A> void testFunctorIdentity(Generator<A> generator1) {
-        Generator<A> generator2 = generator1.fmap(id());
+    private static <A> void testFunctorIdentity(OldGenerator<A> generator1) {
+        OldGenerator<A> generator2 = generator1.fmap(id());
         testEquivalent(generator1, generator2);
     }
 
-    private static <A> void testFunctorComposition(Generator<A> generator) {
+    private static <A> void testFunctorComposition(OldGenerator<A> generator) {
         Fn1<A, Tuple2<A, A>> f = a -> tuple(a, a);
         Fn1<Tuple2<A, A>, Tuple3<A, A, A>> g = t -> t.cons(t._1());
         testEquivalent(generator.fmap(f).fmap(g), generator.fmap(f.andThen(g)));
     }
 
-    private static <A> void testMonadLeftIdentity(A someValue, Generator<A> generator) {
-        Fn1<A, Generator<A>> fn = Id.<A>id().andThen(generator::pure);
+    private static <A> void testMonadLeftIdentity(A someValue, OldGenerator<A> generator) {
+        Fn1<A, OldGenerator<A>> fn = Id.<A>id().andThen(generator::pure);
 
-        Generator<A> generator1 = fn.apply(someValue);
-        Generator<A> generator2 = generator.pure(someValue).flatMap(fn);
+        OldGenerator<A> generator1 = fn.apply(someValue);
+        OldGenerator<A> generator2 = generator.pure(someValue).flatMap(fn);
 
         testEquivalent(generator1, generator2);
     }
 
-    private static <A> void testMonadRightIdentity(Generator<A> generator) {
-        Generator<A> generator2 = generator.flatMap(generator::pure);
+    private static <A> void testMonadRightIdentity(OldGenerator<A> generator) {
+        OldGenerator<A> generator2 = generator.flatMap(generator::pure);
         testEquivalent(generator, generator2);
     }
 
-    private static <A> void testEquivalent(Generator<A> generator1, Generator<A> generator2) {
+    private static <A> void testEquivalent(OldGenerator<A> generator1, OldGenerator<A> generator2) {
         State initial = State.state(initStandardGen());
 
         Result<State, ArrayList<A>> result1 = generateListOfN(SEQUENCE_LENGTH, generator1).run(initial);
