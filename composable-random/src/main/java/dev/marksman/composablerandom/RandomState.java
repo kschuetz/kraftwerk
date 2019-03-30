@@ -12,7 +12,7 @@ public interface RandomState {
 
     Result<? extends RandomState, Integer> nextInt();
 
-    Result<? extends RandomState, Integer> nextInt(int bound);
+    Result<? extends RandomState, Integer> nextIntBounded(int bound);
 
     Result<? extends RandomState, Integer> nextIntExclusive(int origin, int bound);
 
@@ -20,7 +20,7 @@ public interface RandomState {
 
     Result<? extends RandomState, Long> nextLong();
 
-    Result<? extends RandomState, Long> nextLong(long bound);
+    Result<? extends RandomState, Long> nextLongBounded(long bound);
 
     Result<? extends RandomState, Long> nextLongExclusive(long origin, long bound);
 

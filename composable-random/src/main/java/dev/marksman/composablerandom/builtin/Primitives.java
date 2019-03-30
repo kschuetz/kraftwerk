@@ -75,7 +75,7 @@ class Primitives {
         if (bound <= 0) {
             throw new IllegalArgumentException("bound must be positive");
         }
-        return Generator.generator(INT_METADATA, s -> s.nextInt(bound));
+        return Generator.generator(INT_METADATA, s -> s.nextIntBounded(bound));
     }
 
     static Generator<Integer> generateIntExclusive(int origin, int bound) {

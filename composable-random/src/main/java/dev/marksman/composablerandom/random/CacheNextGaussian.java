@@ -21,8 +21,8 @@ final class CacheNextGaussian implements RandomState {
     }
 
     @Override
-    public final Result<CacheNextGaussian, Integer> nextInt(int bound) {
-        return wrap(inner.nextInt(bound));
+    public final Result<CacheNextGaussian, Integer> nextIntBounded(int bound) {
+        return wrap(inner.nextIntBounded(bound));
     }
 
     @Override
@@ -51,8 +51,8 @@ final class CacheNextGaussian implements RandomState {
     }
 
     @Override
-    public final Result<CacheNextGaussian, Long> nextLong(long bound) {
-        return wrap(inner.nextLong(bound));
+    public final Result<CacheNextGaussian, Long> nextLongBounded(long bound) {
+        return wrap(inner.nextLongBounded(bound));
     }
 
     @Override

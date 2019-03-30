@@ -22,17 +22,17 @@ class StandardGenTest {
 
     @Test
     void nextIntWithBound() {
-        testAgainstUtilRandom(r -> r.nextInt(1), r -> r.nextInt(1));
-        testAgainstUtilRandom(r -> r.nextInt(255), r -> r.nextInt(255));
-        testAgainstUtilRandom(r -> r.nextInt(256), r -> r.nextInt(256));
-        testAgainstUtilRandom(r -> r.nextInt(Integer.MAX_VALUE), r -> r.nextInt(Integer.MAX_VALUE));
+        testAgainstUtilRandom(r -> r.nextInt(1), r -> r.nextIntBounded(1));
+        testAgainstUtilRandom(r -> r.nextInt(255), r -> r.nextIntBounded(255));
+        testAgainstUtilRandom(r -> r.nextInt(256), r -> r.nextIntBounded(256));
+        testAgainstUtilRandom(r -> r.nextInt(Integer.MAX_VALUE), r -> r.nextIntBounded(Integer.MAX_VALUE));
     }
 
     @Test
     void nextIntWithInvalidBound() {
         GeneratorPair gp = newRandomGeneratorPair();
-        assertThrows(IllegalArgumentException.class, () -> gp.getRandomState().nextInt(0));
-        assertThrows(IllegalArgumentException.class, () -> gp.getRandomState().nextInt(-1));
+        assertThrows(IllegalArgumentException.class, () -> gp.getRandomState().nextIntBounded(0));
+        assertThrows(IllegalArgumentException.class, () -> gp.getRandomState().nextIntBounded(-1));
     }
 
     @Test
@@ -73,7 +73,7 @@ class StandardGenTest {
     void mixed() {
         GeneratorPair gp = newRandomGeneratorPair();
         gp = testAgainstUtilRandom(gp, 1, Random::nextInt, RandomState::nextInt);
-        gp = testAgainstUtilRandom(gp, 1, r -> r.nextInt(10), r -> r.nextInt(10));
+        gp = testAgainstUtilRandom(gp, 1, r -> r.nextInt(10), r -> r.nextIntBounded(10));
         gp = testAgainstUtilRandom(gp, 1, Random::nextDouble, RandomState::nextDouble);
         gp = testAgainstUtilRandom(gp, 1, Random::nextFloat, RandomState::nextFloat);
         gp = testAgainstUtilRandom(gp, 1, Random::nextLong, RandomState::nextLong);
@@ -86,7 +86,7 @@ class StandardGenTest {
         GeneratorPair gp = newRandomGeneratorPair();
         gp = testAgainstUtilRandom(gp, 1, Random::nextGaussian, RandomState::nextGaussian);
         gp = testAgainstUtilRandom(gp, 1, Random::nextInt, RandomState::nextInt);
-        gp = testAgainstUtilRandom(gp, 1, r -> r.nextInt(10), r -> r.nextInt(10));
+        gp = testAgainstUtilRandom(gp, 1, r -> r.nextInt(10), r -> r.nextIntBounded(10));
         gp = testAgainstUtilRandom(gp, 1, Random::nextDouble, RandomState::nextDouble);
         gp = testAgainstUtilRandom(gp, 1, Random::nextFloat, RandomState::nextFloat);
         gp = testAgainstUtilRandom(gp, 1, Random::nextLong, RandomState::nextLong);
@@ -110,7 +110,7 @@ class StandardGenTest {
         randomGen.nextInt();
         assertEquals(seed, randomGen.getSeedValue());
 
-        randomGen.nextInt(10);
+        randomGen.nextIntBounded(10);
         assertEquals(seed, randomGen.getSeedValue());
 
         randomGen.nextDouble();

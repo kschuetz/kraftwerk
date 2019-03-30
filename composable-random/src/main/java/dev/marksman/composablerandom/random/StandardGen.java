@@ -19,7 +19,7 @@ public final class StandardGen implements RandomState {
     private final long seedValue;
 
     @Override
-    public final Result<StandardGen, Integer> nextInt(int bound) {
+    public final Result<StandardGen, Integer> nextIntBounded(int bound) {
         if (bound <= 0)
             throw new IllegalArgumentException("bound must be positive");
 
@@ -52,7 +52,7 @@ public final class StandardGen implements RandomState {
         long n = (long) bound - origin;
         long m = n - 1;
         if (n < Integer.MAX_VALUE) {
-            return nextInt((int) n).fmap(r -> origin + r);
+            return nextIntBounded((int) n).fmap(r -> origin + r);
         } else if ((n & m) == 0) {
             // power of two
             return nextInt().fmap(r -> (r & (int) m) + origin);
@@ -111,11 +111,11 @@ public final class StandardGen implements RandomState {
     }
 
     @Override
-    public Result<StandardGen, Long> nextLong(long bound) {
+    public Result<StandardGen, Long> nextLongBounded(long bound) {
         if (bound <= 0)
             throw new IllegalArgumentException("bound must be positive");
         if (bound <= Integer.MAX_VALUE) {
-            return nextInt((int) bound).fmap(Integer::longValue);
+            return nextIntBounded((int) bound).fmap(Integer::longValue);
         } else {
             return nextLongExclusive(0, bound);
         }

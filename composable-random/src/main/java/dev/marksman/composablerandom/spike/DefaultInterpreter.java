@@ -40,11 +40,13 @@ public class DefaultInterpreter {
                 HANDLE_NEXT_DOUBLE,
                 HANDLE_NEXT_FLOAT,
                 HANDLE_NEXT_INT,
-                this::handleNextIntExclusive,
+                this::handleNextIntBounded,
+                null,  // TODO: nextIntExclusive
                 this::handleNextIntBetween,
                 this::handleNextIntIndex,
                 HANDLE_NEXT_LONG,
-                this::handleNextLongExclusive,
+                this::handleNextLongBounded,
+                null,  // TODO: nextLongExclusive
                 this::handleNextLongBetween,
                 this::handleNextLongIndex,
                 HANDLE_NEXT_GAUSSIAN,
@@ -69,8 +71,8 @@ public class DefaultInterpreter {
                                 .getValue()));
     }
 
-    private Fn1<RandomState, Result<? extends RandomState, Integer>> handleNextIntExclusive(HasIntExclusiveBound instruction) {
-        return input -> input.nextInt(instruction.getBound());
+    private Fn1<RandomState, Result<? extends RandomState, Integer>> handleNextIntBounded(HasIntExclusiveBound instruction) {
+        return input -> input.nextIntBounded(instruction.getBound());
     }
 
     private Fn1<RandomState, Result<? extends RandomState, Integer>> handleNextIntBetween(HasIntInclusiveRange instruction) {
@@ -78,11 +80,11 @@ public class DefaultInterpreter {
     }
 
     private Fn1<RandomState, Result<? extends RandomState, Integer>> handleNextIntIndex(HasIntExclusiveBound instruction) {
-        return handleNextIntExclusive(instruction);
+        return handleNextIntBounded(instruction);
     }
 
-    private Fn1<RandomState, Result<? extends RandomState, Long>> handleNextLongExclusive(HasLongExclusiveBound instruction) {
-        return input -> input.nextLong(instruction.getBound());
+    private Fn1<RandomState, Result<? extends RandomState, Long>> handleNextLongBounded(HasLongExclusiveBound instruction) {
+        return input -> input.nextLongBounded(instruction.getBound());
     }
 
     private Fn1<RandomState, Result<? extends RandomState, Long>> handleNextLongBetween(HasLongInclusiveRange instruction) {
@@ -90,7 +92,7 @@ public class DefaultInterpreter {
     }
 
     private Fn1<RandomState, Result<? extends RandomState, Long>> handleNextLongIndex(HasLongExclusiveBound instruction) {
-        return handleNextLongExclusive(instruction);
+        return handleNextLongBounded(instruction);
     }
 
     private Fn1<RandomState, Result<? extends RandomState, Byte[]>> handleNextBytes(HasIntCount instruction) {

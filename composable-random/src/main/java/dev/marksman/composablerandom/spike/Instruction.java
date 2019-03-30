@@ -17,10 +17,12 @@ public abstract class Instruction<A> {
                                 Function<NextDouble, R> nextDoubleFn,
                                 Function<NextFloat, R> nextFloatFn,
                                 Function<NextInt, R> nextIntFn,
+                                Function<NextIntBounded, R> nextIntBoundedFn,
                                 Function<NextIntExclusive, R> nextIntExclusiveFn,
                                 Function<NextIntBetween, R> nextIntBetweenFn,
                                 Function<NextIntIndex, R> nextIntIndexFn,
                                 Function<NextLong, R> nextLongFn,
+                                Function<NextLongBounded, R> nextLongBoundedFn,
                                 Function<NextLongExclusive, R> nextLongExclusiveFn,
                                 Function<NextLongBetween, R> nextLongBetweenFn,
                                 Function<NextLongIndex, R> nextLongIndexFn,
@@ -44,10 +46,12 @@ public abstract class Instruction<A> {
                            Function<NextDouble, R> nextDoubleFn,
                            Function<NextFloat, R> nextFloatFn,
                            Function<NextInt, R> nextIntFn,
+                           Function<NextIntBounded, R> nextIntBoundedFn,
                            Function<NextIntExclusive, R> nextIntExclusiveFn,
                            Function<NextIntBetween, R> nextIntBetweenFn,
                            Function<NextIntIndex, R> nextIntIndexFn,
                            Function<NextLong, R> nextLongFn,
+                           Function<NextLongBounded, R> nextLongBoundedFn,
                            Function<NextLongExclusive, R> nextLongExclusiveFn,
                            Function<NextLongBetween, R> nextLongBetweenFn,
                            Function<NextLongIndex, R> nextLongIndexFn,
@@ -74,10 +78,12 @@ public abstract class Instruction<A> {
                            Function<NextDouble, R> nextDoubleFn,
                            Function<NextFloat, R> nextFloatFn,
                            Function<NextInt, R> nextIntFn,
+                           Function<NextIntBounded, R> nextIntBoundedFn,
                            Function<NextIntExclusive, R> nextIntExclusiveFn,
                            Function<NextIntBetween, R> nextIntBetweenFn,
                            Function<NextIntIndex, R> nextIntIndexFn,
                            Function<NextLong, R> nextLongFn,
+                           Function<NextLongBounded, R> nextLongBoundedFn,
                            Function<NextLongExclusive, R> nextLongExclusiveFn,
                            Function<NextLongBetween, R> nextLongBetweenFn,
                            Function<NextLongIndex, R> nextLongIndexFn,
@@ -104,10 +110,12 @@ public abstract class Instruction<A> {
                            Function<NextDouble, R> nextDoubleFn,
                            Function<NextFloat, R> nextFloatFn,
                            Function<NextInt, R> nextIntFn,
+                           Function<NextIntBounded, R> nextIntBoundedFn,
                            Function<NextIntExclusive, R> nextIntExclusiveFn,
                            Function<NextIntBetween, R> nextIntBetweenFn,
                            Function<NextIntIndex, R> nextIntIndexFn,
                            Function<NextLong, R> nextLongFn,
+                           Function<NextLongBounded, R> nextLongBoundedFn,
                            Function<NextLongExclusive, R> nextLongExclusiveFn,
                            Function<NextLongBetween, R> nextLongBetweenFn,
                            Function<NextLongIndex, R> nextLongIndexFn,
@@ -133,10 +141,12 @@ public abstract class Instruction<A> {
                            Function<NextDouble, R> nextDoubleFn,
                            Function<NextFloat, R> nextFloatFn,
                            Function<NextInt, R> nextIntFn,
+                           Function<NextIntBounded, R> nextIntBoundedFn,
                            Function<NextIntExclusive, R> nextIntExclusiveFn,
                            Function<NextIntBetween, R> nextIntBetweenFn,
                            Function<NextIntIndex, R> nextIntIndexFn,
                            Function<NextLong, R> nextLongFn,
+                           Function<NextLongBounded, R> nextLongBoundedFn,
                            Function<NextLongExclusive, R> nextLongExclusiveFn,
                            Function<NextLongBetween, R> nextLongBetweenFn,
                            Function<NextLongIndex, R> nextLongIndexFn,
@@ -162,10 +172,12 @@ public abstract class Instruction<A> {
                            Function<NextDouble, R> nextDoubleFn,
                            Function<NextFloat, R> nextFloatFn,
                            Function<NextInt, R> nextIntFn,
+                           Function<NextIntBounded, R> nextIntBoundedFn,
                            Function<NextIntExclusive, R> nextIntExclusiveFn,
                            Function<NextIntBetween, R> nextIntBetweenFn,
                            Function<NextIntIndex, R> nextIntIndexFn,
                            Function<NextLong, R> nextLongFn,
+                           Function<NextLongBounded, R> nextLongBoundedFn,
                            Function<NextLongExclusive, R> nextLongExclusiveFn,
                            Function<NextLongBetween, R> nextLongBetweenFn,
                            Function<NextLongIndex, R> nextLongIndexFn,
@@ -191,10 +203,12 @@ public abstract class Instruction<A> {
                            Function<NextDouble, R> nextDoubleFn,
                            Function<NextFloat, R> nextFloatFn,
                            Function<NextInt, R> nextIntFn,
+                           Function<NextIntBounded, R> nextIntBoundedFn,
                            Function<NextIntExclusive, R> nextIntExclusiveFn,
                            Function<NextIntBetween, R> nextIntBetweenFn,
                            Function<NextIntIndex, R> nextIntIndexFn,
                            Function<NextLong, R> nextLongFn,
+                           Function<NextLongBounded, R> nextLongBoundedFn,
                            Function<NextLongExclusive, R> nextLongExclusiveFn,
                            Function<NextLongBetween, R> nextLongBetweenFn,
                            Function<NextLongIndex, R> nextLongIndexFn,
@@ -220,10 +234,12 @@ public abstract class Instruction<A> {
                            Function<NextDouble, R> nextDoubleFn,
                            Function<NextFloat, R> nextFloatFn,
                            Function<NextInt, R> nextIntFn,
+                           Function<NextIntBounded, R> nextIntBoundedFn,
                            Function<NextIntExclusive, R> nextIntExclusiveFn,
                            Function<NextIntBetween, R> nextIntBetweenFn,
                            Function<NextIntIndex, R> nextIntIndexFn,
                            Function<NextLong, R> nextLongFn,
+                           Function<NextLongBounded, R> nextLongBoundedFn,
                            Function<NextLongExclusive, R> nextLongExclusiveFn,
                            Function<NextLongBetween, R> nextLongBetweenFn,
                            Function<NextLongIndex, R> nextLongIndexFn,
@@ -238,7 +254,7 @@ public abstract class Instruction<A> {
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextIntExclusive extends Instruction<Integer> implements HasIntExclusiveBound {
+    public static class NextIntBounded extends Instruction<Integer> implements HasIntExclusiveBound {
         private final int bound;
 
         @Override
@@ -249,10 +265,45 @@ public abstract class Instruction<A> {
                            Function<NextDouble, R> nextDoubleFn,
                            Function<NextFloat, R> nextFloatFn,
                            Function<NextInt, R> nextIntFn,
+                           Function<NextIntBounded, R> nextIntBoundedFn,
                            Function<NextIntExclusive, R> nextIntExclusiveFn,
                            Function<NextIntBetween, R> nextIntBetweenFn,
                            Function<NextIntIndex, R> nextIntIndexFn,
                            Function<NextLong, R> nextLongFn,
+                           Function<NextLongBounded, R> nextLongBoundedFn,
+                           Function<NextLongExclusive, R> nextLongExclusiveFn,
+                           Function<NextLongBetween, R> nextLongBetweenFn,
+                           Function<NextLongIndex, R> nextLongIndexFn,
+                           Function<NextGaussian, R> nextGaussianFn,
+                           Function<NextBytes, R> nextBytesFn,
+                           Function<Sized<Integer>, R> sizedFn,
+                           Function<Labeled<Integer>, R> labeledFn) {
+            return nextIntBoundedFn.apply(this);
+        }
+
+    }
+
+    @EqualsAndHashCode(callSuper = true)
+    @Value
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class NextIntExclusive extends Instruction<Integer> implements HasIntExclusiveRange {
+        private final int origin;
+        private final int bound;
+
+        @Override
+        public <R> R match(Function<Pure<Integer>, R> pureFn,
+                           Function<Mapped<?, Integer>, R> mappedFn,
+                           Function<FlatMapped<?, Integer>, R> flatMappedFn,
+                           Function<NextBoolean, R> nextBooleanFn,
+                           Function<NextDouble, R> nextDoubleFn,
+                           Function<NextFloat, R> nextFloatFn,
+                           Function<NextInt, R> nextIntFn,
+                           Function<NextIntBounded, R> nextIntBoundedFn,
+                           Function<NextIntExclusive, R> nextIntExclusiveFn,
+                           Function<NextIntBetween, R> nextIntBetweenFn,
+                           Function<NextIntIndex, R> nextIntIndexFn,
+                           Function<NextLong, R> nextLongFn,
+                           Function<NextLongBounded, R> nextLongBoundedFn,
                            Function<NextLongExclusive, R> nextLongExclusiveFn,
                            Function<NextLongBetween, R> nextLongBetweenFn,
                            Function<NextLongIndex, R> nextLongIndexFn,
@@ -280,10 +331,12 @@ public abstract class Instruction<A> {
                            Function<NextDouble, R> nextDoubleFn,
                            Function<NextFloat, R> nextFloatFn,
                            Function<NextInt, R> nextIntFn,
+                           Function<NextIntBounded, R> nextIntBoundedFn,
                            Function<NextIntExclusive, R> nextIntExclusiveFn,
                            Function<NextIntBetween, R> nextIntBetweenFn,
                            Function<NextIntIndex, R> nextIntIndexFn,
                            Function<NextLong, R> nextLongFn,
+                           Function<NextLongBounded, R> nextLongBoundedFn,
                            Function<NextLongExclusive, R> nextLongExclusiveFn,
                            Function<NextLongBetween, R> nextLongBetweenFn,
                            Function<NextLongIndex, R> nextLongIndexFn,
@@ -309,10 +362,12 @@ public abstract class Instruction<A> {
                            Function<NextDouble, R> nextDoubleFn,
                            Function<NextFloat, R> nextFloatFn,
                            Function<NextInt, R> nextIntFn,
+                           Function<NextIntBounded, R> nextIntBoundedFn,
                            Function<NextIntExclusive, R> nextIntExclusiveFn,
                            Function<NextIntBetween, R> nextIntBetweenFn,
                            Function<NextIntIndex, R> nextIntIndexFn,
                            Function<NextLong, R> nextLongFn,
+                           Function<NextLongBounded, R> nextLongBoundedFn,
                            Function<NextLongExclusive, R> nextLongExclusiveFn,
                            Function<NextLongBetween, R> nextLongBetweenFn,
                            Function<NextLongIndex, R> nextLongIndexFn,
@@ -338,10 +393,12 @@ public abstract class Instruction<A> {
                            Function<NextDouble, R> nextDoubleFn,
                            Function<NextFloat, R> nextFloatFn,
                            Function<NextInt, R> nextIntFn,
+                           Function<NextIntBounded, R> nextIntBoundedFn,
                            Function<NextIntExclusive, R> nextIntExclusiveFn,
                            Function<NextIntBetween, R> nextIntBetweenFn,
                            Function<NextIntIndex, R> nextIntIndexFn,
                            Function<NextLong, R> nextLongFn,
+                           Function<NextLongBounded, R> nextLongBoundedFn,
                            Function<NextLongExclusive, R> nextLongExclusiveFn,
                            Function<NextLongBetween, R> nextLongBetweenFn,
                            Function<NextLongIndex, R> nextLongIndexFn,
@@ -356,7 +413,7 @@ public abstract class Instruction<A> {
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextLongExclusive extends Instruction<Long> implements HasLongExclusiveBound {
+    public static class NextLongBounded extends Instruction<Long> implements HasLongExclusiveBound {
         private final long bound;
 
         @Override
@@ -367,10 +424,44 @@ public abstract class Instruction<A> {
                            Function<NextDouble, R> nextDoubleFn,
                            Function<NextFloat, R> nextFloatFn,
                            Function<NextInt, R> nextIntFn,
+                           Function<NextIntBounded, R> nextIntBoundedFn,
                            Function<NextIntExclusive, R> nextIntExclusiveFn,
                            Function<NextIntBetween, R> nextIntBetweenFn,
                            Function<NextIntIndex, R> nextIntIndexFn,
                            Function<NextLong, R> nextLongFn,
+                           Function<NextLongBounded, R> nextLongBoundedFn,
+                           Function<NextLongExclusive, R> nextLongExclusiveFn,
+                           Function<NextLongBetween, R> nextLongBetweenFn,
+                           Function<NextLongIndex, R> nextLongIndexFn,
+                           Function<NextGaussian, R> nextGaussianFn,
+                           Function<NextBytes, R> nextBytesFn,
+                           Function<Sized<Long>, R> sizedFn,
+                           Function<Labeled<Long>, R> labeledFn) {
+            return nextLongBoundedFn.apply(this);
+        }
+    }
+
+    @EqualsAndHashCode(callSuper = true)
+    @Value
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class NextLongExclusive extends Instruction<Long> implements HasLongExclusiveRange {
+        private final long origin;
+        private final long bound;
+
+        @Override
+        public <R> R match(Function<Pure<Long>, R> pureFn,
+                           Function<Mapped<?, Long>, R> mappedFn,
+                           Function<FlatMapped<?, Long>, R> flatMappedFn,
+                           Function<NextBoolean, R> nextBooleanFn,
+                           Function<NextDouble, R> nextDoubleFn,
+                           Function<NextFloat, R> nextFloatFn,
+                           Function<NextInt, R> nextIntFn,
+                           Function<NextIntBounded, R> nextIntBoundedFn,
+                           Function<NextIntExclusive, R> nextIntExclusiveFn,
+                           Function<NextIntBetween, R> nextIntBetweenFn,
+                           Function<NextIntIndex, R> nextIntIndexFn,
+                           Function<NextLong, R> nextLongFn,
+                           Function<NextLongBounded, R> nextLongBoundedFn,
                            Function<NextLongExclusive, R> nextLongExclusiveFn,
                            Function<NextLongBetween, R> nextLongBetweenFn,
                            Function<NextLongIndex, R> nextLongIndexFn,
@@ -397,10 +488,12 @@ public abstract class Instruction<A> {
                            Function<NextDouble, R> nextDoubleFn,
                            Function<NextFloat, R> nextFloatFn,
                            Function<NextInt, R> nextIntFn,
+                           Function<NextIntBounded, R> nextIntBoundedFn,
                            Function<NextIntExclusive, R> nextIntExclusiveFn,
                            Function<NextIntBetween, R> nextIntBetweenFn,
                            Function<NextIntIndex, R> nextIntIndexFn,
                            Function<NextLong, R> nextLongFn,
+                           Function<NextLongBounded, R> nextLongBoundedFn,
                            Function<NextLongExclusive, R> nextLongExclusiveFn,
                            Function<NextLongBetween, R> nextLongBetweenFn,
                            Function<NextLongIndex, R> nextLongIndexFn,
@@ -426,10 +519,12 @@ public abstract class Instruction<A> {
                            Function<NextDouble, R> nextDoubleFn,
                            Function<NextFloat, R> nextFloatFn,
                            Function<NextInt, R> nextIntFn,
+                           Function<NextIntBounded, R> nextIntBoundedFn,
                            Function<NextIntExclusive, R> nextIntExclusiveFn,
                            Function<NextIntBetween, R> nextIntBetweenFn,
                            Function<NextIntIndex, R> nextIntIndexFn,
                            Function<NextLong, R> nextLongFn,
+                           Function<NextLongBounded, R> nextLongBoundedFn,
                            Function<NextLongExclusive, R> nextLongExclusiveFn,
                            Function<NextLongBetween, R> nextLongBetweenFn,
                            Function<NextLongIndex, R> nextLongIndexFn,
@@ -455,10 +550,12 @@ public abstract class Instruction<A> {
                            Function<NextDouble, R> nextDoubleFn,
                            Function<NextFloat, R> nextFloatFn,
                            Function<NextInt, R> nextIntFn,
+                           Function<NextIntBounded, R> nextIntBoundedFn,
                            Function<NextIntExclusive, R> nextIntExclusiveFn,
                            Function<NextIntBetween, R> nextIntBetweenFn,
                            Function<NextIntIndex, R> nextIntIndexFn,
                            Function<NextLong, R> nextLongFn,
+                           Function<NextLongBounded, R> nextLongBoundedFn,
                            Function<NextLongExclusive, R> nextLongExclusiveFn,
                            Function<NextLongBetween, R> nextLongBetweenFn,
                            Function<NextLongIndex, R> nextLongIndexFn,
@@ -484,10 +581,12 @@ public abstract class Instruction<A> {
                            Function<NextDouble, R> nextDoubleFn,
                            Function<NextFloat, R> nextFloatFn,
                            Function<NextInt, R> nextIntFn,
+                           Function<NextIntBounded, R> nextIntBoundedFn,
                            Function<NextIntExclusive, R> nextIntExclusiveFn,
                            Function<NextIntBetween, R> nextIntBetweenFn,
                            Function<NextIntIndex, R> nextIntIndexFn,
                            Function<NextLong, R> nextLongFn,
+                           Function<NextLongBounded, R> nextLongBoundedFn,
                            Function<NextLongExclusive, R> nextLongExclusiveFn,
                            Function<NextLongBetween, R> nextLongBetweenFn,
                            Function<NextLongIndex, R> nextLongIndexFn,
@@ -513,10 +612,12 @@ public abstract class Instruction<A> {
                            Function<NextDouble, R> nextDoubleFn,
                            Function<NextFloat, R> nextFloatFn,
                            Function<NextInt, R> nextIntFn,
+                           Function<NextIntBounded, R> nextIntBoundedFn,
                            Function<NextIntExclusive, R> nextIntExclusiveFn,
                            Function<NextIntBetween, R> nextIntBetweenFn,
                            Function<NextIntIndex, R> nextIntIndexFn,
                            Function<NextLong, R> nextLongFn,
+                           Function<NextLongBounded, R> nextLongBoundedFn,
                            Function<NextLongExclusive, R> nextLongExclusiveFn,
                            Function<NextLongBetween, R> nextLongBetweenFn,
                            Function<NextLongIndex, R> nextLongIndexFn,
@@ -543,10 +644,12 @@ public abstract class Instruction<A> {
                            Function<NextDouble, R> nextDoubleFn,
                            Function<NextFloat, R> nextFloatFn,
                            Function<NextInt, R> nextIntFn,
+                           Function<NextIntBounded, R> nextIntBoundedFn,
                            Function<NextIntExclusive, R> nextIntExclusiveFn,
                            Function<NextIntBetween, R> nextIntBetweenFn,
                            Function<NextIntIndex, R> nextIntIndexFn,
                            Function<NextLong, R> nextLongFn,
+                           Function<NextLongBounded, R> nextLongBoundedFn,
                            Function<NextLongExclusive, R> nextLongExclusiveFn,
                            Function<NextLongBetween, R> nextLongBetweenFn,
                            Function<NextLongIndex, R> nextLongIndexFn,
@@ -586,9 +689,9 @@ public abstract class Instruction<A> {
         return NextInt.INSTANCE;
     }
 
-    public static NextIntExclusive nextIntExclusive(int bound) {
+    public static NextIntBounded nextIntBounded(int bound) {
         checkBound(bound);
-        return new NextIntExclusive(bound);
+        return new NextIntBounded(bound);
     }
 
     public static NextIntBetween nextIntBetween(int min, int max) {
@@ -605,9 +708,9 @@ public abstract class Instruction<A> {
         return NextLong.INSTANCE;
     }
 
-    public static NextLongExclusive nextLongExclusive(long bound) {
+    public static NextLongBounded nextLongBounded(long bound) {
         checkBound(bound);
-        return new NextLongExclusive(bound);
+        return new NextLongBounded(bound);
     }
 
     public static NextLongBetween nextLongBetween(long min, long max) {
