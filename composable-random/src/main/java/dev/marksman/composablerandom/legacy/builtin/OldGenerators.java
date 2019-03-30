@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-public class Generators {
+public class OldGenerators {
 
     public static OldGenerator<Boolean> generateBoolean() {
         return Primitives.generateBoolean();
