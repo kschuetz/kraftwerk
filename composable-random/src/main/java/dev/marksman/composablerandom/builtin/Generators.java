@@ -1,5 +1,6 @@
 package dev.marksman.composablerandom.builtin;
 
+import com.jnape.palatable.lambda.adt.hlist.*;
 import dev.marksman.composablerandom.DiscreteDomain;
 import dev.marksman.composablerandom.FrequencyEntry;
 import dev.marksman.composablerandom.Generator;
@@ -72,6 +73,48 @@ public class Generators {
 
     public static Generator<Short> generateShort() {
         return Primitives.generateShort();
+    }
+
+    public static <A> Generator<Tuple2<A, A>> pair(Generator<A> g) {
+        return tupled(g, g);
+    }
+
+    public static <A> Generator<Tuple3<A, A, A>> triple(Generator<A> g) {
+        return tupled(g, g, g);
+    }
+
+    public static <A, B> Generator<Tuple2<A, B>> tupled(Generator<A> ga, Generator<B> gb) {
+        return Tuples.tupled(ga, gb);
+    }
+
+    public static <A, B, C> Generator<Tuple3<A, B, C>> tupled(Generator<A> ga, Generator<B> gb, Generator<C> gc) {
+        return Tuples.tupled(ga, gb, gc);
+    }
+
+    public static <A, B, C, D> Generator<Tuple4<A, B, C, D>> tupled(Generator<A> ga, Generator<B> gb, Generator<C> gc, Generator<D> gd) {
+        return Tuples.tupled(ga, gb, gc, gd);
+    }
+
+    public static <A, B, C, D, E> Generator<Tuple5<A, B, C, D, E>> tupled(Generator<A> ga, Generator<B> gb, Generator<C> gc,
+                                                                          Generator<D> gd, Generator<E> ge) {
+        return Tuples.tupled(ga, gb, gc, gd, ge);
+    }
+
+    public static <A, B, C, D, E, F> Generator<Tuple6<A, B, C, D, E, F>> tupled(Generator<A> ga, Generator<B> gb, Generator<C> gc,
+                                                                                Generator<D> gd, Generator<E> ge, Generator<F> gf) {
+        return Tuples.tupled(ga, gb, gc, gd, ge, gf);
+    }
+
+    public static <A, B, C, D, E, F, G> Generator<Tuple7<A, B, C, D, E, F, G>> tupled(Generator<A> ga, Generator<B> gb, Generator<C> gc,
+                                                                                      Generator<D> gd, Generator<E> ge, Generator<F> gf,
+                                                                                      Generator<G> gg) {
+        return Tuples.tupled(ga, gb, gc, gd, ge, gf, gg);
+    }
+
+    public static <A, B, C, D, E, F, G, H> Generator<Tuple8<A, B, C, D, E, F, G, H>> tupled(Generator<A> ga, Generator<B> gb, Generator<C> gc,
+                                                                                            Generator<D> gd, Generator<E> ge, Generator<F> gf,
+                                                                                            Generator<G> gg, Generator<H> rh) {
+        return Tuples.tupled(ga, gb, gc, gd, ge, gf, gg, rh);
     }
 
     @SafeVarargs
