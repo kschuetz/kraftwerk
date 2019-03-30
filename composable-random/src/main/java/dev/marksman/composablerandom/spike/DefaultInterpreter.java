@@ -1,5 +1,6 @@
 package dev.marksman.composablerandom.spike;
 
+import com.jnape.palatable.lambda.adt.Unit;
 import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.composablerandom.RandomState;
 import dev.marksman.composablerandom.Result;
@@ -10,6 +11,7 @@ import static dev.marksman.composablerandom.Result.result;
 
 @AllArgsConstructor()
 public class DefaultInterpreter {
+
     private static final Fn1<Instruction.NextBoolean, Fn1<RandomState, ? extends Result<? extends RandomState, ?>>>
             HANDLE_NEXT_BOOLEAN = constantly(RandomState::nextBoolean);
 
@@ -71,55 +73,47 @@ public class DefaultInterpreter {
         return input -> input.nextInt(instruction.getBound());
     }
 
-//    static Generator<Integer> generateInt(int min, int max) {
-//        if (min > max) {
-//            throw new IllegalArgumentException("max must be >= min");
-//        }
-//        if (max == Integer.MAX_VALUE) {
-//            if (min == Integer.MIN_VALUE) {
-//                return generateInt();
-//            } else {
-//                return generateIntExclusive(min - 1, max)
-//                        .fmap(n -> n + 1);
-//            }
-//        } else {
-//            return generateIntExclusive(min, max + 1);
-//        }
-//    }
-
     private Fn1<RandomState, Result<? extends RandomState, Integer>> handleNextIntBetween(HasIntInclusiveRange instruction) {
-        return null;
+        return input -> input.nextIntBetween(instruction.getMin(), instruction.getMax());
     }
 
     private Fn1<RandomState, Result<? extends RandomState, Integer>> handleNextIntIndex(HasIntExclusiveBound instruction) {
-        return null;
+        return handleNextIntExclusive(instruction);
     }
 
     private Fn1<RandomState, Result<? extends RandomState, Long>> handleNextLongExclusive(HasLongExclusiveBound instruction) {
-        return null;
+        return input -> input.nextLong(instruction.getBound());
     }
 
     private Fn1<RandomState, Result<? extends RandomState, Long>> handleNextLongBetween(HasLongInclusiveRange instruction) {
-        return null;
+        return input -> input.nextLongBetween(instruction.getMin(), instruction.getMax());
     }
 
     private Fn1<RandomState, Result<? extends RandomState, Long>> handleNextLongIndex(HasLongExclusiveBound instruction) {
-        return null;
+        return handleNextLongExclusive(instruction);
     }
 
     private Fn1<RandomState, Result<? extends RandomState, Byte[]>> handleNextBytes(HasIntCount instruction) {
-        return null;
+        final int count = Math.max(instruction.getCount(), 0);
+        return (RandomState input) -> {
+            byte[] buffer = new byte[count];
+            Result<? extends RandomState, Unit> next = input.nextBytes(buffer);
+            Byte[] result = new Byte[count];
+            int i = 0;
+            for (byte b : buffer) {
+                result[i++] = b;
+            }
+            return next.fmap(__ -> result);
+        };
     }
 
     private <A> Fn1<RandomState, Result<? extends RandomState, A>> handleSized(Instruction.Sized<A> instruction) {
         //TODO: sized
-//        return execute(input, fn.apply(5));
-        return null;
+        return input -> execute(input, instruction.getFn().apply(5));
     }
 
     private <A> Fn1<RandomState, Result<? extends RandomState, A>> handleLabeled(Instruction.Labeled<A> instruction) {
-//        return execute(input, operand);
-        return null;
+        return input -> execute(input, instruction.getOperand());
     }
 
 }
