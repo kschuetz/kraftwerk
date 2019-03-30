@@ -71,6 +71,22 @@ public class DefaultInterpreter {
         return input -> input.nextInt(instruction.getBound());
     }
 
+//    static Generator<Integer> generateInt(int min, int max) {
+//        if (min > max) {
+//            throw new IllegalArgumentException("max must be >= min");
+//        }
+//        if (max == Integer.MAX_VALUE) {
+//            if (min == Integer.MIN_VALUE) {
+//                return generateInt();
+//            } else {
+//                return generateIntExclusive(min - 1, max)
+//                        .fmap(n -> n + 1);
+//            }
+//        } else {
+//            return generateIntExclusive(min, max + 1);
+//        }
+//    }
+
     private Fn1<RandomState, Result<? extends RandomState, Integer>> handleNextIntBetween(HasIntInclusiveRange instruction) {
         return null;
     }

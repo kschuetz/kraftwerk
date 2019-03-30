@@ -45,6 +45,51 @@ public final class StandardGen implements RandomState {
     }
 
     @Override
+    public final Result<StandardGen, Integer> nextIntExclusive(int origin, int bound) {
+        if (origin >= bound) {
+            throw new IllegalArgumentException("bound must be greater than origin");
+        }
+        long n = (long) bound - origin;
+        long m = n - 1;
+        if (n < Integer.MAX_VALUE) {
+            return nextInt((int) n).fmap(r -> origin + r);
+        } else if ((n & m) == 0) {
+            // power of two
+            return nextInt().fmap(r -> (r & (int) m) + origin);
+        } else {
+            Result<StandardGen, Integer> rg1 = nextInt();
+            StandardGen current = rg1.getNextState();
+            int r = rg1._2();
+            for (int u = r >>> 1;
+                 u + m - (r = u % (int) n) < 0; ) {
+                Result<StandardGen, Integer> next = current.nextInt();
+                u = next._2() >>> 1;
+                current = next._1();
+            }
+            r += origin;
+
+            return result(current, r);
+        }
+    }
+
+    @Override
+    public final Result<StandardGen, Integer> nextIntBetween(int min, int max) {
+        if (min > max) {
+            throw new IllegalArgumentException("max must be >= min");
+        }
+        if (max == Integer.MAX_VALUE) {
+            if (min == Integer.MIN_VALUE) {
+                return nextInt();
+            } else {
+                return nextIntExclusive(min - 1, max)
+                        .fmap(n -> n + 1);
+            }
+        } else {
+            return nextIntExclusive(min, max + 1);
+        }
+    }
+
+    @Override
     public final Result<StandardGen, Double> nextDouble() {
         Result<StandardGen, Integer> s1 = next(26);
         Result<StandardGen, Integer> s2 = s1._1().next(27);
@@ -63,6 +108,61 @@ public final class StandardGen implements RandomState {
         Result<StandardGen, Integer> s2 = s1._1().next(32);
         long result = ((long) s1._2() << 32) + s2._2();
         return result(s2._1(), result);
+    }
+
+    @Override
+    public Result<StandardGen, Long> nextLong(long bound) {
+        if (bound <= 0)
+            throw new IllegalArgumentException("bound must be positive");
+        if (bound <= Integer.MAX_VALUE) {
+            return nextInt((int) bound).fmap(Integer::longValue);
+        } else {
+            return nextLongExclusive(0, bound);
+        }
+    }
+
+    @Override
+    public Result<StandardGen, Long> nextLongExclusive(long origin, long bound) {
+        if (origin >= bound) {
+            throw new IllegalArgumentException("bound must be greater than origin");
+        }
+        long n = bound - origin;
+        long m = n - 1;
+
+        if ((n & m) == 0L) {
+            // power of two
+            return nextLong().fmap(r -> (r & m) + origin);
+        } else {
+            Result<StandardGen, Long> rg1 = nextLong();
+            StandardGen current = rg1.getNextState();
+            long r = rg1.getValue();
+            for (long u = r >>> 1;
+                 u + m - (r = u % n) < 0L; ) {
+                Result<StandardGen, Long> next = current.nextLong();
+                u = next._2() >>> 1;
+                current = next._1();
+            }
+            r += origin;
+
+            return result(current, r);
+        }
+    }
+
+    @Override
+    public Result<StandardGen, Long> nextLongBetween(long min, long max) {
+        if (min > max) {
+            throw new IllegalArgumentException("max must be >= min");
+        }
+        if (max == Long.MAX_VALUE) {
+            if (min == Long.MIN_VALUE) {
+                return nextLong();
+            } else {
+                return nextLongExclusive(min - 1, max)
+                        .fmap(n -> n + 1);
+            }
+        } else {
+            return nextLongExclusive(min, max + 1);
+        }
     }
 
     @Override

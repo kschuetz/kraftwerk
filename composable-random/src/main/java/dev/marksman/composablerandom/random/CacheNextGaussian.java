@@ -16,13 +16,23 @@ final class CacheNextGaussian implements RandomState {
     private final double nextGaussian;
 
     @Override
+    public final Result<CacheNextGaussian, Integer> nextInt() {
+        return wrap(inner.nextInt());
+    }
+
+    @Override
     public final Result<CacheNextGaussian, Integer> nextInt(int bound) {
         return wrap(inner.nextInt(bound));
     }
 
     @Override
-    public final Result<CacheNextGaussian, Integer> nextInt() {
-        return wrap(inner.nextInt());
+    public final Result<CacheNextGaussian, Integer> nextIntExclusive(int origin, int bound) {
+        return wrap(inner.nextIntExclusive(origin, bound));
+    }
+
+    @Override
+    public final Result<CacheNextGaussian, Integer> nextIntBetween(int min, int max) {
+        return wrap(inner.nextIntBetween(min, max));
     }
 
     @Override
@@ -38,6 +48,21 @@ final class CacheNextGaussian implements RandomState {
     @Override
     public final Result<CacheNextGaussian, Long> nextLong() {
         return wrap(inner.nextLong());
+    }
+
+    @Override
+    public final Result<CacheNextGaussian, Long> nextLong(long bound) {
+        return wrap(inner.nextLong(bound));
+    }
+
+    @Override
+    public final Result<CacheNextGaussian, Long> nextLongExclusive(long origin, long bound) {
+        return wrap(inner.nextLongExclusive(origin, bound));
+    }
+
+    @Override
+    public final Result<CacheNextGaussian, Long> nextLongBetween(long min, long max) {
+        return wrap(inner.nextLongBetween(min, max));
     }
 
     @Override
