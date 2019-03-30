@@ -9,8 +9,9 @@ import static java.util.Arrays.asList;
 public class BenchmarkSandbox {
     private static final int ITERATIONS = 5_000_000;
 
-    private static void runOld() {
-        Runner.runOld("tuple", ITERATIONS, OldGenerators.tupled(OldGenerators.generateInt(),
+    private static void runTuples() {
+        int iterations = 500_000;
+        Runner.runOld("tuple", iterations, OldGenerators.tupled(OldGenerators.generateInt(),
                 OldGenerators.generateFloat(),
                 OldGenerators.generateDouble(),
                 OldGenerators.generateLong(),
@@ -20,10 +21,7 @@ public class BenchmarkSandbox {
                 OldGenerators.tupled(OldGenerators.chooseOneOf("foo", "bar", "baz"),
                         OldGenerators.chooseOneFrom(asList(1, 2, 3, 4, 5, 6, 7, 8)))));
 
-    }
-
-    private static void runNew() {
-        Runner.run("tuple", ITERATIONS, Generators.tupled(Generators.generateInt(),
+        Runner.run("tuple", iterations, Generators.tupled(Generators.generateInt(),
                 Generators.generateFloat(),
                 Generators.generateDouble(),
                 Generators.generateLong(),
@@ -35,8 +33,6 @@ public class BenchmarkSandbox {
     }
 
     private static void sandbox1() {
-        //        runOld();
-//        runNew();
         Runner.runOld("int", ITERATIONS, OldGenerators.generateInt());
         Runner.runOld("float", ITERATIONS, OldGenerators.generateFloat());
         Runner.runOld("double", ITERATIONS, OldGenerators.generateDouble());
@@ -70,10 +66,10 @@ public class BenchmarkSandbox {
 //        Runner.run("long", ITERATIONS, Generators.generateLong());
 //        Runner.run("float", ITERATIONS, Generators.generateFloat());
         Runner.run("int exclusive", ITERATIONS, Generators.generateIntExclusive(65537));
-
     }
 
     public static void main(String[] args) {
-        sandbox2();
+        runTuples();
+//        sandbox1();
     }
 }
