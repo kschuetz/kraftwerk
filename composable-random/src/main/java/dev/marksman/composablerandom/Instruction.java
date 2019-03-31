@@ -2,6 +2,7 @@ package dev.marksman.composablerandom;
 
 import com.jnape.palatable.lambda.adt.hlist.Tuple8;
 import com.jnape.palatable.lambda.functions.Fn1;
+import com.jnape.palatable.lambda.functions.Fn2;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -24,7 +25,7 @@ public abstract class Instruction<A> {
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Custom<A> extends Instruction<A> {
-        private final Fn1<? super RandomState, Result<? extends RandomState, A>> fn;
+        private final Fn1<? super RandomState, Result> fn;
     }
 
     @EqualsAndHashCode(callSuper = true)
@@ -170,6 +171,17 @@ public abstract class Instruction<A> {
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class Aggregate<A, Builder, Result> extends Instruction<Result> {
+        private final int size;
+        private final Supplier<Builder> initialBuilderSupplier;
+        private final Fn2<Builder, A, Builder> addFn;
+        private final Fn1<Builder, Result> buildFn;
+        private final Instruction<A> operand;
+    }
+
+    @EqualsAndHashCode(callSuper = true)
+    @Value
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class BuildCollection<A, C extends Collection<A>> extends Instruction<Collection<A>> {
         private final Supplier<C> collectionSupplier;
         private final int size;
@@ -194,7 +206,7 @@ public abstract class Instruction<A> {
         return new Pure<>(a);
     }
 
-    public static <A> Custom<A> custom(Function<? super RandomState, Result<? extends RandomState, A>> fn) {
+    public static <A> Custom<A> custom(Function<? super RandomState, Result> fn) {
         return custom(fn::apply);
     }
 
@@ -281,6 +293,14 @@ public abstract class Instruction<A> {
 
     public static <A> Labeled<A> labeled(String label, Instruction<A> operand) {
         return new Labeled<>(label, operand);
+    }
+
+    public static <A, Builder, Result> Aggregate<A, Builder, Result> aggregate(int size,
+                                                                               Supplier<Builder> initialBuilderSupplier,
+                                                                               Fn2<Builder, A, Builder> addFn,
+                                                                               Fn1<Builder, Result> buildFn,
+                                                                               Instruction<A> operand) {
+        return new Aggregate<>(size, initialBuilderSupplier, addFn, buildFn, operand);
     }
 
     public static <A, C extends Collection<A>> BuildCollection<A, C> buildCollection(Supplier<C> supplier, int size, Instruction<A> operand) {
