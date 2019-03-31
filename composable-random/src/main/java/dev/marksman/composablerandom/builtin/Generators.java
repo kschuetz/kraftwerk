@@ -2,15 +2,18 @@ package dev.marksman.composablerandom.builtin;
 
 import com.jnape.palatable.lambda.adt.Either;
 import com.jnape.palatable.lambda.adt.Maybe;
+import com.jnape.palatable.lambda.adt.Unit;
 import com.jnape.palatable.lambda.adt.hlist.*;
 import dev.marksman.composablerandom.DiscreteDomain;
 import dev.marksman.composablerandom.FrequencyEntry;
 import dev.marksman.composablerandom.Generator;
+import dev.marksman.composablerandom.Instruction;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 public class Generators {
 
@@ -76,6 +79,27 @@ public class Generators {
 
     public static Generator<Short> generateShort() {
         return Primitives.generateShort();
+    }
+
+    public static Generator<String> generateString(int length, Generator<String> g) {
+        return Strings.generateString(length, g);
+    }
+
+    public static Generator<String> generateStringFromCharacters(int length, Generator<Character> g) {
+        return Strings.generateStringFromCharacters(length, g);
+    }
+
+    public static Generator<String> generateStringFromCharacters(Generator<Character> g) {
+        return Strings.generateStringFromCharacters(g);
+    }
+
+    @SafeVarargs
+    public static Generator<String> generateString(Generator<String> first, Generator<String>... more) {
+        return Strings.generateString(first, more);
+    }
+
+    public static Generator<Unit> generateUnit() {
+        return CoProducts.generateUnit();
     }
 
     public static <A> Generator<Maybe<A>> generateMaybe(int nothingWeight, int justWeight, Generator<A> g) {
@@ -233,6 +257,10 @@ public class Generators {
 
     public static <A> Generator<A> frequency(Collection<FrequencyEntry<? extends A>> entries) {
         return Choose.frequency(entries);
+    }
+
+    public static <A> Generator<A> sized(Function<Integer, Generator<A>> g) {
+        return Generator.generator(Instruction.sized(n -> g.apply(n).getInstruction()));
     }
 
     public static <A> Generator<ArrayList<A>> generateList(Generator<A> g) {
