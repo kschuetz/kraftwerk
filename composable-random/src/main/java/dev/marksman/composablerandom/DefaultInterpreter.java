@@ -4,6 +4,8 @@ import com.jnape.palatable.lambda.adt.Unit;
 import com.jnape.palatable.lambda.adt.hlist.Tuple8;
 import lombok.AllArgsConstructor;
 
+import java.util.Collection;
+
 import static com.jnape.palatable.lambda.adt.hlist.HList.tuple;
 import static dev.marksman.composablerandom.Result.result;
 
@@ -15,6 +17,12 @@ public class DefaultInterpreter {
         if (instruction instanceof Instruction.Pure) {
             //noinspection unchecked
             return (Result<RandomState, A>) result(input, (((Instruction.Pure) instruction).getValue()));
+        }
+
+        if (instruction instanceof Instruction.Custom) {
+            Instruction.Custom instruction1 = (Instruction.Custom) instruction;
+            //noinspection unchecked
+            return (Result<RandomState, A>) instruction1.getFn().apply(input);
         }
 
         if (instruction instanceof Instruction.Mapped) {
@@ -122,6 +130,12 @@ public class DefaultInterpreter {
             return (Result<RandomState, A>) handleSized(instruction1, input);
         }
 
+        if (instruction instanceof Instruction.BuildCollection) {
+            Instruction.BuildCollection instruction1 = (Instruction.BuildCollection) instruction;
+            //noinspection unchecked
+            return (Result<RandomState, A>) handleBuildCollection(instruction1, input);
+        }
+
         if (instruction instanceof Instruction.Product8) {
             Instruction.Product8 instruction1 = (Instruction.Product8) instruction;
             //noinspection unchecked
@@ -156,6 +170,19 @@ public class DefaultInterpreter {
 
     private <A> Result<? extends RandomState, A> handleLabeled(Instruction.Labeled<A> instruction, RandomState input) {
         return execute(input, instruction.getOperand());
+    }
+
+    private <A, C extends Collection<A>> Result<? extends RandomState, C> handleBuildCollection(Instruction.BuildCollection<A, C> instruction, RandomState input) {
+        RandomState current = input;
+        int size = instruction.getSize();
+        C result = instruction.getCollectionSupplier().get();
+        Instruction<A> operand = instruction.getOperand();
+        for (int i = 0; i < size; i++) {
+            Result<RandomState, A> next = execute(current, operand);
+            result.add(next.getValue());
+            current = next.getNextState();
+        }
+        return result(current, result);
     }
 
     private <A, B, C, D, E, F, G, H> Result<? extends RandomState, Tuple8<A, B, C, D, E, F, G, H>> handleProduct8(Instruction.Product8<A, B, C, D, E, F, G, H> instruction, RandomState input) {

@@ -7,63 +7,24 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
+import java.util.Collection;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public abstract class Instruction<A> {
-
-    public abstract <R> R match(Function<Pure<A>, R> pureFn,
-                                Function<Mapped<?, A>, R> mappedFn,
-                                Function<FlatMapped<?, A>, R> flatMappedFn,
-                                Function<NextBoolean, R> nextBooleanFn,
-                                Function<NextDouble, R> nextDoubleFn,
-                                Function<NextFloat, R> nextFloatFn,
-                                Function<NextInt, R> nextIntFn,
-                                Function<NextIntBounded, R> nextIntBoundedFn,
-                                Function<NextIntExclusive, R> nextIntExclusiveFn,
-                                Function<NextIntBetween, R> nextIntBetweenFn,
-                                Function<NextIntIndex, R> nextIntIndexFn,
-                                Function<NextLong, R> nextLongFn,
-                                Function<NextLongBounded, R> nextLongBoundedFn,
-                                Function<NextLongExclusive, R> nextLongExclusiveFn,
-                                Function<NextLongBetween, R> nextLongBetweenFn,
-                                Function<NextLongIndex, R> nextLongIndexFn,
-                                Function<NextGaussian, R> nextGaussianFn,
-                                Function<NextBytes, R> nextBytesFn,
-                                Function<Sized<A>, R> sizedFn,
-                                Function<Labeled<A>, R> labeledFn,
-                                Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn);
-
 
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Pure<A> extends Instruction<A> {
         private final A value;
+    }
 
-        @Override
-        public <R> R match(Function<Pure<A>, R> pureFn,
-                           Function<Mapped<?, A>, R> mappedFn,
-                           Function<FlatMapped<?, A>, R> flatMappedFn,
-                           Function<NextBoolean, R> nextBooleanFn,
-                           Function<NextDouble, R> nextDoubleFn,
-                           Function<NextFloat, R> nextFloatFn,
-                           Function<NextInt, R> nextIntFn,
-                           Function<NextIntBounded, R> nextIntBoundedFn,
-                           Function<NextIntExclusive, R> nextIntExclusiveFn,
-                           Function<NextIntBetween, R> nextIntBetweenFn,
-                           Function<NextIntIndex, R> nextIntIndexFn,
-                           Function<NextLong, R> nextLongFn,
-                           Function<NextLongBounded, R> nextLongBoundedFn,
-                           Function<NextLongExclusive, R> nextLongExclusiveFn,
-                           Function<NextLongBetween, R> nextLongBetweenFn,
-                           Function<NextLongIndex, R> nextLongIndexFn,
-                           Function<NextGaussian, R> nextGaussianFn,
-                           Function<NextBytes, R> nextBytesFn,
-                           Function<Sized<A>, R> sizedFn,
-                           Function<Labeled<A>, R> labeledFn,
-                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
-            return pureFn.apply(this);
-        }
+    @EqualsAndHashCode(callSuper = true)
+    @Value
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class Custom<A> extends Instruction<A> {
+        private final Fn1<? super RandomState, Result<? extends RandomState, A>> fn;
     }
 
     @EqualsAndHashCode(callSuper = true)
@@ -72,31 +33,6 @@ public abstract class Instruction<A> {
     public static class Mapped<In, A> extends Instruction<A> {
         private final Fn1<In, A> fn;
         private final Instruction<In> operand;
-
-        @Override
-        public <R> R match(Function<Pure<A>, R> pureFn,
-                           Function<Mapped<?, A>, R> mappedFn,
-                           Function<FlatMapped<?, A>, R> flatMappedFn,
-                           Function<NextBoolean, R> nextBooleanFn,
-                           Function<NextDouble, R> nextDoubleFn,
-                           Function<NextFloat, R> nextFloatFn,
-                           Function<NextInt, R> nextIntFn,
-                           Function<NextIntBounded, R> nextIntBoundedFn,
-                           Function<NextIntExclusive, R> nextIntExclusiveFn,
-                           Function<NextIntBetween, R> nextIntBetweenFn,
-                           Function<NextIntIndex, R> nextIntIndexFn,
-                           Function<NextLong, R> nextLongFn,
-                           Function<NextLongBounded, R> nextLongBoundedFn,
-                           Function<NextLongExclusive, R> nextLongExclusiveFn,
-                           Function<NextLongBetween, R> nextLongBetweenFn,
-                           Function<NextLongIndex, R> nextLongIndexFn,
-                           Function<NextGaussian, R> nextGaussianFn,
-                           Function<NextBytes, R> nextBytesFn,
-                           Function<Sized<A>, R> sizedFn,
-                           Function<Labeled<A>, R> labeledFn,
-                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
-            return mappedFn.apply(this);
-        }
     }
 
     @EqualsAndHashCode(callSuper = true)
@@ -105,31 +41,6 @@ public abstract class Instruction<A> {
     public static class FlatMapped<In, A> extends Instruction<A> {
         private final Fn1<? super In, ? extends Instruction<A>> fn;
         private final Instruction<In> operand;
-
-        @Override
-        public <R> R match(Function<Pure<A>, R> pureFn,
-                           Function<Mapped<?, A>, R> mappedFn,
-                           Function<FlatMapped<?, A>, R> flatMappedFn,
-                           Function<NextBoolean, R> nextBooleanFn,
-                           Function<NextDouble, R> nextDoubleFn,
-                           Function<NextFloat, R> nextFloatFn,
-                           Function<NextInt, R> nextIntFn,
-                           Function<NextIntBounded, R> nextIntBoundedFn,
-                           Function<NextIntExclusive, R> nextIntExclusiveFn,
-                           Function<NextIntBetween, R> nextIntBetweenFn,
-                           Function<NextIntIndex, R> nextIntIndexFn,
-                           Function<NextLong, R> nextLongFn,
-                           Function<NextLongBounded, R> nextLongBoundedFn,
-                           Function<NextLongExclusive, R> nextLongExclusiveFn,
-                           Function<NextLongBetween, R> nextLongBetweenFn,
-                           Function<NextLongIndex, R> nextLongIndexFn,
-                           Function<NextGaussian, R> nextGaussianFn,
-                           Function<NextBytes, R> nextBytesFn,
-                           Function<Sized<A>, R> sizedFn,
-                           Function<Labeled<A>, R> labeledFn,
-                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
-            return flatMappedFn.apply(this);
-        }
     }
 
     @EqualsAndHashCode(callSuper = true)
@@ -137,31 +48,6 @@ public abstract class Instruction<A> {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class NextBoolean extends Instruction<Boolean> {
         private static final NextBoolean INSTANCE = new NextBoolean();
-
-        @Override
-        public <R> R match(Function<Pure<Boolean>, R> pureFn,
-                           Function<Mapped<?, Boolean>, R> mappedFn,
-                           Function<FlatMapped<?, Boolean>, R> flatMappedFn,
-                           Function<NextBoolean, R> nextBooleanFn,
-                           Function<NextDouble, R> nextDoubleFn,
-                           Function<NextFloat, R> nextFloatFn,
-                           Function<NextInt, R> nextIntFn,
-                           Function<NextIntBounded, R> nextIntBoundedFn,
-                           Function<NextIntExclusive, R> nextIntExclusiveFn,
-                           Function<NextIntBetween, R> nextIntBetweenFn,
-                           Function<NextIntIndex, R> nextIntIndexFn,
-                           Function<NextLong, R> nextLongFn,
-                           Function<NextLongBounded, R> nextLongBoundedFn,
-                           Function<NextLongExclusive, R> nextLongExclusiveFn,
-                           Function<NextLongBetween, R> nextLongBetweenFn,
-                           Function<NextLongIndex, R> nextLongIndexFn,
-                           Function<NextGaussian, R> nextGaussianFn,
-                           Function<NextBytes, R> nextBytesFn,
-                           Function<Sized<Boolean>, R> sizedFn,
-                           Function<Labeled<Boolean>, R> labeledFn,
-                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
-            return nextBooleanFn.apply(this);
-        }
     }
 
     @EqualsAndHashCode(callSuper = true)
@@ -169,31 +55,6 @@ public abstract class Instruction<A> {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class NextDouble extends Instruction<Double> {
         private static final NextDouble INSTANCE = new NextDouble();
-
-        @Override
-        public <R> R match(Function<Pure<Double>, R> pureFn,
-                           Function<Mapped<?, Double>, R> mappedFn,
-                           Function<FlatMapped<?, Double>, R> flatMappedFn,
-                           Function<NextBoolean, R> nextBooleanFn,
-                           Function<NextDouble, R> nextDoubleFn,
-                           Function<NextFloat, R> nextFloatFn,
-                           Function<NextInt, R> nextIntFn,
-                           Function<NextIntBounded, R> nextIntBoundedFn,
-                           Function<NextIntExclusive, R> nextIntExclusiveFn,
-                           Function<NextIntBetween, R> nextIntBetweenFn,
-                           Function<NextIntIndex, R> nextIntIndexFn,
-                           Function<NextLong, R> nextLongFn,
-                           Function<NextLongBounded, R> nextLongBoundedFn,
-                           Function<NextLongExclusive, R> nextLongExclusiveFn,
-                           Function<NextLongBetween, R> nextLongBetweenFn,
-                           Function<NextLongIndex, R> nextLongIndexFn,
-                           Function<NextGaussian, R> nextGaussianFn,
-                           Function<NextBytes, R> nextBytesFn,
-                           Function<Sized<Double>, R> sizedFn,
-                           Function<Labeled<Double>, R> labeledFn,
-                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
-            return nextDoubleFn.apply(this);
-        }
     }
 
     @EqualsAndHashCode(callSuper = true)
@@ -201,31 +62,6 @@ public abstract class Instruction<A> {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class NextFloat extends Instruction<Float> {
         private static final NextFloat INSTANCE = new NextFloat();
-
-        @Override
-        public <R> R match(Function<Pure<Float>, R> pureFn,
-                           Function<Mapped<?, Float>, R> mappedFn,
-                           Function<FlatMapped<?, Float>, R> flatMappedFn,
-                           Function<NextBoolean, R> nextBooleanFn,
-                           Function<NextDouble, R> nextDoubleFn,
-                           Function<NextFloat, R> nextFloatFn,
-                           Function<NextInt, R> nextIntFn,
-                           Function<NextIntBounded, R> nextIntBoundedFn,
-                           Function<NextIntExclusive, R> nextIntExclusiveFn,
-                           Function<NextIntBetween, R> nextIntBetweenFn,
-                           Function<NextIntIndex, R> nextIntIndexFn,
-                           Function<NextLong, R> nextLongFn,
-                           Function<NextLongBounded, R> nextLongBoundedFn,
-                           Function<NextLongExclusive, R> nextLongExclusiveFn,
-                           Function<NextLongBetween, R> nextLongBetweenFn,
-                           Function<NextLongIndex, R> nextLongIndexFn,
-                           Function<NextGaussian, R> nextGaussianFn,
-                           Function<NextBytes, R> nextBytesFn,
-                           Function<Sized<Float>, R> sizedFn,
-                           Function<Labeled<Float>, R> labeledFn,
-                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
-            return nextFloatFn.apply(this);
-        }
     }
 
     @EqualsAndHashCode(callSuper = true)
@@ -233,31 +69,6 @@ public abstract class Instruction<A> {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class NextInt extends Instruction<Integer> {
         private static final NextInt INSTANCE = new NextInt();
-
-        @Override
-        public <R> R match(Function<Pure<Integer>, R> pureFn,
-                           Function<Mapped<?, Integer>, R> mappedFn,
-                           Function<FlatMapped<?, Integer>, R> flatMappedFn,
-                           Function<NextBoolean, R> nextBooleanFn,
-                           Function<NextDouble, R> nextDoubleFn,
-                           Function<NextFloat, R> nextFloatFn,
-                           Function<NextInt, R> nextIntFn,
-                           Function<NextIntBounded, R> nextIntBoundedFn,
-                           Function<NextIntExclusive, R> nextIntExclusiveFn,
-                           Function<NextIntBetween, R> nextIntBetweenFn,
-                           Function<NextIntIndex, R> nextIntIndexFn,
-                           Function<NextLong, R> nextLongFn,
-                           Function<NextLongBounded, R> nextLongBoundedFn,
-                           Function<NextLongExclusive, R> nextLongExclusiveFn,
-                           Function<NextLongBetween, R> nextLongBetweenFn,
-                           Function<NextLongIndex, R> nextLongIndexFn,
-                           Function<NextGaussian, R> nextGaussianFn,
-                           Function<NextBytes, R> nextBytesFn,
-                           Function<Sized<Integer>, R> sizedFn,
-                           Function<Labeled<Integer>, R> labeledFn,
-                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
-            return nextIntFn.apply(this);
-        }
     }
 
     @EqualsAndHashCode(callSuper = true)
@@ -265,32 +76,6 @@ public abstract class Instruction<A> {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class NextIntBounded extends Instruction<Integer> implements HasIntExclusiveBound {
         private final int bound;
-
-        @Override
-        public <R> R match(Function<Pure<Integer>, R> pureFn,
-                           Function<Mapped<?, Integer>, R> mappedFn,
-                           Function<FlatMapped<?, Integer>, R> flatMappedFn,
-                           Function<NextBoolean, R> nextBooleanFn,
-                           Function<NextDouble, R> nextDoubleFn,
-                           Function<NextFloat, R> nextFloatFn,
-                           Function<NextInt, R> nextIntFn,
-                           Function<NextIntBounded, R> nextIntBoundedFn,
-                           Function<NextIntExclusive, R> nextIntExclusiveFn,
-                           Function<NextIntBetween, R> nextIntBetweenFn,
-                           Function<NextIntIndex, R> nextIntIndexFn,
-                           Function<NextLong, R> nextLongFn,
-                           Function<NextLongBounded, R> nextLongBoundedFn,
-                           Function<NextLongExclusive, R> nextLongExclusiveFn,
-                           Function<NextLongBetween, R> nextLongBetweenFn,
-                           Function<NextLongIndex, R> nextLongIndexFn,
-                           Function<NextGaussian, R> nextGaussianFn,
-                           Function<NextBytes, R> nextBytesFn,
-                           Function<Sized<Integer>, R> sizedFn,
-                           Function<Labeled<Integer>, R> labeledFn,
-                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
-            return nextIntBoundedFn.apply(this);
-        }
-
     }
 
     @EqualsAndHashCode(callSuper = true)
@@ -299,32 +84,6 @@ public abstract class Instruction<A> {
     public static class NextIntExclusive extends Instruction<Integer> implements HasIntExclusiveRange {
         private final int origin;
         private final int bound;
-
-        @Override
-        public <R> R match(Function<Pure<Integer>, R> pureFn,
-                           Function<Mapped<?, Integer>, R> mappedFn,
-                           Function<FlatMapped<?, Integer>, R> flatMappedFn,
-                           Function<NextBoolean, R> nextBooleanFn,
-                           Function<NextDouble, R> nextDoubleFn,
-                           Function<NextFloat, R> nextFloatFn,
-                           Function<NextInt, R> nextIntFn,
-                           Function<NextIntBounded, R> nextIntBoundedFn,
-                           Function<NextIntExclusive, R> nextIntExclusiveFn,
-                           Function<NextIntBetween, R> nextIntBetweenFn,
-                           Function<NextIntIndex, R> nextIntIndexFn,
-                           Function<NextLong, R> nextLongFn,
-                           Function<NextLongBounded, R> nextLongBoundedFn,
-                           Function<NextLongExclusive, R> nextLongExclusiveFn,
-                           Function<NextLongBetween, R> nextLongBetweenFn,
-                           Function<NextLongIndex, R> nextLongIndexFn,
-                           Function<NextGaussian, R> nextGaussianFn,
-                           Function<NextBytes, R> nextBytesFn,
-                           Function<Sized<Integer>, R> sizedFn,
-                           Function<Labeled<Integer>, R> labeledFn,
-                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
-            return nextIntExclusiveFn.apply(this);
-        }
-
     }
 
     @EqualsAndHashCode(callSuper = true)
@@ -333,31 +92,6 @@ public abstract class Instruction<A> {
     public static class NextIntBetween extends Instruction<Integer> implements HasIntInclusiveRange {
         private final int min;
         private final int max;
-
-        @Override
-        public <R> R match(Function<Pure<Integer>, R> pureFn,
-                           Function<Mapped<?, Integer>, R> mappedFn,
-                           Function<FlatMapped<?, Integer>, R> flatMappedFn,
-                           Function<NextBoolean, R> nextBooleanFn,
-                           Function<NextDouble, R> nextDoubleFn,
-                           Function<NextFloat, R> nextFloatFn,
-                           Function<NextInt, R> nextIntFn,
-                           Function<NextIntBounded, R> nextIntBoundedFn,
-                           Function<NextIntExclusive, R> nextIntExclusiveFn,
-                           Function<NextIntBetween, R> nextIntBetweenFn,
-                           Function<NextIntIndex, R> nextIntIndexFn,
-                           Function<NextLong, R> nextLongFn,
-                           Function<NextLongBounded, R> nextLongBoundedFn,
-                           Function<NextLongExclusive, R> nextLongExclusiveFn,
-                           Function<NextLongBetween, R> nextLongBetweenFn,
-                           Function<NextLongIndex, R> nextLongIndexFn,
-                           Function<NextGaussian, R> nextGaussianFn,
-                           Function<NextBytes, R> nextBytesFn,
-                           Function<Sized<Integer>, R> sizedFn,
-                           Function<Labeled<Integer>, R> labeledFn,
-                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
-            return nextIntBetweenFn.apply(this);
-        }
     }
 
     @EqualsAndHashCode(callSuper = true)
@@ -365,31 +99,6 @@ public abstract class Instruction<A> {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class NextIntIndex extends Instruction<Integer> implements HasIntExclusiveBound {
         private final int bound;
-
-        @Override
-        public <R> R match(Function<Pure<Integer>, R> pureFn,
-                           Function<Mapped<?, Integer>, R> mappedFn,
-                           Function<FlatMapped<?, Integer>, R> flatMappedFn,
-                           Function<NextBoolean, R> nextBooleanFn,
-                           Function<NextDouble, R> nextDoubleFn,
-                           Function<NextFloat, R> nextFloatFn,
-                           Function<NextInt, R> nextIntFn,
-                           Function<NextIntBounded, R> nextIntBoundedFn,
-                           Function<NextIntExclusive, R> nextIntExclusiveFn,
-                           Function<NextIntBetween, R> nextIntBetweenFn,
-                           Function<NextIntIndex, R> nextIntIndexFn,
-                           Function<NextLong, R> nextLongFn,
-                           Function<NextLongBounded, R> nextLongBoundedFn,
-                           Function<NextLongExclusive, R> nextLongExclusiveFn,
-                           Function<NextLongBetween, R> nextLongBetweenFn,
-                           Function<NextLongIndex, R> nextLongIndexFn,
-                           Function<NextGaussian, R> nextGaussianFn,
-                           Function<NextBytes, R> nextBytesFn,
-                           Function<Sized<Integer>, R> sizedFn,
-                           Function<Labeled<Integer>, R> labeledFn,
-                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
-            return nextIntIndexFn.apply(this);
-        }
     }
 
     @EqualsAndHashCode(callSuper = true)
@@ -397,31 +106,6 @@ public abstract class Instruction<A> {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class NextLong extends Instruction<Long> {
         private static final NextLong INSTANCE = new NextLong();
-
-        @Override
-        public <R> R match(Function<Pure<Long>, R> pureFn,
-                           Function<Mapped<?, Long>, R> mappedFn,
-                           Function<FlatMapped<?, Long>, R> flatMappedFn,
-                           Function<NextBoolean, R> nextBooleanFn,
-                           Function<NextDouble, R> nextDoubleFn,
-                           Function<NextFloat, R> nextFloatFn,
-                           Function<NextInt, R> nextIntFn,
-                           Function<NextIntBounded, R> nextIntBoundedFn,
-                           Function<NextIntExclusive, R> nextIntExclusiveFn,
-                           Function<NextIntBetween, R> nextIntBetweenFn,
-                           Function<NextIntIndex, R> nextIntIndexFn,
-                           Function<NextLong, R> nextLongFn,
-                           Function<NextLongBounded, R> nextLongBoundedFn,
-                           Function<NextLongExclusive, R> nextLongExclusiveFn,
-                           Function<NextLongBetween, R> nextLongBetweenFn,
-                           Function<NextLongIndex, R> nextLongIndexFn,
-                           Function<NextGaussian, R> nextGaussianFn,
-                           Function<NextBytes, R> nextBytesFn,
-                           Function<Sized<Long>, R> sizedFn,
-                           Function<Labeled<Long>, R> labeledFn,
-                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
-            return nextLongFn.apply(this);
-        }
     }
 
     @EqualsAndHashCode(callSuper = true)
@@ -429,31 +113,6 @@ public abstract class Instruction<A> {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class NextLongBounded extends Instruction<Long> implements HasLongExclusiveBound {
         private final long bound;
-
-        @Override
-        public <R> R match(Function<Pure<Long>, R> pureFn,
-                           Function<Mapped<?, Long>, R> mappedFn,
-                           Function<FlatMapped<?, Long>, R> flatMappedFn,
-                           Function<NextBoolean, R> nextBooleanFn,
-                           Function<NextDouble, R> nextDoubleFn,
-                           Function<NextFloat, R> nextFloatFn,
-                           Function<NextInt, R> nextIntFn,
-                           Function<NextIntBounded, R> nextIntBoundedFn,
-                           Function<NextIntExclusive, R> nextIntExclusiveFn,
-                           Function<NextIntBetween, R> nextIntBetweenFn,
-                           Function<NextIntIndex, R> nextIntIndexFn,
-                           Function<NextLong, R> nextLongFn,
-                           Function<NextLongBounded, R> nextLongBoundedFn,
-                           Function<NextLongExclusive, R> nextLongExclusiveFn,
-                           Function<NextLongBetween, R> nextLongBetweenFn,
-                           Function<NextLongIndex, R> nextLongIndexFn,
-                           Function<NextGaussian, R> nextGaussianFn,
-                           Function<NextBytes, R> nextBytesFn,
-                           Function<Sized<Long>, R> sizedFn,
-                           Function<Labeled<Long>, R> labeledFn,
-                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
-            return nextLongBoundedFn.apply(this);
-        }
     }
 
     @EqualsAndHashCode(callSuper = true)
@@ -462,31 +121,6 @@ public abstract class Instruction<A> {
     public static class NextLongExclusive extends Instruction<Long> implements HasLongExclusiveRange {
         private final long origin;
         private final long bound;
-
-        @Override
-        public <R> R match(Function<Pure<Long>, R> pureFn,
-                           Function<Mapped<?, Long>, R> mappedFn,
-                           Function<FlatMapped<?, Long>, R> flatMappedFn,
-                           Function<NextBoolean, R> nextBooleanFn,
-                           Function<NextDouble, R> nextDoubleFn,
-                           Function<NextFloat, R> nextFloatFn,
-                           Function<NextInt, R> nextIntFn,
-                           Function<NextIntBounded, R> nextIntBoundedFn,
-                           Function<NextIntExclusive, R> nextIntExclusiveFn,
-                           Function<NextIntBetween, R> nextIntBetweenFn,
-                           Function<NextIntIndex, R> nextIntIndexFn,
-                           Function<NextLong, R> nextLongFn,
-                           Function<NextLongBounded, R> nextLongBoundedFn,
-                           Function<NextLongExclusive, R> nextLongExclusiveFn,
-                           Function<NextLongBetween, R> nextLongBetweenFn,
-                           Function<NextLongIndex, R> nextLongIndexFn,
-                           Function<NextGaussian, R> nextGaussianFn,
-                           Function<NextBytes, R> nextBytesFn,
-                           Function<Sized<Long>, R> sizedFn,
-                           Function<Labeled<Long>, R> labeledFn,
-                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
-            return nextLongExclusiveFn.apply(this);
-        }
     }
 
     @EqualsAndHashCode(callSuper = true)
@@ -495,31 +129,6 @@ public abstract class Instruction<A> {
     public static class NextLongBetween extends Instruction<Long> implements HasLongInclusiveRange {
         private final long min;
         private final long max;
-
-        @Override
-        public <R> R match(Function<Pure<Long>, R> pureFn,
-                           Function<Mapped<?, Long>, R> mappedFn,
-                           Function<FlatMapped<?, Long>, R> flatMappedFn,
-                           Function<NextBoolean, R> nextBooleanFn,
-                           Function<NextDouble, R> nextDoubleFn,
-                           Function<NextFloat, R> nextFloatFn,
-                           Function<NextInt, R> nextIntFn,
-                           Function<NextIntBounded, R> nextIntBoundedFn,
-                           Function<NextIntExclusive, R> nextIntExclusiveFn,
-                           Function<NextIntBetween, R> nextIntBetweenFn,
-                           Function<NextIntIndex, R> nextIntIndexFn,
-                           Function<NextLong, R> nextLongFn,
-                           Function<NextLongBounded, R> nextLongBoundedFn,
-                           Function<NextLongExclusive, R> nextLongExclusiveFn,
-                           Function<NextLongBetween, R> nextLongBetweenFn,
-                           Function<NextLongIndex, R> nextLongIndexFn,
-                           Function<NextGaussian, R> nextGaussianFn,
-                           Function<NextBytes, R> nextBytesFn,
-                           Function<Sized<Long>, R> sizedFn,
-                           Function<Labeled<Long>, R> labeledFn,
-                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
-            return nextLongBetweenFn.apply(this);
-        }
     }
 
     @EqualsAndHashCode(callSuper = true)
@@ -527,31 +136,6 @@ public abstract class Instruction<A> {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class NextLongIndex extends Instruction<Long> implements HasLongExclusiveBound {
         private final long bound;
-
-        @Override
-        public <R> R match(Function<Pure<Long>, R> pureFn,
-                           Function<Mapped<?, Long>, R> mappedFn,
-                           Function<FlatMapped<?, Long>, R> flatMappedFn,
-                           Function<NextBoolean, R> nextBooleanFn,
-                           Function<NextDouble, R> nextDoubleFn,
-                           Function<NextFloat, R> nextFloatFn,
-                           Function<NextInt, R> nextIntFn,
-                           Function<NextIntBounded, R> nextIntBoundedFn,
-                           Function<NextIntExclusive, R> nextIntExclusiveFn,
-                           Function<NextIntBetween, R> nextIntBetweenFn,
-                           Function<NextIntIndex, R> nextIntIndexFn,
-                           Function<NextLong, R> nextLongFn,
-                           Function<NextLongBounded, R> nextLongBoundedFn,
-                           Function<NextLongExclusive, R> nextLongExclusiveFn,
-                           Function<NextLongBetween, R> nextLongBetweenFn,
-                           Function<NextLongIndex, R> nextLongIndexFn,
-                           Function<NextGaussian, R> nextGaussianFn,
-                           Function<NextBytes, R> nextBytesFn,
-                           Function<Sized<Long>, R> sizedFn,
-                           Function<Labeled<Long>, R> labeledFn,
-                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
-            return nextLongIndexFn.apply(this);
-        }
     }
 
     @EqualsAndHashCode(callSuper = true)
@@ -559,31 +143,6 @@ public abstract class Instruction<A> {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class NextGaussian extends Instruction<Double> {
         private static final NextGaussian INSTANCE = new NextGaussian();
-
-        @Override
-        public <R> R match(Function<Pure<Double>, R> pureFn,
-                           Function<Mapped<?, Double>, R> mappedFn,
-                           Function<FlatMapped<?, Double>, R> flatMappedFn,
-                           Function<NextBoolean, R> nextBooleanFn,
-                           Function<NextDouble, R> nextDoubleFn,
-                           Function<NextFloat, R> nextFloatFn,
-                           Function<NextInt, R> nextIntFn,
-                           Function<NextIntBounded, R> nextIntBoundedFn,
-                           Function<NextIntExclusive, R> nextIntExclusiveFn,
-                           Function<NextIntBetween, R> nextIntBetweenFn,
-                           Function<NextIntIndex, R> nextIntIndexFn,
-                           Function<NextLong, R> nextLongFn,
-                           Function<NextLongBounded, R> nextLongBoundedFn,
-                           Function<NextLongExclusive, R> nextLongExclusiveFn,
-                           Function<NextLongBetween, R> nextLongBetweenFn,
-                           Function<NextLongIndex, R> nextLongIndexFn,
-                           Function<NextGaussian, R> nextGaussianFn,
-                           Function<NextBytes, R> nextBytesFn,
-                           Function<Sized<Double>, R> sizedFn,
-                           Function<Labeled<Double>, R> labeledFn,
-                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
-            return nextGaussianFn.apply(this);
-        }
     }
 
     @EqualsAndHashCode(callSuper = true)
@@ -591,31 +150,6 @@ public abstract class Instruction<A> {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class NextBytes extends Instruction<Byte[]> implements HasIntCount {
         private final int count;
-
-        @Override
-        public <R> R match(Function<Pure<Byte[]>, R> pureFn,
-                           Function<Mapped<?, Byte[]>, R> mappedFn,
-                           Function<FlatMapped<?, Byte[]>, R> flatMappedFn,
-                           Function<NextBoolean, R> nextBooleanFn,
-                           Function<NextDouble, R> nextDoubleFn,
-                           Function<NextFloat, R> nextFloatFn,
-                           Function<NextInt, R> nextIntFn,
-                           Function<NextIntBounded, R> nextIntBoundedFn,
-                           Function<NextIntExclusive, R> nextIntExclusiveFn,
-                           Function<NextIntBetween, R> nextIntBetweenFn,
-                           Function<NextIntIndex, R> nextIntIndexFn,
-                           Function<NextLong, R> nextLongFn,
-                           Function<NextLongBounded, R> nextLongBoundedFn,
-                           Function<NextLongExclusive, R> nextLongExclusiveFn,
-                           Function<NextLongBetween, R> nextLongBetweenFn,
-                           Function<NextLongIndex, R> nextLongIndexFn,
-                           Function<NextGaussian, R> nextGaussianFn,
-                           Function<NextBytes, R> nextBytesFn,
-                           Function<Sized<Byte[]>, R> sizedFn,
-                           Function<Labeled<Byte[]>, R> labeledFn,
-                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
-            return nextBytesFn.apply(this);
-        }
     }
 
     @EqualsAndHashCode(callSuper = true)
@@ -623,31 +157,6 @@ public abstract class Instruction<A> {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Sized<A> extends Instruction<A> {
         private final Fn1<Integer, Instruction<A>> fn;
-
-        @Override
-        public <R> R match(Function<Pure<A>, R> pureFn,
-                           Function<Mapped<?, A>, R> mappedFn,
-                           Function<FlatMapped<?, A>, R> flatMappedFn,
-                           Function<NextBoolean, R> nextBooleanFn,
-                           Function<NextDouble, R> nextDoubleFn,
-                           Function<NextFloat, R> nextFloatFn,
-                           Function<NextInt, R> nextIntFn,
-                           Function<NextIntBounded, R> nextIntBoundedFn,
-                           Function<NextIntExclusive, R> nextIntExclusiveFn,
-                           Function<NextIntBetween, R> nextIntBetweenFn,
-                           Function<NextIntIndex, R> nextIntIndexFn,
-                           Function<NextLong, R> nextLongFn,
-                           Function<NextLongBounded, R> nextLongBoundedFn,
-                           Function<NextLongExclusive, R> nextLongExclusiveFn,
-                           Function<NextLongBetween, R> nextLongBetweenFn,
-                           Function<NextLongIndex, R> nextLongIndexFn,
-                           Function<NextGaussian, R> nextGaussianFn,
-                           Function<NextBytes, R> nextBytesFn,
-                           Function<Sized<A>, R> sizedFn,
-                           Function<Labeled<A>, R> labeledFn,
-                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
-            return sizedFn.apply(this);
-        }
     }
 
     @EqualsAndHashCode(callSuper = true)
@@ -656,31 +165,15 @@ public abstract class Instruction<A> {
     public static class Labeled<A> extends Instruction<A> {
         private final String label;
         private final Instruction<A> operand;
+    }
 
-        @Override
-        public <R> R match(Function<Pure<A>, R> pureFn,
-                           Function<Mapped<?, A>, R> mappedFn,
-                           Function<FlatMapped<?, A>, R> flatMappedFn,
-                           Function<NextBoolean, R> nextBooleanFn,
-                           Function<NextDouble, R> nextDoubleFn,
-                           Function<NextFloat, R> nextFloatFn,
-                           Function<NextInt, R> nextIntFn,
-                           Function<NextIntBounded, R> nextIntBoundedFn,
-                           Function<NextIntExclusive, R> nextIntExclusiveFn,
-                           Function<NextIntBetween, R> nextIntBetweenFn,
-                           Function<NextIntIndex, R> nextIntIndexFn,
-                           Function<NextLong, R> nextLongFn,
-                           Function<NextLongBounded, R> nextLongBoundedFn,
-                           Function<NextLongExclusive, R> nextLongExclusiveFn,
-                           Function<NextLongBetween, R> nextLongBetweenFn,
-                           Function<NextLongIndex, R> nextLongIndexFn,
-                           Function<NextGaussian, R> nextGaussianFn,
-                           Function<NextBytes, R> nextBytesFn,
-                           Function<Sized<A>, R> sizedFn,
-                           Function<Labeled<A>, R> labeledFn,
-                           Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
-            return labeledFn.apply(this);
-        }
+    @EqualsAndHashCode(callSuper = true)
+    @Value
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class BuildCollection<A, C extends Collection<A>> extends Instruction<Collection<A>> {
+        private final Supplier<C> collectionSupplier;
+        private final int size;
+        private final Instruction<A> operand;
     }
 
     @EqualsAndHashCode(callSuper = true)
@@ -695,16 +188,14 @@ public abstract class Instruction<A> {
         private final Instruction<F> f;
         private final Instruction<G> g;
         private final Instruction<H> h;
-
-        @Override
-        public <R> R match(Function<Pure<Tuple8<A, B, C, D, E, F, G, H>>, R> pureFn, Function<Mapped<?, Tuple8<A, B, C, D, E, F, G, H>>, R> mappedFn, Function<FlatMapped<?, Tuple8<A, B, C, D, E, F, G, H>>, R> flatMappedFn, Function<NextBoolean, R> nextBooleanFn, Function<NextDouble, R> nextDoubleFn, Function<NextFloat, R> nextFloatFn, Function<NextInt, R> nextIntFn, Function<NextIntBounded, R> nextIntBoundedFn, Function<NextIntExclusive, R> nextIntExclusiveFn, Function<NextIntBetween, R> nextIntBetweenFn, Function<NextIntIndex, R> nextIntIndexFn, Function<NextLong, R> nextLongFn, Function<NextLongBounded, R> nextLongBoundedFn, Function<NextLongExclusive, R> nextLongExclusiveFn, Function<NextLongBetween, R> nextLongBetweenFn, Function<NextLongIndex, R> nextLongIndexFn, Function<NextGaussian, R> nextGaussianFn, Function<NextBytes, R> nextBytesFn, Function<Sized<Tuple8<A, B, C, D, E, F, G, H>>, R> sizedFn, Function<Labeled<Tuple8<A, B, C, D, E, F, G, H>>, R> labeledFn, Function<Product8<?, ?, ?, ?, ?, ?, ?, ?>, R> product8Fn) {
-            return product8Fn.apply(this);
-        }
     }
-
 
     public static <A> Pure<A> pure(A a) {
         return new Pure<>(a);
+    }
+
+    public static <A> Custom<A> custom(Function<? super RandomState, Result<? extends RandomState, A>> fn) {
+        return custom(fn::apply);
     }
 
     public static <A, B> Mapped<A, B> mapped(Function<? super A, ? extends B> fn, Instruction<A> operand) {
@@ -790,6 +281,10 @@ public abstract class Instruction<A> {
 
     public static <A> Labeled<A> labeled(String label, Instruction<A> operand) {
         return new Labeled<>(label, operand);
+    }
+
+    public static <A, C extends Collection<A>> BuildCollection<A, C> buildCollection(Supplier<C> supplier, int size, Instruction<A> operand) {
+        return new BuildCollection<>(supplier, size, operand);
     }
 
     public static <A, B, C, D, E, F, G, H> Product8<A, B, C, D, E, F, G, H> product8(Instruction<A> a,
