@@ -1,8 +1,13 @@
 package dev.marksman.composablerandom.builtin;
 
 import dev.marksman.composablerandom.Generator;
+import dev.marksman.composablerandom.Instruction;
+
+import java.util.ArrayList;
 
 import static dev.marksman.composablerandom.Generator.constant;
+import static dev.marksman.composablerandom.Generator.generator;
+import static dev.marksman.composablerandom.Instruction.aggregate;
 
 class Strings {
 
@@ -10,17 +15,8 @@ class Strings {
         if (length <= 0) return constant("");
         else if (length == 1) return g;
         else {
-//            return Generator.contextDependent(s0 -> {
-////                State current = s0;
-////                StringBuilder output = new StringBuilder();
-////                for (int i = 0; i < length; i += 1) {
-////                    Result<State, String> next = g.run(current);
-////                    output.append(next.getValue());
-////                    current = next.getNextState();
-////                }
-////                return result(current, output.toString());
-////            });
-            return null;
+            return generator(aggregate(StringBuilder::new, StringBuilder::append, StringBuilder::toString,
+                    length, g.getInstruction()));
         }
     }
 
@@ -32,17 +28,8 @@ class Strings {
         if (length <= 0) return constant("");
         else if (length == 1) return g.fmap(Object::toString);
         else {
-//            return Generator.contextDependent(s0 -> {
-//                State current = s0;
-//                StringBuilder output = new StringBuilder();
-//                for (int i = 0; i < length; i += 1) {
-//                    Result<State, Character> next = g.run(current);
-//                    output.append(next.getValue());
-//                    current = next.getNextState();
-//                }
-//                return result(current, output.toString());
-//            });
-            return null;
+            return generator(aggregate(StringBuilder::new, StringBuilder::append, StringBuilder::toString,
+                    length, g.getInstruction()));
         }
     }
 
@@ -50,18 +37,14 @@ class Strings {
     static Generator<String> generateString(Generator<String> first, Generator<String>... more) {
         if (more.length == 0) return first;
         else {
-//            return Generator.contextDependent(s0 -> {
-//                Result<State, String> current = first.run(s0);
-//                StringBuilder output = new StringBuilder(current.getValue());
-//                for (Generator<String> g : more) {
-//                    current = g.run(current.getNextState());
-//                    output.append(current.getValue());
-//                }
-//                return result(current.getNextState(), output.toString());
-//            });
-            return null;
+            ArrayList<Instruction<String>> instructions = new ArrayList<>();
+            instructions.add(first.getInstruction());
+            for (Generator<String> g : more) {
+                instructions.add(g.getInstruction());
+            }
+            return generator(aggregate(StringBuilder::new, StringBuilder::append, StringBuilder::toString,
+                    instructions));
         }
     }
 
 }
-

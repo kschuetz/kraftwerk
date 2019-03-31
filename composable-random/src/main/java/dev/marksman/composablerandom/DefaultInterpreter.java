@@ -179,18 +179,16 @@ public class DefaultInterpreter {
         return execute(input, instruction.getOperand());
     }
 
-    private <A, B, R> Result<? extends RandomState, R> handleAggregate(Instruction.Aggregate<A, B, R> instruction, RandomState input) {
+    private <A, B, R> Result<? extends RandomState, R> handleAggregate(Instruction.Aggregate<A, B, R> aggregate, RandomState input) {
         RandomState current = input;
-        int size = instruction.getSize();
-        B builder = instruction.getInitialBuilderSupplier().get();
-        Fn2<B, A, B> addFn = instruction.getAddFn();
-        Instruction<A> operand = instruction.getOperand();
-        for (int i = 0; i < size; i++) {
-            Result<RandomState, A> next = execute(current, operand);
+        B builder = aggregate.getInitialBuilderSupplier().get();
+        Fn2<B, A, B> addFn = aggregate.getAddFn();
+        for (Instruction<A> instruction : aggregate.getInstructions()) {
+            Result<RandomState, A> next = execute(current, instruction);
             builder = addFn.apply(builder, next.getValue());
             current = next.getNextState();
         }
-        return result(current, instruction.getBuildFn().apply(builder));
+        return result(current, aggregate.getBuildFn().apply(builder));
     }
 
     private <A, C extends Collection<A>> Result<? extends RandomState, C> handleBuildCollection(Instruction.BuildCollection<A, C> instruction, RandomState input) {
