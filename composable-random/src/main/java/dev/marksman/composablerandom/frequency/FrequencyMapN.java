@@ -2,8 +2,8 @@ package dev.marksman.composablerandom.frequency;
 
 import com.jnape.palatable.lambda.adt.hlist.Tuple2;
 import com.jnape.palatable.lambda.functions.builtin.fn2.Map;
-import dev.marksman.composablerandom.OldGenerator;
-import dev.marksman.composablerandom.legacy.builtin.OldGenerators;
+import dev.marksman.composablerandom.Generator;
+import dev.marksman.composablerandom.builtin.Generators;
 
 import java.util.TreeMap;
 import java.util.function.Function;
@@ -14,40 +14,40 @@ import static com.jnape.palatable.lambda.functions.builtin.fn3.FoldLeft.foldLeft
 import static dev.marksman.composablerandom.frequency.FrequencyMap1.checkMultiplier;
 
 class FrequencyMapN<A> implements FrequencyMap<A> {
-    private final Iterable<Tuple2<Integer, OldGenerator<A>>> entries;
+    private final Iterable<Tuple2<Integer, Generator<A>>> entries;
 
-    private OldGenerator<A> cachedGenerator;
+    private Generator<A> cachedGenerator;
 
-    private FrequencyMapN(Iterable<Tuple2<Integer, OldGenerator<A>>> entries) {
+    private FrequencyMapN(Iterable<Tuple2<Integer, Generator<A>>> entries) {
         this.entries = entries;
     }
 
     @Override
-    public OldGenerator<A> generator() {
+    public Generator<A> generator() {
         synchronized (this) {
             if (cachedGenerator == null) cachedGenerator = buildGenerator();
         }
         return cachedGenerator;
     }
 
-    private OldGenerator<A> buildGenerator() {
+    private Generator<A> buildGenerator() {
         long total = 0L;
-        TreeMap<Long, OldGenerator<A>> tree = new TreeMap<>();
-        for (Tuple2<Integer, OldGenerator<A>> entry : entries) {
+        TreeMap<Long, Generator<A>> tree = new TreeMap<>();
+        for (Tuple2<Integer, Generator<A>> entry : entries) {
             total += entry._1();
             tree.put(total, entry._2());
         }
 
-        return OldGenerators.generateLongExclusive(total)
+        return Generators.generateLongExclusive(total)
                 .flatMap(n -> tree.ceilingEntry(1 + n).getValue());
     }
 
     @Override
-    public FrequencyMap<A> add(int weight, OldGenerator<? extends A> generator) {
+    public FrequencyMap<A> add(int weight, Generator<? extends A> generator) {
         if (weight < 1) return this;
         else {
             @SuppressWarnings("unchecked")
-            Iterable<Tuple2<Integer, OldGenerator<A>>> newEntries = cons(tuple(weight, (OldGenerator<A>) generator), entries);
+            Iterable<Tuple2<Integer, Generator<A>>> newEntries = cons(tuple(weight, (Generator<A>) generator), entries);
             return new FrequencyMapN<>(newEntries);
         }
     }
@@ -69,7 +69,7 @@ class FrequencyMapN<A> implements FrequencyMap<A> {
         else return new FrequencyMapN<>(Map.map(t -> tuple(positiveFactor * t._1(), t._2()), entries));
     }
 
-    static <A> FrequencyMapN<A> frequencyMapN(Tuple2<Integer, OldGenerator<A>> first, Iterable<Tuple2<Integer, OldGenerator<A>>> rest) {
+    static <A> FrequencyMapN<A> frequencyMapN(Tuple2<Integer, Generator<A>> first, Iterable<Tuple2<Integer, Generator<A>>> rest) {
         return new FrequencyMapN<>(cons(first, rest));
     }
 }

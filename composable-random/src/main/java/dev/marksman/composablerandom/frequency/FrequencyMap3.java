@@ -1,25 +1,25 @@
 package dev.marksman.composablerandom.frequency;
 
-import dev.marksman.composablerandom.OldGenerator;
+import dev.marksman.composablerandom.Generator;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 import java.util.function.Function;
 
+import static dev.marksman.composablerandom.builtin.Generators.generateLongExclusive;
 import static dev.marksman.composablerandom.frequency.FrequencyMap1.checkMultiplier;
-import static dev.marksman.composablerandom.legacy.builtin.OldGenerators.generateLongExclusive;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 class FrequencyMap3<A> implements FrequencyMap<A> {
     private final int weightA;
-    private final OldGenerator<A> generatorA;
+    private final Generator<A> generatorA;
     private final int weightB;
-    private final OldGenerator<A> generatorB;
+    private final Generator<A> generatorB;
     private final int weightC;
-    private final OldGenerator<A> generatorC;
+    private final Generator<A> generatorC;
 
     @Override
-    public OldGenerator<A> generator() {
+    public Generator<A> generator() {
         long thresholdB = weightA + weightB;
         return generateLongExclusive(weightA + weightB + weightC)
                 .flatMap(n -> n < weightA
@@ -37,7 +37,7 @@ class FrequencyMap3<A> implements FrequencyMap<A> {
     }
 
     @Override
-    public FrequencyMap<A> add(int weight, OldGenerator<? extends A> generator) {
+    public FrequencyMap<A> add(int weight, Generator<? extends A> generator) {
         return null;
     }
 
@@ -57,9 +57,9 @@ class FrequencyMap3<A> implements FrequencyMap<A> {
                 weightC, generatorC.fmap(fn));
     }
 
-    static <A> FrequencyMap3<A> frequencyMap3(int weightA, OldGenerator<A> generatorA,
-                                              int weightB, OldGenerator<A> generatorB,
-                                              int weightC, OldGenerator<A> generatorC) {
+    static <A> FrequencyMap3<A> frequencyMap3(int weightA, Generator<A> generatorA,
+                                              int weightB, Generator<A> generatorB,
+                                              int weightC, Generator<A> generatorC) {
         return new FrequencyMap3<>(weightA, generatorA, weightB, generatorB, weightC, generatorC);
     }
 }
