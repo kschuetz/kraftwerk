@@ -10,6 +10,8 @@ import static dev.marksman.composablerandom.legacy.builtin.Primitives.*;
 
 class Sized {
 
+    // TODO: Sized will be handled by interpreter
+
     private static int DEFAULT_RANGE = 16;
     private static OldGenerator<Integer> GENERATE_FROM_DEFAULT_RANGE = generateIntExclusive(DEFAULT_RANGE);
     private static OldGenerator<Boolean> BOOST_PREFERRED = generateBoolean(2, 7);
