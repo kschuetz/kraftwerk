@@ -12,6 +12,9 @@ import java.util.Collection;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.jnape.palatable.lambda.functions.builtin.fn1.Repeat.repeat;
+import static com.jnape.palatable.lambda.functions.builtin.fn2.Take.take;
+
 public abstract class Instruction<A> {
 
     @EqualsAndHashCode(callSuper = true)
@@ -172,11 +175,10 @@ public abstract class Instruction<A> {
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Aggregate<A, Builder, Result> extends Instruction<Result> {
-        private final int size;
         private final Supplier<Builder> initialBuilderSupplier;
         private final Fn2<Builder, A, Builder> addFn;
         private final Fn1<Builder, Result> buildFn;
-        private final Instruction<A> operand;
+        private final Iterable<Instruction<A>> instructions;
     }
 
     @EqualsAndHashCode(callSuper = true)
@@ -295,12 +297,19 @@ public abstract class Instruction<A> {
         return new Labeled<>(label, operand);
     }
 
-    public static <A, Builder, Result> Aggregate<A, Builder, Result> aggregate(int size,
-                                                                               Supplier<Builder> initialBuilderSupplier,
+    public static <A, Builder, Result> Aggregate<A, Builder, Result> aggregate(Supplier<Builder> initialBuilderSupplier,
                                                                                Fn2<Builder, A, Builder> addFn,
                                                                                Fn1<Builder, Result> buildFn,
-                                                                               Instruction<A> operand) {
-        return new Aggregate<>(size, initialBuilderSupplier, addFn, buildFn, operand);
+                                                                               Iterable<Instruction<A>> instructions) {
+        return new Aggregate<>(initialBuilderSupplier, addFn, buildFn, instructions);
+    }
+
+    public static <A, Builder, Result> Aggregate<A, Builder, Result> aggregate(Supplier<Builder> initialBuilderSupplier,
+                                                                               Fn2<Builder, A, Builder> addFn,
+                                                                               Fn1<Builder, Result> buildFn,
+                                                                               int size,
+                                                                               Instruction<A> instruction) {
+        return new Aggregate<>(initialBuilderSupplier, addFn, buildFn, take(size, repeat(instruction)));
     }
 
     public static <A, C extends Collection<A>> BuildCollection<A, C> buildCollection(Supplier<C> supplier, int size, Instruction<A> operand) {
