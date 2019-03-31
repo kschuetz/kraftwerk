@@ -1,6 +1,6 @@
 package dev.marksman.composablerandom.frequency;
 
-import dev.marksman.composablerandom.OldGenerator;
+import dev.marksman.composablerandom.Generator;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
@@ -11,19 +11,19 @@ import static dev.marksman.composablerandom.frequency.FrequencyMap2.frequencyMap
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 class FrequencyMap1<A> implements FrequencyMap<A> {
     private final int weight;
-    private final OldGenerator<A> generator;
+    private final Generator<A> generator;
 
     @Override
-    public OldGenerator<A> generator() {
+    public Generator<A> generator() {
         return generator;
     }
 
     @Override
-    public FrequencyMap<A> add(int weight, OldGenerator<? extends A> generator) {
+    public FrequencyMap<A> add(int weight, Generator<? extends A> generator) {
         if (weight < 1) return this;
         else {
             @SuppressWarnings("unchecked")
-            OldGenerator<A> generatorB = (OldGenerator<A>) generator;
+            Generator<A> generatorB = (Generator<A>) generator;
             return frequencyMap2(this.weight, this.generator, weight, generatorB);
         }
     }
@@ -45,7 +45,7 @@ class FrequencyMap1<A> implements FrequencyMap<A> {
         return frequencyMap1(weight, generator.fmap(fn));
     }
 
-    static <A> FrequencyMap1<A> frequencyMap1(int weight, OldGenerator<A> generator) {
+    static <A> FrequencyMap1<A> frequencyMap1(int weight, Generator<A> generator) {
         if (weight < 1) throw new IllegalArgumentException("initial weight must be >= 1");
         return new FrequencyMap1<>(weight, generator);
     }
