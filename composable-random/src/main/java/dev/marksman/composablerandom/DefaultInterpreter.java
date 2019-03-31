@@ -2,6 +2,7 @@ package dev.marksman.composablerandom;
 
 import com.jnape.palatable.lambda.adt.Unit;
 import com.jnape.palatable.lambda.adt.hlist.Tuple8;
+import com.jnape.palatable.lambda.functions.Fn2;
 import lombok.AllArgsConstructor;
 
 import java.util.Collection;
@@ -130,6 +131,12 @@ public class DefaultInterpreter {
             return (Result<RandomState, A>) handleSized(instruction1, input);
         }
 
+        if (instruction instanceof Instruction.Aggregate) {
+            Instruction.Aggregate instruction1 = (Instruction.Aggregate) instruction;
+            //noinspection unchecked
+            return (Result<RandomState, A>) handleAggregate(instruction1, input);
+        }
+
         if (instruction instanceof Instruction.BuildCollection) {
             Instruction.BuildCollection instruction1 = (Instruction.BuildCollection) instruction;
             //noinspection unchecked
@@ -170,6 +177,20 @@ public class DefaultInterpreter {
 
     private <A> Result<? extends RandomState, A> handleLabeled(Instruction.Labeled<A> instruction, RandomState input) {
         return execute(input, instruction.getOperand());
+    }
+
+    private <A, B, R> Result<? extends RandomState, R> handleAggregate(Instruction.Aggregate<A, B, R> instruction, RandomState input) {
+        RandomState current = input;
+        int size = instruction.getSize();
+        B builder = instruction.getInitialBuilderSupplier().get();
+        Fn2<B, A, B> addFn = instruction.getAddFn();
+        Instruction<A> operand = instruction.getOperand();
+        for (int i = 0; i < size; i++) {
+            Result<RandomState, A> next = execute(current, operand);
+            builder = addFn.apply(builder, next.getValue());
+            current = next.getNextState();
+        }
+        return result(current, instruction.getBuildFn().apply(builder));
     }
 
     private <A, C extends Collection<A>> Result<? extends RandomState, C> handleBuildCollection(Instruction.BuildCollection<A, C> instruction, RandomState input) {
