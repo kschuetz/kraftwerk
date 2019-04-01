@@ -11,8 +11,8 @@ import dev.marksman.composablerandom.Instruction;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 
 public class Generators {
@@ -275,11 +275,11 @@ public class Generators {
         return Collections.generateListOfN(n, g);
     }
 
-    public static <A> Generator<Set<A>> generateSet(Generator<A> g) {
+    public static <A> Generator<HashSet<A>> generateSet(Generator<A> g) {
         return Collections.generateSet(g);
     }
 
-    public static <A> Generator<Set<A>> generateNonEmptySet(Generator<A> g) {
+    public static <A> Generator<HashSet<A>> generateNonEmptySet(Generator<A> g) {
         return Collections.generateNonEmptySet(g);
     }
 

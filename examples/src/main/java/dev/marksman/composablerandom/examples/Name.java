@@ -72,7 +72,10 @@ public class Name {
     }
 
     public static void main(String[] args) {
-        streamFrom(generateName().fmap(Name::getFullName)).next(100).forEach(System.out::println);
+        streamFrom(generateNonEmptyMap(generateInt(0, 255), generateName().fmap(Name::getFullName)))
+                .next(100).forEach(System.out::println);
+
+//        streamFrom(generateName().fmap(Name::getFullName)).next(100).forEach(System.out::println);
     }
 
 }
