@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Repeat.repeat;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Take.take;
 
@@ -184,15 +185,6 @@ public abstract class Instruction<A> {
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class BuildCollection<A, C extends Collection<A>> extends Instruction<Collection<A>> {
-        private final Supplier<C> collectionSupplier;
-        private final int size;
-        private final Instruction<A> operand;
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Product8<A, B, C, D, E, F, G, H> extends Instruction<Tuple8<A, B, C, D, E, F, G, H>> {
         private final Instruction<A> a;
         private final Instruction<B> b;
@@ -312,8 +304,19 @@ public abstract class Instruction<A> {
         return new Aggregate<>(initialBuilderSupplier, addFn, buildFn, take(size, repeat(instruction)));
     }
 
-    public static <A, C extends Collection<A>> BuildCollection<A, C> buildCollection(Supplier<C> supplier, int size, Instruction<A> operand) {
-        return new BuildCollection<>(supplier, size, operand);
+    public static <A, C extends Collection<A>> Aggregate<A, C, C> buildCollection(Supplier<C> initialCollectionSupplier,
+                                                                                  Iterable<Instruction<A>> instructions) {
+        return new Aggregate<A, C, C>(initialCollectionSupplier,
+                (collection, item) -> {
+                    collection.add(item);
+                    return collection;
+                }, id(), instructions);
+    }
+
+    public static <A, C extends Collection<A>> Aggregate<A, C, C> buildCollection(Supplier<C> initialCollectionSupplier,
+                                                                                  int size,
+                                                                                  Instruction<A> instruction) {
+        return buildCollection(initialCollectionSupplier, take(size, repeat(instruction)));
     }
 
     public static <A, B, C, D, E, F, G, H> Product8<A, B, C, D, E, F, G, H> product8(Instruction<A> a,

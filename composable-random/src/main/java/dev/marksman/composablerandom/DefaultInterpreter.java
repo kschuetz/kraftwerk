@@ -4,8 +4,6 @@ import com.jnape.palatable.lambda.adt.Unit;
 import com.jnape.palatable.lambda.adt.hlist.Tuple8;
 import com.jnape.palatable.lambda.functions.Fn2;
 
-import java.util.Collection;
-
 import static com.jnape.palatable.lambda.adt.hlist.HList.tuple;
 import static dev.marksman.composablerandom.Result.result;
 import static dev.marksman.composablerandom.StandardContext.defaultContext;
@@ -142,12 +140,6 @@ public class DefaultInterpreter implements Interpreter {
             return (Result<RandomState, R>) handleAggregate(instruction1, input);
         }
 
-        if (instruction instanceof Instruction.BuildCollection) {
-            Instruction.BuildCollection instruction1 = (Instruction.BuildCollection) instruction;
-            //noinspection unchecked
-            return (Result<RandomState, R>) handleBuildCollection(instruction1, input);
-        }
-
         if (instruction instanceof Instruction.Product8) {
             Instruction.Product8 instruction1 = (Instruction.Product8) instruction;
             //noinspection unchecked
@@ -194,19 +186,6 @@ public class DefaultInterpreter implements Interpreter {
             current = next.getNextState();
         }
         return result(current, aggregate.getBuildFn().apply(builder));
-    }
-
-    private <A, C extends Collection<A>> Result<? extends RandomState, C> handleBuildCollection(Instruction.BuildCollection<A, C> instruction, RandomState input) {
-        RandomState current = input;
-        int size = instruction.getSize();
-        C result = instruction.getCollectionSupplier().get();
-        Instruction<A> operand = instruction.getOperand();
-        for (int i = 0; i < size; i++) {
-            Result<RandomState, A> next = execute(current, operand);
-            result.add(next.getValue());
-            current = next.getNextState();
-        }
-        return result(current, result);
     }
 
     private <A, B, C, D, E, F, G, H> Result<? extends RandomState, Tuple8<A, B, C, D, E, F, G, H>> handleProduct8(Instruction.Product8<A, B, C, D, E, F, G, H> instruction, RandomState input) {
