@@ -5,8 +5,8 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
-import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
 import static dev.marksman.composablerandom.legacy.OldFrequencyEntry.entry;
+import static dev.marksman.composablerandom.legacy.OldGeneratedStream.streamFrom;
 import static dev.marksman.composablerandom.legacy.builtin.OldGenerators.frequency;
 
 @Value

@@ -1,6 +1,7 @@
 package dev.marksman.composablerandom.benchmarks;
 
 import dev.marksman.composablerandom.*;
+import dev.marksman.composablerandom.legacy.OldGeneratedStream;
 import dev.marksman.composablerandom.random.StandardGen;
 
 import java.util.function.Function;
@@ -10,7 +11,7 @@ import static dev.marksman.composablerandom.DefaultInterpreter.defaultInterprete
 public class Runner {
 
     public static <A> void runOld(String label, int iterations, OldGenerator<A> generator) {
-        GeneratedStream<A> stream = GeneratedStream.streamFrom(generator);
+        OldGeneratedStream<A> stream = OldGeneratedStream.streamFrom(generator);
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < iterations; i++) {
             stream.next();

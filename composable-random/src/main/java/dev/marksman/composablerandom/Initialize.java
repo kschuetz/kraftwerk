@@ -32,4 +32,12 @@ public class Initialize {
     public static State createInitialState(RandomState randomState, OldContext context) {
         return State.state(randomState, context);
     }
+
+    public static RandomState createInitialRandomState(long initialSeedValue) {
+        return initStandardGen(initialSeedValue);
+    }
+
+    public static RandomState randomInitialRandomState() {
+        return createInitialRandomState(new Random().nextLong());
+    }
 }
