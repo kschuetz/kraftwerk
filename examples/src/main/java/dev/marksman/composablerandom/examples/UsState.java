@@ -1,13 +1,13 @@
 package dev.marksman.composablerandom.examples;
 
-import dev.marksman.composablerandom.OldGenerator;
+import dev.marksman.composablerandom.Generator;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
-import static dev.marksman.composablerandom.legacy.OldFrequencyEntry.entry;
-import static dev.marksman.composablerandom.legacy.OldGeneratedStream.streamFrom;
-import static dev.marksman.composablerandom.legacy.builtin.OldGenerators.frequency;
+import static dev.marksman.composablerandom.FrequencyEntry.entry;
+import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
+import static dev.marksman.composablerandom.builtin.Generators.frequency;
 
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -19,7 +19,7 @@ public class UsState {
     }
 
     private static class Generators {
-        private static final OldGenerator<UsState> usState = frequency(
+        private static final Generator<UsState> usState = frequency(
                 entry(39, "CA"), entry(28, "TX"), entry(21, "FL"),
                 entry(19, "NY"), entry(12, "PA"), entry(12, "IL"),
                 entry(11, "OH"), entry(10, "GA"), entry(10, "NC"),
@@ -40,7 +40,7 @@ public class UsState {
                 .fmap(UsState::usState);
     }
 
-    public static OldGenerator<UsState> generateUsState() {
+    public static Generator<UsState> generateUsState() {
         return Generators.usState;
     }
 
