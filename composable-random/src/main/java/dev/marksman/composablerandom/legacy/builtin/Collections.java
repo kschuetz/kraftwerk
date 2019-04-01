@@ -3,7 +3,7 @@ package dev.marksman.composablerandom.legacy.builtin;
 import dev.marksman.composablerandom.DiscreteDomain;
 import dev.marksman.composablerandom.OldGenerator;
 import dev.marksman.composablerandom.Result;
-import dev.marksman.composablerandom.State;
+import dev.marksman.composablerandom.legacy.State;
 
 import java.util.ArrayList;
 import java.util.Collection;

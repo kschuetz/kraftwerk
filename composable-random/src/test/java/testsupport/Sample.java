@@ -1,7 +1,7 @@
 package testsupport;
 
 import dev.marksman.composablerandom.OldGenerator;
-import dev.marksman.composablerandom.State;
+import dev.marksman.composablerandom.legacy.State;
 
 import java.util.ArrayList;
 

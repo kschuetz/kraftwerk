@@ -1,5 +1,6 @@
-package dev.marksman.composablerandom;
+package dev.marksman.composablerandom.legacy;
 
+import dev.marksman.composablerandom.RandomState;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
@@ -10,21 +11,21 @@ import java.util.function.Function;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class State {
     private final RandomState randomState;
-    private final Context context;
+    private final OldContext context;
 
     public final State withRandomState(RandomState newState) {
         return state(newState, context);
     }
 
-    public final State withContext(Context newContext) {
+    public final State withContext(OldContext newContext) {
         return state(randomState, newContext);
     }
 
-    public final State modifyContext(Function<? super Context, ? extends Context> f) {
+    public final State modifyContext(Function<? super OldContext, ? extends OldContext> f) {
         return state(randomState, f.apply(context));
     }
 
-    public static State state(RandomState randomState, Context context) {
+    public static State state(RandomState randomState, OldContext context) {
         return new State(randomState, context);
     }
 

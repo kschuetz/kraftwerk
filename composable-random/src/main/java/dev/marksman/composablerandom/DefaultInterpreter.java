@@ -3,15 +3,19 @@ package dev.marksman.composablerandom;
 import com.jnape.palatable.lambda.adt.Unit;
 import com.jnape.palatable.lambda.adt.hlist.Tuple8;
 import com.jnape.palatable.lambda.functions.Fn2;
-import lombok.AllArgsConstructor;
 
 import java.util.Collection;
 
 import static com.jnape.palatable.lambda.adt.hlist.HList.tuple;
 import static dev.marksman.composablerandom.Result.result;
+import static dev.marksman.composablerandom.StandardContext.defaultContext;
 
-@AllArgsConstructor()
 public class DefaultInterpreter {
+    private final SizeSelector sizeSelector;
+
+    public DefaultInterpreter(Context context) {
+        this.sizeSelector = SizeSelectors.sizeSelector(context.getSizeParameters());
+    }
 
     public <A> Result<RandomState, A> execute(RandomState input, Instruction<A> instruction) {
 
@@ -171,8 +175,8 @@ public class DefaultInterpreter {
     }
 
     private <A> Result<? extends RandomState, A> handleSized(Instruction.Sized<A> instruction, RandomState input) {
-        //TODO: sized
-        return execute(input, instruction.getFn().apply(5));
+        Result<? extends RandomState, Integer> sizeResult = sizeSelector.selectSize(input);
+        return execute(sizeResult.getNextState(), instruction.getFn().apply(sizeResult.getValue()));
     }
 
     private <A> Result<? extends RandomState, A> handleLabeled(Instruction.Labeled<A> instruction, RandomState input) {
@@ -216,6 +220,14 @@ public class DefaultInterpreter {
         Tuple8<A, B, C, D, E, F, G, H> result = tuple(r1.getValue(), r2.getValue(), r3.getValue(), r4.getValue(),
                 r5.getValue(), r6.getValue(), r7.getValue(), r8.getValue());
         return result(r8.getNextState(), result);
+    }
+
+    public static DefaultInterpreter defaultInterpreter() {
+        return new DefaultInterpreter(defaultContext());
+    }
+
+    public static DefaultInterpreter defaultInterpreter(Context context) {
+        return new DefaultInterpreter(context);
     }
 
 }

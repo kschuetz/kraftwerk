@@ -1,8 +1,11 @@
 package dev.marksman.composablerandom;
 
+import dev.marksman.composablerandom.legacy.OldContext;
+import dev.marksman.composablerandom.legacy.State;
+
 import java.util.Random;
 
-import static dev.marksman.composablerandom.StandardContext.defaultContext;
+import static dev.marksman.composablerandom.legacy.StandardContext.defaultContext;
 import static dev.marksman.composablerandom.random.StandardGen.initStandardGen;
 
 public class Initialize {
@@ -10,7 +13,7 @@ public class Initialize {
         return randomInitialState(defaultContext());
     }
 
-    public static State randomInitialState(Context context) {
+    public static State randomInitialState(OldContext context) {
         return createInitialState(new Random().nextLong(), context);
     }
 
@@ -22,11 +25,11 @@ public class Initialize {
         return State.state(randomState);
     }
 
-    public static State createInitialState(long initialSeedValue, Context context) {
+    public static State createInitialState(long initialSeedValue, OldContext context) {
         return State.state(initStandardGen(initialSeedValue), context);
     }
 
-    public static State createInitialState(RandomState randomState, Context context) {
+    public static State createInitialState(RandomState randomState, OldContext context) {
         return State.state(randomState, context);
     }
 }

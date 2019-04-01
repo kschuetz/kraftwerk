@@ -1,5 +1,8 @@
 package dev.marksman.composablerandom;
 
+import dev.marksman.composablerandom.legacy.OldContext;
+import dev.marksman.composablerandom.legacy.State;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -75,11 +78,11 @@ public class GeneratedStream<A> implements Iterator<A> {
         return streamFrom(generator, createInitialState(initialSeedValue));
     }
 
-    public static <A> GeneratedStream<A> streamFrom(OldGenerator<A> generator, Context context) {
+    public static <A> GeneratedStream<A> streamFrom(OldGenerator<A> generator, OldContext context) {
         return streamFrom(generator, randomInitialState(context));
     }
 
-    public static <A> GeneratedStream<A> streamFrom(OldGenerator<A> generator, Context context, long initialSeedValue) {
+    public static <A> GeneratedStream<A> streamFrom(OldGenerator<A> generator, OldContext context, long initialSeedValue) {
         return streamFrom(generator, createInitialState(initialSeedValue, context));
     }
 
