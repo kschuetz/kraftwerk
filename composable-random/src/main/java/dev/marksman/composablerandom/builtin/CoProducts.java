@@ -21,7 +21,7 @@ class CoProducts {
         // TODO: FrequencyMapBuilder
         checkWeights("nothingWeight", nothingWeight,
                 "justWeight", justWeight);
-        return frequencyMap(justWeight, generateMaybe(g))
+        return frequencyMap(justWeight, generateJust(g))
                 .add(nothingWeight, generateNothing())
                 .generator();
     }
