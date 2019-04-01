@@ -10,24 +10,25 @@ import static com.jnape.palatable.lambda.adt.hlist.HList.tuple;
 import static dev.marksman.composablerandom.Result.result;
 import static dev.marksman.composablerandom.StandardContext.defaultContext;
 
-public class DefaultInterpreter {
+public class DefaultInterpreter implements Interpreter {
     private final SizeSelector sizeSelector;
 
-    public DefaultInterpreter(Context context) {
+    private DefaultInterpreter(Context context) {
         this.sizeSelector = SizeSelectors.sizeSelector(context.getSizeParameters());
     }
 
-    public <A> Result<RandomState, A> execute(RandomState input, Instruction<A> instruction) {
+    @Override
+    public <A, R> Result<RandomState, R> execute(RandomState input, Instruction<A> instruction) {
 
         if (instruction instanceof Instruction.Pure) {
             //noinspection unchecked
-            return (Result<RandomState, A>) result(input, (((Instruction.Pure) instruction).getValue()));
+            return (Result<RandomState, R>) result(input, (((Instruction.Pure) instruction).getValue()));
         }
 
         if (instruction instanceof Instruction.Custom) {
             Instruction.Custom instruction1 = (Instruction.Custom) instruction;
             //noinspection unchecked
-            return (Result<RandomState, A>) instruction1.getFn().apply(input);
+            return (Result<RandomState, R>) instruction1.getFn().apply(input);
         }
 
         if (instruction instanceof Instruction.Mapped) {
@@ -43,114 +44,114 @@ public class DefaultInterpreter {
 
         if (instruction instanceof Instruction.NextInt) {
             //noinspection unchecked
-            return (Result<RandomState, A>) input.nextInt();
+            return (Result<RandomState, R>) input.nextInt();
         }
 
         if (instruction instanceof Instruction.NextLong) {
             //noinspection unchecked
-            return (Result<RandomState, A>) input.nextLong();
+            return (Result<RandomState, R>) input.nextLong();
         }
 
         if (instruction instanceof Instruction.NextBoolean) {
             //noinspection unchecked
-            return (Result<RandomState, A>) input.nextBoolean();
+            return (Result<RandomState, R>) input.nextBoolean();
         }
 
         if (instruction instanceof Instruction.NextDouble) {
             //noinspection unchecked
-            return (Result<RandomState, A>) input.nextDouble();
+            return (Result<RandomState, R>) input.nextDouble();
         }
 
         if (instruction instanceof Instruction.NextFloat) {
             //noinspection unchecked
-            return (Result<RandomState, A>) input.nextFloat();
+            return (Result<RandomState, R>) input.nextFloat();
         }
 
         if (instruction instanceof Instruction.NextIntBounded) {
             //noinspection unchecked
-            return (Result<RandomState, A>) input.nextIntBounded(((Instruction.NextIntBounded) instruction).getBound());
+            return (Result<RandomState, R>) input.nextIntBounded(((Instruction.NextIntBounded) instruction).getBound());
         }
 
         if (instruction instanceof Instruction.NextIntExclusive) {
             Instruction.NextIntExclusive instruction1 = (Instruction.NextIntExclusive) instruction;
             //noinspection unchecked
-            return (Result<RandomState, A>) input.nextIntExclusive(instruction1.getOrigin(), instruction1.getBound());
+            return (Result<RandomState, R>) input.nextIntExclusive(instruction1.getOrigin(), instruction1.getBound());
         }
 
         if (instruction instanceof Instruction.NextIntBetween) {
             Instruction.NextIntBetween instruction1 = (Instruction.NextIntBetween) instruction;
             //noinspection unchecked
-            return (Result<RandomState, A>) input.nextIntBetween(instruction1.getMin(), instruction1.getMax());
+            return (Result<RandomState, R>) input.nextIntBetween(instruction1.getMin(), instruction1.getMax());
         }
 
         if (instruction instanceof Instruction.NextIntIndex) {
             Instruction.NextIntIndex instruction1 = (Instruction.NextIntIndex) instruction;
             //noinspection unchecked
-            return (Result<RandomState, A>) input.nextIntBounded(instruction1.getBound());
+            return (Result<RandomState, R>) input.nextIntBounded(instruction1.getBound());
         }
 
         if (instruction instanceof Instruction.NextLongBounded) {
             //noinspection unchecked
-            return (Result<RandomState, A>) input.nextLongBounded(((Instruction.NextLongBounded) instruction).getBound());
+            return (Result<RandomState, R>) input.nextLongBounded(((Instruction.NextLongBounded) instruction).getBound());
         }
 
         if (instruction instanceof Instruction.NextLongExclusive) {
             Instruction.NextLongExclusive instruction1 = (Instruction.NextLongExclusive) instruction;
             //noinspection unchecked
-            return (Result<RandomState, A>) input.nextLongExclusive(instruction1.getOrigin(), instruction1.getBound());
+            return (Result<RandomState, R>) input.nextLongExclusive(instruction1.getOrigin(), instruction1.getBound());
         }
 
         if (instruction instanceof Instruction.NextLongBetween) {
             Instruction.NextLongBetween instruction1 = (Instruction.NextLongBetween) instruction;
             //noinspection unchecked
-            return (Result<RandomState, A>) input.nextLongBetween(instruction1.getMin(), instruction1.getMax());
+            return (Result<RandomState, R>) input.nextLongBetween(instruction1.getMin(), instruction1.getMax());
         }
 
         if (instruction instanceof Instruction.NextLongIndex) {
             Instruction.NextLongIndex instruction1 = (Instruction.NextLongIndex) instruction;
             //noinspection unchecked
-            return (Result<RandomState, A>) input.nextLongBounded(instruction1.getBound());
+            return (Result<RandomState, R>) input.nextLongBounded(instruction1.getBound());
         }
 
         if (instruction instanceof Instruction.NextGaussian) {
             //noinspection unchecked
-            return (Result<RandomState, A>) input.nextGaussian();
+            return (Result<RandomState, R>) input.nextGaussian();
         }
 
         if (instruction instanceof Instruction.NextBytes) {
             Instruction.NextBytes instruction1 = (Instruction.NextBytes) instruction;
             //noinspection unchecked
-            return (Result<RandomState, A>) handleNextBytes(instruction1, input);
+            return (Result<RandomState, R>) handleNextBytes(instruction1, input);
         }
 
         if (instruction instanceof Instruction.Labeled) {
             Instruction.Labeled instruction1 = (Instruction.Labeled) instruction;
             //noinspection unchecked
-            return (Result<RandomState, A>) handleLabeled(instruction1, input);
+            return (Result<RandomState, R>) handleLabeled(instruction1, input);
         }
 
         if (instruction instanceof Instruction.Sized) {
             Instruction.Sized instruction1 = (Instruction.Sized) instruction;
             //noinspection unchecked
-            return (Result<RandomState, A>) handleSized(instruction1, input);
+            return (Result<RandomState, R>) handleSized(instruction1, input);
         }
 
         if (instruction instanceof Instruction.Aggregate) {
             Instruction.Aggregate instruction1 = (Instruction.Aggregate) instruction;
             //noinspection unchecked
-            return (Result<RandomState, A>) handleAggregate(instruction1, input);
+            return (Result<RandomState, R>) handleAggregate(instruction1, input);
         }
 
         if (instruction instanceof Instruction.BuildCollection) {
             Instruction.BuildCollection instruction1 = (Instruction.BuildCollection) instruction;
             //noinspection unchecked
-            return (Result<RandomState, A>) handleBuildCollection(instruction1, input);
+            return (Result<RandomState, R>) handleBuildCollection(instruction1, input);
         }
 
         if (instruction instanceof Instruction.Product8) {
             Instruction.Product8 instruction1 = (Instruction.Product8) instruction;
             //noinspection unchecked
-            return (Result<RandomState, A>) handleProduct8(instruction1, input);
+            return (Result<RandomState, R>) handleProduct8(instruction1, input);
         }
 
         throw new IllegalStateException("Unimplemented instruction");

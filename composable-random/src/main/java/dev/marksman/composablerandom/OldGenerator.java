@@ -12,10 +12,10 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
 import static dev.marksman.composablerandom.Result.result;
 import static dev.marksman.composablerandom.RunWithTrace.innerTrace;
 import static dev.marksman.composablerandom.RunWithTrace.outerTrace;
+import static dev.marksman.composablerandom.legacy.OldGeneratedStream.streamFrom;
 import static dev.marksman.composablerandom.metadata.StandardMetadata.defaultMetadata;
 import static dev.marksman.composablerandom.metadata.StandardMetadata.labeled;
 

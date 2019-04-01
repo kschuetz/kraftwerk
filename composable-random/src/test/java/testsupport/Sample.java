@@ -5,7 +5,7 @@ import dev.marksman.composablerandom.legacy.State;
 
 import java.util.ArrayList;
 
-import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
+import static dev.marksman.composablerandom.legacy.OldGeneratedStream.streamFrom;
 
 public class Sample {
     private static final int SAMPLE_COUNT = 10000;

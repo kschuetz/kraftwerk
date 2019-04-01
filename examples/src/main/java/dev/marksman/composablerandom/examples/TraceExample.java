@@ -3,9 +3,9 @@ package dev.marksman.composablerandom.examples;
 import dev.marksman.composablerandom.TracePrinter;
 import dev.marksman.composablerandom.tracing.Trace;
 
-import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
 import static dev.marksman.composablerandom.TracePrinter.tracePrinter;
 import static dev.marksman.composablerandom.examples.Street.generateStreet;
+import static dev.marksman.composablerandom.legacy.OldGeneratedStream.streamFrom;
 import static dev.marksman.composablerandom.legacy.builtin.OldGenerators.generateInt;
 import static dev.marksman.composablerandom.legacy.builtin.OldGenerators.pair;
 

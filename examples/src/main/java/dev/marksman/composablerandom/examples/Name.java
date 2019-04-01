@@ -8,8 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into4.into4;
-import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
 import static dev.marksman.composablerandom.legacy.OldFrequencyEntry.entry;
+import static dev.marksman.composablerandom.legacy.OldGeneratedStream.streamFrom;
 import static dev.marksman.composablerandom.legacy.builtin.OldGenerators.*;
 import static java.util.Arrays.asList;
 
