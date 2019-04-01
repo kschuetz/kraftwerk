@@ -4,6 +4,7 @@ import com.jnape.palatable.lambda.adt.hlist.Tuple2;
 import com.jnape.palatable.lambda.adt.hlist.Tuple3;
 import com.jnape.palatable.lambda.functions.Fn1;
 import com.jnape.palatable.lambda.functions.builtin.fn1.Id;
+import dev.marksman.composablerandom.legacy.State;
 import dev.marksman.composablerandom.legacy.builtin.OldGenerators;
 import org.junit.jupiter.api.Test;
 

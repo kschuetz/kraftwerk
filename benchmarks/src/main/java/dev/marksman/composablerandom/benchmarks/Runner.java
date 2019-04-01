@@ -5,6 +5,8 @@ import dev.marksman.composablerandom.random.StandardGen;
 
 import java.util.function.Function;
 
+import static dev.marksman.composablerandom.DefaultInterpreter.defaultInterpreter;
+
 public class Runner {
 
     public static <A> void runOld(String label, int iterations, OldGenerator<A> generator) {
@@ -19,7 +21,7 @@ public class Runner {
     }
 
     public static <A> void run(String label, int iterations, Generator<A> generator) {
-        DefaultInterpreter interpreter = new DefaultInterpreter();
+        DefaultInterpreter interpreter = defaultInterpreter();
         RandomState currentState = StandardGen.initStandardGen();
 
         long t0 = System.currentTimeMillis();

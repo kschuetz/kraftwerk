@@ -2,6 +2,8 @@ package dev.marksman.composablerandom;
 
 import com.jnape.palatable.lambda.functions.Fn1;
 import com.jnape.palatable.lambda.lens.Lens;
+import dev.marksman.composablerandom.legacy.State;
+import dev.marksman.composablerandom.legacy.StateLens;
 import dev.marksman.composablerandom.metadata.Metadata;
 import dev.marksman.composablerandom.tracing.Trace;
 import dev.marksman.composablerandom.tracing.TraceCollector;

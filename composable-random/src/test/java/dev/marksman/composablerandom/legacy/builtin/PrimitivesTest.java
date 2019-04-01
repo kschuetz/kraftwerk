@@ -1,6 +1,6 @@
 package dev.marksman.composablerandom.legacy.builtin;
 
-import dev.marksman.composablerandom.State;
+import dev.marksman.composablerandom.legacy.State;
 import org.junit.jupiter.api.Test;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.All.all;
