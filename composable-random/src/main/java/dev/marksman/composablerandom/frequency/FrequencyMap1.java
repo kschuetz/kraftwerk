@@ -14,7 +14,7 @@ class FrequencyMap1<A> implements FrequencyMap<A> {
     private final Generator<A> generator;
 
     @Override
-    public Generator<A> generator() {
+    public Generator<A> toGenerator() {
         return generator;
     }
 

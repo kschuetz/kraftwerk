@@ -104,7 +104,7 @@ public class Choose {
     }
 
     static <A> Generator<A> frequency(FrequencyMap<A> frequencyMap) {
-        return frequencyMap.generator();
+        return frequencyMap.toGenerator();
     }
 
     @SafeVarargs
@@ -121,7 +121,7 @@ public class Choose {
         return FoldLeft.<FrequencyEntry<? extends A>, FrequencyMapBuilder<A>>foldLeft(FrequencyMapBuilder::add,
                 frequencyMapBuilder(), entries)
                 .build()
-                .generator();
+                .toGenerator();
     }
 
     private static <A> void requireNonEmptyChoices(String methodName, Iterable<A> items) {

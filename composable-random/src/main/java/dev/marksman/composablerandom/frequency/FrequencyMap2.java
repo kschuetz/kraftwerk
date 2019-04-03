@@ -18,7 +18,7 @@ class FrequencyMap2<A> implements FrequencyMap<A> {
     private final Generator<A> generatorB;
 
     @Override
-    public Generator<A> generator() {
+    public Generator<A> toGenerator() {
         long total = weightA + weightB;
 
         return generateLongExclusive(total)

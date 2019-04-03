@@ -17,7 +17,7 @@ class Shuffle {
     }
 
     public static <A> Generator<ArrayList<A>> generateShuffled(int count, Function<Integer, A> fn) {
-//        return Generator.generator(stateIn -> {
+//        return Generator.toGenerator(stateIn -> {
 //            ArrayList<A> target = newInputInstance(count, fn);
 //            RandomState stateOut = shuffleInPlace(stateIn, target);
 //            return result(stateOut, target);

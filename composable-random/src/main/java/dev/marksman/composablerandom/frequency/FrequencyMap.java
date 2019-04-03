@@ -2,16 +2,16 @@ package dev.marksman.composablerandom.frequency;
 
 import dev.marksman.composablerandom.FrequencyEntry;
 import dev.marksman.composablerandom.Generator;
-import dev.marksman.composablerandom.HasGenerator;
+import dev.marksman.composablerandom.ToGenerator;
 
 import java.util.function.Function;
 
 import static dev.marksman.composablerandom.Generator.constant;
 import static dev.marksman.composablerandom.frequency.FrequencyMap1.frequencyMap1;
 
-public interface FrequencyMap<A> extends HasGenerator<A> {
+public interface FrequencyMap<A> extends ToGenerator<A> {
 
-    Generator<A> generator();
+    Generator<A> toGenerator();
 
     FrequencyMap<A> add(int weight, Generator<? extends A> generator);
 

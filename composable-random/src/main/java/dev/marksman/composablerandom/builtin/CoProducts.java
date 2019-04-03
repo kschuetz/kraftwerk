@@ -29,7 +29,7 @@ class CoProducts {
                     .add(falseWeight, generateFalse())
                     .add(trueWeight, generateTrue())
                     .build()
-                    .generator();
+                    .toGenerator();
         }
     }
 
@@ -52,7 +52,7 @@ class CoProducts {
                 .add(justWeight, generateJust(g))
                 .add(nothingWeight, generateNothing())
                 .build()
-                .generator();
+                .toGenerator();
     }
 
     static <A> Generator<Maybe<A>> generateMaybe(int justWeight, Generator<A> g) {
@@ -79,7 +79,7 @@ class CoProducts {
                 .add(leftWeight, CoProducts.<L, R>generateLeft(leftGenerator))
                 .add(rightWeight, generateRight(rightGenerator))
                 .build()
-                .generator();
+                .toGenerator();
     }
 
     static <L, R> Generator<Either<L, R>> generateEither(int rightWeight, Generator<L> leftGenerator, Generator<R> rightGenerator) {

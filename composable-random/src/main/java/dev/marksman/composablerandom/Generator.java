@@ -10,8 +10,15 @@ import java.util.function.Function;
 import static dev.marksman.composablerandom.Instruction.flatMapped;
 import static dev.marksman.composablerandom.Instruction.mapped;
 
-public interface Generator<A> extends Monad<A, Generator> {
+public interface Generator<A> extends Monad<A, Generator>, ToGenerator<A> {
     Instruction<A> getInstruction();
+
+    @Override
+    default Generator<A> toGenerator() {
+        return this;
+    }
+
+    ;
 
     @Override
     default <B> Generator<B> fmap(Function<? super A, ? extends B> fn) {

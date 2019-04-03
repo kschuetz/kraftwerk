@@ -23,7 +23,7 @@ class FrequencyMapN<A> implements FrequencyMap<A> {
     }
 
     @Override
-    public Generator<A> generator() {
+    public Generator<A> toGenerator() {
         synchronized (this) {
             if (cachedGenerator == null) cachedGenerator = buildGenerator();
         }

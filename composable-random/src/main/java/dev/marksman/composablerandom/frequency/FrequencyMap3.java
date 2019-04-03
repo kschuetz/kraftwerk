@@ -19,7 +19,7 @@ class FrequencyMap3<A> implements FrequencyMap<A> {
     private final Generator<A> generatorC;
 
     @Override
-    public Generator<A> generator() {
+    public Generator<A> toGenerator() {
         long thresholdB = weightA + weightB;
         return generateLongExclusive(weightA + weightB + weightC)
                 .flatMap(n -> n < weightA
