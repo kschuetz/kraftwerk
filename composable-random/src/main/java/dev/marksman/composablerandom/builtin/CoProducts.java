@@ -4,10 +4,10 @@ import com.jnape.palatable.lambda.adt.Either;
 import com.jnape.palatable.lambda.adt.Maybe;
 import com.jnape.palatable.lambda.adt.Unit;
 import dev.marksman.composablerandom.Generator;
+import dev.marksman.composablerandom.frequency.FrequencyMapBuilder;
 
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
 import static dev.marksman.composablerandom.Generator.constant;
-import static dev.marksman.composablerandom.frequency.FrequencyMap.frequencyMap;
 
 class CoProducts {
 
@@ -18,11 +18,12 @@ class CoProducts {
     }
 
     static <A> Generator<Maybe<A>> generateMaybe(int nothingWeight, int justWeight, Generator<A> g) {
-        // TODO: FrequencyMapBuilder
         checkWeights("nothingWeight", nothingWeight,
                 "justWeight", justWeight);
-        return frequencyMap(justWeight, generateJust(g))
+        return FrequencyMapBuilder.<Maybe<A>>frequencyMapBuilder()
+                .add(justWeight, generateJust(g))
                 .add(nothingWeight, generateNothing())
+                .build()
                 .generator();
     }
 
@@ -46,8 +47,10 @@ class CoProducts {
         checkWeights("leftWeight", leftWeight,
                 "rightWeight", rightWeight);
 
-        return frequencyMap(leftWeight, CoProducts.<L, R>generateLeft(leftGenerator))
+        return FrequencyMapBuilder.<Either<L, R>>frequencyMapBuilder()
+                .add(leftWeight, CoProducts.<L, R>generateLeft(leftGenerator))
                 .add(rightWeight, generateRight(rightGenerator))
+                .build()
                 .generator();
     }
 
