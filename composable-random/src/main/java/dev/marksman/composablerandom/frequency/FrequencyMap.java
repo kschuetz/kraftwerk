@@ -1,5 +1,6 @@
 package dev.marksman.composablerandom.frequency;
 
+import dev.marksman.composablerandom.FrequencyEntry;
 import dev.marksman.composablerandom.Generator;
 
 import java.util.function.Function;
@@ -37,6 +38,10 @@ public interface FrequencyMap<A> {
 
     default FrequencyMap<A> add(A value) {
         return add(1, constant(value));
+    }
+
+    default FrequencyMap<A> add(FrequencyEntry<? extends A> entry) {
+        return add(entry.getWeight(), entry.getGenerator());
     }
 
     static <A> FrequencyMap<A> frequencyMap(int weight1, Generator<A> generator1) {

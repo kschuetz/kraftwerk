@@ -1,15 +1,21 @@
 package dev.marksman.composablerandom.builtin;
 
-import com.jnape.palatable.lambda.functions.builtin.fn2.Filter;
+import com.jnape.palatable.lambda.functions.builtin.fn3.FoldLeft;
 import dev.marksman.composablerandom.DiscreteDomain;
 import dev.marksman.composablerandom.FrequencyEntry;
 import dev.marksman.composablerandom.Generator;
+import dev.marksman.composablerandom.frequency.FrequencyMap;
+import dev.marksman.composablerandom.frequency.FrequencyMapBuilder;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Cons.cons;
 import static dev.marksman.composablerandom.Generator.constant;
 import static dev.marksman.composablerandom.domain.Choices.choices;
+import static dev.marksman.composablerandom.frequency.FrequencyMapBuilder.frequencyMapBuilder;
 import static java.util.Arrays.asList;
 
 public class Choose {
@@ -97,6 +103,10 @@ public class Choose {
         return chooseOneFrom(values);
     }
 
+    static <A> Generator<A> frequency(FrequencyMap<A> frequencyMap) {
+        return frequencyMap.generator();
+    }
+
     @SafeVarargs
     @SuppressWarnings("unchecked")
     static <A> Generator<A> frequency(FrequencyEntry<? extends A> first, FrequencyEntry<? extends A>... more) {
@@ -107,21 +117,11 @@ public class Choose {
         return frequencyImpl(entries);
     }
 
-    @SuppressWarnings("unchecked")
     private static <A> Generator<A> frequencyImpl(Iterable<FrequencyEntry<? extends A>> entries) {
-        Iterable<FrequencyEntry<? extends A>> fs = Filter.filter(f -> f.getWeight() > 0, entries);
-        if (!fs.iterator().hasNext()) {
-            throw new IllegalArgumentException("no items with positive weights");
-        }
-        long total = 0L;
-        TreeMap<Long, Generator<? extends A>> tree = new TreeMap<>();
-        for (FrequencyEntry<? extends A> f : fs) {
-            total += f.getWeight();
-            tree.put(total, f.getGenerator());
-        }
-
-        return (Generator<A>) Primitives.generateLongIndex(total)
-                .flatMap(n -> tree.ceilingEntry(1 + n).getValue());
+        return FoldLeft.<FrequencyEntry<? extends A>, FrequencyMapBuilder<A>>foldLeft(FrequencyMapBuilder::add,
+                frequencyMapBuilder(), entries)
+                .build()
+                .generator();
     }
 
     private static <A> void requireNonEmptyChoices(String methodName, Iterable<A> items) {

@@ -8,6 +8,7 @@ import dev.marksman.composablerandom.DiscreteDomain;
 import dev.marksman.composablerandom.FrequencyEntry;
 import dev.marksman.composablerandom.Generator;
 import dev.marksman.composablerandom.Instruction;
+import dev.marksman.composablerandom.frequency.FrequencyMap;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -248,6 +249,10 @@ public class Generators {
 
     public static <K, V> Generator<V> chooseValueFrom(Map<K, V> map) {
         return Choose.chooseValueFrom(map);
+    }
+
+    public static <A> Generator<A> frequency(FrequencyMap<A> frequencyMap) {
+        return Choose.frequency(frequencyMap);
     }
 
     @SafeVarargs
