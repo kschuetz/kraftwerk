@@ -3,7 +3,6 @@ package dev.marksman.composablerandom.builtin;
 import dev.marksman.composablerandom.Generator;
 import dev.marksman.composablerandom.Instruction;
 
-import static dev.marksman.composablerandom.Generator.constant;
 import static dev.marksman.composablerandom.Generator.generator;
 
 class Primitives {
@@ -17,10 +16,6 @@ class Primitives {
 
     private static final Generator<Byte> GENERATE_BYTE = GENERATE_INTEGER.fmap(Integer::byteValue);
     private static final Generator<Short> GENERATE_SHORT = GENERATE_INTEGER.fmap(Integer::shortValue);
-//    private static final Generator<Short> GENERATE_SHORT = generator(Instruction.mapped(Integer::shortValue, Instruction.nextInt()));
-
-    private static final Generator<Boolean> GENERATE_TRUE = constant(true);
-    private static final Generator<Boolean> GENERATE_FALSE = constant(false);
 
     static Generator<Boolean> generateBoolean() {
         return GENERATE_BOOLEAN;

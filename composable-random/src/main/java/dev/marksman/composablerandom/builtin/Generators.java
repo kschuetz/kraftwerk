@@ -22,6 +22,14 @@ public class Generators {
         return Primitives.generateBoolean();
     }
 
+    public static Generator<Boolean> generateBoolean(int falseWeight, int trueWeight) {
+        return CoProducts.generateBoolean(falseWeight, trueWeight);
+    }
+
+    public static Generator<Boolean> generateBoolean(int trueWeight) {
+        return CoProducts.generateBoolean(trueWeight);
+    }
+
     public static Generator<Double> generateDouble() {
         return Primitives.generateDouble();
     }
@@ -101,6 +109,14 @@ public class Generators {
 
     public static Generator<Unit> generateUnit() {
         return CoProducts.generateUnit();
+    }
+
+    public static Generator<Boolean> generateTrue() {
+        return CoProducts.generateTrue();
+    }
+
+    public static Generator<Boolean> generateFalse() {
+        return CoProducts.generateFalse();
     }
 
     public static <A> Generator<Maybe<A>> generateMaybe(int nothingWeight, int justWeight, Generator<A> g) {

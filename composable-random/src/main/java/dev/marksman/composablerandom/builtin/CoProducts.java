@@ -12,9 +12,37 @@ import static dev.marksman.composablerandom.Generator.constant;
 class CoProducts {
 
     private static final Generator<Unit> GENERATE_UNIT = constant(Unit.UNIT);
+    private static final Generator<Boolean> GENERATE_TRUE = constant(true);
+    private static final Generator<Boolean> GENERATE_FALSE = constant(false);
 
     static Generator<Unit> generateUnit() {
         return GENERATE_UNIT;
+    }
+
+    static Generator<Boolean> generateBoolean(int falseWeight, int trueWeight) {
+        checkWeights("falseWeight", falseWeight,
+                "trueWeight", trueWeight);
+        if (trueWeight == falseWeight) {
+            return Primitives.generateBoolean();
+        } else {
+            return FrequencyMapBuilder.<Boolean>frequencyMapBuilder()
+                    .add(falseWeight, generateFalse())
+                    .add(trueWeight, generateTrue())
+                    .build()
+                    .generator();
+        }
+    }
+
+    static <A> Generator<Boolean> generateBoolean(int trueWeight) {
+        return generateBoolean(1, trueWeight);
+    }
+
+    static Generator<Boolean> generateTrue() {
+        return GENERATE_TRUE;
+    }
+
+    static Generator<Boolean> generateFalse() {
+        return GENERATE_FALSE;
     }
 
     static <A> Generator<Maybe<A>> generateMaybe(int nothingWeight, int justWeight, Generator<A> g) {
