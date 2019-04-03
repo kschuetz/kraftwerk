@@ -4,6 +4,8 @@ import dev.marksman.composablerandom.Generator;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
+import java.util.function.Function;
+
 import static dev.marksman.composablerandom.frequency.FrequencyMap.frequencyMap;
 import static dev.marksman.composablerandom.frequency.FrequencyMapBuilderN.frequencyMapBuilderN;
 
@@ -22,6 +24,16 @@ class FrequencyMapBuilder0<A> implements FrequencyMapBuilder<A> {
     @Override
     public FrequencyMapBuilder<A> combine(FrequencyMap<A> other) {
         return frequencyMapBuilderN(other);
+    }
+
+    @Override
+    public <B> FrequencyMapBuilder0<B> fmap(Function<? super A, ? extends B> fn) {
+        return frequencyMapBuilder0();
+    }
+
+    @Override
+    public FrequencyMapBuilder<A> multiply(int positiveFactor) {
+        return this;
     }
 
     @Override

@@ -3,6 +3,8 @@ package dev.marksman.composablerandom.frequency;
 import dev.marksman.composablerandom.FrequencyEntry;
 import dev.marksman.composablerandom.Generator;
 
+import java.util.function.Function;
+
 import static dev.marksman.composablerandom.Generator.constant;
 import static dev.marksman.composablerandom.frequency.FrequencyMapBuilder0.frequencyMapBuilder0;
 
@@ -12,6 +14,10 @@ public interface FrequencyMapBuilder<A> {
     FrequencyMapBuilder<A> combine(FrequencyMap<A> other);
 
     FrequencyMap<A> build();
+
+    <B> FrequencyMapBuilder<B> fmap(Function<? super A, ? extends B> fn);
+
+    FrequencyMapBuilder<A> multiply(int positiveFactor);
 
     default FrequencyMapBuilder<A> add(int weight, A value) {
         return add(weight, constant(value));

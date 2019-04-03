@@ -2,13 +2,21 @@ package dev.marksman.composablerandom.frequency;
 
 import com.jnape.palatable.lambda.adt.choice.*;
 import dev.marksman.composablerandom.Generator;
+import dev.marksman.composablerandom.HasGenerator;
 import lombok.AllArgsConstructor;
 
 public class WeightedChoice {
 
+    // TODO: WeightedChoiceBuilder
+
     @AllArgsConstructor
-    public static class WeightedChoice2<A, B> {
+    public static class WeightedChoice2<A, B> implements HasGenerator<Choice2<A, B>> {
         private final FrequencyMap<Choice2<A, B>> frequencyMap;
+
+        @Override
+        public Generator<Choice2<A, B>> generator() {
+            return frequencyMap.generator();
+        }
 
         public <C> WeightedChoice3<A, B, C> or(int weight, Generator<C> generator) {
             FrequencyMap<Choice3<A, B, C>> newFrequencyMap = frequencyMap
