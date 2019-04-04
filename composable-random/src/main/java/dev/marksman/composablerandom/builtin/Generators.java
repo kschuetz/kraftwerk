@@ -8,6 +8,7 @@ import dev.marksman.composablerandom.DiscreteDomain;
 import dev.marksman.composablerandom.FrequencyEntry;
 import dev.marksman.composablerandom.Generator;
 import dev.marksman.composablerandom.Instruction;
+import dev.marksman.composablerandom.choice.WeightedChoice1;
 import dev.marksman.composablerandom.frequency.FrequencyMap;
 
 import java.util.ArrayList;
@@ -322,5 +323,21 @@ public class Generators {
     public static <K, V> Generator<Map<K, V>> generateNonEmptyMap(Generator<K> keyGenerator,
                                                                   Generator<V> valueGenerator) {
         return Collections.generateNonEmptyMap(keyGenerator, valueGenerator);
+    }
+
+    public static <A> WeightedChoice1<A> choiceBuilder(int weight, Generator<A> firstChoice) {
+        return WeightedChoice1.choiceBuilder(weight, firstChoice);
+    }
+
+    public static <A> WeightedChoice1<A> choiceBuilder(Generator<A> firstChoice) {
+        return WeightedChoice1.choiceBuilder(firstChoice);
+    }
+
+    public static <A> WeightedChoice1<A> choiceBuilder(int weight, A firstChoice) {
+        return WeightedChoice1.choiceBuilder(weight, firstChoice);
+    }
+
+    public static <A> WeightedChoice1<A> choiceBuilder(A firstChoice) {
+        return WeightedChoice1.choiceBuilder(firstChoice);
     }
 }
