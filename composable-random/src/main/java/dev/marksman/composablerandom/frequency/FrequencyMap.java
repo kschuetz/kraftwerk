@@ -29,20 +29,20 @@ public interface FrequencyMap<A> extends ToGenerator<A> {
      */
     FrequencyMap<A> multiply(int positiveFactor);
 
-    default FrequencyMap<A> add(int weight, A value) {
-        return add(weight, constant(value));
-    }
-
     default FrequencyMap<A> add(Generator<? extends A> generator) {
         return add(1, generator);
     }
 
-    default FrequencyMap<A> add(A value) {
+    default FrequencyMap<A> add(FrequencyEntry<A> entry) {
+        return add(entry._1(), entry._2());
+    }
+
+    default FrequencyMap<A> addValue(A value) {
         return add(1, constant(value));
     }
 
-    default FrequencyMap<A> add(FrequencyEntry<? extends A> entry) {
-        return add(entry.getWeight(), entry.getGenerator());
+    default FrequencyMap<A> addValue(int weight, A value) {
+        return add(weight, constant(value));
     }
 
     static <A> FrequencyMap<A> frequencyMap(int weight1, Generator<A> generator1) {
@@ -51,6 +51,10 @@ public interface FrequencyMap<A> extends ToGenerator<A> {
 
     static <A> FrequencyMap<A> frequencyMap(int weight1, A value1) {
         return frequencyMap1(weight1, constant(value1));
+    }
+
+    static <A> FrequencyMap<A> frequencyMap(FrequencyEntry<A> entry) {
+        return frequencyMap1(entry._1(), entry._2());
     }
 
 }

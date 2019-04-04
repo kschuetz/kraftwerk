@@ -14,7 +14,6 @@ import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.All.all;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Eq.eq;
 import static dev.marksman.composablerandom.DefaultInterpreter.defaultInterpreter;
-import static dev.marksman.composablerandom.FrequencyEntry.entry;
 import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
 import static dev.marksman.composablerandom.builtin.Generators.*;
 import static dev.marksman.composablerandom.random.StandardGen.initStandardGen;
@@ -28,8 +27,8 @@ class GeneratorTest {
     private static final Generator<Integer> gen1 = Generators.generateInt();
     private static final Generator<Double> gen2 = generateGaussian();
     private static final Generator<Integer> gen3 = Generators.generateIntExclusive(1, 10);
-    private static final Generator<String> gen4 = frequency(entry(3, "foo"),
-            entry(7, "bar"));
+    private static final Generator<String> gen4 = frequency(FrequencyEntry.entryForValue(3, "foo"),
+            FrequencyEntry.entryForValue(7, "bar"));
 
     @Test
     void functorIdentity() {

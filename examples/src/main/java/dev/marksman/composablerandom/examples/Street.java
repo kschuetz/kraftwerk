@@ -1,6 +1,7 @@
 package dev.marksman.composablerandom.examples;
 
 import com.jnape.palatable.lambda.adt.Maybe;
+import dev.marksman.composablerandom.FrequencyEntry;
 import dev.marksman.composablerandom.Generator;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -49,13 +50,13 @@ public class Street {
                 chooseOneOf("Oak", "Maple", "Elm", "Pine", "Spruce", "Sycamore", "Birch", "Apple", "Peach");
 
         private static final Generator<String> suffix =
-                frequency(entry(10, "St."),
-                        entry(7, "Ave."),
-                        entry(5, "Rd."),
-                        entry(3, "Dr."),
-                        entry(3, "La."),
-                        entry(2, "Blvd."),
-                        entry(1, "Ct."));
+                frequency(FrequencyEntry.entryForValue(10, "St."),
+                        FrequencyEntry.entryForValue(7, "Ave."),
+                        FrequencyEntry.entryForValue(5, "Rd."),
+                        FrequencyEntry.entryForValue(3, "Dr."),
+                        FrequencyEntry.entryForValue(3, "La."),
+                        FrequencyEntry.entryForValue(2, "Blvd."),
+                        FrequencyEntry.entryForValue(1, "Ct."));
 
         private static final Generator<String> name =
                 frequency(entry(3, ordinal),

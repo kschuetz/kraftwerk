@@ -1,13 +1,17 @@
 package dev.marksman.composablerandom.frequency;
 
+import dev.marksman.composablerandom.FrequencyEntry;
 import dev.marksman.composablerandom.Generator;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 import java.util.function.Function;
 
+import static dev.marksman.composablerandom.FrequencyEntry.entry;
 import static dev.marksman.composablerandom.builtin.Generators.generateLongExclusive;
 import static dev.marksman.composablerandom.frequency.FrequencyMap1.checkMultiplier;
+import static dev.marksman.composablerandom.frequency.FrequencyMapN.frequencyMapN;
+import static java.util.Arrays.asList;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 class FrequencyMap3<A> implements FrequencyMap<A> {
@@ -38,8 +42,13 @@ class FrequencyMap3<A> implements FrequencyMap<A> {
 
     @Override
     public FrequencyMap<A> add(int weight, Generator<? extends A> generator) {
-        // TODO: FrequencyMap3.add
-        return null;
+        if (weight < 1) {
+            return this;
+        } else {
+            //noinspection unchecked
+            return frequencyMapN((FrequencyEntry<A>) entry(weight, generator),
+                    asList(entry(weightA, generatorA), entry(weightB, generatorB), entry(weightC, generatorC)));
+        }
     }
 
     @Override

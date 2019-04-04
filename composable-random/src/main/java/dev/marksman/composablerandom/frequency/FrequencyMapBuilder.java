@@ -19,19 +19,19 @@ public interface FrequencyMapBuilder<A> {
 
     FrequencyMapBuilder<A> multiply(int positiveFactor);
 
-    default FrequencyMapBuilder<A> add(int weight, A value) {
-        return add(weight, constant(value));
-    }
-
     default FrequencyMapBuilder<A> add(Generator<? extends A> generator) {
         return add(1, generator);
     }
 
-    default FrequencyMapBuilder<A> add(A value) {
+    default FrequencyMapBuilder<A> addValue(int weight, A value) {
+        return add(weight, constant(value));
+    }
+
+    default FrequencyMapBuilder<A> addValue(A value) {
         return add(1, constant(value));
     }
 
-    default FrequencyMapBuilder<A> add(FrequencyEntry<? extends A> entry) {
+    default FrequencyMapBuilder<A> add(FrequencyEntry<A> entry) {
         return add(entry.getWeight(), entry.getGenerator());
     }
 

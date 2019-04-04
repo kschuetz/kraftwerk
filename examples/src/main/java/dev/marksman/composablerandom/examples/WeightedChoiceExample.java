@@ -9,18 +9,30 @@ import static dev.marksman.composablerandom.builtin.Generators.*;
 
 public class WeightedChoiceExample {
 
-    public static void main(String[] args) {
+    private static void example1() {
         Generator<Choice8<Integer, Double, Float, Boolean, Long, Byte, Short, Character>> primitiveGenerator =
                 choiceBuilder(generateInt())
                         .or(generateDouble())
-                        .or(1, generateFloat())
-                        .or(1, generateBoolean())
-                        .or(1, generateLong())
-                        .or(1, generateByte())
-                        .or(1, generateShort())
-                        .or(1, chooseOneFrom(Characters.asciiPrintable()))
+                        .or(generateFloat())
+                        .or(generateBoolean())
+                        .or(generateLong())
+                        .or(generateByte())
+                        .or(generateShort())
+                        .or(chooseOneFrom(Characters.asciiPrintable()))
                         .toGenerator();
 
         streamFrom(primitiveGenerator).next(100).forEach(System.out::println);
+    }
+
+    public static void main(String[] args) {
+        example1();
+
+//        ChoiceBuilder2<Integer, Boolean> c1 = choiceBuilder(generateInt()).or(generateBoolean());
+//
+//        ChoiceBuilder3<Integer, Boolean, Float> c2 = c1.or(1, generateFloat());
+//
+//        ChoiceBuilder4<Integer, Boolean, Float, Long> c3 = c2.or(1, generateLong());
+//
+//        streamFrom(c3.toGenerator()).next(100).forEach(System.out::println);
     }
 }

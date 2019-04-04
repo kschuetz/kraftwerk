@@ -109,16 +109,17 @@ public class Choose {
 
     @SafeVarargs
     @SuppressWarnings("unchecked")
-    static <A> Generator<A> frequency(FrequencyEntry<? extends A> first, FrequencyEntry<? extends A>... more) {
+    static <A> Generator<A> frequency(FrequencyEntry<A> first, FrequencyEntry<A>... more) {
         return frequencyImpl(cons(first, asList(more)));
     }
 
-    static <A> Generator<A> frequency(Collection<FrequencyEntry<? extends A>> entries) {
+    static <A> Generator<A> frequency(Collection<FrequencyEntry<A>> entries) {
         return frequencyImpl(entries);
     }
 
-    private static <A> Generator<A> frequencyImpl(Iterable<FrequencyEntry<? extends A>> entries) {
-        return FoldLeft.<FrequencyEntry<? extends A>, FrequencyMapBuilder<A>>foldLeft(FrequencyMapBuilder::add,
+    private static <A> Generator<A> frequencyImpl(Iterable<FrequencyEntry<A>> entries) {
+        return FoldLeft.<FrequencyEntry<A>, FrequencyMapBuilder<A>>foldLeft(
+                FrequencyMapBuilder::add,
                 frequencyMapBuilder(), entries)
                 .build()
                 .toGenerator();

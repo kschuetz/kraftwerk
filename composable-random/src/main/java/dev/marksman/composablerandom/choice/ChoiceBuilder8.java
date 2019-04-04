@@ -8,7 +8,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class WeightedChoice8<A, B, C, D, E, F, G, H> implements ToGenerator<Choice8<A, B, C, D, E, F, G, H>> {
+public class ChoiceBuilder8<A, B, C, D, E, F, G, H> implements ToGenerator<Choice8<A, B, C, D, E, F, G, H>> {
     private final FrequencyMap<Choice8<A, B, C, D, E, F, G, H>> frequencyMap;
 
     @Override
@@ -16,8 +16,8 @@ public class WeightedChoice8<A, B, C, D, E, F, G, H> implements ToGenerator<Choi
         return frequencyMap.toGenerator();
     }
 
-    public static <A, B, C, D, E, F, G, H> WeightedChoice8<A, B, C, D, E, F, G, H> weightedChoice8(FrequencyMap<Choice8<A, B, C, D, E, F, G, H>> frequencyMap) {
-        return new WeightedChoice8<>(frequencyMap);
+    public static <A, B, C, D, E, F, G, H> ChoiceBuilder8<A, B, C, D, E, F, G, H> choiceBuilder8(FrequencyMap<Choice8<A, B, C, D, E, F, G, H>> frequencyMap) {
+        return new ChoiceBuilder8<>(frequencyMap);
     }
 
 }

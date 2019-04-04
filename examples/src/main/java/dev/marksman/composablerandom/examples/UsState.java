@@ -1,11 +1,11 @@
 package dev.marksman.composablerandom.examples;
 
+import dev.marksman.composablerandom.FrequencyEntry;
 import dev.marksman.composablerandom.Generator;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
-import static dev.marksman.composablerandom.FrequencyEntry.entry;
 import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
 import static dev.marksman.composablerandom.builtin.Generators.frequency;
 
@@ -20,23 +20,23 @@ public class UsState {
 
     private static class Generators {
         private static final Generator<UsState> usState = frequency(
-                entry(39, "CA"), entry(28, "TX"), entry(21, "FL"),
-                entry(19, "NY"), entry(12, "PA"), entry(12, "IL"),
-                entry(11, "OH"), entry(10, "GA"), entry(10, "NC"),
-                entry(9, "MI"), entry(8, "NJ"), entry(8, "VA"),
-                entry(7, "WA"), entry(7, "AZ"), entry(6, "MA"),
-                entry(6, "TN"), entry(6, "IN"), entry(6, "MO"),
-                entry(6, "MD"), entry(5, "WI"), entry(5, "CO"),
-                entry(5, "MN"), entry(5, "SC"), entry(4, "AL"),
-                entry(4, "LA"), entry(4, "KY"), entry(4, "OR"),
-                entry(3, "OK"), entry(3, "CT"), entry(3, "UT"),
-                entry(3, "IA"), entry(3, "NV"), entry(3, "AR"),
-                entry(2, "MS"), entry(2, "KS"), entry(2, "NM"),
-                entry(1, "WV"), entry(1, "NE"), entry(1, "ID"),
-                entry(1, "HI"), entry(1, "NH"), entry(1, "ME"),
-                entry(1, "MO"), entry(1, "RI"), entry(1, "DE"),
-                entry(1, "SD"), entry(1, "ND"), entry(1, "AK"),
-                entry(1, "VT"), entry(1, "WY"))
+                FrequencyEntry.entryForValue(39, "CA"), FrequencyEntry.entryForValue(28, "TX"), FrequencyEntry.entryForValue(21, "FL"),
+                FrequencyEntry.entryForValue(19, "NY"), FrequencyEntry.entryForValue(12, "PA"), FrequencyEntry.entryForValue(12, "IL"),
+                FrequencyEntry.entryForValue(11, "OH"), FrequencyEntry.entryForValue(10, "GA"), FrequencyEntry.entryForValue(10, "NC"),
+                FrequencyEntry.entryForValue(9, "MI"), FrequencyEntry.entryForValue(8, "NJ"), FrequencyEntry.entryForValue(8, "VA"),
+                FrequencyEntry.entryForValue(7, "WA"), FrequencyEntry.entryForValue(7, "AZ"), FrequencyEntry.entryForValue(6, "MA"),
+                FrequencyEntry.entryForValue(6, "TN"), FrequencyEntry.entryForValue(6, "IN"), FrequencyEntry.entryForValue(6, "MO"),
+                FrequencyEntry.entryForValue(6, "MD"), FrequencyEntry.entryForValue(5, "WI"), FrequencyEntry.entryForValue(5, "CO"),
+                FrequencyEntry.entryForValue(5, "MN"), FrequencyEntry.entryForValue(5, "SC"), FrequencyEntry.entryForValue(4, "AL"),
+                FrequencyEntry.entryForValue(4, "LA"), FrequencyEntry.entryForValue(4, "KY"), FrequencyEntry.entryForValue(4, "OR"),
+                FrequencyEntry.entryForValue(3, "OK"), FrequencyEntry.entryForValue(3, "CT"), FrequencyEntry.entryForValue(3, "UT"),
+                FrequencyEntry.entryForValue(3, "IA"), FrequencyEntry.entryForValue(3, "NV"), FrequencyEntry.entryForValue(3, "AR"),
+                FrequencyEntry.entryForValue(2, "MS"), FrequencyEntry.entryForValue(2, "KS"), FrequencyEntry.entryForValue(2, "NM"),
+                FrequencyEntry.entryForValue(1, "WV"), FrequencyEntry.entryForValue(1, "NE"), FrequencyEntry.entryForValue(1, "ID"),
+                FrequencyEntry.entryForValue(1, "HI"), FrequencyEntry.entryForValue(1, "NH"), FrequencyEntry.entryForValue(1, "ME"),
+                FrequencyEntry.entryForValue(1, "MO"), FrequencyEntry.entryForValue(1, "RI"), FrequencyEntry.entryForValue(1, "DE"),
+                FrequencyEntry.entryForValue(1, "SD"), FrequencyEntry.entryForValue(1, "ND"), FrequencyEntry.entryForValue(1, "AK"),
+                FrequencyEntry.entryForValue(1, "VT"), FrequencyEntry.entryForValue(1, "WY"))
                 .fmap(UsState::usState);
     }
 
