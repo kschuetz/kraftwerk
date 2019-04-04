@@ -212,18 +212,18 @@ public class Generators {
     }
 
     @SafeVarargs
-    public static <A> Generator<A> chooseOneOf(A first, A... more) {
+    public static <A> Generator<A> chooseOneOfValues(A first, A... more) {
+        return Choose.chooseOneOfValues(first, more);
+    }
+
+    @SafeVarargs
+    public static <A> Generator<A> chooseOneOfValues(Generator<? extends A> first, Generator<? extends A>... more) {
         return Choose.chooseOneOf(first, more);
     }
 
     @SafeVarargs
-    public static <A> Generator<A> chooseOneOf(Generator<? extends A> first, Generator<? extends A>... more) {
-        return Choose.chooseOneOf(first, more);
-    }
-
-    @SafeVarargs
-    public static <A> Generator<ArrayList<A>> chooseAtLeastOneOf(A first, A... more) {
-        return Choose.chooseAtLeastOneOf(first, more);
+    public static <A> Generator<ArrayList<A>> chooseAtLeastOneOfValues(A first, A... more) {
+        return Choose.chooseAtLeastOneOfValues(first, more);
     }
 
     @SafeVarargs
@@ -232,7 +232,7 @@ public class Generators {
     }
 
     @SafeVarargs
-    public static <A> Generator<ArrayList<A>> chooseSomeOf(A first, A... more) {
+    public static <A> Generator<ArrayList<A>> chooseSomeOfValues(A first, A... more) {
         return Choose.chooseSomeOf(first, more);
     }
 
@@ -241,40 +241,40 @@ public class Generators {
         return Choose.chooseSomeOf(first, more);
     }
 
-    public static <A> Generator<A> chooseOneFrom(Collection<A> items) {
-        return Choose.chooseOneFrom(items);
+    public static <A> Generator<A> chooseOneFromCollection(Collection<A> items) {
+        return Choose.chooseOneFromCollection(items);
     }
 
-    public static <A> Generator<A> chooseOneFrom(DiscreteDomain<A> domain) {
-        return Choose.chooseOneFrom(domain);
+    public static <A> Generator<A> chooseOneFromDomain(DiscreteDomain<A> domain) {
+        return Choose.chooseOneFromDomain(domain);
     }
 
-    public static <A> Generator<ArrayList<A>> chooseAtLeastOneFrom(Collection<A> items) {
-        return Choose.chooseAtLeastOneFrom(items);
+    public static <A> Generator<ArrayList<A>> chooseAtLeastOneFromCollection(Collection<A> items) {
+        return Choose.chooseAtLeastOneFromCollection(items);
     }
 
-    public static <A> Generator<ArrayList<A>> chooseAtLeastOneFrom(DiscreteDomain<A> domain) {
-        return Choose.chooseAtLeastOneFrom(domain);
+    public static <A> Generator<ArrayList<A>> chooseAtLeastOneFromDomain(DiscreteDomain<A> domain) {
+        return Choose.chooseAtLeastOneFromDomain(domain);
     }
 
-    public static <A> Generator<ArrayList<A>> chooseSomeFrom(Collection<A> items) {
-        return Choose.chooseSomeFrom(items);
+    public static <A> Generator<ArrayList<A>> chooseSomeFromCollection(Collection<A> items) {
+        return Choose.chooseSomeFromDomain(items);
     }
 
-    public static <A> Generator<ArrayList<A>> chooseSomeFrom(DiscreteDomain<A> domain) {
-        return Choose.chooseSomeFrom(domain);
+    public static <A> Generator<ArrayList<A>> chooseSomeFromDomain(DiscreteDomain<A> domain) {
+        return Choose.chooseSomeFromDomain(domain);
     }
 
-    public static <K, V> Generator<Map.Entry<K, V>> chooseEntryFrom(Map<K, V> map) {
-        return Choose.chooseEntryFrom(map);
+    public static <K, V> Generator<Map.Entry<K, V>> chooseEntryFromMap(Map<K, V> map) {
+        return Choose.chooseEntryFromMap(map);
     }
 
-    public static <K, V> Generator<K> chooseKeyFrom(Map<K, V> map) {
-        return Choose.chooseKeyFrom(map);
+    public static <K, V> Generator<K> chooseKeyFromMap(Map<K, V> map) {
+        return Choose.chooseKeyFromMap(map);
     }
 
-    public static <K, V> Generator<V> chooseValueFrom(Map<K, V> map) {
-        return Choose.chooseValueFrom(map);
+    public static <K, V> Generator<V> chooseValueFromMap(Map<K, V> map) {
+        return Choose.chooseValueFromMap(map);
     }
 
     public static <A> Generator<A> frequency(FrequencyMap<A> frequencyMap) {

@@ -31,8 +31,8 @@ public class Street {
 
     private static class Generators {
         private static final Generator<String> compass =
-                frequency(entry(8, chooseOneOf("N.", "S.", "W.", "E.")),
-                        entry(1, chooseOneOf("NW", "NE", "SW", "SE")));
+                frequency(entry(8, chooseOneOfValues("N.", "S.", "W.", "E.")),
+                        entry(1, chooseOneOfValues("NW", "NE", "SW", "SE")));
 
         private static final Generator<String> ordinal =
                 generateInt(1, 99).fmap(n -> {
@@ -44,10 +44,10 @@ public class Street {
                 });
 
         private static final Generator<String> president =
-                chooseOneOf("Washington", "Adams", "Jefferson", "Madison", "Monroe", "Lincoln");
+                chooseOneOfValues("Washington", "Adams", "Jefferson", "Madison", "Monroe", "Lincoln");
 
         private static final Generator<String> tree =
-                chooseOneOf("Oak", "Maple", "Elm", "Pine", "Spruce", "Sycamore", "Birch", "Apple", "Peach");
+                chooseOneOfValues("Oak", "Maple", "Elm", "Pine", "Spruce", "Sycamore", "Birch", "Apple", "Peach");
 
         private static final Generator<String> suffix =
                 frequency(FrequencyEntry.entryForValue(10, "St."),

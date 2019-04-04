@@ -21,11 +21,11 @@ import static java.util.Arrays.asList;
 public class Choose {
 
     @SafeVarargs
-    static <A> Generator<A> chooseOneOf(A first, A... more) {
+    static <A> Generator<A> chooseOneOfValues(A first, A... more) {
         ArrayList<A> choices = new ArrayList<>();
         choices.add(first);
         choices.addAll(asList(more));
-        return chooseOneFrom(choices);
+        return chooseOneFromCollection(choices);
     }
 
     @SafeVarargs
@@ -34,8 +34,8 @@ public class Choose {
     }
 
     @SafeVarargs
-    static <A> Generator<ArrayList<A>> chooseAtLeastOneOf(A first, A... more) {
-        return chooseAtLeastOneFrom(choices(cons(first, asList(more))));
+    static <A> Generator<ArrayList<A>> chooseAtLeastOneOfValues(A first, A... more) {
+        return chooseAtLeastOneFromDomain(choices(cons(first, asList(more))));
     }
 
     @SafeVarargs
@@ -45,7 +45,7 @@ public class Choose {
 
     @SafeVarargs
     static <A> Generator<ArrayList<A>> chooseSomeOf(A first, A... more) {
-        return chooseSomeFrom(choices(cons(first, asList(more))));
+        return chooseSomeFromDomain(choices(cons(first, asList(more))));
     }
 
     @SafeVarargs
@@ -53,12 +53,12 @@ public class Choose {
         return null;
     }
 
-    static <A> Generator<A> chooseOneFrom(Collection<A> items) {
+    static <A> Generator<A> chooseOneFromCollection(Collection<A> items) {
         requireNonEmptyChoices("chooseOneFrom", items);
-        return chooseOneFrom(choices(items));
+        return chooseOneFromDomain(choices(items));
     }
 
-    static <A> Generator<A> chooseOneFrom(DiscreteDomain<A> domain) {
+    static <A> Generator<A> chooseOneFromDomain(DiscreteDomain<A> domain) {
         long size = domain.getSize();
         if (size == 1) {
             return constant(domain.getValue(0));
@@ -67,40 +67,40 @@ public class Choose {
         }
     }
 
-    static <A> Generator<ArrayList<A>> chooseAtLeastOneFrom(Collection<A> items) {
+    static <A> Generator<ArrayList<A>> chooseAtLeastOneFromCollection(Collection<A> items) {
         requireNonEmptyChoices("chooseAtLeastOneFrom", items);
-        return chooseAtLeastOneFrom(choices(items));
+        return chooseAtLeastOneFromDomain(choices(items));
     }
 
-    static <A> Generator<ArrayList<A>> chooseAtLeastOneFrom(DiscreteDomain<A> domain) {
+    static <A> Generator<ArrayList<A>> chooseAtLeastOneFromDomain(DiscreteDomain<A> domain) {
         return null;
     }
 
-    static <A> Generator<ArrayList<A>> chooseSomeFrom(Collection<A> items) {
+    static <A> Generator<ArrayList<A>> chooseSomeFromDomain(Collection<A> items) {
         requireNonEmptyChoices("chooseSomeFrom", items);
-        return chooseSomeFrom(choices(items));
+        return chooseSomeFromDomain(choices(items));
     }
 
-    static <A> Generator<ArrayList<A>> chooseSomeFrom(DiscreteDomain<A> domain) {
+    static <A> Generator<ArrayList<A>> chooseSomeFromDomain(DiscreteDomain<A> domain) {
         return null;
     }
 
-    static <K, V> Generator<Map.Entry<K, V>> chooseEntryFrom(Map<K, V> map) {
+    static <K, V> Generator<Map.Entry<K, V>> chooseEntryFromMap(Map<K, V> map) {
         Set<Map.Entry<K, V>> entries = map.entrySet();
         requireNonEmptyChoices("chooseEntryFrom", entries);
-        return chooseOneFrom(entries);
+        return chooseOneFromCollection(entries);
     }
 
-    static <K, V> Generator<K> chooseKeyFrom(Map<K, V> map) {
+    static <K, V> Generator<K> chooseKeyFromMap(Map<K, V> map) {
         Set<K> keys = map.keySet();
         requireNonEmptyChoices("chooseKeyFrom", keys);
-        return chooseOneFrom(keys);
+        return chooseOneFromCollection(keys);
     }
 
-    static <K, V> Generator<V> chooseValueFrom(Map<K, V> map) {
+    static <K, V> Generator<V> chooseValueFromMap(Map<K, V> map) {
         Collection<V> values = map.values();
         requireNonEmptyChoices("chooseValueFrom", values);
-        return chooseOneFrom(values);
+        return chooseOneFromCollection(values);
     }
 
     static <A> Generator<A> frequency(FrequencyMap<A> frequencyMap) {

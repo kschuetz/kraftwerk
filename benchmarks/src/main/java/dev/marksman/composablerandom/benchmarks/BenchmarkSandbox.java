@@ -28,8 +28,8 @@ public class BenchmarkSandbox {
                 Generators.generateBoolean(),
                 Generators.generateByte(),
                 Generators.generateShort(),
-                Generators.tupled(Generators.chooseOneOf("foo", "bar", "baz"),
-                        Generators.chooseOneFrom(asList(1, 2, 3, 4, 5, 6, 7, 8)))));
+                Generators.tupled(Generators.chooseOneOfValues("foo", "bar", "baz"),
+                        Generators.chooseOneFromCollection(asList(1, 2, 3, 4, 5, 6, 7, 8)))));
     }
 
     private static void sandbox1() {

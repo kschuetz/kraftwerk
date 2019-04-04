@@ -33,10 +33,10 @@ public class Name {
     }
 
     private static class Generators {
-        private static final Generator<String> initial = chooseOneFrom(Characters.alphaUpper()).fmap(c -> c + ".");
+        private static final Generator<String> initial = chooseOneFromDomain(Characters.alphaUpper()).fmap(c -> c + ".");
 
         private static final Generator<String> givenNames =
-                chooseOneOf("Alice", "Barbara", "Bart", "Billy", "Bobby", "Carol", "Cindy", "Elizabeth",
+                chooseOneOfValues("Alice", "Barbara", "Bart", "Billy", "Bobby", "Carol", "Cindy", "Elizabeth",
                         "Eric", "George", "Greg", "Homer", "James", "Jan", "John", "Kenny", "Kyle", "Linda", "Lisa",
                         "Maggie", "Marcia", "Marge", "Mary", "Mike", "Oliver", "Patricia", "Peter", "Stan");
 
@@ -49,14 +49,14 @@ public class Name {
                         entry(5, initial));
 
         private static final Generator<String> last =
-                chooseOneFrom(asList(
+                chooseOneFromCollection(asList(
                         "Allen", "Anderson", "Brown", "Clark", "Davis", "Foobar", "Garcia", "Hall", "Harris",
                         "Hernandez", "Jackson", "Johnson", "Jones", "King", "Lee", "Lewis", "Lopez", "Martin",
                         "Martinez", "Miller", "Moore", "Qwerty", "Robinson", "Rodriguez", "Smith", "Taylor",
                         "Thomas", "Thompson", "Walker", "White", "Williams", "Wilson", "Wright", "Young"
                 ));
 
-        private static final Generator<String> suffix = chooseOneOf("Jr.", "III", "Sr.");
+        private static final Generator<String> suffix = chooseOneOfValues("Jr.", "III", "Sr.");
 
         private static final Generator<Name> name = tupled(
                 first,

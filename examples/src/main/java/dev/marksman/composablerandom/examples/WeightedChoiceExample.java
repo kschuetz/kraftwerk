@@ -18,7 +18,7 @@ public class WeightedChoiceExample {
                         .or(generateLong())
                         .or(generateByte())
                         .or(generateShort())
-                        .or(chooseOneFrom(Characters.asciiPrintable()))
+                        .or(chooseOneFromDomain(Characters.asciiPrintable()))
                         .toGenerator();
 
         streamFrom(primitiveGenerator).next(100).forEach(System.out::println);

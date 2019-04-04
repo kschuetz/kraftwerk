@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import static dev.marksman.composablerandom.Generator.constant;
 import static dev.marksman.composablerandom.Generator.generator;
 import static dev.marksman.composablerandom.Instruction.aggregate;
-import static dev.marksman.composablerandom.builtin.Choose.chooseOneFrom;
 
 class Strings {
 
@@ -32,7 +31,7 @@ class Strings {
     }
 
     static Generator<String> generateStringFromCharacters(DiscreteDomain<Character> characters) {
-        return Generators.sized(size -> generateStringFromCharacters(size, chooseOneFrom(characters)));
+        return Generators.sized(size -> generateStringFromCharacters(size, Choose.chooseOneFromDomain(characters)));
     }
 
     static Generator<String> generateStringFromCharacters(int length, Generator<Character> g) {
