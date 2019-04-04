@@ -8,14 +8,13 @@ import static com.jnape.palatable.lambda.adt.hlist.HList.tuple;
 import static dev.marksman.composablerandom.Result.result;
 import static dev.marksman.composablerandom.StandardContext.defaultContext;
 
-public class DefaultInterpreter implements Interpreter {
+public class DefaultInterpreter {
     private final SizeSelector sizeSelector;
 
     private DefaultInterpreter(Context context) {
         this.sizeSelector = SizeSelectors.sizeSelector(context.getSizeParameters());
     }
 
-    @Override
     public <A, R> Result<RandomState, R> execute(RandomState input, Instruction<A> instruction) {
 
         if (instruction instanceof Instruction.Pure) {

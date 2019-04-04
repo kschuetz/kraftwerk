@@ -10,4 +10,6 @@ public interface Metadata {
 
     Metadata removeLabel();
 
+    boolean isPrimitive();
+
 }

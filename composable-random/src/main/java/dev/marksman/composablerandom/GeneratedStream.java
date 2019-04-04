@@ -9,10 +9,10 @@ import static dev.marksman.composablerandom.Initialize.randomInitialRandomState;
 
 public class GeneratedStream<A> implements Iterator<A> {
     private final Generator<A> generator;
-    private final Interpreter interpreter;
+    private final DefaultInterpreter interpreter;
     private RandomState currentState;
 
-    private GeneratedStream(Generator<A> generator, Interpreter interpreter, RandomState initialState) {
+    private GeneratedStream(Generator<A> generator, DefaultInterpreter interpreter, RandomState initialState) {
         this.generator = generator;
         this.interpreter = interpreter;
         this.currentState = initialState;
@@ -67,7 +67,7 @@ public class GeneratedStream<A> implements Iterator<A> {
         }
     }
 
-    public static <A> GeneratedStream<A> streamFrom(Generator<A> generator, Interpreter interpreter, RandomState initialState) {
+    public static <A> GeneratedStream<A> streamFrom(Generator<A> generator, DefaultInterpreter interpreter, RandomState initialState) {
         return new GeneratedStream<>(generator, interpreter, initialState);
     }
 

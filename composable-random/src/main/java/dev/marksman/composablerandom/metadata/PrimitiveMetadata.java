@@ -6,10 +6,10 @@ import lombok.AllArgsConstructor;
 
 import static com.jnape.palatable.lambda.adt.Maybe.just;
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
+import static dev.marksman.composablerandom.metadata.StandardMetadata.standardMetadata;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class StandardMetadata implements Metadata {
-    private static final StandardMetadata DEFAULT = standardMetadata(nothing());
+public class PrimitiveMetadata implements Metadata {
 
     private final Maybe<String> label;
 
@@ -20,7 +20,7 @@ public class StandardMetadata implements Metadata {
 
     @Override
     public boolean isPrimitive() {
-        return false;
+        return true;
     }
 
     @Override
@@ -29,19 +29,13 @@ public class StandardMetadata implements Metadata {
     }
 
     @Override
-    public StandardMetadata removeLabel() {
+    public Metadata removeLabel() {
         return label.match(_1 -> this, _2 -> standardMetadata(nothing()));
     }
 
-    public static StandardMetadata standardMetadata(Maybe<String> label) {
-        return new StandardMetadata(label);
-    }
 
-    public static StandardMetadata defaultMetadata() {
-        return DEFAULT;
-    }
-
-    public static StandardMetadata labeled(String text) {
-        return defaultMetadata().withLabel(text);
+    public static PrimitiveMetadata primitiveMetadata(String label) {
+        return new PrimitiveMetadata(just(label));
     }
 }
+
