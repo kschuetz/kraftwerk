@@ -3,6 +3,7 @@ package dev.marksman.composablerandom.builtin;
 import com.jnape.palatable.lambda.adt.Either;
 import com.jnape.palatable.lambda.adt.Maybe;
 import com.jnape.palatable.lambda.adt.Unit;
+import com.jnape.palatable.lambda.adt.choice.*;
 import com.jnape.palatable.lambda.adt.hlist.*;
 import dev.marksman.composablerandom.DiscreteDomain;
 import dev.marksman.composablerandom.FrequencyEntry;
@@ -91,6 +92,10 @@ public class Generators {
         return Primitives.generateShort();
     }
 
+    public static Generator<String> generateString() {
+        return Strings.generateString();
+    }
+
     public static Generator<String> generateString(int length, Generator<String> g) {
         return Strings.generateString(length, g);
     }
@@ -101,6 +106,10 @@ public class Generators {
 
     public static Generator<String> generateStringFromCharacters(Generator<Character> g) {
         return Strings.generateStringFromCharacters(g);
+    }
+
+    public static Generator<String> generateStringFromCharacters(DiscreteDomain<Character> characters) {
+        return Strings.generateStringFromCharacters(characters);
     }
 
     @SafeVarargs
@@ -333,11 +342,71 @@ public class Generators {
         return ChoiceBuilder1.choiceBuilder(firstChoice);
     }
 
-    public static <A> ChoiceBuilder1<A> choiceBuilder(int weight, A firstChoice) {
+    public static <A> ChoiceBuilder1<A> choiceBuilder(FrequencyEntry<A> firstChoice) {
+        return ChoiceBuilder1.choiceBuilder(firstChoice);
+    }
+
+    public static <A> ChoiceBuilder1<A> choiceBuilderValue(int weight, A firstChoice) {
         return ChoiceBuilder1.choiceBuilderValue(weight, firstChoice);
     }
 
-    public static <A> ChoiceBuilder1<A> choiceBuilder(A firstChoice) {
+    public static <A> ChoiceBuilder1<A> choiceBuilderValue(A firstChoice) {
         return ChoiceBuilder1.choiceBuilderValue(firstChoice);
+    }
+
+    public static <A, B> Generator<Choice2<A, B>> generateChoice(FrequencyEntry<A> a,
+                                                                 FrequencyEntry<B> b) {
+        return choiceBuilder(a).or(b).toGenerator();
+    }
+
+    public static <A, B, C> Generator<Choice3<A, B, C>> generateChoice(FrequencyEntry<A> a,
+                                                                       FrequencyEntry<B> b,
+                                                                       FrequencyEntry<C> c) {
+        return choiceBuilder(a).or(b).or(c).toGenerator();
+    }
+
+    public static <A, B, C, D> Generator<Choice4<A, B, C, D>> generateChoice(FrequencyEntry<A> a,
+                                                                             FrequencyEntry<B> b,
+                                                                             FrequencyEntry<C> c,
+                                                                             FrequencyEntry<D> d) {
+        return choiceBuilder(a).or(b).or(c).or(d).toGenerator();
+    }
+
+    public static <A, B, C, D, E> Generator<Choice5<A, B, C, D, E>> generateChoice(FrequencyEntry<A> a,
+                                                                                   FrequencyEntry<B> b,
+                                                                                   FrequencyEntry<C> c,
+                                                                                   FrequencyEntry<D> d,
+                                                                                   FrequencyEntry<E> e) {
+        return choiceBuilder(a).or(b).or(c).or(d).or(e).toGenerator();
+    }
+
+    public static <A, B, C, D, E, F> Generator<Choice6<A, B, C, D, E, F>> generateChoice(FrequencyEntry<A> a,
+                                                                                         FrequencyEntry<B> b,
+                                                                                         FrequencyEntry<C> c,
+                                                                                         FrequencyEntry<D> d,
+                                                                                         FrequencyEntry<E> e,
+                                                                                         FrequencyEntry<F> f) {
+        return choiceBuilder(a).or(b).or(c).or(d).or(e).or(f).toGenerator();
+    }
+
+    public static <A, B, C, D, E, F, G> Generator<Choice7<A, B, C, D, E, F, G>> generateChoice(FrequencyEntry<A> a,
+                                                                                               FrequencyEntry<B> b,
+                                                                                               FrequencyEntry<C> c,
+                                                                                               FrequencyEntry<D> d,
+                                                                                               FrequencyEntry<E> e,
+                                                                                               FrequencyEntry<F> f,
+                                                                                               FrequencyEntry<G> g) {
+        return choiceBuilder(a).or(b).or(c).or(d).or(e).or(f).or(g).toGenerator();
+    }
+
+    public static <A, B, C, D, E, F, G, H> Generator<Choice8<A, B, C, D, E, F, G, H>> generateChoice(FrequencyEntry<A> a,
+                                                                                                     FrequencyEntry<B> b,
+                                                                                                     FrequencyEntry<C> c,
+                                                                                                     FrequencyEntry<D> d,
+                                                                                                     FrequencyEntry<E> e,
+                                                                                                     FrequencyEntry<F> f,
+                                                                                                     FrequencyEntry<G> g,
+                                                                                                     FrequencyEntry<H> h) {
+        return choiceBuilder(a).or(b).or(c).or(d).or(e).or(f).or(g).or(h).toGenerator();
     }
 }
