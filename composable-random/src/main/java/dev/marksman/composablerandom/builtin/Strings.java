@@ -1,15 +1,22 @@
 package dev.marksman.composablerandom.builtin;
 
+import dev.marksman.composablerandom.DiscreteDomain;
 import dev.marksman.composablerandom.Generator;
 import dev.marksman.composablerandom.Instruction;
+import dev.marksman.composablerandom.domain.Characters;
 
 import java.util.ArrayList;
 
 import static dev.marksman.composablerandom.Generator.constant;
 import static dev.marksman.composablerandom.Generator.generator;
 import static dev.marksman.composablerandom.Instruction.aggregate;
+import static dev.marksman.composablerandom.builtin.Choose.chooseOneFrom;
 
 class Strings {
+
+    static Generator<String> generateString() {
+        return generateStringFromCharacters(Characters.asciiPrintable());
+    }
 
     static Generator<String> generateString(int length, Generator<String> g) {
         if (length <= 0) return constant("");
@@ -22,6 +29,10 @@ class Strings {
 
     static Generator<String> generateStringFromCharacters(Generator<Character> g) {
         return Generators.sized(size -> generateStringFromCharacters(size, g));
+    }
+
+    static Generator<String> generateStringFromCharacters(DiscreteDomain<Character> characters) {
+        return Generators.sized(size -> generateStringFromCharacters(size, chooseOneFrom(characters)));
     }
 
     static Generator<String> generateStringFromCharacters(int length, Generator<Character> g) {
