@@ -13,8 +13,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
-import static com.jnape.palatable.lambda.functions.builtin.fn1.Repeat.repeat;
-import static com.jnape.palatable.lambda.functions.builtin.fn2.Take.take;
+import static com.jnape.palatable.lambda.functions.builtin.fn2.Replicate.replicate;
 
 public abstract class Instruction<A> {
 
@@ -289,24 +288,24 @@ public abstract class Instruction<A> {
         return new Labeled<>(label, operand);
     }
 
-    public static <A, Builder, Result> Aggregate<A, Builder, Result> aggregate(Supplier<Builder> initialBuilderSupplier,
-                                                                               Fn2<Builder, A, Builder> addFn,
-                                                                               Fn1<Builder, Result> buildFn,
-                                                                               Iterable<Instruction<A>> instructions) {
+    public static <A, Builder, Out> Aggregate<A, Builder, Out> aggregate(Supplier<Builder> initialBuilderSupplier,
+                                                                         Fn2<Builder, A, Builder> addFn,
+                                                                         Fn1<Builder, Out> buildFn,
+                                                                         Iterable<Instruction<A>> instructions) {
         return new Aggregate<>(initialBuilderSupplier, addFn, buildFn, instructions);
     }
 
-    public static <A, Builder, Result> Aggregate<A, Builder, Result> aggregate(Supplier<Builder> initialBuilderSupplier,
-                                                                               Fn2<Builder, A, Builder> addFn,
-                                                                               Fn1<Builder, Result> buildFn,
-                                                                               int size,
-                                                                               Instruction<A> instruction) {
-        return new Aggregate<>(initialBuilderSupplier, addFn, buildFn, take(size, repeat(instruction)));
+    public static <A, Builder, Out> Aggregate<A, Builder, Out> aggregate(Supplier<Builder> initialBuilderSupplier,
+                                                                         Fn2<Builder, A, Builder> addFn,
+                                                                         Fn1<Builder, Out> buildFn,
+                                                                         int size,
+                                                                         Instruction<A> instruction) {
+        return new Aggregate<>(initialBuilderSupplier, addFn, buildFn, replicate(size, instruction));
     }
 
     public static <A, C extends Collection<A>> Aggregate<A, C, C> buildCollection(Supplier<C> initialCollectionSupplier,
                                                                                   Iterable<Instruction<A>> instructions) {
-        return new Aggregate<A, C, C>(initialCollectionSupplier,
+        return new Aggregate<>(initialCollectionSupplier,
                 (collection, item) -> {
                     collection.add(item);
                     return collection;
@@ -316,7 +315,7 @@ public abstract class Instruction<A> {
     public static <A, C extends Collection<A>> Aggregate<A, C, C> buildCollection(Supplier<C> initialCollectionSupplier,
                                                                                   int size,
                                                                                   Instruction<A> instruction) {
-        return buildCollection(initialCollectionSupplier, take(size, repeat(instruction)));
+        return buildCollection(initialCollectionSupplier, replicate(size, instruction));
     }
 
     public static <A, B, C, D, E, F, G, H> Product8<A, B, C, D, E, F, G, H> product8(Instruction<A> a,

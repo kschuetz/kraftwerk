@@ -147,7 +147,6 @@ public class AlternateInterpreter {
             return sizedImpl(sizeSelector, rs -> compile((Instruction<A>) instruction1.getFn().apply(rs)));
         }
 
-
         if (instruction instanceof Instruction.Aggregate) {
             Instruction.Aggregate instruction1 = (Instruction.Aggregate) instruction;
             //noinspection unchecked

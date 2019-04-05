@@ -13,14 +13,14 @@ import java.util.function.Supplier;
 import static dev.marksman.composablerandom.Result.result;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class AggregateImpl<Elem, Builder, Output> implements Generate<Output> {
+public class AggregateImpl<Elem, Builder, Out> implements Generate<Out> {
     private final Supplier<Builder> initialBuilderSupplier;
     private final Fn2<Builder, Elem, Builder> addFn;
-    private final Fn1<Builder, Output> buildFn;
+    private final Fn1<Builder, Out> buildFn;
     private final Iterable<Generate<Elem>> instructions;
 
     @Override
-    public Result<? extends RandomState, Output> generate(RandomState input) {
+    public Result<? extends RandomState, Out> generate(RandomState input) {
         RandomState current = input;
         Builder builder = initialBuilderSupplier.get();
 
@@ -32,10 +32,10 @@ public class AggregateImpl<Elem, Builder, Output> implements Generate<Output> {
         return result(current, buildFn.apply(builder));
     }
 
-    public static <Elem, Builder, Output> AggregateImpl<Elem, Builder, Output> aggregateImpl(
+    public static <Elem, Builder, Out> AggregateImpl<Elem, Builder, Out> aggregateImpl(
             Supplier<Builder> initialBuilderSupplier,
             Fn2<Builder, Elem, Builder> addFn,
-            Fn1<Builder, Output> buildFn,
+            Fn1<Builder, Out> buildFn,
             Iterable<Generate<Elem>> instructions) {
         return new AggregateImpl<>(initialBuilderSupplier, addFn, buildFn, instructions);
     }

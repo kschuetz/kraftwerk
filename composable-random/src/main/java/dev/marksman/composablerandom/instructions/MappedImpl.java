@@ -8,17 +8,17 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class MappedImpl<In, A> implements Generate<A> {
-    private final Fn1<In, A> fn;
+public class MappedImpl<In, Out> implements Generate<Out> {
+    private final Fn1<In, Out> fn;
     private final Generate<In> operand;
 
     @Override
-    public Result<? extends RandomState, A> generate(RandomState input) {
+    public Result<? extends RandomState, Out> generate(RandomState input) {
         return operand.generate(input).fmap(fn);
     }
 
-    public static <In, A> MappedImpl<In, A> mappedImpl(Fn1<In, A> fn,
-                                                       Generate<In> operand) {
+    public static <In, Out> MappedImpl<In, Out> mappedImpl(Fn1<In, Out> fn,
+                                                           Generate<In> operand) {
         return new MappedImpl<>(fn, operand);
     }
 
