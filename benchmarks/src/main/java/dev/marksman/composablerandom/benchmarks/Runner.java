@@ -35,6 +35,18 @@ public class Runner {
         System.out.println(label + ": " + t + " ms");
     }
 
+    public static <A> void runAlternate(String label, int iterations, Generator<A> generator) {
+        AlternateGeneratedStream<A> stream = AlternateGeneratedStream.alternateStreamFrom(generator);
+
+        long t0 = System.currentTimeMillis();
+        for (int i = 0; i < iterations; i++) {
+            stream.next();
+        }
+        long t = System.currentTimeMillis() - t0;
+
+        System.out.println("alternate " + label + ": " + t + " ms");
+    }
+
     public static <A> void runRandomState(String label, int iterations, Function<RandomState, Result<? extends RandomState, A>> fn) {
         RandomState currentState = StandardGen.initStandardGen();
         long t0 = System.currentTimeMillis();

@@ -29,7 +29,7 @@ public abstract class Instruction<A> {
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Custom<A> extends Instruction<A> {
-        private final Fn1<? super RandomState, Result> fn;
+        private final Fn1<? super RandomState, Result<RandomState, A>> fn;
     }
 
     @EqualsAndHashCode(callSuper = true)

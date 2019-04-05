@@ -1,210 +1,190 @@
 package dev.marksman.composablerandom.spike;
 
-import com.jnape.palatable.lambda.functions.Fn1;
-import com.jnape.palatable.lambda.functions.Fn2;
-import dev.marksman.composablerandom.RandomState;
-import dev.marksman.composablerandom.Result;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import dev.marksman.composablerandom.*;
 
-import java.util.function.Supplier;
-
-import static dev.marksman.composablerandom.Result.result;
+import static com.jnape.palatable.lambda.functions.builtin.fn2.Map.map;
+import static dev.marksman.composablerandom.instructions.AggregateImpl.aggregateImpl;
+import static dev.marksman.composablerandom.instructions.CustomImpl.customImpl;
+import static dev.marksman.composablerandom.instructions.FlatMappedImpl.flatMappedImpl;
+import static dev.marksman.composablerandom.instructions.MappedImpl.mappedImpl;
+import static dev.marksman.composablerandom.instructions.NextBooleanImpl.nextBooleanImpl;
+import static dev.marksman.composablerandom.instructions.NextBytesImpl.nextBytesImpl;
+import static dev.marksman.composablerandom.instructions.NextDoubleImpl.nextDoubleImpl;
+import static dev.marksman.composablerandom.instructions.NextFloatImpl.nextFloatImpl;
+import static dev.marksman.composablerandom.instructions.NextGaussianImpl.nextGaussianImpl;
+import static dev.marksman.composablerandom.instructions.NextIntBetweenImpl.nextIntBetweenImpl;
+import static dev.marksman.composablerandom.instructions.NextIntBoundedImpl.nextIntBoundedImpl;
+import static dev.marksman.composablerandom.instructions.NextIntExclusiveImpl.nextIntExclusiveImpl;
+import static dev.marksman.composablerandom.instructions.NextIntImpl.nextIntImpl;
+import static dev.marksman.composablerandom.instructions.NextIntIndexImpl.nextIntIndexImpl;
+import static dev.marksman.composablerandom.instructions.NextLongBetweenImpl.nextLongBetweenImpl;
+import static dev.marksman.composablerandom.instructions.NextLongBoundedImpl.nextLongBoundedImpl;
+import static dev.marksman.composablerandom.instructions.NextLongExclusiveImpl.nextLongExclusiveImpl;
+import static dev.marksman.composablerandom.instructions.NextLongImpl.nextLongImpl;
+import static dev.marksman.composablerandom.instructions.NextLongIndexImpl.nextLongIndexImpl;
+import static dev.marksman.composablerandom.instructions.Product8Impl.product8Impl;
+import static dev.marksman.composablerandom.instructions.PureImpl.pureImpl;
+import static dev.marksman.composablerandom.instructions.SizedImpl.sizedImpl;
 
 public class AlternateInterpreter {
+    private final SizeSelector sizeSelector;
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class ExecutePure<A> implements Interpreter<A> {
-        private final A value;
-
-        @Override
-        public Result<RandomState, A> execute(RandomState input) {
-            return result(input, value);
-        }
+    private AlternateInterpreter(Context context) {
+        this.sizeSelector = SizeSelectors.sizeSelector(context.getSizeParameters());
     }
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class ExecuteCustom<A> implements Interpreter<A> {
-        private final Fn1<? super RandomState, Result<RandomState, A>> fn;
-
-        @Override
-        public Result<? extends RandomState, A> execute(RandomState input) {
-            return fn.apply(input);
+    public <A> Generate<A> compile(Instruction<A> instruction) {
+        if (instruction instanceof Instruction.Pure) {
+            return pureImpl(((Instruction.Pure<A>) instruction).getValue());
         }
+
+        if (instruction instanceof Instruction.Custom) {
+            return customImpl(((Instruction.Custom<A>) instruction).getFn());
+        }
+
+        if (instruction instanceof Instruction.Mapped) {
+            return handleMapped((Instruction.Mapped<?, A>) instruction);
+        }
+
+        if (instruction instanceof Instruction.FlatMapped) {
+            return handleFlatMapped((Instruction.FlatMapped<?, A>) instruction);
+        }
+
+        if (instruction instanceof Instruction.NextInt) {
+            //noinspection unchecked
+            return (Generate<A>) nextIntImpl();
+        }
+
+        if (instruction instanceof Instruction.NextLong) {
+            //noinspection unchecked
+            return (Generate<A>) nextLongImpl();
+        }
+
+        if (instruction instanceof Instruction.NextBoolean) {
+            //noinspection unchecked
+            return (Generate<A>) nextBooleanImpl();
+        }
+
+        if (instruction instanceof Instruction.NextDouble) {
+            //noinspection unchecked
+            return (Generate<A>) nextDoubleImpl();
+        }
+
+        if (instruction instanceof Instruction.NextFloat) {
+            //noinspection unchecked
+            return (Generate<A>) nextFloatImpl();
+        }
+
+        if (instruction instanceof Instruction.NextIntBounded) {
+            int bound = ((Instruction.NextIntBounded) instruction).getBound();
+            //noinspection unchecked
+            return (Generate<A>) nextIntBoundedImpl(bound);
+        }
+
+        if (instruction instanceof Instruction.NextIntExclusive) {
+            Instruction.NextIntExclusive instruction1 = (Instruction.NextIntExclusive) instruction;
+            //noinspection unchecked
+            return (Generate<A>) nextIntExclusiveImpl(instruction1.getOrigin(), instruction1.getBound());
+        }
+
+        if (instruction instanceof Instruction.NextIntBetween) {
+            Instruction.NextIntBetween instruction1 = (Instruction.NextIntBetween) instruction;
+            //noinspection unchecked
+            return (Generate<A>) nextIntBetweenImpl(instruction1.getMin(), instruction1.getMax());
+        }
+
+        if (instruction instanceof Instruction.NextIntIndex) {
+            Instruction.NextIntIndex instruction1 = (Instruction.NextIntIndex) instruction;
+            //noinspection unchecked
+            return (Generate<A>) nextIntIndexImpl(instruction1.getBound());
+        }
+
+        if (instruction instanceof Instruction.NextLongBounded) {
+            Instruction.NextLongBounded instruction1 = (Instruction.NextLongBounded) instruction;
+            //noinspection unchecked
+            return (Generate<A>) nextLongBoundedImpl(instruction1.getBound());
+        }
+
+        if (instruction instanceof Instruction.NextLongExclusive) {
+            Instruction.NextLongExclusive instruction1 = (Instruction.NextLongExclusive) instruction;
+            //noinspection unchecked
+            return (Generate<A>) nextLongExclusiveImpl(instruction1.getOrigin(), instruction1.getBound());
+        }
+
+        if (instruction instanceof Instruction.NextLongBetween) {
+            Instruction.NextLongBetween instruction1 = (Instruction.NextLongBetween) instruction;
+            //noinspection unchecked
+            return (Generate<A>) nextLongBetweenImpl(instruction1.getMin(), instruction1.getMax());
+        }
+
+        if (instruction instanceof Instruction.NextLongIndex) {
+            Instruction.NextLongIndex instruction1 = (Instruction.NextLongIndex) instruction;
+            //noinspection unchecked
+            return (Generate<A>) nextLongIndexImpl(instruction1.getBound());
+        }
+
+        if (instruction instanceof Instruction.NextGaussian) {
+            //noinspection unchecked
+            return (Generate<A>) nextGaussianImpl();
+        }
+
+        if (instruction instanceof Instruction.NextBytes) {
+            Instruction.NextBytes instruction1 = (Instruction.NextBytes) instruction;
+            //noinspection unchecked
+            return (Generate<A>) nextBytesImpl(instruction1.getCount());
+        }
+
+        if (instruction instanceof Instruction.Labeled) {
+            Instruction.Labeled instruction1 = (Instruction.Labeled) instruction;
+            //noinspection unchecked
+            return compile(instruction1.getOperand());
+        }
+
+        if (instruction instanceof Instruction.Sized) {
+            Instruction.Sized instruction1 = (Instruction.Sized) instruction;
+
+            //noinspection unchecked
+            return sizedImpl(sizeSelector, rs -> compile((Instruction<A>) instruction1.getFn().apply(rs)));
+        }
+
+
+        if (instruction instanceof Instruction.Aggregate) {
+            Instruction.Aggregate instruction1 = (Instruction.Aggregate) instruction;
+            //noinspection unchecked
+            Iterable<Instruction<A>> instructions = instruction1.getInstructions();
+
+            //noinspection unchecked
+            return (Generate<A>) aggregateImpl(instruction1.getInitialBuilderSupplier(), instruction1.getAddFn(),
+                    instruction1.getBuildFn(), map(this::compile, instructions));
+        }
+
+        if (instruction instanceof Instruction.Product8) {
+            Instruction.Product8 instruction1 = (Instruction.Product8) instruction;
+            //noinspection unchecked
+            return (Generate<A>) product8Impl(compile(instruction1.getA()),
+                    compile(instruction1.getB()),
+                    compile(instruction1.getC()),
+                    compile(instruction1.getD()),
+                    compile(instruction1.getE()),
+                    compile(instruction1.getF()),
+                    compile(instruction1.getG()),
+                    compile(instruction1.getH()));
+        }
+
+        throw new IllegalStateException("Unimplemented instruction");
     }
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class ExecuteMapped<In, A> implements Interpreter<A> {
-        private final Fn1<In, A> fn;
-        private final Interpreter<In> operand;
-
-        @Override
-        public Result<? extends RandomState, A> execute(RandomState input) {
-            return operand.execute(input).fmap(fn);
-        }
-
+    private <In, Out> Generate<Out> handleMapped(Instruction.Mapped<In, Out> mapped) {
+        return mappedImpl(mapped.getFn(), compile(mapped.getOperand()));
     }
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class ExecuteFlatMapped<In, A> implements Interpreter<A> {
-        private final Fn1<? super In, ? extends Interpreter<A>> fn;
-        private final Interpreter<In> operand;
-
-        @Override
-        public Result<? extends RandomState, A> execute(RandomState input) {
-            Result<? extends RandomState, In> result1 = operand.execute(input);
-            return fn.apply(result1.getValue())
-                    .execute(result1.getNextState());
-        }
-
+    private <In, Out> Generate<Out> handleFlatMapped(Instruction.FlatMapped<In, Out> flatMapped) {
+        return flatMappedImpl(in -> compile(flatMapped.getFn().apply(in)),
+                compile(flatMapped.getOperand()));
     }
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class ExecuteNextInt implements Interpreter<Integer> {
-        @Override
-        public Result<? extends RandomState, Integer> execute(RandomState input) {
-            return input.nextInt();
-        }
-    }
-
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class ExecuteNextLong implements Interpreter<Long> {
-        @Override
-        public Result<? extends RandomState, Long> execute(RandomState input) {
-            return input.nextLong();
-        }
-    }
-
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class ExecuteNextBoolean implements Interpreter<Boolean> {
-        @Override
-        public Result<? extends RandomState, Boolean> execute(RandomState input) {
-            return input.nextBoolean();
-        }
-    }
-
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class ExecuteNextDouble implements Interpreter<Double> {
-        @Override
-        public Result<? extends RandomState, Double> execute(RandomState input) {
-            return input.nextDouble();
-        }
-    }
-
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class ExecuteNextFloat implements Interpreter<Float> {
-        @Override
-        public Result<? extends RandomState, Float> execute(RandomState input) {
-            return input.nextFloat();
-        }
-    }
-
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class ExecuteNextIntBounded implements Interpreter<Integer> {
-        private final int bound;
-
-        @Override
-        public Result<? extends RandomState, Integer> execute(RandomState input) {
-            return input.nextIntBounded(bound);
-        }
-    }
-
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class ExecuteNextIntExclusive implements Interpreter<Integer> {
-        private final int origin;
-        private final int bound;
-
-        @Override
-        public Result<? extends RandomState, Integer> execute(RandomState input) {
-            return input.nextIntExclusive(origin, bound);
-        }
-    }
-
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class ExecuteNextIntBetween implements Interpreter<Integer> {
-        private final int min;
-        private final int max;
-
-        @Override
-        public Result<? extends RandomState, Integer> execute(RandomState input) {
-            return input.nextIntBetween(min, max);
-        }
-    }
-
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class ExecuteNextIntIndex implements Interpreter<Integer> {
-        private final int bound;
-
-        @Override
-        public Result<? extends RandomState, Integer> execute(RandomState input) {
-            return input.nextIntBounded(bound);
-        }
-    }
-
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class ExecuteNextLongBounded implements Interpreter<Long> {
-        private final long bound;
-
-        @Override
-        public Result<? extends RandomState, Long> execute(RandomState input) {
-            return input.nextLongBounded(bound);
-        }
-    }
-
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class ExecuteNextLongExclusive implements Interpreter<Long> {
-        private final long origin;
-        private final long bound;
-
-        @Override
-        public Result<? extends RandomState, Long> execute(RandomState input) {
-            return input.nextLongExclusive(origin, bound);
-        }
-    }
-
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class ExecuteNextLongBetween implements Interpreter<Long> {
-        private final long min;
-        private final long max;
-
-        @Override
-        public Result<? extends RandomState, Long> execute(RandomState input) {
-            return input.nextLongBetween(min, max);
-        }
-    }
-
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class ExecuteNextLongIndex implements Interpreter<Long> {
-        private final long bound;
-
-        @Override
-        public Result<? extends RandomState, Long> execute(RandomState input) {
-            return input.nextLongBounded(bound);
-        }
-    }
-
-
-    // -----
-
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class ExecuteAggregate<Elem, Builder, Output> implements Interpreter<Output> {
-        private final Supplier<Builder> initialBuilderSupplier;
-        private final Fn2<Builder, Elem, Builder> addFn;
-        private final Fn1<Builder, Output> buildFn;
-        private final Iterable<Interpreter<Elem>> instructions;
-
-        @Override
-        public Result<? extends RandomState, Output> execute(RandomState input) {
-            RandomState current = input;
-            Builder builder = initialBuilderSupplier.get();
-
-            for (Interpreter<Elem> instruction : instructions) {
-                Result<? extends RandomState, Elem> next = instruction.execute(current);
-                builder = addFn.apply(builder, next.getValue());
-                current = next.getNextState();
-            }
-            return result(current, buildFn.apply(builder));
-        }
+    public static AlternateInterpreter alternateInterpreter(Context context) {
+        return new AlternateInterpreter(context);
     }
 
 }
