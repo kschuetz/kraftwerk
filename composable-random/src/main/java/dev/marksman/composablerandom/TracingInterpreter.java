@@ -4,13 +4,13 @@ import com.jnape.palatable.lambda.adt.hlist.Tuple8;
 import dev.marksman.composablerandom.instructions.AggregateImpl;
 import dev.marksman.composablerandom.metadata.Metadata;
 import dev.marksman.composablerandom.metadata.StandardMetadata;
-import dev.marksman.composablerandom.tracing.Trace;
 
 import java.util.ArrayList;
 
 import static com.jnape.palatable.lambda.adt.hlist.HList.tuple;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Map.map;
 import static dev.marksman.composablerandom.Result.result;
+import static dev.marksman.composablerandom.Trace.trace;
 import static dev.marksman.composablerandom.instructions.AggregateImpl.aggregateImpl;
 import static dev.marksman.composablerandom.instructions.ConstantImpl.constantImpl;
 import static dev.marksman.composablerandom.instructions.CustomImpl.customImpl;
@@ -33,7 +33,6 @@ import static dev.marksman.composablerandom.instructions.NextLongImpl.nextLongIm
 import static dev.marksman.composablerandom.instructions.NextLongIndexImpl.nextLongIndexImpl;
 import static dev.marksman.composablerandom.instructions.SizedImpl.sizedImpl;
 import static dev.marksman.composablerandom.metadata.PrimitiveMetadata.primitiveMetadata;
-import static dev.marksman.composablerandom.tracing.Trace.trace;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 

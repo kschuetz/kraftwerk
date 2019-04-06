@@ -1,7 +1,6 @@
 package dev.marksman.composablerandom;
 
 import com.jnape.palatable.lambda.monoid.builtin.Concat;
-import dev.marksman.composablerandom.tracing.Trace;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 

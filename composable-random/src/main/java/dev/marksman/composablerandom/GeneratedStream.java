@@ -70,6 +70,10 @@ public class GeneratedStream<A> implements Iterator<A> {
         return new GeneratedStream<>(generate, initialState);
     }
 
+    public static <A> GeneratedStream<A> streamFrom(Generator<A> generator, RandomState initialState) {
+        return new GeneratedStream<>(compile(generator), initialState);
+    }
+
     public static <A> GeneratedStream<A> streamFrom(Generator<A> generator, long initialSeedValue) {
         return streamFrom(compile(generator), createInitialRandomState(initialSeedValue));
     }

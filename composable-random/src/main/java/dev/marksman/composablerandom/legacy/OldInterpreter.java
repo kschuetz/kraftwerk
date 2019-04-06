@@ -155,7 +155,7 @@ public class OldInterpreter {
                 flatMapped.getFn().apply(result1.getValue()));
     }
 
-    private Result<? extends RandomState, Byte[]> handleNextBytes(HasIntCount instruction, RandomState input) {
+    private Result<? extends RandomState, Byte[]> handleNextBytes(Generator.NextBytes instruction, RandomState input) {
         final int count = Math.max(instruction.getCount(), 0);
         byte[] buffer = new byte[count];
         Result<? extends RandomState, Unit> next = input.nextBytes(buffer);

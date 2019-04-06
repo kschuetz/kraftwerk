@@ -14,7 +14,7 @@ import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.All.all;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Eq.eq;
 import static dev.marksman.composablerandom.builtin.Generators.*;
-import static dev.marksman.composablerandom.legacy.OldGeneratedStream2.streamFrom;
+import static dev.marksman.composablerandom.legacy.OldGeneratedStream.streamFrom;
 import static dev.marksman.composablerandom.legacy.OldInterpreter.defaultInterpreter;
 import static dev.marksman.composablerandom.random.StandardGen.initStandardGen;
 import static org.junit.jupiter.api.Assertions.assertEquals;

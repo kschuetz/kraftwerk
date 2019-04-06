@@ -1,6 +1,6 @@
-package dev.marksman.composablerandom.legacy.builtin;
+package dev.marksman.composablerandom.builtin;
 
-import dev.marksman.composablerandom.legacy.State;
+import dev.marksman.composablerandom.RandomState;
 import org.junit.jupiter.api.Test;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.All.all;
@@ -8,9 +8,8 @@ import static com.jnape.palatable.lambda.functions.builtin.fn2.Eq.eq;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.GTE.gte;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.LT.lt;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.LTE.lte;
-import static dev.marksman.composablerandom.Initialize.randomInitialState;
-import static dev.marksman.composablerandom.legacy.builtin.OldGenerators.generateInt;
-import static dev.marksman.composablerandom.legacy.builtin.Primitives.generateIntExclusive;
+import static dev.marksman.composablerandom.Initialize.randomInitialRandomState;
+import static dev.marksman.composablerandom.builtin.Generators.generateInt;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static testsupport.Sample.sample;
@@ -32,14 +31,14 @@ class PrimitivesTest {
 
     @Test
     void testIntExclusive() {
-        assertTrue(all(gte(0), sample(generateIntExclusive(Integer.MAX_VALUE))));
-        assertTrue(all(gte(0), sample(generateIntExclusive(Integer.MAX_VALUE)
-                .flatMap(Primitives::generateIntExclusive))));
+        assertTrue(all(gte(0), sample(dev.marksman.composablerandom.builtin.Primitives.generateIntExclusive(Integer.MAX_VALUE))));
+        assertTrue(all(gte(0), sample(dev.marksman.composablerandom.builtin.Primitives.generateIntExclusive(Integer.MAX_VALUE)
+                .flatMap(dev.marksman.composablerandom.builtin.Primitives::generateIntExclusive))));
     }
 
     @Test
     void testIntFullRange() {
-        State initial = randomInitialState();
+        RandomState initial = randomInitialRandomState();
         assertEquals(sample(generateInt(Integer.MIN_VALUE, Integer.MAX_VALUE), initial),
                 sample(generateInt(), initial));
     }

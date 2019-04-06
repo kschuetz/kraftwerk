@@ -1,7 +1,9 @@
 package dev.marksman.composablerandom.benchmarks;
 
-import dev.marksman.composablerandom.*;
-import dev.marksman.composablerandom.legacy.OldGeneratedStream;
+import dev.marksman.composablerandom.GeneratedStream;
+import dev.marksman.composablerandom.Generator;
+import dev.marksman.composablerandom.RandomState;
+import dev.marksman.composablerandom.Result;
 import dev.marksman.composablerandom.legacy.OldInterpreter;
 import dev.marksman.composablerandom.random.StandardGen;
 
@@ -11,18 +13,7 @@ import static dev.marksman.composablerandom.legacy.OldInterpreter.defaultInterpr
 
 public class Runner {
 
-    public static <A> void runOld(String label, int iterations, OldGenerator<A> generator) {
-        OldGeneratedStream<A> stream = OldGeneratedStream.streamFrom(generator);
-        long t0 = System.currentTimeMillis();
-        for (int i = 0; i < iterations; i++) {
-            stream.next();
-        }
-        long t = System.currentTimeMillis() - t0;
-
-        System.out.println("old " + label + ": " + t + " ms");
-    }
-
-    public static <A> void run(String label, int iterations, Generator<A> generator) {
+    public static <A> void runMark2(String label, int iterations, Generator<A> generator) {
         OldInterpreter interpreter = defaultInterpreter();
         RandomState currentState = StandardGen.initStandardGen();
 
@@ -33,10 +24,10 @@ public class Runner {
         }
         long t = System.currentTimeMillis() - t0;
 
-        System.out.println(label + ": " + t + " ms");
+        System.out.println("mk2 " + label + ": " + t + " ms");
     }
 
-    public static <A> void runAlternate(String label, int iterations, Generator<A> generator) {
+    public static <A> void run(String label, int iterations, Generator<A> generator) {
         GeneratedStream<A> stream = GeneratedStream.streamFrom(generator);
 
         long t0 = System.currentTimeMillis();
@@ -45,7 +36,7 @@ public class Runner {
         }
         long t = System.currentTimeMillis() - t0;
 
-        System.out.println("alternate " + label + ": " + t + " ms");
+        System.out.println(label + ": " + t + " ms");
     }
 
     public static <A> void runRandomState(String label, int iterations, Function<RandomState, Result<? extends RandomState, A>> fn) {

@@ -102,14 +102,14 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextIntBounded extends Generator<Integer> implements HasIntExclusiveBound {
+    public static class NextIntBounded extends Generator<Integer> {
         private final int bound;
     }
 
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextIntExclusive extends Generator<Integer> implements HasIntExclusiveRange {
+    public static class NextIntExclusive extends Generator<Integer> {
         private final int origin;
         private final int bound;
     }
@@ -117,7 +117,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextIntBetween extends Generator<Integer> implements HasIntInclusiveRange {
+    public static class NextIntBetween extends Generator<Integer> {
         private final int min;
         private final int max;
     }
@@ -125,7 +125,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextIntIndex extends Generator<Integer> implements HasIntExclusiveBound {
+    public static class NextIntIndex extends Generator<Integer> {
         private final int bound;
     }
 
@@ -139,14 +139,14 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextLongBounded extends Generator<Long> implements HasLongExclusiveBound {
+    public static class NextLongBounded extends Generator<Long> {
         private final long bound;
     }
 
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextLongExclusive extends Generator<Long> implements HasLongExclusiveRange {
+    public static class NextLongExclusive extends Generator<Long> {
         private final long origin;
         private final long bound;
     }
@@ -154,7 +154,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextLongBetween extends Generator<Long> implements HasLongInclusiveRange {
+    public static class NextLongBetween extends Generator<Long> {
         private final long min;
         private final long max;
     }
@@ -162,7 +162,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextLongIndex extends Generator<Long> implements HasLongExclusiveBound {
+    public static class NextLongIndex extends Generator<Long> {
         private final long bound;
     }
 
@@ -176,7 +176,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextBytes extends Generator<Byte[]> implements HasIntCount {
+    public static class NextBytes extends Generator<Byte[]> {
         private final int count;
     }
 

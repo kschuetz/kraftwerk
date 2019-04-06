@@ -1,21 +1,25 @@
 package dev.marksman.composablerandom.legacy;
 
-import dev.marksman.composablerandom.OldGenerator;
+import dev.marksman.composablerandom.Context;
+import dev.marksman.composablerandom.Generator;
 import dev.marksman.composablerandom.RandomState;
 import dev.marksman.composablerandom.Result;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import static dev.marksman.composablerandom.Initialize.createInitialState;
-import static dev.marksman.composablerandom.Initialize.randomInitialState;
+import static dev.marksman.composablerandom.Initialize.createInitialRandomState;
+import static dev.marksman.composablerandom.Initialize.randomInitialRandomState;
+import static dev.marksman.composablerandom.legacy.OldInterpreter.defaultInterpreter;
 
 public class OldGeneratedStream<A> implements Iterator<A> {
-    private final OldGenerator<A> generator;
-    private State currentState;
+    private final Generator<A> generator;
+    private final OldInterpreter interpreter;
+    private RandomState currentState;
 
-    private OldGeneratedStream(OldGenerator<A> generator, State initialState) {
+    private OldGeneratedStream(Generator<A> generator, OldInterpreter interpreter, RandomState initialState) {
         this.generator = generator;
+        this.interpreter = interpreter;
         this.currentState = initialState;
     }
 
@@ -26,11 +30,12 @@ public class OldGeneratedStream<A> implements Iterator<A> {
 
     @Override
     public A next() {
-        Result<State, A> run;
+        Result<RandomState, A> run;
         synchronized (this) {
-            run = generator.run(currentState);
+            run = interpreter.execute(currentState, generator);
             currentState = run.getNextState();
         }
+
         return run.getValue();
     }
 
@@ -67,28 +72,24 @@ public class OldGeneratedStream<A> implements Iterator<A> {
         }
     }
 
-    public static <A> OldGeneratedStream<A> streamFrom(OldGenerator<A> generator, State initialState) {
-        return new OldGeneratedStream<>(generator, initialState);
+    public static <A> OldGeneratedStream<A> streamFrom(Generator<A> generator, OldInterpreter interpreter, RandomState initialState) {
+        return new OldGeneratedStream<>(generator, interpreter, initialState);
     }
 
-    public static <A> OldGeneratedStream<A> streamFrom(OldGenerator<A> generator, RandomState initialState) {
-        return streamFrom(generator, createInitialState(initialState));
+    public static <A> OldGeneratedStream<A> streamFrom(Generator<A> generator, long initialSeedValue) {
+        return streamFrom(generator, defaultInterpreter(), createInitialRandomState(initialSeedValue));
     }
 
-    public static <A> OldGeneratedStream<A> streamFrom(OldGenerator<A> generator, long initialSeedValue) {
-        return streamFrom(generator, createInitialState(initialSeedValue));
+    public static <A> OldGeneratedStream<A> streamFrom(Generator<A> generator, Context context) {
+        return streamFrom(generator, defaultInterpreter(context), randomInitialRandomState());
     }
 
-    public static <A> OldGeneratedStream<A> streamFrom(OldGenerator<A> generator, OldContext context) {
-        return streamFrom(generator, randomInitialState(context));
+    public static <A> OldGeneratedStream<A> streamFrom(Generator<A> generator, Context context, long initialSeedValue) {
+        return streamFrom(generator, defaultInterpreter(context), createInitialRandomState(initialSeedValue));
     }
 
-    public static <A> OldGeneratedStream<A> streamFrom(OldGenerator<A> generator, OldContext context, long initialSeedValue) {
-        return streamFrom(generator, createInitialState(initialSeedValue, context));
-    }
-
-    public static <A> OldGeneratedStream<A> streamFrom(OldGenerator<A> generator) {
-        return streamFrom(generator, randomInitialState());
+    public static <A> OldGeneratedStream<A> streamFrom(Generator<A> generator) {
+        return streamFrom(generator, defaultInterpreter(), randomInitialRandomState());
     }
 
 }

@@ -5,7 +5,7 @@ import dev.marksman.composablerandom.Generator;
 import dev.marksman.composablerandom.domain.Characters;
 
 import static dev.marksman.composablerandom.builtin.Generators.*;
-import static dev.marksman.composablerandom.legacy.OldGeneratedStream2.streamFrom;
+import static dev.marksman.composablerandom.legacy.OldGeneratedStream.streamFrom;
 
 public class WeightedChoiceExample {
 

@@ -1,4 +1,4 @@
-package dev.marksman.composablerandom.tracing;
+package dev.marksman.composablerandom;
 
 import dev.marksman.composablerandom.metadata.Metadata;
 import lombok.AccessLevel;
