@@ -12,6 +12,7 @@ import static com.jnape.palatable.lambda.adt.hlist.HList.tuple;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Map.map;
 import static dev.marksman.composablerandom.Result.result;
 import static dev.marksman.composablerandom.instructions.AggregateImpl.aggregateImpl;
+import static dev.marksman.composablerandom.instructions.ConstantImpl.constantImpl;
 import static dev.marksman.composablerandom.instructions.CustomImpl.customImpl;
 import static dev.marksman.composablerandom.instructions.FlatMappedImpl.flatMappedImpl;
 import static dev.marksman.composablerandom.instructions.MappedImpl.mappedImpl;
@@ -30,7 +31,6 @@ import static dev.marksman.composablerandom.instructions.NextLongBoundedImpl.nex
 import static dev.marksman.composablerandom.instructions.NextLongExclusiveImpl.nextLongExclusiveImpl;
 import static dev.marksman.composablerandom.instructions.NextLongImpl.nextLongImpl;
 import static dev.marksman.composablerandom.instructions.NextLongIndexImpl.nextLongIndexImpl;
-import static dev.marksman.composablerandom.instructions.PureImpl.pureImpl;
 import static dev.marksman.composablerandom.instructions.SizedImpl.sizedImpl;
 import static dev.marksman.composablerandom.metadata.PrimitiveMetadata.primitiveMetadata;
 import static dev.marksman.composablerandom.tracing.Trace.trace;
@@ -73,7 +73,7 @@ public class TracingInterpreter {
     public <A> CompiledGenerator<Trace<A>> compile(Generator<A> generator) {
 
         if (generator instanceof Generator.Constant) {
-            return traced(PURE, pureImpl(((Generator.Constant<A>) generator).getValue()));
+            return traced(PURE, constantImpl(((Generator.Constant<A>) generator).getValue()));
         }
 
         if (generator instanceof Generator.Custom) {

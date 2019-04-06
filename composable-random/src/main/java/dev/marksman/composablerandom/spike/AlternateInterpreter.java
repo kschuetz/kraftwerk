@@ -4,6 +4,7 @@ import dev.marksman.composablerandom.*;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Map.map;
 import static dev.marksman.composablerandom.instructions.AggregateImpl.aggregateImpl;
+import static dev.marksman.composablerandom.instructions.ConstantImpl.constantImpl;
 import static dev.marksman.composablerandom.instructions.CustomImpl.customImpl;
 import static dev.marksman.composablerandom.instructions.FlatMappedImpl.flatMappedImpl;
 import static dev.marksman.composablerandom.instructions.MappedImpl.mappedImpl;
@@ -23,7 +24,6 @@ import static dev.marksman.composablerandom.instructions.NextLongExclusiveImpl.n
 import static dev.marksman.composablerandom.instructions.NextLongImpl.nextLongImpl;
 import static dev.marksman.composablerandom.instructions.NextLongIndexImpl.nextLongIndexImpl;
 import static dev.marksman.composablerandom.instructions.Product8Impl.product8Impl;
-import static dev.marksman.composablerandom.instructions.PureImpl.pureImpl;
 import static dev.marksman.composablerandom.instructions.SizedImpl.sizedImpl;
 
 public class AlternateInterpreter {
@@ -35,7 +35,7 @@ public class AlternateInterpreter {
 
     public <A> CompiledGenerator<A> compile(Generator<A> generator) {
         if (generator instanceof Generator.Constant) {
-            return pureImpl(((Generator.Constant<A>) generator).getValue());
+            return constantImpl(((Generator.Constant<A>) generator).getValue());
         }
 
         if (generator instanceof Generator.Custom) {

@@ -16,7 +16,9 @@ import java.util.function.Supplier;
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Replicate.replicate;
 
-public abstract class Generator<A> implements Monad<A, Generator<?>> {
+public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerator<A> {
+    private Generator() {
+    }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -32,6 +34,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>> {
     @Override
     public <B> Generator<B> pure(B b) {
         return constant(b);
+    }
+
+    @Override
+    public Generator<A> toGenerator() {
+        return null;
     }
 
     @EqualsAndHashCode(callSuper = true)
@@ -191,11 +198,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>> {
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Aggregate<A, Builder, Result> extends Generator<Result> {
+    public static class Aggregate<Elem, Builder, Out> extends Generator<Out> {
         private final Supplier<Builder> initialBuilderSupplier;
-        private final Fn2<Builder, A, Builder> addFn;
-        private final Fn1<Builder, Result> buildFn;
-        private final Iterable<Generator<A>> instructions;
+        private final Fn2<Builder, Elem, Builder> addFn;
+        private final Fn1<Builder, Out> buildFn;
+        private final Iterable<Generator<Elem>> instructions;
     }
 
     @EqualsAndHashCode(callSuper = true)
@@ -212,96 +219,96 @@ public abstract class Generator<A> implements Monad<A, Generator<?>> {
         private final Generator<H> h;
     }
 
-    public static <A> Constant<A> constant(A a) {
+    public static <A> Generator<A> constant(A a) {
         return new Constant<>(a);
     }
 
-    public static <A> Custom<A> custom(Function<? super RandomState, Result> fn) {
+    public static <A> Generator<A> generator(Function<? super RandomState, Result> fn) {
         return new Custom<A>(fn::apply);
     }
 
-    public static <A, B> Mapped<A, B> mapped(Function<? super A, ? extends B> fn, Generator<A> operand) {
+    private static <A, B> Generator<B> mapped(Function<? super A, ? extends B> fn, Generator<A> operand) {
         return new Mapped<>(fn::apply, operand);
     }
 
-    public static <A, B> FlatMapped<A, B> flatMapped(Function<? super A, ? extends Generator<B>> fn, Generator<A> operand) {
+    private static <A, B> Generator<B> flatMapped(Function<? super A, ? extends Generator<B>> fn, Generator<A> operand) {
         return new FlatMapped<>(fn::apply, operand);
     }
 
-    public static NextBoolean nextBoolean() {
+    public static Generator<Boolean> generateBoolean() {
         return NextBoolean.INSTANCE;
     }
 
-    public static NextDouble nextDouble() {
+    public static Generator<Double> generateDouble() {
         return NextDouble.INSTANCE;
     }
 
-    public static NextFloat nextFloat() {
+    public static Generator<Float> generateFloat() {
         return NextFloat.INSTANCE;
     }
 
-    public static NextInt nextInt() {
+    public static Generator<Integer> generateInt() {
         return NextInt.INSTANCE;
     }
 
-    public static NextIntBounded nextIntBounded(int bound) {
-        checkBound(bound);
-        return new NextIntBounded(bound);
-    }
-
-    public static NextIntExclusive nextIntExclusive(int origin, int bound) {
-        checkOriginBound(origin, bound);
-        return new NextIntExclusive(origin, bound);
-    }
-
-    public static NextIntBetween nextIntBetween(int min, int max) {
+    public static Generator<Integer> generateInt(int min, int max) {
         checkMinMax(min, max);
         return new NextIntBetween(min, max);
     }
 
-    public static NextIntIndex nextIntIndex(int bound) {
+    public static Generator<Integer> generateIntExclusive(int bound) {
+        checkBound(bound);
+        return new NextIntBounded(bound);
+    }
+
+    public static Generator<Integer> generateIntExclusive(int origin, int bound) {
+        checkOriginBound(origin, bound);
+        return new NextIntExclusive(origin, bound);
+    }
+
+    public static Generator<Integer> generateIntIndex(int bound) {
         checkBound(bound);
         return new NextIntIndex(bound);
     }
 
-    public static NextLong nextLong() {
+    public static Generator<Long> generateLong() {
         return NextLong.INSTANCE;
     }
 
-    public static NextLongBounded nextLongBounded(long bound) {
-        checkBound(bound);
-        return new NextLongBounded(bound);
-    }
-
-    public static NextLongExclusive nextLongExclusive(long origin, long bound) {
-        checkOriginBound(origin, bound);
-        return new NextLongExclusive(origin, bound);
-    }
-
-    public static NextLongBetween nextLongBetween(long min, long max) {
+    public static Generator<Long> generateLong(long min, long max) {
         checkMinMax(min, max);
         return new NextLongBetween(min, max);
     }
 
-    public static NextLongIndex nextLongIndex(long bound) {
+    public static Generator<Long> generateLongExclusive(long bound) {
+        checkBound(bound);
+        return new NextLongBounded(bound);
+    }
+
+    public static Generator<Long> generateLongExclusive(long origin, long bound) {
+        checkOriginBound(origin, bound);
+        return new NextLongExclusive(origin, bound);
+    }
+
+    public static Generator<Long> generateLongIndex(long bound) {
         checkBound(bound);
         return new NextLongIndex(bound);
     }
 
-    public static NextGaussian nextGaussian() {
+    public static Generator<Double> generateGaussian() {
         return NextGaussian.INSTANCE;
     }
 
-    public static NextBytes nextBytes(int count) {
+    public static Generator<Byte[]> generateBytes(int count) {
         checkCount(count);
         return new NextBytes(count);
     }
 
-    public static <A> Sized<A> sized(Function<Integer, Generator<A>> fn) {
+    public static <A> Generator<A> sized(Function<Integer, Generator<A>> fn) {
         return new Sized<>(fn::apply);
     }
 
-    public static <A> Labeled<A> labeled(String label, Generator<A> operand) {
+    public static <A> Generator<A> labeled(String label, Generator<A> operand) {
         return new Labeled<>(label, operand);
     }
 
@@ -312,16 +319,16 @@ public abstract class Generator<A> implements Monad<A, Generator<?>> {
         return new Aggregate<>(initialBuilderSupplier, addFn, buildFn, instructions);
     }
 
-    public static <A, Builder, Out> Aggregate<A, Builder, Out> aggregate(Supplier<Builder> initialBuilderSupplier,
-                                                                         Fn2<Builder, A, Builder> addFn,
-                                                                         Fn1<Builder, Out> buildFn,
-                                                                         int size,
-                                                                         Generator<A> generator) {
+    public static <Elem, Builder, Out> Generator<Out> aggregate(Supplier<Builder> initialBuilderSupplier,
+                                                                Fn2<Builder, Elem, Builder> addFn,
+                                                                Fn1<Builder, Out> buildFn,
+                                                                int size,
+                                                                Generator<Elem> generator) {
         return new Aggregate<>(initialBuilderSupplier, addFn, buildFn, replicate(size, generator));
     }
 
-    public static <A, C extends Collection<A>> Aggregate<A, C, C> buildCollection(Supplier<C> initialCollectionSupplier,
-                                                                                  Iterable<Generator<A>> instructions) {
+    public static <A, C extends Collection<A>> Generator<C> buildCollection(Supplier<C> initialCollectionSupplier,
+                                                                            Iterable<Generator<A>> instructions) {
         return new Aggregate<>(initialCollectionSupplier,
                 (collection, item) -> {
                     collection.add(item);
@@ -329,20 +336,20 @@ public abstract class Generator<A> implements Monad<A, Generator<?>> {
                 }, id(), instructions);
     }
 
-    public static <A, C extends Collection<A>> Aggregate<A, C, C> buildCollection(Supplier<C> initialCollectionSupplier,
-                                                                                  int size,
-                                                                                  Generator<A> generator) {
+    public static <A, C extends Collection<A>> Generator<C> buildCollection(Supplier<C> initialCollectionSupplier,
+                                                                            int size,
+                                                                            Generator<A> generator) {
         return buildCollection(initialCollectionSupplier, replicate(size, generator));
     }
 
-    public static <A, B, C, D, E, F, G, H> Product8<A, B, C, D, E, F, G, H> product8(Generator<A> a,
-                                                                                     Generator<B> b,
-                                                                                     Generator<C> c,
-                                                                                     Generator<D> d,
-                                                                                     Generator<E> e,
-                                                                                     Generator<F> f,
-                                                                                     Generator<G> g,
-                                                                                     Generator<H> h) {
+    public static <A, B, C, D, E, F, G, H> Generator<Tuple8<A, B, C, D, E, F, G, H>> tupled(Generator<A> a,
+                                                                                            Generator<B> b,
+                                                                                            Generator<C> c,
+                                                                                            Generator<D> d,
+                                                                                            Generator<E> e,
+                                                                                            Generator<F> f,
+                                                                                            Generator<G> g,
+                                                                                            Generator<H> h) {
         return new Product8<>(a, b, c, d, e, f, g, h);
     }
 

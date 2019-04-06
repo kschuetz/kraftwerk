@@ -54,11 +54,11 @@ class Collections {
         return generateMapImpl((int) keys.getSize(), keys, valueGenerator);
     }
 
-    private static <A> Generator.Aggregate<A, ArrayList<A>, ArrayList<A>> buildArrayList(int n, Generator<A> generator) {
+    private static <A> Generator<ArrayList<A>> buildArrayList(int n, Generator<A> generator) {
         return buildCollection(ArrayList::new, n, generator);
     }
 
-    private static <A> Generator.Aggregate<A, HashSet<A>, HashSet<A>> buildHashSet(int n, Generator<A> generator) {
+    private static <A> Generator<HashSet<A>> buildHashSet(int n, Generator<A> generator) {
         return buildCollection(HashSet::new, n, generator);
     }
 

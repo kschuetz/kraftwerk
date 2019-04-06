@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 import static dev.marksman.composablerandom.Result.result;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class PureImpl<A> implements CompiledGenerator<A> {
+public class ConstantImpl<A> implements CompiledGenerator<A> {
     private final A value;
 
     @Override
@@ -17,8 +17,8 @@ public class PureImpl<A> implements CompiledGenerator<A> {
         return result(input, value);
     }
 
-    public static <A> PureImpl<A> pureImpl(A value) {
-        return new PureImpl<>(value);
+    public static <A> ConstantImpl<A> constantImpl(A value) {
+        return new ConstantImpl<>(value);
     }
 }
 

@@ -4,12 +4,12 @@ import dev.marksman.composablerandom.Generator;
 
 class Primitives {
 
-    private static final Generator<Boolean> GENERATE_BOOLEAN = Generator.nextBoolean();
-    private static final Generator<Double> GENERATE_DOUBLE = Generator.nextDouble();
-    private static final Generator<Float> GENERATE_FLOAT = Generator.nextFloat();
-    private static final Generator<Integer> GENERATE_INTEGER = Generator.nextInt();
-    private static final Generator<Long> GENERATE_LONG = Generator.nextLong();
-    private static final Generator<Double> GENERATE_GAUSSIAN = Generator.nextGaussian();
+    private static final Generator<Boolean> GENERATE_BOOLEAN = Generator.generateBoolean();
+    private static final Generator<Double> GENERATE_DOUBLE = Generator.generateDouble();
+    private static final Generator<Float> GENERATE_FLOAT = Generator.generateFloat();
+    private static final Generator<Integer> GENERATE_INTEGER = Generator.generateInt();
+    private static final Generator<Long> GENERATE_LONG = Generator.generateLong();
+    private static final Generator<Double> GENERATE_GAUSSIAN = Generator.generateGaussian();
 
     private static final Generator<Byte> GENERATE_BYTE = GENERATE_INTEGER.fmap(Integer::byteValue);
     private static final Generator<Short> GENERATE_SHORT = GENERATE_INTEGER.fmap(Integer::shortValue);
@@ -27,19 +27,19 @@ class Primitives {
     }
 
     static Generator<Integer> generateInt(int min, int max) {
-        return Generator.nextIntBetween(min, max);
+        return Generator.generateInt(min, max);
     }
 
     static Generator<Integer> generateIntExclusive(int bound) {
-        return Generator.nextIntBounded(bound);
+        return Generator.generateIntExclusive(bound);
     }
 
     static Generator<Integer> generateIntExclusive(int origin, int bound) {
-        return Generator.nextIntExclusive(origin, bound);
+        return Generator.generateIntExclusive(origin, bound);
     }
 
     static Generator<Integer> generateIntIndex(int bound) {
-        return Generator.nextIntIndex(bound);
+        return Generator.generateIntIndex(bound);
     }
 
     static Generator<Float> generateFloat() {
@@ -51,19 +51,19 @@ class Primitives {
     }
 
     static Generator<Long> generateLong(long min, long max) {
-        return Generator.nextLongBetween(min, max);
+        return Generator.generateLong(min, max);
     }
 
     static Generator<Long> generateLongExclusive(long bound) {
-        return Generator.nextLongBounded(bound);
+        return Generator.generateLongExclusive(bound);
     }
 
     static Generator<Long> generateLongExclusive(long origin, long bound) {
-        return Generator.nextLongExclusive(origin, bound);
+        return Generator.generateLongExclusive(origin, bound);
     }
 
     static Generator<Long> generateLongIndex(long bound) {
-        return Generator.nextLongIndex(bound);
+        return Generator.generateLongIndex(bound);
     }
 
     static Generator<Double> generateGaussian() {
@@ -71,7 +71,7 @@ class Primitives {
     }
 
     static Generator<Byte[]> generateBytes(int count) {
-        return Generator.nextBytes(count);
+        return Generator.generateBytes(count);
     }
 
     static Generator<Byte> generateByte() {
