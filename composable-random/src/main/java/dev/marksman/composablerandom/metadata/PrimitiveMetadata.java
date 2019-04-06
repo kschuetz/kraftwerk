@@ -19,23 +19,26 @@ public class PrimitiveMetadata implements Metadata {
     }
 
     @Override
+    public StandardMetadata withLabel(Maybe<String> label) {
+        return standardMetadata(label, nothing());
+    }
+
+    @Override
+    public Maybe<Object> getApplicationData() {
+        return nothing();
+    }
+
+    @Override
+    public StandardMetadata withApplicationData(Maybe<Object> data) {
+        return standardMetadata(label, data);
+    }
+
+    @Override
     public boolean isPrimitive() {
         return true;
     }
-
-    @Override
-    public StandardMetadata withLabel(String text) {
-        return standardMetadata(just(text));
-    }
-
-    @Override
-    public Metadata removeLabel() {
-        return label.match(_1 -> this, _2 -> standardMetadata(nothing()));
-    }
-
 
     public static PrimitiveMetadata primitiveMetadata(String label) {
         return new PrimitiveMetadata(just(label));
     }
 }
-

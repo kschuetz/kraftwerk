@@ -138,6 +138,12 @@ public class DefaultInterpreter {
             return compile(instruction1.getOperand());
         }
 
+        if (generator instanceof Generator.AttachApplicationData) {
+            Generator.AttachApplicationData instruction1 = (Generator.AttachApplicationData) generator;
+            //noinspection unchecked
+            return compile(instruction1.getOperand());
+        }
+
         if (generator instanceof Generator.Sized) {
             Generator.Sized instruction1 = (Generator.Sized) generator;
 

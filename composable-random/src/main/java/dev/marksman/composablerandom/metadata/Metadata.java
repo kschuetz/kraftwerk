@@ -6,9 +6,11 @@ public interface Metadata {
 
     Maybe<String> getLabel();
 
-    Metadata withLabel(String text);
+    Metadata withLabel(Maybe<String> text);
 
-    Metadata removeLabel();
+    Maybe<Object> getApplicationData();
+
+    Metadata withApplicationData(Maybe<Object> data);
 
     boolean isPrimitive();
 

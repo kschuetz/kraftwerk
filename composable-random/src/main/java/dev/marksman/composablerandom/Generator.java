@@ -38,7 +38,15 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
 
     @Override
     public Generator<A> toGenerator() {
-        return null;
+        return this;
+    }
+
+    public Generator<A> labeled(String label) {
+        return new Labeled<>(label, this);
+    }
+
+    public Generator<A> attachApplicationData(Object applicationData) {
+        return new AttachApplicationData<>(applicationData, this);
     }
 
     @EqualsAndHashCode(callSuper = true)
@@ -198,6 +206,14 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class AttachApplicationData<A> extends Generator<A> {
+        private final Object applicationData;
+        private final Generator<A> operand;
+    }
+
+    @EqualsAndHashCode(callSuper = true)
+    @Value
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Aggregate<Elem, Builder, Out> extends Generator<Out> {
         private final Supplier<Builder> initialBuilderSupplier;
         private final Fn2<Builder, Elem, Builder> addFn;
@@ -306,10 +322,6 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
 
     public static <A> Generator<A> sized(Function<Integer, Generator<A>> fn) {
         return new Sized<>(fn::apply);
-    }
-
-    public static <A> Generator<A> labeled(String label, Generator<A> operand) {
-        return new Labeled<>(label, operand);
     }
 
     public static <A, Builder, Out> Aggregate<A, Builder, Out> aggregate(Supplier<Builder> initialBuilderSupplier,

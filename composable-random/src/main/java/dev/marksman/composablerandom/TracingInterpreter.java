@@ -7,6 +7,7 @@ import dev.marksman.composablerandom.metadata.StandardMetadata;
 
 import java.util.ArrayList;
 
+import static com.jnape.palatable.lambda.adt.Maybe.just;
 import static com.jnape.palatable.lambda.adt.hlist.HList.tuple;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Map.map;
 import static dev.marksman.composablerandom.Result.result;
@@ -33,6 +34,7 @@ import static dev.marksman.composablerandom.instructions.NextLongImpl.nextLongIm
 import static dev.marksman.composablerandom.instructions.NextLongIndexImpl.nextLongIndexImpl;
 import static dev.marksman.composablerandom.instructions.SizedImpl.sizedImpl;
 import static dev.marksman.composablerandom.metadata.PrimitiveMetadata.primitiveMetadata;
+import static dev.marksman.composablerandom.metadata.StandardMetadata.defaultMetadata;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
@@ -195,6 +197,14 @@ public class TracingInterpreter {
             Generator.Labeled instruction1 = (Generator.Labeled) generator;
             //noinspection unchecked
             return traced(StandardMetadata.labeled(instruction1.getLabel()),
+                    (CompiledGenerator<A>) compile(instruction1.getOperand()));
+        }
+
+        if (generator instanceof Generator.AttachApplicationData) {
+            Generator.AttachApplicationData instruction1 = (Generator.AttachApplicationData) generator;
+            StandardMetadata metadata = defaultMetadata().withApplicationData(just(instruction1.getApplicationData()));
+            //noinspection unchecked
+            return traced(metadata,
                     (CompiledGenerator<A>) compile(instruction1.getOperand()));
         }
 
