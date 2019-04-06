@@ -2,11 +2,12 @@ package dev.marksman.composablerandom.benchmarks;
 
 import dev.marksman.composablerandom.*;
 import dev.marksman.composablerandom.legacy.OldGeneratedStream;
+import dev.marksman.composablerandom.legacy.OldInterpreter;
 import dev.marksman.composablerandom.random.StandardGen;
 
 import java.util.function.Function;
 
-import static dev.marksman.composablerandom.DefaultInterpreter.defaultInterpreter;
+import static dev.marksman.composablerandom.legacy.OldInterpreter.defaultInterpreter;
 
 public class Runner {
 
@@ -22,7 +23,7 @@ public class Runner {
     }
 
     public static <A> void run(String label, int iterations, Generator<A> generator) {
-        DefaultInterpreter interpreter = defaultInterpreter();
+        OldInterpreter interpreter = defaultInterpreter();
         RandomState currentState = StandardGen.initStandardGen();
 
         long t0 = System.currentTimeMillis();
@@ -36,7 +37,7 @@ public class Runner {
     }
 
     public static <A> void runAlternate(String label, int iterations, Generator<A> generator) {
-        AlternateGeneratedStream<A> stream = AlternateGeneratedStream.alternateStreamFrom(generator);
+        GeneratedStream<A> stream = GeneratedStream.streamFrom(generator);
 
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < iterations; i++) {

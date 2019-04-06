@@ -4,8 +4,8 @@ import com.jnape.palatable.lambda.adt.choice.Choice8;
 import dev.marksman.composablerandom.Generator;
 import dev.marksman.composablerandom.domain.Characters;
 
-import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
 import static dev.marksman.composablerandom.builtin.Generators.*;
+import static dev.marksman.composablerandom.legacy.OldGeneratedStream2.streamFrom;
 
 public class WeightedChoiceExample {
 

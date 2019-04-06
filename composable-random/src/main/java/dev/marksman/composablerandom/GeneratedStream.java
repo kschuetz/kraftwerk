@@ -6,15 +6,14 @@ import java.util.Iterator;
 import static dev.marksman.composablerandom.DefaultInterpreter.defaultInterpreter;
 import static dev.marksman.composablerandom.Initialize.createInitialRandomState;
 import static dev.marksman.composablerandom.Initialize.randomInitialRandomState;
+import static dev.marksman.composablerandom.StandardContext.defaultContext;
 
 public class GeneratedStream<A> implements Iterator<A> {
-    private final Generator<A> generator;
-    private final DefaultInterpreter interpreter;
+    private final CompiledGenerator<A> generate;
     private RandomState currentState;
 
-    private GeneratedStream(Generator<A> generator, DefaultInterpreter interpreter, RandomState initialState) {
-        this.generator = generator;
-        this.interpreter = interpreter;
+    private GeneratedStream(CompiledGenerator<A> generate, RandomState initialState) {
+        this.generate = generate;
         this.currentState = initialState;
     }
 
@@ -25,9 +24,9 @@ public class GeneratedStream<A> implements Iterator<A> {
 
     @Override
     public A next() {
-        Result<RandomState, A> run;
+        Result<? extends RandomState, A> run;
         synchronized (this) {
-            run = interpreter.execute(currentState, generator);
+            run = this.generate.run(currentState);
             currentState = run.getNextState();
         }
 
@@ -67,24 +66,29 @@ public class GeneratedStream<A> implements Iterator<A> {
         }
     }
 
-    public static <A> GeneratedStream<A> streamFrom(Generator<A> generator, DefaultInterpreter interpreter, RandomState initialState) {
-        return new GeneratedStream<>(generator, interpreter, initialState);
+    public static <A> GeneratedStream<A> streamFrom(CompiledGenerator<A> generate, RandomState initialState) {
+        return new GeneratedStream<>(generate, initialState);
     }
 
     public static <A> GeneratedStream<A> streamFrom(Generator<A> generator, long initialSeedValue) {
-        return streamFrom(generator, defaultInterpreter(), createInitialRandomState(initialSeedValue));
+        return streamFrom(compile(generator), createInitialRandomState(initialSeedValue));
     }
 
     public static <A> GeneratedStream<A> streamFrom(Generator<A> generator, Context context) {
-        return streamFrom(generator, defaultInterpreter(context), randomInitialRandomState());
+        return streamFrom(compile(generator), randomInitialRandomState());
     }
 
     public static <A> GeneratedStream<A> streamFrom(Generator<A> generator, Context context, long initialSeedValue) {
-        return streamFrom(generator, defaultInterpreter(context), createInitialRandomState(initialSeedValue));
+        return streamFrom(compile(generator), createInitialRandomState(initialSeedValue));
     }
 
     public static <A> GeneratedStream<A> streamFrom(Generator<A> generator) {
-        return streamFrom(generator, defaultInterpreter(), randomInitialRandomState());
+        return streamFrom(compile(generator), randomInitialRandomState());
+    }
+
+    private static <A> CompiledGenerator<A> compile(Generator<A> generator) {
+        DefaultInterpreter interpreter = defaultInterpreter(defaultContext());
+        return interpreter.compile(generator);
     }
 
 }
