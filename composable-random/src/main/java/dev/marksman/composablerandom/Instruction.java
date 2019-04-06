@@ -3,6 +3,7 @@ package dev.marksman.composablerandom;
 import com.jnape.palatable.lambda.adt.hlist.Tuple8;
 import com.jnape.palatable.lambda.functions.Fn1;
 import com.jnape.palatable.lambda.functions.Fn2;
+import com.jnape.palatable.lambda.monad.Monad;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -15,12 +16,28 @@ import java.util.function.Supplier;
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Replicate.replicate;
 
-public abstract class Instruction<A> {
+public abstract class Instruction<A> implements Monad<A, Instruction<?>> {
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <B> Instruction<B> flatMap(Function<? super A, ? extends Monad<B, Instruction<?>>> f) {
+        return flatMapped((Function<? super A, ? extends Instruction<B>>) f, this);
+    }
+
+    @Override
+    public <B> Instruction<B> fmap(Function<? super A, ? extends B> fn) {
+        return mapped(fn, this);
+    }
+
+    @Override
+    public <B> Instruction<B> pure(B b) {
+        return constant(b);
+    }
 
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Pure<A> extends Instruction<A> {
+    public static class Constant<A> extends Instruction<A> {
         private final A value;
     }
 
@@ -195,12 +212,12 @@ public abstract class Instruction<A> {
         private final Instruction<H> h;
     }
 
-    public static <A> Pure<A> pure(A a) {
-        return new Pure<>(a);
+    public static <A> Constant<A> constant(A a) {
+        return new Constant<>(a);
     }
 
     public static <A> Custom<A> custom(Function<? super RandomState, Result> fn) {
-        return custom(fn::apply);
+        return new Custom<A>(fn::apply);
     }
 
     public static <A, B> Mapped<A, B> mapped(Function<? super A, ? extends B> fn, Instruction<A> operand) {

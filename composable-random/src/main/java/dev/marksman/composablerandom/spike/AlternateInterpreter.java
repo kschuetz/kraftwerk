@@ -33,9 +33,9 @@ public class AlternateInterpreter {
         this.sizeSelector = SizeSelectors.sizeSelector(context.getSizeParameters());
     }
 
-    public <A> Generate<A> compile(Instruction<A> instruction) {
-        if (instruction instanceof Instruction.Pure) {
-            return pureImpl(((Instruction.Pure<A>) instruction).getValue());
+    public <A> CompiledGenerator<A> compile(Instruction<A> instruction) {
+        if (instruction instanceof Instruction.Constant) {
+            return pureImpl(((Instruction.Constant<A>) instruction).getValue());
         }
 
         if (instruction instanceof Instruction.Custom) {
@@ -52,86 +52,86 @@ public class AlternateInterpreter {
 
         if (instruction instanceof Instruction.NextInt) {
             //noinspection unchecked
-            return (Generate<A>) nextIntImpl();
+            return (CompiledGenerator<A>) nextIntImpl();
         }
 
         if (instruction instanceof Instruction.NextLong) {
             //noinspection unchecked
-            return (Generate<A>) nextLongImpl();
+            return (CompiledGenerator<A>) nextLongImpl();
         }
 
         if (instruction instanceof Instruction.NextBoolean) {
             //noinspection unchecked
-            return (Generate<A>) nextBooleanImpl();
+            return (CompiledGenerator<A>) nextBooleanImpl();
         }
 
         if (instruction instanceof Instruction.NextDouble) {
             //noinspection unchecked
-            return (Generate<A>) nextDoubleImpl();
+            return (CompiledGenerator<A>) nextDoubleImpl();
         }
 
         if (instruction instanceof Instruction.NextFloat) {
             //noinspection unchecked
-            return (Generate<A>) nextFloatImpl();
+            return (CompiledGenerator<A>) nextFloatImpl();
         }
 
         if (instruction instanceof Instruction.NextIntBounded) {
             int bound = ((Instruction.NextIntBounded) instruction).getBound();
             //noinspection unchecked
-            return (Generate<A>) nextIntBoundedImpl(bound);
+            return (CompiledGenerator<A>) nextIntBoundedImpl(bound);
         }
 
         if (instruction instanceof Instruction.NextIntExclusive) {
             Instruction.NextIntExclusive instruction1 = (Instruction.NextIntExclusive) instruction;
             //noinspection unchecked
-            return (Generate<A>) nextIntExclusiveImpl(instruction1.getOrigin(), instruction1.getBound());
+            return (CompiledGenerator<A>) nextIntExclusiveImpl(instruction1.getOrigin(), instruction1.getBound());
         }
 
         if (instruction instanceof Instruction.NextIntBetween) {
             Instruction.NextIntBetween instruction1 = (Instruction.NextIntBetween) instruction;
             //noinspection unchecked
-            return (Generate<A>) nextIntBetweenImpl(instruction1.getMin(), instruction1.getMax());
+            return (CompiledGenerator<A>) nextIntBetweenImpl(instruction1.getMin(), instruction1.getMax());
         }
 
         if (instruction instanceof Instruction.NextIntIndex) {
             Instruction.NextIntIndex instruction1 = (Instruction.NextIntIndex) instruction;
             //noinspection unchecked
-            return (Generate<A>) nextIntIndexImpl(instruction1.getBound());
+            return (CompiledGenerator<A>) nextIntIndexImpl(instruction1.getBound());
         }
 
         if (instruction instanceof Instruction.NextLongBounded) {
             Instruction.NextLongBounded instruction1 = (Instruction.NextLongBounded) instruction;
             //noinspection unchecked
-            return (Generate<A>) nextLongBoundedImpl(instruction1.getBound());
+            return (CompiledGenerator<A>) nextLongBoundedImpl(instruction1.getBound());
         }
 
         if (instruction instanceof Instruction.NextLongExclusive) {
             Instruction.NextLongExclusive instruction1 = (Instruction.NextLongExclusive) instruction;
             //noinspection unchecked
-            return (Generate<A>) nextLongExclusiveImpl(instruction1.getOrigin(), instruction1.getBound());
+            return (CompiledGenerator<A>) nextLongExclusiveImpl(instruction1.getOrigin(), instruction1.getBound());
         }
 
         if (instruction instanceof Instruction.NextLongBetween) {
             Instruction.NextLongBetween instruction1 = (Instruction.NextLongBetween) instruction;
             //noinspection unchecked
-            return (Generate<A>) nextLongBetweenImpl(instruction1.getMin(), instruction1.getMax());
+            return (CompiledGenerator<A>) nextLongBetweenImpl(instruction1.getMin(), instruction1.getMax());
         }
 
         if (instruction instanceof Instruction.NextLongIndex) {
             Instruction.NextLongIndex instruction1 = (Instruction.NextLongIndex) instruction;
             //noinspection unchecked
-            return (Generate<A>) nextLongIndexImpl(instruction1.getBound());
+            return (CompiledGenerator<A>) nextLongIndexImpl(instruction1.getBound());
         }
 
         if (instruction instanceof Instruction.NextGaussian) {
             //noinspection unchecked
-            return (Generate<A>) nextGaussianImpl();
+            return (CompiledGenerator<A>) nextGaussianImpl();
         }
 
         if (instruction instanceof Instruction.NextBytes) {
             Instruction.NextBytes instruction1 = (Instruction.NextBytes) instruction;
             //noinspection unchecked
-            return (Generate<A>) nextBytesImpl(instruction1.getCount());
+            return (CompiledGenerator<A>) nextBytesImpl(instruction1.getCount());
         }
 
         if (instruction instanceof Instruction.Labeled) {
@@ -153,14 +153,14 @@ public class AlternateInterpreter {
             Iterable<Instruction<A>> instructions = instruction1.getInstructions();
 
             //noinspection unchecked
-            return (Generate<A>) aggregateImpl(instruction1.getInitialBuilderSupplier(), instruction1.getAddFn(),
+            return (CompiledGenerator<A>) aggregateImpl(instruction1.getInitialBuilderSupplier(), instruction1.getAddFn(),
                     instruction1.getBuildFn(), map(this::compile, instructions));
         }
 
         if (instruction instanceof Instruction.Product8) {
             Instruction.Product8 instruction1 = (Instruction.Product8) instruction;
             //noinspection unchecked
-            return (Generate<A>) product8Impl(compile(instruction1.getA()),
+            return (CompiledGenerator<A>) product8Impl(compile(instruction1.getA()),
                     compile(instruction1.getB()),
                     compile(instruction1.getC()),
                     compile(instruction1.getD()),
@@ -173,11 +173,11 @@ public class AlternateInterpreter {
         throw new IllegalStateException("Unimplemented instruction");
     }
 
-    private <In, Out> Generate<Out> handleMapped(Instruction.Mapped<In, Out> mapped) {
+    private <In, Out> CompiledGenerator<Out> handleMapped(Instruction.Mapped<In, Out> mapped) {
         return mappedImpl(mapped.getFn(), compile(mapped.getOperand()));
     }
 
-    private <In, Out> Generate<Out> handleFlatMapped(Instruction.FlatMapped<In, Out> flatMapped) {
+    private <In, Out> CompiledGenerator<Out> handleFlatMapped(Instruction.FlatMapped<In, Out> flatMapped) {
         return flatMappedImpl(in -> compile(flatMapped.getFn().apply(in)),
                 compile(flatMapped.getOperand()));
     }

@@ -1,17 +1,17 @@
 package dev.marksman.composablerandom.instructions;
 
-import dev.marksman.composablerandom.Generate;
+import dev.marksman.composablerandom.CompiledGenerator;
 import dev.marksman.composablerandom.RandomState;
 import dev.marksman.composablerandom.Result;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class NextDoubleImpl implements Generate<Double> {
+public class NextDoubleImpl implements CompiledGenerator<Double> {
     private static NextDoubleImpl INSTANCE = new NextDoubleImpl();
 
     @Override
-    public Result<? extends RandomState, Double> generate(RandomState input) {
+    public Result<? extends RandomState, Double> run(RandomState input) {
         return input.nextDouble();
     }
 

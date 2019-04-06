@@ -1,17 +1,17 @@
 package dev.marksman.composablerandom.instructions;
 
-import dev.marksman.composablerandom.Generate;
+import dev.marksman.composablerandom.CompiledGenerator;
 import dev.marksman.composablerandom.RandomState;
 import dev.marksman.composablerandom.Result;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class NextLongIndexImpl implements Generate<Long> {
+public class NextLongIndexImpl implements CompiledGenerator<Long> {
     private final long bound;
 
     @Override
-    public Result<? extends RandomState, Long> generate(RandomState input) {
+    public Result<? extends RandomState, Long> run(RandomState input) {
         return input.nextLongBounded(bound);
     }
 

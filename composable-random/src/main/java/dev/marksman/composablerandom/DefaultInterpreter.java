@@ -17,9 +17,9 @@ public class DefaultInterpreter {
 
     public <A, R> Result<RandomState, R> execute(RandomState input, Instruction<A> instruction) {
 
-        if (instruction instanceof Instruction.Pure) {
+        if (instruction instanceof Instruction.Constant) {
             //noinspection unchecked
-            return (Result<RandomState, R>) result(input, (((Instruction.Pure) instruction).getValue()));
+            return (Result<RandomState, R>) result(input, (((Instruction.Constant) instruction).getValue()));
         }
 
         if (instruction instanceof Instruction.Custom) {

@@ -11,10 +11,10 @@ import static dev.marksman.composablerandom.StandardContext.defaultContext;
 import static dev.marksman.composablerandom.spike.AlternateInterpreter.alternateInterpreter;
 
 public class AlternateGeneratedStream<A> implements Iterator<A> {
-    private final Generate<A> generate;
+    private final CompiledGenerator<A> generate;
     private RandomState currentState;
 
-    private AlternateGeneratedStream(Generate<A> generate, RandomState initialState) {
+    private AlternateGeneratedStream(CompiledGenerator<A> generate, RandomState initialState) {
         this.generate = generate;
         this.currentState = initialState;
     }
@@ -28,7 +28,7 @@ public class AlternateGeneratedStream<A> implements Iterator<A> {
     public A next() {
         Result<? extends RandomState, A> run;
         synchronized (this) {
-            run = this.generate.generate(currentState);
+            run = this.generate.run(currentState);
             currentState = run.getNextState();
         }
 
@@ -68,7 +68,7 @@ public class AlternateGeneratedStream<A> implements Iterator<A> {
         }
     }
 
-    public static <A> AlternateGeneratedStream<A> alternateStreamFrom(Generate<A> generate, RandomState initialState) {
+    public static <A> AlternateGeneratedStream<A> alternateStreamFrom(CompiledGenerator<A> generate, RandomState initialState) {
         return new AlternateGeneratedStream<>(generate, initialState);
     }
 
@@ -88,7 +88,7 @@ public class AlternateGeneratedStream<A> implements Iterator<A> {
         return alternateStreamFrom(compile(generator), randomInitialRandomState());
     }
 
-    private static <A> Generate<A> compile(Generator<A> generator) {
+    private static <A> CompiledGenerator<A> compile(Generator<A> generator) {
         AlternateInterpreter interpreter = alternateInterpreter(defaultContext());
         return interpreter.compile(generator.getInstruction());
     }

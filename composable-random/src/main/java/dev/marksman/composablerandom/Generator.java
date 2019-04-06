@@ -18,8 +18,6 @@ public interface Generator<A> extends Monad<A, Generator>, ToGenerator<A> {
         return this;
     }
 
-    ;
-
     @Override
     default <B> Generator<B> fmap(Function<? super A, ? extends B> fn) {
         return generator(mapped(fn, getInstruction()));
@@ -34,7 +32,7 @@ public interface Generator<A> extends Monad<A, Generator>, ToGenerator<A> {
 
     @Override
     default <B> Generator<B> pure(B b) {
-        return generator(Instruction.pure(b));
+        return generator(Instruction.constant(b));
     }
 
     static <A> Generator<A> generator(Instruction<A> instruction) {
@@ -42,7 +40,7 @@ public interface Generator<A> extends Monad<A, Generator>, ToGenerator<A> {
     }
 
     static <A> Generator<A> constant(A a) {
-        return generator(Instruction.pure(a));
+        return generator(Instruction.constant(a));
     }
 
     @Value

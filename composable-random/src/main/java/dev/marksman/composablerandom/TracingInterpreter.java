@@ -31,6 +31,7 @@ import static dev.marksman.composablerandom.instructions.NextLongExclusiveImpl.n
 import static dev.marksman.composablerandom.instructions.NextLongImpl.nextLongImpl;
 import static dev.marksman.composablerandom.instructions.NextLongIndexImpl.nextLongIndexImpl;
 import static dev.marksman.composablerandom.instructions.PureImpl.pureImpl;
+import static dev.marksman.composablerandom.instructions.SizedImpl.sizedImpl;
 import static dev.marksman.composablerandom.metadata.PrimitiveMetadata.primitiveMetadata;
 import static dev.marksman.composablerandom.tracing.Trace.trace;
 import static java.util.Arrays.asList;
@@ -51,6 +52,12 @@ public class TracingInterpreter {
     private static final Metadata AGGREGATE = primitiveMetadata("aggregate");
     private static final Metadata PRODUCT8 = primitiveMetadata("product8");
 
+    private final SizeSelector sizeSelector;
+
+    private TracingInterpreter(Context context) {
+        this.sizeSelector = SizeSelectors.sizeSelector(context.getSizeParameters());
+    }
+
     private <A> Result<RandomState, Trace<A>> traceResult(RandomState randomState, Metadata metadata, A resultValue) {
         return result(randomState, trace(resultValue, metadata));
     }
@@ -59,14 +66,14 @@ public class TracingInterpreter {
         return result(resultValue.getNextState(), trace(resultValue.getValue(), metadata));
     }
 
-    private <A> Generate<Trace<A>> traced(Metadata metadata, Generate<A> g) {
-        return input -> traceResult(metadata, g.generate(input));
+    private <A> CompiledGenerator<Trace<A>> traced(Metadata metadata, CompiledGenerator<A> g) {
+        return input -> traceResult(metadata, g.run(input));
     }
 
-    public <A> Generate<Trace<A>> compile(Instruction<A> instruction) {
+    public <A> CompiledGenerator<Trace<A>> compile(Instruction<A> instruction) {
 
-        if (instruction instanceof Instruction.Pure) {
-            return traced(PURE, pureImpl(((Instruction.Pure<A>) instruction).getValue()));
+        if (instruction instanceof Instruction.Constant) {
+            return traced(PURE, pureImpl(((Instruction.Constant<A>) instruction).getValue()));
         }
 
         if (instruction instanceof Instruction.Custom) {
@@ -83,34 +90,34 @@ public class TracingInterpreter {
 
         if (instruction instanceof Instruction.NextInt) {
             //noinspection unchecked
-            return traced(INT, (Generate<A>) nextIntImpl());
+            return traced(INT, (CompiledGenerator<A>) nextIntImpl());
         }
 
         if (instruction instanceof Instruction.NextLong) {
             //noinspection unchecked
-            return traced(LONG, (Generate<A>) nextLongImpl());
+            return traced(LONG, (CompiledGenerator<A>) nextLongImpl());
         }
 
         if (instruction instanceof Instruction.NextBoolean) {
             //noinspection unchecked
-            return traced(BOOLEAN, (Generate<A>) nextBooleanImpl());
+            return traced(BOOLEAN, (CompiledGenerator<A>) nextBooleanImpl());
         }
 
         if (instruction instanceof Instruction.NextDouble) {
             //noinspection unchecked
-            return traced(DOUBLE, (Generate<A>) nextDoubleImpl());
+            return traced(DOUBLE, (CompiledGenerator<A>) nextDoubleImpl());
         }
 
         if (instruction instanceof Instruction.NextFloat) {
             //noinspection unchecked
-            return traced(FLOAT, (Generate<A>) nextFloatImpl());
+            return traced(FLOAT, (CompiledGenerator<A>) nextFloatImpl());
         }
 
         if (instruction instanceof Instruction.NextIntBounded) {
             int bound = ((Instruction.NextIntBounded) instruction).getBound();
             //noinspection unchecked
             return traced(intInterval(0, bound, true),
-                    (Generate<A>) nextIntBoundedImpl(bound));
+                    (CompiledGenerator<A>) nextIntBoundedImpl(bound));
         }
 
         if (instruction instanceof Instruction.NextIntExclusive) {
@@ -119,7 +126,7 @@ public class TracingInterpreter {
             int bound = instruction1.getBound();
             //noinspection unchecked
             return traced(intInterval(origin, bound, true),
-                    (Generate<A>) nextIntExclusiveImpl(origin, bound));
+                    (CompiledGenerator<A>) nextIntExclusiveImpl(origin, bound));
         }
 
         if (instruction instanceof Instruction.NextIntBetween) {
@@ -128,7 +135,7 @@ public class TracingInterpreter {
             int max = instruction1.getMax();
             //noinspection unchecked
             return traced(intInterval(min, max, false),
-                    (Generate<A>) nextIntBetweenImpl(min, max));
+                    (CompiledGenerator<A>) nextIntBetweenImpl(min, max));
         }
 
         if (instruction instanceof Instruction.NextIntIndex) {
@@ -136,14 +143,14 @@ public class TracingInterpreter {
             int bound = instruction1.getBound();
             //noinspection unchecked
             return traced(interval("index", 0, bound, true),
-                    (Generate<A>) nextIntIndexImpl(bound));
+                    (CompiledGenerator<A>) nextIntIndexImpl(bound));
         }
 
         if (instruction instanceof Instruction.NextLongBounded) {
             long bound = ((Instruction.NextLongBounded) instruction).getBound();
             //noinspection unchecked
             return traced(longInterval(0, bound, true),
-                    (Generate<A>) nextLongBoundedImpl(bound));
+                    (CompiledGenerator<A>) nextLongBoundedImpl(bound));
         }
 
         if (instruction instanceof Instruction.NextLongExclusive) {
@@ -152,7 +159,7 @@ public class TracingInterpreter {
             long bound = instruction1.getBound();
             //noinspection unchecked
             return traced(longInterval(origin, bound, true),
-                    (Generate<A>) nextLongExclusiveImpl(origin, bound));
+                    (CompiledGenerator<A>) nextLongExclusiveImpl(origin, bound));
         }
 
         if (instruction instanceof Instruction.NextLongBetween) {
@@ -161,7 +168,7 @@ public class TracingInterpreter {
             long max = instruction1.getMax();
             //noinspection unchecked
             return traced(longInterval(min, max, false),
-                    (Generate<A>) nextLongBetweenImpl(min, max));
+                    (CompiledGenerator<A>) nextLongBetweenImpl(min, max));
         }
 
         if (instruction instanceof Instruction.NextLongIndex) {
@@ -169,12 +176,12 @@ public class TracingInterpreter {
             long bound = instruction1.getBound();
             //noinspection unchecked
             return traced(interval("index", 0, bound, true),
-                    (Generate<A>) nextLongIndexImpl(bound));
+                    (CompiledGenerator<A>) nextLongIndexImpl(bound));
         }
 
         if (instruction instanceof Instruction.NextGaussian) {
             //noinspection unchecked
-            return traced(GAUSSIAN, (Generate<A>) nextGaussianImpl());
+            return traced(GAUSSIAN, (CompiledGenerator<A>) nextGaussianImpl());
         }
 
         if (instruction instanceof Instruction.NextBytes) {
@@ -182,21 +189,18 @@ public class TracingInterpreter {
             int count = instruction1.getCount();
             //noinspection unchecked
             return traced(primitiveMetadata("bytes[ " + count + "]"),
-                    (Generate<A>) nextBytesImpl(count));
+                    (CompiledGenerator<A>) nextBytesImpl(count));
         }
 
         if (instruction instanceof Instruction.Labeled) {
             Instruction.Labeled instruction1 = (Instruction.Labeled) instruction;
             //noinspection unchecked
             return traced(StandardMetadata.labeled(instruction1.getLabel()),
-                    (Generate<A>) compile(instruction1.getOperand()));
+                    (CompiledGenerator<A>) compile(instruction1.getOperand()));
         }
 
         if (instruction instanceof Instruction.Sized) {
-//            Instruction.Sized instruction1 = (Instruction.Sized) instruction;
-//
-//            //noinspection unchecked
-//            return sizedImpl(sizeSelector, rs -> compile((Instruction<A>) instruction1.getFn().apply(rs)));
+            return handleSized((Instruction.Sized<A>) instruction);
         }
 
         if (instruction instanceof Instruction.Aggregate) {
@@ -213,15 +217,15 @@ public class TracingInterpreter {
     }
 
 
-    private <In, Out> Generate<Trace<Out>> handleMapped(Instruction.Mapped<In, Out> instruction) {
+    private <In, Out> CompiledGenerator<Trace<Out>> handleMapped(Instruction.Mapped<In, Out> instruction) {
         return mappedImpl(t -> trace(instruction.getFn().apply(t.getResult()),
                 FMAP, singletonList(t)),
                 compile(instruction.getOperand()));
     }
 
-    private <In, Out> Generate<Trace<Out>> handleFlatMapped(Instruction.FlatMapped<In, Out> instruction) {
+    private <In, Out> CompiledGenerator<Trace<Out>> handleFlatMapped(Instruction.FlatMapped<In, Out> instruction) {
         // TODO: fix this function; it is incorrect
-        Generate<Trace<In>> compile = compile(instruction.getOperand());
+        CompiledGenerator<Trace<In>> compile = compile(instruction.getOperand());
         return flatMappedImpl(t -> {
                     In r1 = t.getResult();
                     Instruction<Out> apply = instruction.getFn().apply(r1);
@@ -231,7 +235,12 @@ public class TracingInterpreter {
                 compile);
     }
 
-    private <Elem, Builder, Out> Generate<Trace<Out>> handleAggregate(Instruction.Aggregate<Elem, Builder, Out> instruction) {
+    private <A> CompiledGenerator<Trace<A>> handleSized(Instruction.Sized<A> instruction) {
+        // TODO: fix this implementation
+        return sizedImpl(sizeSelector, rs -> compile(instruction.getFn().apply(rs)));
+    }
+
+    private <Elem, Builder, Out> CompiledGenerator<Trace<Out>> handleAggregate(Instruction.Aggregate<Elem, Builder, Out> instruction) {
         @SuppressWarnings("UnnecessaryLocalVariable")
         AggregateImpl<Trace<Elem>, TraceCollector<Builder>, Trace<Out>> aggregator = aggregateImpl(
                 () -> new TraceCollector<>(instruction.getInitialBuilderSupplier().get()),
@@ -245,26 +254,26 @@ public class TracingInterpreter {
         return aggregator;
     }
 
-    private <A, B, C, D, E, F, G, H> Generate<Trace<Tuple8<A, B, C, D, E, F, G, H>>> handleProduct8(
+    private <A, B, C, D, E, F, G, H> CompiledGenerator<Trace<Tuple8<A, B, C, D, E, F, G, H>>> handleProduct8(
             Instruction.Product8<A, B, C, D, E, F, G, H> instruction) {
-        Generate<Trace<A>> ca = compile(instruction.getA());
-        Generate<Trace<B>> cb = compile(instruction.getB());
-        Generate<Trace<C>> cc = compile(instruction.getC());
-        Generate<Trace<D>> cd = compile(instruction.getD());
-        Generate<Trace<E>> ce = compile(instruction.getE());
-        Generate<Trace<F>> cf = compile(instruction.getF());
-        Generate<Trace<G>> cg = compile(instruction.getG());
-        Generate<Trace<H>> ch = compile(instruction.getH());
+        CompiledGenerator<Trace<A>> ca = compile(instruction.getA());
+        CompiledGenerator<Trace<B>> cb = compile(instruction.getB());
+        CompiledGenerator<Trace<C>> cc = compile(instruction.getC());
+        CompiledGenerator<Trace<D>> cd = compile(instruction.getD());
+        CompiledGenerator<Trace<E>> ce = compile(instruction.getE());
+        CompiledGenerator<Trace<F>> cf = compile(instruction.getF());
+        CompiledGenerator<Trace<G>> cg = compile(instruction.getG());
+        CompiledGenerator<Trace<H>> ch = compile(instruction.getH());
 
         return customImpl(in -> {
-            Result<? extends RandomState, Trace<A>> ra = ca.generate(in);
-            Result<? extends RandomState, Trace<B>> rb = cb.generate(ra.getNextState());
-            Result<? extends RandomState, Trace<C>> rc = cc.generate(rb.getNextState());
-            Result<? extends RandomState, Trace<D>> rd = cd.generate(rc.getNextState());
-            Result<? extends RandomState, Trace<E>> re = ce.generate(rd.getNextState());
-            Result<? extends RandomState, Trace<F>> rf = cf.generate(re.getNextState());
-            Result<? extends RandomState, Trace<G>> rg = cg.generate(rf.getNextState());
-            Result<? extends RandomState, Trace<H>> rh = ch.generate(rg.getNextState());
+            Result<? extends RandomState, Trace<A>> ra = ca.run(in);
+            Result<? extends RandomState, Trace<B>> rb = cb.run(ra.getNextState());
+            Result<? extends RandomState, Trace<C>> rc = cc.run(rb.getNextState());
+            Result<? extends RandomState, Trace<D>> rd = cd.run(rc.getNextState());
+            Result<? extends RandomState, Trace<E>> re = ce.run(rd.getNextState());
+            Result<? extends RandomState, Trace<F>> rf = cf.run(re.getNextState());
+            Result<? extends RandomState, Trace<G>> rg = cg.run(rf.getNextState());
+            Result<? extends RandomState, Trace<H>> rh = ch.run(rg.getNextState());
 
             Trace<A> ta = ra.getValue();
             Trace<B> tb = rb.getValue();
@@ -287,6 +296,37 @@ public class TracingInterpreter {
                     trace(tuple, PRODUCT8, asList(ta, tb, tc, td, te, tf, tg, th)));
         });
     }
+
+//    private <A, B, C, D, E, F, G, H> CompiledGenerator<Trace<Tuple8<A, B, C, D, E, F, G, H>>> handleProduct8(
+//            Instruction.Product8<A, B, C, D, E, F, G, H> instruction) {
+//        CompiledGenerator<Trace<A>> ca = compile(instruction.getA());
+//        CompiledGenerator<Trace<B>> cb = compile(instruction.getB());
+//        CompiledGenerator<Trace<C>> cc = compile(instruction.getC());
+//        CompiledGenerator<Trace<D>> cd = compile(instruction.getD());
+//        CompiledGenerator<Trace<E>> ce = compile(instruction.getE());
+//        CompiledGenerator<Trace<F>> cf = compile(instruction.getF());
+//        CompiledGenerator<Trace<G>> cg = compile(instruction.getG());
+//        CompiledGenerator<Trace<H>> ch = compile(instruction.getH());
+//
+//        Product8Impl<Trace<A>, Trace<B>, Trace<C>, Trace<D>, Trace<E>, Trace<F>, Trace<G>, Trace<H>> tp8 =
+//                product8Impl(ca, cb, cc, cd, ce, cf, cg, ch);
+//
+//        Fn1<RandomState, Result<? extends RandomState, Trace<Tuple8<A, B, C, D, E, F, G, H>>>> fmap = tp8.fmap(r1 -> {
+//            Tuple8<Trace<A>, Trace<B>, Trace<C>, Trace<D>, Trace<E>, Trace<F>, Trace<G>, Trace<H>> value = r1.getValue();
+//            return result(r1.getNextState(),
+//                    trace(tuple(value._1().getResult(),
+//                            value._2().getResult(),
+//                            value._3().getResult(),
+//                            value._4().getResult(),
+//                            value._5().getResult(),
+//                            value._6().getResult(),
+//                            value._7().getResult(),
+//                            value._8().getResult()),
+//                            PRODUCT8,
+//                            asList(value._1(), value._2(), value._3(), value._4(),
+//                                    value._5(), value._6(), value._7(), value._8())));
+//        });
+//    }
 
     private static class TraceCollector<State> {
         ArrayList<Trace<?>> traces;
