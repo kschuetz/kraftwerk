@@ -70,58 +70,58 @@ public class TracingInterpreter {
         return input -> traceResult(metadata, g.run(input));
     }
 
-    public <A> CompiledGenerator<Trace<A>> compile(Instruction<A> instruction) {
+    public <A> CompiledGenerator<Trace<A>> compile(Generator<A> generator) {
 
-        if (instruction instanceof Instruction.Constant) {
-            return traced(PURE, pureImpl(((Instruction.Constant<A>) instruction).getValue()));
+        if (generator instanceof Generator.Constant) {
+            return traced(PURE, pureImpl(((Generator.Constant<A>) generator).getValue()));
         }
 
-        if (instruction instanceof Instruction.Custom) {
-            return traced(CUSTOM, customImpl(((Instruction.Custom<A>) instruction).getFn()));
+        if (generator instanceof Generator.Custom) {
+            return traced(CUSTOM, customImpl(((Generator.Custom<A>) generator).getFn()));
         }
 
-        if (instruction instanceof Instruction.Mapped) {
-            return handleMapped((Instruction.Mapped<?, A>) instruction);
+        if (generator instanceof Generator.Mapped) {
+            return handleMapped((Generator.Mapped<?, A>) generator);
         }
 
-        if (instruction instanceof Instruction.FlatMapped) {
-            return handleFlatMapped((Instruction.FlatMapped<?, A>) instruction);
+        if (generator instanceof Generator.FlatMapped) {
+            return handleFlatMapped((Generator.FlatMapped<?, A>) generator);
         }
 
-        if (instruction instanceof Instruction.NextInt) {
+        if (generator instanceof Generator.NextInt) {
             //noinspection unchecked
             return traced(INT, (CompiledGenerator<A>) nextIntImpl());
         }
 
-        if (instruction instanceof Instruction.NextLong) {
+        if (generator instanceof Generator.NextLong) {
             //noinspection unchecked
             return traced(LONG, (CompiledGenerator<A>) nextLongImpl());
         }
 
-        if (instruction instanceof Instruction.NextBoolean) {
+        if (generator instanceof Generator.NextBoolean) {
             //noinspection unchecked
             return traced(BOOLEAN, (CompiledGenerator<A>) nextBooleanImpl());
         }
 
-        if (instruction instanceof Instruction.NextDouble) {
+        if (generator instanceof Generator.NextDouble) {
             //noinspection unchecked
             return traced(DOUBLE, (CompiledGenerator<A>) nextDoubleImpl());
         }
 
-        if (instruction instanceof Instruction.NextFloat) {
+        if (generator instanceof Generator.NextFloat) {
             //noinspection unchecked
             return traced(FLOAT, (CompiledGenerator<A>) nextFloatImpl());
         }
 
-        if (instruction instanceof Instruction.NextIntBounded) {
-            int bound = ((Instruction.NextIntBounded) instruction).getBound();
+        if (generator instanceof Generator.NextIntBounded) {
+            int bound = ((Generator.NextIntBounded) generator).getBound();
             //noinspection unchecked
             return traced(intInterval(0, bound, true),
                     (CompiledGenerator<A>) nextIntBoundedImpl(bound));
         }
 
-        if (instruction instanceof Instruction.NextIntExclusive) {
-            Instruction.NextIntExclusive instruction1 = (Instruction.NextIntExclusive) instruction;
+        if (generator instanceof Generator.NextIntExclusive) {
+            Generator.NextIntExclusive instruction1 = (Generator.NextIntExclusive) generator;
             int origin = instruction1.getOrigin();
             int bound = instruction1.getBound();
             //noinspection unchecked
@@ -129,8 +129,8 @@ public class TracingInterpreter {
                     (CompiledGenerator<A>) nextIntExclusiveImpl(origin, bound));
         }
 
-        if (instruction instanceof Instruction.NextIntBetween) {
-            Instruction.NextIntBetween instruction1 = (Instruction.NextIntBetween) instruction;
+        if (generator instanceof Generator.NextIntBetween) {
+            Generator.NextIntBetween instruction1 = (Generator.NextIntBetween) generator;
             int min = instruction1.getMin();
             int max = instruction1.getMax();
             //noinspection unchecked
@@ -138,23 +138,23 @@ public class TracingInterpreter {
                     (CompiledGenerator<A>) nextIntBetweenImpl(min, max));
         }
 
-        if (instruction instanceof Instruction.NextIntIndex) {
-            Instruction.NextIntIndex instruction1 = (Instruction.NextIntIndex) instruction;
+        if (generator instanceof Generator.NextIntIndex) {
+            Generator.NextIntIndex instruction1 = (Generator.NextIntIndex) generator;
             int bound = instruction1.getBound();
             //noinspection unchecked
             return traced(interval("index", 0, bound, true),
                     (CompiledGenerator<A>) nextIntIndexImpl(bound));
         }
 
-        if (instruction instanceof Instruction.NextLongBounded) {
-            long bound = ((Instruction.NextLongBounded) instruction).getBound();
+        if (generator instanceof Generator.NextLongBounded) {
+            long bound = ((Generator.NextLongBounded) generator).getBound();
             //noinspection unchecked
             return traced(longInterval(0, bound, true),
                     (CompiledGenerator<A>) nextLongBoundedImpl(bound));
         }
 
-        if (instruction instanceof Instruction.NextLongExclusive) {
-            Instruction.NextLongExclusive instruction1 = (Instruction.NextLongExclusive) instruction;
+        if (generator instanceof Generator.NextLongExclusive) {
+            Generator.NextLongExclusive instruction1 = (Generator.NextLongExclusive) generator;
             long origin = instruction1.getOrigin();
             long bound = instruction1.getBound();
             //noinspection unchecked
@@ -162,8 +162,8 @@ public class TracingInterpreter {
                     (CompiledGenerator<A>) nextLongExclusiveImpl(origin, bound));
         }
 
-        if (instruction instanceof Instruction.NextLongBetween) {
-            Instruction.NextLongBetween instruction1 = (Instruction.NextLongBetween) instruction;
+        if (generator instanceof Generator.NextLongBetween) {
+            Generator.NextLongBetween instruction1 = (Generator.NextLongBetween) generator;
             long min = instruction1.getMin();
             long max = instruction1.getMax();
             //noinspection unchecked
@@ -171,76 +171,76 @@ public class TracingInterpreter {
                     (CompiledGenerator<A>) nextLongBetweenImpl(min, max));
         }
 
-        if (instruction instanceof Instruction.NextLongIndex) {
-            Instruction.NextLongIndex instruction1 = (Instruction.NextLongIndex) instruction;
+        if (generator instanceof Generator.NextLongIndex) {
+            Generator.NextLongIndex instruction1 = (Generator.NextLongIndex) generator;
             long bound = instruction1.getBound();
             //noinspection unchecked
             return traced(interval("index", 0, bound, true),
                     (CompiledGenerator<A>) nextLongIndexImpl(bound));
         }
 
-        if (instruction instanceof Instruction.NextGaussian) {
+        if (generator instanceof Generator.NextGaussian) {
             //noinspection unchecked
             return traced(GAUSSIAN, (CompiledGenerator<A>) nextGaussianImpl());
         }
 
-        if (instruction instanceof Instruction.NextBytes) {
-            Instruction.NextBytes instruction1 = (Instruction.NextBytes) instruction;
+        if (generator instanceof Generator.NextBytes) {
+            Generator.NextBytes instruction1 = (Generator.NextBytes) generator;
             int count = instruction1.getCount();
             //noinspection unchecked
             return traced(primitiveMetadata("bytes[ " + count + "]"),
                     (CompiledGenerator<A>) nextBytesImpl(count));
         }
 
-        if (instruction instanceof Instruction.Labeled) {
-            Instruction.Labeled instruction1 = (Instruction.Labeled) instruction;
+        if (generator instanceof Generator.Labeled) {
+            Generator.Labeled instruction1 = (Generator.Labeled) generator;
             //noinspection unchecked
             return traced(StandardMetadata.labeled(instruction1.getLabel()),
                     (CompiledGenerator<A>) compile(instruction1.getOperand()));
         }
 
-        if (instruction instanceof Instruction.Sized) {
-            return handleSized((Instruction.Sized<A>) instruction);
+        if (generator instanceof Generator.Sized) {
+            return handleSized((Generator.Sized<A>) generator);
         }
 
-        if (instruction instanceof Instruction.Aggregate) {
+        if (generator instanceof Generator.Aggregate) {
             //noinspection unchecked
-            return handleAggregate((Instruction.Aggregate) instruction);
+            return handleAggregate((Generator.Aggregate) generator);
         }
 
-        if (instruction instanceof Instruction.Product8) {
+        if (generator instanceof Generator.Product8) {
             //noinspection unchecked
-            return handleProduct8((Instruction.Product8) instruction);
+            return handleProduct8((Generator.Product8) generator);
         }
 
-        throw new IllegalStateException("Unimplemented instruction");
+        throw new IllegalStateException("Unimplemented generator");
     }
 
 
-    private <In, Out> CompiledGenerator<Trace<Out>> handleMapped(Instruction.Mapped<In, Out> instruction) {
+    private <In, Out> CompiledGenerator<Trace<Out>> handleMapped(Generator.Mapped<In, Out> instruction) {
         return mappedImpl(t -> trace(instruction.getFn().apply(t.getResult()),
                 FMAP, singletonList(t)),
                 compile(instruction.getOperand()));
     }
 
-    private <In, Out> CompiledGenerator<Trace<Out>> handleFlatMapped(Instruction.FlatMapped<In, Out> instruction) {
+    private <In, Out> CompiledGenerator<Trace<Out>> handleFlatMapped(Generator.FlatMapped<In, Out> instruction) {
         // TODO: fix this function; it is incorrect
         CompiledGenerator<Trace<In>> compile = compile(instruction.getOperand());
         return flatMappedImpl(t -> {
                     In r1 = t.getResult();
-                    Instruction<Out> apply = instruction.getFn().apply(r1);
+                    Generator<Out> apply = instruction.getFn().apply(r1);
 
                     return compile(apply);
                 },
                 compile);
     }
 
-    private <A> CompiledGenerator<Trace<A>> handleSized(Instruction.Sized<A> instruction) {
+    private <A> CompiledGenerator<Trace<A>> handleSized(Generator.Sized<A> instruction) {
         // TODO: fix this implementation
         return sizedImpl(sizeSelector, rs -> compile(instruction.getFn().apply(rs)));
     }
 
-    private <Elem, Builder, Out> CompiledGenerator<Trace<Out>> handleAggregate(Instruction.Aggregate<Elem, Builder, Out> instruction) {
+    private <Elem, Builder, Out> CompiledGenerator<Trace<Out>> handleAggregate(Generator.Aggregate<Elem, Builder, Out> instruction) {
         @SuppressWarnings("UnnecessaryLocalVariable")
         AggregateImpl<Trace<Elem>, TraceCollector<Builder>, Trace<Out>> aggregator = aggregateImpl(
                 () -> new TraceCollector<>(instruction.getInitialBuilderSupplier().get()),
@@ -255,7 +255,7 @@ public class TracingInterpreter {
     }
 
     private <A, B, C, D, E, F, G, H> CompiledGenerator<Trace<Tuple8<A, B, C, D, E, F, G, H>>> handleProduct8(
-            Instruction.Product8<A, B, C, D, E, F, G, H> instruction) {
+            Generator.Product8<A, B, C, D, E, F, G, H> instruction) {
         CompiledGenerator<Trace<A>> ca = compile(instruction.getA());
         CompiledGenerator<Trace<B>> cb = compile(instruction.getB());
         CompiledGenerator<Trace<C>> cc = compile(instruction.getC());
@@ -298,7 +298,7 @@ public class TracingInterpreter {
     }
 
 //    private <A, B, C, D, E, F, G, H> CompiledGenerator<Trace<Tuple8<A, B, C, D, E, F, G, H>>> handleProduct8(
-//            Instruction.Product8<A, B, C, D, E, F, G, H> instruction) {
+//            Generator.Product8<A, B, C, D, E, F, G, H> instruction) {
 //        CompiledGenerator<Trace<A>> ca = compile(instruction.getA());
 //        CompiledGenerator<Trace<B>> cb = compile(instruction.getB());
 //        CompiledGenerator<Trace<C>> cc = compile(instruction.getC());

@@ -104,7 +104,7 @@ class GeneratorTest {
     }
 
     private static <A> Result<RandomState, A> run(Generator<A> generator, RandomState input) {
-        return defaultInterpreter().execute(input, generator.getInstruction());
+        return defaultInterpreter().execute(input, generator);
     }
 
 }

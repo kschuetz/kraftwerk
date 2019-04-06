@@ -2,38 +2,36 @@ package dev.marksman.composablerandom.builtin;
 
 import dev.marksman.composablerandom.DiscreteDomain;
 import dev.marksman.composablerandom.Generator;
-import dev.marksman.composablerandom.Instruction;
 
 import java.util.*;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Zip.zip;
-import static dev.marksman.composablerandom.Generator.generator;
-import static dev.marksman.composablerandom.Instruction.buildCollection;
-import static dev.marksman.composablerandom.Instruction.sized;
+import static dev.marksman.composablerandom.Generator.buildCollection;
+import static dev.marksman.composablerandom.Generator.sized;
 
 class Collections {
 
     static <A> Generator<ArrayList<A>> generateList(Generator<A> g) {
-        return generator(sized(n -> buildArrayList(n, g.getInstruction())));
+        return sized(n -> buildArrayList(n, g));
     }
 
     static <A> Generator<ArrayList<A>> generateNonEmptyList(Generator<A> g) {
-        return generator(sized(n -> buildArrayList(Math.max(1, n), g.getInstruction())));
+        return sized(n -> buildArrayList(Math.max(1, n), g));
     }
 
     static <A> Generator<ArrayList<A>> generateListOfN(int n, Generator<A> g) {
         if (n < 0) {
             throw new IllegalArgumentException("n must be >= 0");
         }
-        return generator(buildArrayList(n, g.getInstruction()));
+        return buildArrayList(n, g);
     }
 
     static <A> Generator<HashSet<A>> generateSet(Generator<A> g) {
-        return generator(sized(n -> buildHashSet(n, g.getInstruction())));
+        return sized(n -> buildHashSet(n, g));
     }
 
     static <A> Generator<HashSet<A>> generateNonEmptySet(Generator<A> g) {
-        return generator(sized(n -> buildHashSet(Math.max(1, n), g.getInstruction())));
+        return sized(n -> buildHashSet(Math.max(1, n), g));
     }
 
     static <K, V> Generator<Map<K, V>> generateMap(Generator<K> keyGenerator,
@@ -56,12 +54,12 @@ class Collections {
         return generateMapImpl((int) keys.getSize(), keys, valueGenerator);
     }
 
-    private static <A> Instruction.Aggregate<A, ArrayList<A>, ArrayList<A>> buildArrayList(int n, Instruction<A> instruction) {
-        return buildCollection(ArrayList::new, n, instruction);
+    private static <A> Generator.Aggregate<A, ArrayList<A>, ArrayList<A>> buildArrayList(int n, Generator<A> generator) {
+        return buildCollection(ArrayList::new, n, generator);
     }
 
-    private static <A> Instruction.Aggregate<A, HashSet<A>, HashSet<A>> buildHashSet(int n, Instruction<A> instruction) {
-        return buildCollection(HashSet::new, n, instruction);
+    private static <A> Generator.Aggregate<A, HashSet<A>, HashSet<A>> buildHashSet(int n, Generator<A> generator) {
+        return buildCollection(HashSet::new, n, generator);
     }
 
     private static <K, V> Generator<Map<K, V>> generateMapImpl(int size,

@@ -33,132 +33,132 @@ public class AlternateInterpreter {
         this.sizeSelector = SizeSelectors.sizeSelector(context.getSizeParameters());
     }
 
-    public <A> CompiledGenerator<A> compile(Instruction<A> instruction) {
-        if (instruction instanceof Instruction.Constant) {
-            return pureImpl(((Instruction.Constant<A>) instruction).getValue());
+    public <A> CompiledGenerator<A> compile(Generator<A> generator) {
+        if (generator instanceof Generator.Constant) {
+            return pureImpl(((Generator.Constant<A>) generator).getValue());
         }
 
-        if (instruction instanceof Instruction.Custom) {
-            return customImpl(((Instruction.Custom<A>) instruction).getFn());
+        if (generator instanceof Generator.Custom) {
+            return customImpl(((Generator.Custom<A>) generator).getFn());
         }
 
-        if (instruction instanceof Instruction.Mapped) {
-            return handleMapped((Instruction.Mapped<?, A>) instruction);
+        if (generator instanceof Generator.Mapped) {
+            return handleMapped((Generator.Mapped<?, A>) generator);
         }
 
-        if (instruction instanceof Instruction.FlatMapped) {
-            return handleFlatMapped((Instruction.FlatMapped<?, A>) instruction);
+        if (generator instanceof Generator.FlatMapped) {
+            return handleFlatMapped((Generator.FlatMapped<?, A>) generator);
         }
 
-        if (instruction instanceof Instruction.NextInt) {
+        if (generator instanceof Generator.NextInt) {
             //noinspection unchecked
             return (CompiledGenerator<A>) nextIntImpl();
         }
 
-        if (instruction instanceof Instruction.NextLong) {
+        if (generator instanceof Generator.NextLong) {
             //noinspection unchecked
             return (CompiledGenerator<A>) nextLongImpl();
         }
 
-        if (instruction instanceof Instruction.NextBoolean) {
+        if (generator instanceof Generator.NextBoolean) {
             //noinspection unchecked
             return (CompiledGenerator<A>) nextBooleanImpl();
         }
 
-        if (instruction instanceof Instruction.NextDouble) {
+        if (generator instanceof Generator.NextDouble) {
             //noinspection unchecked
             return (CompiledGenerator<A>) nextDoubleImpl();
         }
 
-        if (instruction instanceof Instruction.NextFloat) {
+        if (generator instanceof Generator.NextFloat) {
             //noinspection unchecked
             return (CompiledGenerator<A>) nextFloatImpl();
         }
 
-        if (instruction instanceof Instruction.NextIntBounded) {
-            int bound = ((Instruction.NextIntBounded) instruction).getBound();
+        if (generator instanceof Generator.NextIntBounded) {
+            int bound = ((Generator.NextIntBounded) generator).getBound();
             //noinspection unchecked
             return (CompiledGenerator<A>) nextIntBoundedImpl(bound);
         }
 
-        if (instruction instanceof Instruction.NextIntExclusive) {
-            Instruction.NextIntExclusive instruction1 = (Instruction.NextIntExclusive) instruction;
+        if (generator instanceof Generator.NextIntExclusive) {
+            Generator.NextIntExclusive instruction1 = (Generator.NextIntExclusive) generator;
             //noinspection unchecked
             return (CompiledGenerator<A>) nextIntExclusiveImpl(instruction1.getOrigin(), instruction1.getBound());
         }
 
-        if (instruction instanceof Instruction.NextIntBetween) {
-            Instruction.NextIntBetween instruction1 = (Instruction.NextIntBetween) instruction;
+        if (generator instanceof Generator.NextIntBetween) {
+            Generator.NextIntBetween instruction1 = (Generator.NextIntBetween) generator;
             //noinspection unchecked
             return (CompiledGenerator<A>) nextIntBetweenImpl(instruction1.getMin(), instruction1.getMax());
         }
 
-        if (instruction instanceof Instruction.NextIntIndex) {
-            Instruction.NextIntIndex instruction1 = (Instruction.NextIntIndex) instruction;
+        if (generator instanceof Generator.NextIntIndex) {
+            Generator.NextIntIndex instruction1 = (Generator.NextIntIndex) generator;
             //noinspection unchecked
             return (CompiledGenerator<A>) nextIntIndexImpl(instruction1.getBound());
         }
 
-        if (instruction instanceof Instruction.NextLongBounded) {
-            Instruction.NextLongBounded instruction1 = (Instruction.NextLongBounded) instruction;
+        if (generator instanceof Generator.NextLongBounded) {
+            Generator.NextLongBounded instruction1 = (Generator.NextLongBounded) generator;
             //noinspection unchecked
             return (CompiledGenerator<A>) nextLongBoundedImpl(instruction1.getBound());
         }
 
-        if (instruction instanceof Instruction.NextLongExclusive) {
-            Instruction.NextLongExclusive instruction1 = (Instruction.NextLongExclusive) instruction;
+        if (generator instanceof Generator.NextLongExclusive) {
+            Generator.NextLongExclusive instruction1 = (Generator.NextLongExclusive) generator;
             //noinspection unchecked
             return (CompiledGenerator<A>) nextLongExclusiveImpl(instruction1.getOrigin(), instruction1.getBound());
         }
 
-        if (instruction instanceof Instruction.NextLongBetween) {
-            Instruction.NextLongBetween instruction1 = (Instruction.NextLongBetween) instruction;
+        if (generator instanceof Generator.NextLongBetween) {
+            Generator.NextLongBetween instruction1 = (Generator.NextLongBetween) generator;
             //noinspection unchecked
             return (CompiledGenerator<A>) nextLongBetweenImpl(instruction1.getMin(), instruction1.getMax());
         }
 
-        if (instruction instanceof Instruction.NextLongIndex) {
-            Instruction.NextLongIndex instruction1 = (Instruction.NextLongIndex) instruction;
+        if (generator instanceof Generator.NextLongIndex) {
+            Generator.NextLongIndex instruction1 = (Generator.NextLongIndex) generator;
             //noinspection unchecked
             return (CompiledGenerator<A>) nextLongIndexImpl(instruction1.getBound());
         }
 
-        if (instruction instanceof Instruction.NextGaussian) {
+        if (generator instanceof Generator.NextGaussian) {
             //noinspection unchecked
             return (CompiledGenerator<A>) nextGaussianImpl();
         }
 
-        if (instruction instanceof Instruction.NextBytes) {
-            Instruction.NextBytes instruction1 = (Instruction.NextBytes) instruction;
+        if (generator instanceof Generator.NextBytes) {
+            Generator.NextBytes instruction1 = (Generator.NextBytes) generator;
             //noinspection unchecked
             return (CompiledGenerator<A>) nextBytesImpl(instruction1.getCount());
         }
 
-        if (instruction instanceof Instruction.Labeled) {
-            Instruction.Labeled instruction1 = (Instruction.Labeled) instruction;
+        if (generator instanceof Generator.Labeled) {
+            Generator.Labeled instruction1 = (Generator.Labeled) generator;
             //noinspection unchecked
             return compile(instruction1.getOperand());
         }
 
-        if (instruction instanceof Instruction.Sized) {
-            Instruction.Sized instruction1 = (Instruction.Sized) instruction;
+        if (generator instanceof Generator.Sized) {
+            Generator.Sized instruction1 = (Generator.Sized) generator;
 
             //noinspection unchecked
-            return sizedImpl(sizeSelector, rs -> compile((Instruction<A>) instruction1.getFn().apply(rs)));
+            return sizedImpl(sizeSelector, rs -> compile((Generator<A>) instruction1.getFn().apply(rs)));
         }
 
-        if (instruction instanceof Instruction.Aggregate) {
-            Instruction.Aggregate instruction1 = (Instruction.Aggregate) instruction;
+        if (generator instanceof Generator.Aggregate) {
+            Generator.Aggregate instruction1 = (Generator.Aggregate) generator;
             //noinspection unchecked
-            Iterable<Instruction<A>> instructions = instruction1.getInstructions();
+            Iterable<Generator<A>> instructions = instruction1.getInstructions();
 
             //noinspection unchecked
             return (CompiledGenerator<A>) aggregateImpl(instruction1.getInitialBuilderSupplier(), instruction1.getAddFn(),
                     instruction1.getBuildFn(), map(this::compile, instructions));
         }
 
-        if (instruction instanceof Instruction.Product8) {
-            Instruction.Product8 instruction1 = (Instruction.Product8) instruction;
+        if (generator instanceof Generator.Product8) {
+            Generator.Product8 instruction1 = (Generator.Product8) generator;
             //noinspection unchecked
             return (CompiledGenerator<A>) product8Impl(compile(instruction1.getA()),
                     compile(instruction1.getB()),
@@ -170,14 +170,14 @@ public class AlternateInterpreter {
                     compile(instruction1.getH()));
         }
 
-        throw new IllegalStateException("Unimplemented instruction");
+        throw new IllegalStateException("Unimplemented generator");
     }
 
-    private <In, Out> CompiledGenerator<Out> handleMapped(Instruction.Mapped<In, Out> mapped) {
+    private <In, Out> CompiledGenerator<Out> handleMapped(Generator.Mapped<In, Out> mapped) {
         return mappedImpl(mapped.getFn(), compile(mapped.getOperand()));
     }
 
-    private <In, Out> CompiledGenerator<Out> handleFlatMapped(Instruction.FlatMapped<In, Out> flatMapped) {
+    private <In, Out> CompiledGenerator<Out> handleFlatMapped(Generator.FlatMapped<In, Out> flatMapped) {
         return flatMappedImpl(in -> compile(flatMapped.getFn().apply(in)),
                 compile(flatMapped.getOperand()));
     }

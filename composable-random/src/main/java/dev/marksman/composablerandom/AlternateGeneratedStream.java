@@ -90,7 +90,7 @@ public class AlternateGeneratedStream<A> implements Iterator<A> {
 
     private static <A> CompiledGenerator<A> compile(Generator<A> generator) {
         AlternateInterpreter interpreter = alternateInterpreter(defaultContext());
-        return interpreter.compile(generator.getInstruction());
+        return interpreter.compile(generator);
     }
 
 }

@@ -8,7 +8,6 @@ import com.jnape.palatable.lambda.adt.hlist.*;
 import dev.marksman.composablerandom.DiscreteDomain;
 import dev.marksman.composablerandom.FrequencyEntry;
 import dev.marksman.composablerandom.Generator;
-import dev.marksman.composablerandom.Instruction;
 import dev.marksman.composablerandom.choice.ChoiceBuilder1;
 import dev.marksman.composablerandom.frequency.FrequencyMap;
 
@@ -291,7 +290,7 @@ public class Generators {
     }
 
     public static <A> Generator<A> sized(Function<Integer, Generator<A>> g) {
-        return Generator.generator(Instruction.sized(n -> g.apply(n).getInstruction()));
+        return Generator.sized(g);
     }
 
     public static <A> Generator<ArrayList<A>> generateList(Generator<A> g) {

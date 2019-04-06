@@ -96,7 +96,7 @@ public class BenchmarkSandbox {
     }
 
     public static void main(String[] args) {
-//        runTuples();
-        sandbox3();
+        runTuples();
+//        sandbox3();
     }
 }

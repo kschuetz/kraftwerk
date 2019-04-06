@@ -27,7 +27,7 @@ public class Runner {
 
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < iterations; i++) {
-            Result<RandomState, A> result = interpreter.execute(currentState, generator.getInstruction());
+            Result<RandomState, A> result = interpreter.execute(currentState, generator);
             currentState = result.getNextState();
         }
         long t = System.currentTimeMillis() - t0;

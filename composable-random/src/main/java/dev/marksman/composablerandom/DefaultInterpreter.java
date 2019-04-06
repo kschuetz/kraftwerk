@@ -15,140 +15,140 @@ public class DefaultInterpreter {
         this.sizeSelector = SizeSelectors.sizeSelector(context.getSizeParameters());
     }
 
-    public <A, R> Result<RandomState, R> execute(RandomState input, Instruction<A> instruction) {
+    public <A, R> Result<RandomState, R> execute(RandomState input, Generator<A> generator) {
 
-        if (instruction instanceof Instruction.Constant) {
+        if (generator instanceof Generator.Constant) {
             //noinspection unchecked
-            return (Result<RandomState, R>) result(input, (((Instruction.Constant) instruction).getValue()));
+            return (Result<RandomState, R>) result(input, (((Generator.Constant) generator).getValue()));
         }
 
-        if (instruction instanceof Instruction.Custom) {
-            Instruction.Custom instruction1 = (Instruction.Custom) instruction;
+        if (generator instanceof Generator.Custom) {
+            Generator.Custom instruction1 = (Generator.Custom) generator;
             //noinspection unchecked
             return (Result<RandomState, R>) instruction1.getFn().apply(input);
         }
 
-        if (instruction instanceof Instruction.Mapped) {
-            Instruction.Mapped mapped = (Instruction.Mapped) instruction;
+        if (generator instanceof Generator.Mapped) {
+            Generator.Mapped mapped = (Generator.Mapped) generator;
             //noinspection unchecked
             return execute(input, mapped.getOperand()).fmap(mapped.getFn());
         }
 
-        if (instruction instanceof Instruction.FlatMapped) {
+        if (generator instanceof Generator.FlatMapped) {
             //noinspection unchecked
-            return handleFlatMapped((Instruction.FlatMapped) instruction, input);
+            return handleFlatMapped((Generator.FlatMapped) generator, input);
         }
 
-        if (instruction instanceof Instruction.NextInt) {
+        if (generator instanceof Generator.NextInt) {
             //noinspection unchecked
             return (Result<RandomState, R>) input.nextInt();
         }
 
-        if (instruction instanceof Instruction.NextLong) {
+        if (generator instanceof Generator.NextLong) {
             //noinspection unchecked
             return (Result<RandomState, R>) input.nextLong();
         }
 
-        if (instruction instanceof Instruction.NextBoolean) {
+        if (generator instanceof Generator.NextBoolean) {
             //noinspection unchecked
             return (Result<RandomState, R>) input.nextBoolean();
         }
 
-        if (instruction instanceof Instruction.NextDouble) {
+        if (generator instanceof Generator.NextDouble) {
             //noinspection unchecked
             return (Result<RandomState, R>) input.nextDouble();
         }
 
-        if (instruction instanceof Instruction.NextFloat) {
+        if (generator instanceof Generator.NextFloat) {
             //noinspection unchecked
             return (Result<RandomState, R>) input.nextFloat();
         }
 
-        if (instruction instanceof Instruction.NextIntBounded) {
+        if (generator instanceof Generator.NextIntBounded) {
             //noinspection unchecked
-            return (Result<RandomState, R>) input.nextIntBounded(((Instruction.NextIntBounded) instruction).getBound());
+            return (Result<RandomState, R>) input.nextIntBounded(((Generator.NextIntBounded) generator).getBound());
         }
 
-        if (instruction instanceof Instruction.NextIntExclusive) {
-            Instruction.NextIntExclusive instruction1 = (Instruction.NextIntExclusive) instruction;
+        if (generator instanceof Generator.NextIntExclusive) {
+            Generator.NextIntExclusive instruction1 = (Generator.NextIntExclusive) generator;
             //noinspection unchecked
             return (Result<RandomState, R>) input.nextIntExclusive(instruction1.getOrigin(), instruction1.getBound());
         }
 
-        if (instruction instanceof Instruction.NextIntBetween) {
-            Instruction.NextIntBetween instruction1 = (Instruction.NextIntBetween) instruction;
+        if (generator instanceof Generator.NextIntBetween) {
+            Generator.NextIntBetween instruction1 = (Generator.NextIntBetween) generator;
             //noinspection unchecked
             return (Result<RandomState, R>) input.nextIntBetween(instruction1.getMin(), instruction1.getMax());
         }
 
-        if (instruction instanceof Instruction.NextIntIndex) {
-            Instruction.NextIntIndex instruction1 = (Instruction.NextIntIndex) instruction;
+        if (generator instanceof Generator.NextIntIndex) {
+            Generator.NextIntIndex instruction1 = (Generator.NextIntIndex) generator;
             //noinspection unchecked
             return (Result<RandomState, R>) input.nextIntBounded(instruction1.getBound());
         }
 
-        if (instruction instanceof Instruction.NextLongBounded) {
+        if (generator instanceof Generator.NextLongBounded) {
             //noinspection unchecked
-            return (Result<RandomState, R>) input.nextLongBounded(((Instruction.NextLongBounded) instruction).getBound());
+            return (Result<RandomState, R>) input.nextLongBounded(((Generator.NextLongBounded) generator).getBound());
         }
 
-        if (instruction instanceof Instruction.NextLongExclusive) {
-            Instruction.NextLongExclusive instruction1 = (Instruction.NextLongExclusive) instruction;
+        if (generator instanceof Generator.NextLongExclusive) {
+            Generator.NextLongExclusive instruction1 = (Generator.NextLongExclusive) generator;
             //noinspection unchecked
             return (Result<RandomState, R>) input.nextLongExclusive(instruction1.getOrigin(), instruction1.getBound());
         }
 
-        if (instruction instanceof Instruction.NextLongBetween) {
-            Instruction.NextLongBetween instruction1 = (Instruction.NextLongBetween) instruction;
+        if (generator instanceof Generator.NextLongBetween) {
+            Generator.NextLongBetween instruction1 = (Generator.NextLongBetween) generator;
             //noinspection unchecked
             return (Result<RandomState, R>) input.nextLongBetween(instruction1.getMin(), instruction1.getMax());
         }
 
-        if (instruction instanceof Instruction.NextLongIndex) {
-            Instruction.NextLongIndex instruction1 = (Instruction.NextLongIndex) instruction;
+        if (generator instanceof Generator.NextLongIndex) {
+            Generator.NextLongIndex instruction1 = (Generator.NextLongIndex) generator;
             //noinspection unchecked
             return (Result<RandomState, R>) input.nextLongBounded(instruction1.getBound());
         }
 
-        if (instruction instanceof Instruction.NextGaussian) {
+        if (generator instanceof Generator.NextGaussian) {
             //noinspection unchecked
             return (Result<RandomState, R>) input.nextGaussian();
         }
 
-        if (instruction instanceof Instruction.NextBytes) {
-            Instruction.NextBytes instruction1 = (Instruction.NextBytes) instruction;
+        if (generator instanceof Generator.NextBytes) {
+            Generator.NextBytes instruction1 = (Generator.NextBytes) generator;
             //noinspection unchecked
             return (Result<RandomState, R>) handleNextBytes(instruction1, input);
         }
 
-        if (instruction instanceof Instruction.Labeled) {
-            Instruction.Labeled instruction1 = (Instruction.Labeled) instruction;
+        if (generator instanceof Generator.Labeled) {
+            Generator.Labeled instruction1 = (Generator.Labeled) generator;
             //noinspection unchecked
             return (Result<RandomState, R>) handleLabeled(instruction1, input);
         }
 
-        if (instruction instanceof Instruction.Sized) {
-            Instruction.Sized instruction1 = (Instruction.Sized) instruction;
+        if (generator instanceof Generator.Sized) {
+            Generator.Sized instruction1 = (Generator.Sized) generator;
             //noinspection unchecked
             return (Result<RandomState, R>) handleSized(instruction1, input);
         }
 
-        if (instruction instanceof Instruction.Aggregate) {
-            Instruction.Aggregate instruction1 = (Instruction.Aggregate) instruction;
+        if (generator instanceof Generator.Aggregate) {
+            Generator.Aggregate instruction1 = (Generator.Aggregate) generator;
             //noinspection unchecked
             return (Result<RandomState, R>) handleAggregate(instruction1, input);
         }
 
-        if (instruction instanceof Instruction.Product8) {
-            Instruction.Product8 instruction1 = (Instruction.Product8) instruction;
+        if (generator instanceof Generator.Product8) {
+            Generator.Product8 instruction1 = (Generator.Product8) generator;
             //noinspection unchecked
             return (Result<RandomState, R>) handleProduct8(instruction1, input);
         }
 
-        throw new IllegalStateException("Unimplemented instruction");
+        throw new IllegalStateException("Unimplemented generator");
     }
 
-    private <In, Out> Result<? extends RandomState, Out> handleFlatMapped(Instruction.FlatMapped<In, Out> flatMapped, RandomState input) {
+    private <In, Out> Result<? extends RandomState, Out> handleFlatMapped(Generator.FlatMapped<In, Out> flatMapped, RandomState input) {
         Result<RandomState, In> result1 = execute(input, flatMapped.getOperand());
         return execute(result1.getNextState(),
                 flatMapped.getFn().apply(result1.getValue()));
@@ -166,28 +166,28 @@ public class DefaultInterpreter {
         return next.fmap(__ -> result);
     }
 
-    private <A> Result<? extends RandomState, A> handleSized(Instruction.Sized<A> instruction, RandomState input) {
+    private <A> Result<? extends RandomState, A> handleSized(Generator.Sized<A> instruction, RandomState input) {
         Result<? extends RandomState, Integer> sizeResult = sizeSelector.selectSize(input);
         return execute(sizeResult.getNextState(), instruction.getFn().apply(sizeResult.getValue()));
     }
 
-    private <A> Result<? extends RandomState, A> handleLabeled(Instruction.Labeled<A> instruction, RandomState input) {
+    private <A> Result<? extends RandomState, A> handleLabeled(Generator.Labeled<A> instruction, RandomState input) {
         return execute(input, instruction.getOperand());
     }
 
-    private <A, B, R> Result<? extends RandomState, R> handleAggregate(Instruction.Aggregate<A, B, R> aggregate, RandomState input) {
+    private <A, B, R> Result<? extends RandomState, R> handleAggregate(Generator.Aggregate<A, B, R> aggregate, RandomState input) {
         RandomState current = input;
         B builder = aggregate.getInitialBuilderSupplier().get();
         Fn2<B, A, B> addFn = aggregate.getAddFn();
-        for (Instruction<A> instruction : aggregate.getInstructions()) {
-            Result<RandomState, A> next = execute(current, instruction);
+        for (Generator<A> generator : aggregate.getInstructions()) {
+            Result<RandomState, A> next = execute(current, generator);
             builder = addFn.apply(builder, next.getValue());
             current = next.getNextState();
         }
         return result(current, aggregate.getBuildFn().apply(builder));
     }
 
-    private <A, B, C, D, E, F, G, H> Result<? extends RandomState, Tuple8<A, B, C, D, E, F, G, H>> handleProduct8(Instruction.Product8<A, B, C, D, E, F, G, H> instruction, RandomState input) {
+    private <A, B, C, D, E, F, G, H> Result<? extends RandomState, Tuple8<A, B, C, D, E, F, G, H>> handleProduct8(Generator.Product8<A, B, C, D, E, F, G, H> instruction, RandomState input) {
         Result<RandomState, A> r1 = execute(input, instruction.getA());
         Result<RandomState, B> r2 = execute(r1.getNextState(), instruction.getB());
         Result<RandomState, C> r3 = execute(r2.getNextState(), instruction.getC());

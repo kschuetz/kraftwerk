@@ -27,7 +27,7 @@ public class GeneratedStream<A> implements Iterator<A> {
     public A next() {
         Result<RandomState, A> run;
         synchronized (this) {
-            run = interpreter.execute(currentState, generator.getInstruction());
+            run = interpreter.execute(currentState, generator);
             currentState = run.getNextState();
         }
 

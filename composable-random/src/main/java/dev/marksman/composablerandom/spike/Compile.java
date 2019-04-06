@@ -1,8 +1,8 @@
 package dev.marksman.composablerandom.spike;
 
 import dev.marksman.composablerandom.CompiledGenerator;
-import dev.marksman.composablerandom.Instruction;
+import dev.marksman.composablerandom.Generator;
 
 public interface Compile<In, Out> {
-    CompiledGenerator<Out> compile(Instruction<In> instruction);
+    CompiledGenerator<Out> compile(Generator<In> generator);
 }
