@@ -1,6 +1,5 @@
 package dev.marksman.composablerandom;
 
-import dev.marksman.composablerandom.metadata.Metadata;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
@@ -11,14 +10,14 @@ import static java.util.Collections.emptyList;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Trace<A> {
     private final A result;
-    private final Metadata metadata;
+    private final Generator<A> generator;
     private final Iterable<Trace<?>> children;
 
-    public static <A> Trace<A> trace(A result, Metadata metadata, Iterable<Trace<?>> children) {
-        return new Trace<>(result, metadata, children);
+    public static <A> Trace<A> trace(A result, Generator<A> generator, Iterable<Trace<?>> children) {
+        return new Trace<>(result, generator, children);
     }
 
-    public static <A> Trace<A> trace(A result, Metadata metadata) {
-        return new Trace<>(result, metadata, emptyList());
+    public static <A> Trace<A> trace(A result, Generator<A> generator) {
+        return new Trace<>(result, generator, emptyList());
     }
 }

@@ -27,7 +27,7 @@ public class TracePrinter {
             }
         }
         out.append('[');
-        out.append(current.getMetadata().getLabel().orElse(" "));
+        out.append(current.getGenerator().getLabel().orElse(" "));
         out.append("]: ");
         out.append(current.getResult().toString());
         String line = out.toString();

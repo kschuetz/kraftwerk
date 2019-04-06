@@ -122,10 +122,10 @@ public class OldInterpreter {
             return (Result<RandomState, R>) handleNextBytes(instruction1, input);
         }
 
-        if (generator instanceof Generator.Labeled) {
-            Generator.Labeled instruction1 = (Generator.Labeled) generator;
+        if (generator instanceof Generator.WithMetadata) {
+            Generator.WithMetadata instruction1 = (Generator.WithMetadata) generator;
             //noinspection unchecked
-            return (Result<RandomState, R>) handleLabeled(instruction1, input);
+            return (Result<RandomState, R>) execute(input, instruction1.getOperand());
         }
 
         if (generator instanceof Generator.Sized) {
@@ -170,10 +170,6 @@ public class OldInterpreter {
     private <A> Result<? extends RandomState, A> handleSized(Generator.Sized<A> instruction, RandomState input) {
         Result<? extends RandomState, Integer> sizeResult = sizeSelector.selectSize(input);
         return execute(sizeResult.getNextState(), instruction.getFn().apply(sizeResult.getValue()));
-    }
-
-    private <A> Result<? extends RandomState, A> handleLabeled(Generator.Labeled<A> instruction, RandomState input) {
-        return execute(input, instruction.getOperand());
     }
 
     private <A, B, R> Result<? extends RandomState, R> handleAggregate(Generator.Aggregate<A, B, R> aggregate, RandomState input) {

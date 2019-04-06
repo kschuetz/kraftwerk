@@ -132,14 +132,8 @@ public class DefaultInterpreter {
             return (CompiledGenerator<A>) nextBytesImpl(instruction1.getCount());
         }
 
-        if (generator instanceof Generator.Labeled) {
-            Generator.Labeled instruction1 = (Generator.Labeled) generator;
-            //noinspection unchecked
-            return compile(instruction1.getOperand());
-        }
-
-        if (generator instanceof Generator.AttachApplicationData) {
-            Generator.AttachApplicationData instruction1 = (Generator.AttachApplicationData) generator;
+        if (generator instanceof Generator.WithMetadata) {
+            Generator.WithMetadata instruction1 = (Generator.WithMetadata) generator;
             //noinspection unchecked
             return compile(instruction1.getOperand());
         }

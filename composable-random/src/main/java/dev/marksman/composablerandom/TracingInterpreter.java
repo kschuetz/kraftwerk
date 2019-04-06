@@ -2,12 +2,9 @@ package dev.marksman.composablerandom;
 
 import com.jnape.palatable.lambda.adt.hlist.Tuple8;
 import dev.marksman.composablerandom.instructions.AggregateImpl;
-import dev.marksman.composablerandom.metadata.Metadata;
-import dev.marksman.composablerandom.metadata.StandardMetadata;
 
 import java.util.ArrayList;
 
-import static com.jnape.palatable.lambda.adt.Maybe.just;
 import static com.jnape.palatable.lambda.adt.hlist.HList.tuple;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Map.map;
 import static dev.marksman.composablerandom.Result.result;
@@ -33,52 +30,36 @@ import static dev.marksman.composablerandom.instructions.NextLongExclusiveImpl.n
 import static dev.marksman.composablerandom.instructions.NextLongImpl.nextLongImpl;
 import static dev.marksman.composablerandom.instructions.NextLongIndexImpl.nextLongIndexImpl;
 import static dev.marksman.composablerandom.instructions.SizedImpl.sizedImpl;
-import static dev.marksman.composablerandom.metadata.PrimitiveMetadata.primitiveMetadata;
-import static dev.marksman.composablerandom.metadata.StandardMetadata.defaultMetadata;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
 public class TracingInterpreter {
-
-    private static final Metadata PURE = primitiveMetadata("pure");
-    private static final Metadata CUSTOM = primitiveMetadata("custom");
-    private static final Metadata FMAP = primitiveMetadata("fmap");
-    private static final Metadata FLAT_MAP = primitiveMetadata("flatMap");
-    private static final Metadata INT = primitiveMetadata("int");
-    private static final Metadata LONG = primitiveMetadata("long");
-    private static final Metadata BOOLEAN = primitiveMetadata("boolean");
-    private static final Metadata DOUBLE = primitiveMetadata("double");
-    private static final Metadata FLOAT = primitiveMetadata("float");
-    private static final Metadata GAUSSIAN = primitiveMetadata("gaussian");
-    private static final Metadata AGGREGATE = primitiveMetadata("aggregate");
-    private static final Metadata PRODUCT8 = primitiveMetadata("product8");
-
     private final SizeSelector sizeSelector;
 
     private TracingInterpreter(Context context) {
         this.sizeSelector = SizeSelectors.sizeSelector(context.getSizeParameters());
     }
 
-    private <A> Result<RandomState, Trace<A>> traceResult(RandomState randomState, Metadata metadata, A resultValue) {
-        return result(randomState, trace(resultValue, metadata));
+    private <A> Result<RandomState, Trace<A>> traceResult(RandomState randomState, Generator<A> generator, A resultValue) {
+        return result(randomState, trace(resultValue, generator));
     }
 
-    private <A> Result<RandomState, Trace<A>> traceResult(Metadata metadata, Result<? extends RandomState, A> resultValue) {
-        return result(resultValue.getNextState(), trace(resultValue.getValue(), metadata));
+    private <A> Result<RandomState, Trace<A>> traceResult(Generator<A> generator, Result<? extends RandomState, A> resultValue) {
+        return result(resultValue.getNextState(), trace(resultValue.getValue(), generator));
     }
 
-    private <A> CompiledGenerator<Trace<A>> traced(Metadata metadata, CompiledGenerator<A> g) {
-        return input -> traceResult(metadata, g.run(input));
+    private <A> CompiledGenerator<Trace<A>> traced(Generator<A> generator, CompiledGenerator<A> g) {
+        return input -> traceResult(generator, g.run(input));
     }
 
     public <A> CompiledGenerator<Trace<A>> compile(Generator<A> generator) {
 
         if (generator instanceof Generator.Constant) {
-            return traced(PURE, constantImpl(((Generator.Constant<A>) generator).getValue()));
+            return traced(generator, constantImpl(((Generator.Constant<A>) generator).getValue()));
         }
 
         if (generator instanceof Generator.Custom) {
-            return traced(CUSTOM, customImpl(((Generator.Custom<A>) generator).getFn()));
+            return traced(generator, customImpl(((Generator.Custom<A>) generator).getFn()));
         }
 
         if (generator instanceof Generator.Mapped) {
@@ -91,34 +72,33 @@ public class TracingInterpreter {
 
         if (generator instanceof Generator.NextInt) {
             //noinspection unchecked
-            return traced(INT, (CompiledGenerator<A>) nextIntImpl());
+            return traced(generator, (CompiledGenerator<A>) nextIntImpl());
         }
 
         if (generator instanceof Generator.NextLong) {
             //noinspection unchecked
-            return traced(LONG, (CompiledGenerator<A>) nextLongImpl());
+            return traced(generator, (CompiledGenerator<A>) nextLongImpl());
         }
 
         if (generator instanceof Generator.NextBoolean) {
             //noinspection unchecked
-            return traced(BOOLEAN, (CompiledGenerator<A>) nextBooleanImpl());
+            return traced(generator, (CompiledGenerator<A>) nextBooleanImpl());
         }
 
         if (generator instanceof Generator.NextDouble) {
             //noinspection unchecked
-            return traced(DOUBLE, (CompiledGenerator<A>) nextDoubleImpl());
+            return traced(generator, (CompiledGenerator<A>) nextDoubleImpl());
         }
 
         if (generator instanceof Generator.NextFloat) {
             //noinspection unchecked
-            return traced(FLOAT, (CompiledGenerator<A>) nextFloatImpl());
+            return traced(generator, (CompiledGenerator<A>) nextFloatImpl());
         }
 
         if (generator instanceof Generator.NextIntBounded) {
             int bound = ((Generator.NextIntBounded) generator).getBound();
             //noinspection unchecked
-            return traced(intInterval(0, bound, true),
-                    (CompiledGenerator<A>) nextIntBoundedImpl(bound));
+            return traced(generator, (CompiledGenerator<A>) nextIntBoundedImpl(bound));
         }
 
         if (generator instanceof Generator.NextIntExclusive) {
@@ -126,8 +106,7 @@ public class TracingInterpreter {
             int origin = instruction1.getOrigin();
             int bound = instruction1.getBound();
             //noinspection unchecked
-            return traced(intInterval(origin, bound, true),
-                    (CompiledGenerator<A>) nextIntExclusiveImpl(origin, bound));
+            return traced(generator, (CompiledGenerator<A>) nextIntExclusiveImpl(origin, bound));
         }
 
         if (generator instanceof Generator.NextIntBetween) {
@@ -135,23 +114,20 @@ public class TracingInterpreter {
             int min = instruction1.getMin();
             int max = instruction1.getMax();
             //noinspection unchecked
-            return traced(intInterval(min, max, false),
-                    (CompiledGenerator<A>) nextIntBetweenImpl(min, max));
+            return traced(generator, (CompiledGenerator<A>) nextIntBetweenImpl(min, max));
         }
 
         if (generator instanceof Generator.NextIntIndex) {
             Generator.NextIntIndex instruction1 = (Generator.NextIntIndex) generator;
             int bound = instruction1.getBound();
             //noinspection unchecked
-            return traced(interval("index", 0, bound, true),
-                    (CompiledGenerator<A>) nextIntIndexImpl(bound));
+            return traced(generator, (CompiledGenerator<A>) nextIntIndexImpl(bound));
         }
 
         if (generator instanceof Generator.NextLongBounded) {
             long bound = ((Generator.NextLongBounded) generator).getBound();
             //noinspection unchecked
-            return traced(longInterval(0, bound, true),
-                    (CompiledGenerator<A>) nextLongBoundedImpl(bound));
+            return traced(generator, (CompiledGenerator<A>) nextLongBoundedImpl(bound));
         }
 
         if (generator instanceof Generator.NextLongExclusive) {
@@ -159,8 +135,7 @@ public class TracingInterpreter {
             long origin = instruction1.getOrigin();
             long bound = instruction1.getBound();
             //noinspection unchecked
-            return traced(longInterval(origin, bound, true),
-                    (CompiledGenerator<A>) nextLongExclusiveImpl(origin, bound));
+            return traced(generator, (CompiledGenerator<A>) nextLongExclusiveImpl(origin, bound));
         }
 
         if (generator instanceof Generator.NextLongBetween) {
@@ -168,44 +143,31 @@ public class TracingInterpreter {
             long min = instruction1.getMin();
             long max = instruction1.getMax();
             //noinspection unchecked
-            return traced(longInterval(min, max, false),
-                    (CompiledGenerator<A>) nextLongBetweenImpl(min, max));
+            return traced(generator, (CompiledGenerator<A>) nextLongBetweenImpl(min, max));
         }
 
         if (generator instanceof Generator.NextLongIndex) {
             Generator.NextLongIndex instruction1 = (Generator.NextLongIndex) generator;
             long bound = instruction1.getBound();
             //noinspection unchecked
-            return traced(interval("index", 0, bound, true),
-                    (CompiledGenerator<A>) nextLongIndexImpl(bound));
+            return traced(generator, (CompiledGenerator<A>) nextLongIndexImpl(bound));
         }
 
         if (generator instanceof Generator.NextGaussian) {
             //noinspection unchecked
-            return traced(GAUSSIAN, (CompiledGenerator<A>) nextGaussianImpl());
+            return traced(generator, (CompiledGenerator<A>) nextGaussianImpl());
         }
 
         if (generator instanceof Generator.NextBytes) {
             Generator.NextBytes instruction1 = (Generator.NextBytes) generator;
             int count = instruction1.getCount();
             //noinspection unchecked
-            return traced(primitiveMetadata("bytes[ " + count + "]"),
-                    (CompiledGenerator<A>) nextBytesImpl(count));
+            return traced(generator, (CompiledGenerator<A>) nextBytesImpl(count));
         }
 
-        if (generator instanceof Generator.Labeled) {
-            Generator.Labeled instruction1 = (Generator.Labeled) generator;
+        if (generator instanceof Generator.WithMetadata) {
             //noinspection unchecked
-            return traced(StandardMetadata.labeled(instruction1.getLabel()),
-                    (CompiledGenerator<A>) compile(instruction1.getOperand()));
-        }
-
-        if (generator instanceof Generator.AttachApplicationData) {
-            Generator.AttachApplicationData instruction1 = (Generator.AttachApplicationData) generator;
-            StandardMetadata metadata = defaultMetadata().withApplicationData(just(instruction1.getApplicationData()));
-            //noinspection unchecked
-            return traced(metadata,
-                    (CompiledGenerator<A>) compile(instruction1.getOperand()));
+            return traced(generator, (CompiledGenerator<A>) compile(generator));
         }
 
         if (generator instanceof Generator.Sized) {
@@ -226,18 +188,18 @@ public class TracingInterpreter {
     }
 
 
-    private <In, Out> CompiledGenerator<Trace<Out>> handleMapped(Generator.Mapped<In, Out> instruction) {
-        return mappedImpl(t -> trace(instruction.getFn().apply(t.getResult()),
-                FMAP, singletonList(t)),
-                compile(instruction.getOperand()));
+    private <In, Out> CompiledGenerator<Trace<Out>> handleMapped(Generator.Mapped<In, Out> generator) {
+        return mappedImpl(t -> trace(generator.getFn().apply(t.getResult()),
+                generator, singletonList(t)),
+                compile(generator.getOperand()));
     }
 
-    private <In, Out> CompiledGenerator<Trace<Out>> handleFlatMapped(Generator.FlatMapped<In, Out> instruction) {
+    private <In, Out> CompiledGenerator<Trace<Out>> handleFlatMapped(Generator.FlatMapped<In, Out> generator) {
         // TODO: fix this function; it is incorrect
-        CompiledGenerator<Trace<In>> compile = compile(instruction.getOperand());
+        CompiledGenerator<Trace<In>> compile = compile(generator.getOperand());
         return flatMappedImpl(t -> {
                     In r1 = t.getResult();
-                    Generator<Out> apply = instruction.getFn().apply(r1);
+                    Generator<Out> apply = generator.getFn().apply(r1);
 
                     return compile(apply);
                 },
@@ -249,30 +211,30 @@ public class TracingInterpreter {
         return sizedImpl(sizeSelector, rs -> compile(instruction.getFn().apply(rs)));
     }
 
-    private <Elem, Builder, Out> CompiledGenerator<Trace<Out>> handleAggregate(Generator.Aggregate<Elem, Builder, Out> instruction) {
+    private <Elem, Builder, Out> CompiledGenerator<Trace<Out>> handleAggregate(Generator.Aggregate<Elem, Builder, Out> generator) {
         @SuppressWarnings("UnnecessaryLocalVariable")
         AggregateImpl<Trace<Elem>, TraceCollector<Builder>, Trace<Out>> aggregator = aggregateImpl(
-                () -> new TraceCollector<>(instruction.getInitialBuilderSupplier().get()),
+                () -> new TraceCollector<>(generator.getInitialBuilderSupplier().get()),
                 (tc, tracedElem) -> {
-                    tc.state = instruction.getAddFn().apply(tc.state, tracedElem.getResult());
+                    tc.state = generator.getAddFn().apply(tc.state, tracedElem.getResult());
                     tc.traces.add(tracedElem);
                     return tc;
                 },
-                tc -> trace(instruction.getBuildFn().apply(tc.state), AGGREGATE, tc.traces),
-                map(this::compile, instruction.getInstructions()));
+                tc -> trace(generator.getBuildFn().apply(tc.state), generator, tc.traces),
+                map(this::compile, generator.getInstructions()));
         return aggregator;
     }
 
     private <A, B, C, D, E, F, G, H> CompiledGenerator<Trace<Tuple8<A, B, C, D, E, F, G, H>>> handleProduct8(
-            Generator.Product8<A, B, C, D, E, F, G, H> instruction) {
-        CompiledGenerator<Trace<A>> ca = compile(instruction.getA());
-        CompiledGenerator<Trace<B>> cb = compile(instruction.getB());
-        CompiledGenerator<Trace<C>> cc = compile(instruction.getC());
-        CompiledGenerator<Trace<D>> cd = compile(instruction.getD());
-        CompiledGenerator<Trace<E>> ce = compile(instruction.getE());
-        CompiledGenerator<Trace<F>> cf = compile(instruction.getF());
-        CompiledGenerator<Trace<G>> cg = compile(instruction.getG());
-        CompiledGenerator<Trace<H>> ch = compile(instruction.getH());
+            Generator.Product8<A, B, C, D, E, F, G, H> generator) {
+        CompiledGenerator<Trace<A>> ca = compile(generator.getA());
+        CompiledGenerator<Trace<B>> cb = compile(generator.getB());
+        CompiledGenerator<Trace<C>> cc = compile(generator.getC());
+        CompiledGenerator<Trace<D>> cd = compile(generator.getD());
+        CompiledGenerator<Trace<E>> ce = compile(generator.getE());
+        CompiledGenerator<Trace<F>> cf = compile(generator.getF());
+        CompiledGenerator<Trace<G>> cg = compile(generator.getG());
+        CompiledGenerator<Trace<H>> ch = compile(generator.getH());
 
         return customImpl(in -> {
             Result<? extends RandomState, Trace<A>> ra = ca.run(in);
@@ -302,7 +264,7 @@ public class TracingInterpreter {
                     th.getResult());
 
             return result(rh.getNextState(),
-                    trace(tuple, PRODUCT8, asList(ta, tb, tc, td, te, tf, tg, th)));
+                    trace(tuple, generator, asList(ta, tb, tc, td, te, tf, tg, th)));
         });
     }
 
@@ -347,15 +309,4 @@ public class TracingInterpreter {
         }
     }
 
-    private static Metadata intInterval(int min, int max, boolean exclusive) {
-        return interval("int", min, max, exclusive);
-    }
-
-    private static Metadata longInterval(long min, long max, boolean exclusive) {
-        return interval("long", min, max, exclusive);
-    }
-
-    private static Metadata interval(String label, long min, long max, boolean exclusive) {
-        return primitiveMetadata(label + " [" + min + ", " + max + (exclusive ? ")" : "]"));
-    }
 }
