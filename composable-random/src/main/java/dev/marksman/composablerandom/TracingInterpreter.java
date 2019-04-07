@@ -1,7 +1,8 @@
 package dev.marksman.composablerandom;
 
-import com.jnape.palatable.lambda.adt.hlist.Tuple8;
+import com.jnape.palatable.lambda.adt.hlist.*;
 import com.jnape.palatable.lambda.functions.Fn1;
+import dev.marksman.composablerandom.Generator.Product6;
 import dev.marksman.composablerandom.primitives.AggregateImpl;
 
 import java.util.ArrayList;
@@ -178,6 +179,36 @@ public class TracingInterpreter {
             return handleAggregate((Generator.Aggregate) generator);
         }
 
+        if (generator instanceof Generator.Product2) {
+            //noinspection unchecked
+            return handleProduct2((Generator.Product2) generator);
+        }
+
+        if (generator instanceof Generator.Product3) {
+            //noinspection unchecked
+            return handleProduct3((Generator.Product3) generator);
+        }
+
+        if (generator instanceof Generator.Product4) {
+            //noinspection unchecked
+            return handleProduct4((Generator.Product4) generator);
+        }
+
+        if (generator instanceof Generator.Product5) {
+            //noinspection unchecked
+            return handleProduct5((Generator.Product5) generator);
+        }
+
+        if (generator instanceof Generator.Product6) {
+            //noinspection unchecked
+            return handleProduct6((Generator.Product6) generator);
+        }
+
+        if (generator instanceof Generator.Product7) {
+            //noinspection unchecked
+            return handleProduct7((Generator.Product7) generator);
+        }
+
         if (generator instanceof Generator.Product8) {
             //noinspection unchecked
             return handleProduct8((Generator.Product8) generator);
@@ -248,6 +279,186 @@ public class TracingInterpreter {
         return aggregator;
     }
 
+    private <A, B> CompiledGenerator<Trace<Tuple2<A, B>>> handleProduct2(
+            Generator.Product2<A, B> generator) {
+        CompiledGenerator<Trace<A>> ca = compile(generator.getA());
+        CompiledGenerator<Trace<B>> cb = compile(generator.getB());
+
+        return compiledGenerator(in -> {
+            Result<? extends RandomState, Trace<A>> ra = ca.run(in);
+            Result<? extends RandomState, Trace<B>> rb = cb.run(ra.getNextState());
+
+            Trace<A> ta = ra.getValue();
+            Trace<B> tb = rb.getValue();
+
+            return result(rb.getNextState(),
+                    trace(tuple(ta.getResult(),
+                            tb.getResult()),
+                            generator,
+                            asList(ta, tb)));
+        });
+    }
+
+    private <A, B, C> CompiledGenerator<Trace<Tuple3<A, B, C>>> handleProduct3(
+            Generator.Product3<A, B, C> generator) {
+        CompiledGenerator<Trace<A>> ca = compile(generator.getA());
+        CompiledGenerator<Trace<B>> cb = compile(generator.getB());
+        CompiledGenerator<Trace<C>> cc = compile(generator.getC());
+
+        return compiledGenerator(in -> {
+            Result<? extends RandomState, Trace<A>> ra = ca.run(in);
+            Result<? extends RandomState, Trace<B>> rb = cb.run(ra.getNextState());
+            Result<? extends RandomState, Trace<C>> rc = cc.run(rb.getNextState());
+
+            Trace<A> ta = ra.getValue();
+            Trace<B> tb = rb.getValue();
+            Trace<C> tc = rc.getValue();
+
+            return result(rc.getNextState(),
+                    trace(tuple(ta.getResult(),
+                            tb.getResult(),
+                            tc.getResult()),
+                            generator,
+                            asList(ta, tb, tc)));
+        });
+    }
+
+    private <A, B, C, D> CompiledGenerator<Trace<Tuple4<A, B, C, D>>> handleProduct4(
+            Generator.Product4<A, B, C, D> generator) {
+        CompiledGenerator<Trace<A>> ca = compile(generator.getA());
+        CompiledGenerator<Trace<B>> cb = compile(generator.getB());
+        CompiledGenerator<Trace<C>> cc = compile(generator.getC());
+        CompiledGenerator<Trace<D>> cd = compile(generator.getD());
+
+        return compiledGenerator(in -> {
+            Result<? extends RandomState, Trace<A>> ra = ca.run(in);
+            Result<? extends RandomState, Trace<B>> rb = cb.run(ra.getNextState());
+            Result<? extends RandomState, Trace<C>> rc = cc.run(rb.getNextState());
+            Result<? extends RandomState, Trace<D>> rd = cd.run(rc.getNextState());
+
+            Trace<A> ta = ra.getValue();
+            Trace<B> tb = rb.getValue();
+            Trace<C> tc = rc.getValue();
+            Trace<D> td = rd.getValue();
+
+            return result(rd.getNextState(),
+                    trace(tuple(ta.getResult(),
+                            tb.getResult(),
+                            tc.getResult(),
+                            td.getResult()),
+                            generator,
+                            asList(ta, tb, tc, td)));
+        });
+    }
+
+    private <A, B, C, D, E> CompiledGenerator<Trace<Tuple5<A, B, C, D, E>>> handleProduct5(
+            Generator.Product5<A, B, C, D, E> generator) {
+        CompiledGenerator<Trace<A>> ca = compile(generator.getA());
+        CompiledGenerator<Trace<B>> cb = compile(generator.getB());
+        CompiledGenerator<Trace<C>> cc = compile(generator.getC());
+        CompiledGenerator<Trace<D>> cd = compile(generator.getD());
+        CompiledGenerator<Trace<E>> ce = compile(generator.getE());
+
+        return compiledGenerator(in -> {
+            Result<? extends RandomState, Trace<A>> ra = ca.run(in);
+            Result<? extends RandomState, Trace<B>> rb = cb.run(ra.getNextState());
+            Result<? extends RandomState, Trace<C>> rc = cc.run(rb.getNextState());
+            Result<? extends RandomState, Trace<D>> rd = cd.run(rc.getNextState());
+            Result<? extends RandomState, Trace<E>> re = ce.run(rd.getNextState());
+
+            Trace<A> ta = ra.getValue();
+            Trace<B> tb = rb.getValue();
+            Trace<C> tc = rc.getValue();
+            Trace<D> td = rd.getValue();
+            Trace<E> te = re.getValue();
+
+            return result(re.getNextState(),
+                    trace(tuple(ta.getResult(),
+                            tb.getResult(),
+                            tc.getResult(),
+                            td.getResult(),
+                            te.getResult()),
+                            generator,
+                            asList(ta, tb, tc, td, te)));
+        });
+    }
+
+    private <A, B, C, D, E, F> CompiledGenerator<Trace<Tuple6<A, B, C, D, E, F>>> handleProduct6(
+            Product6<A, B, C, D, E, F> generator) {
+        CompiledGenerator<Trace<A>> ca = compile(generator.getA());
+        CompiledGenerator<Trace<B>> cb = compile(generator.getB());
+        CompiledGenerator<Trace<C>> cc = compile(generator.getC());
+        CompiledGenerator<Trace<D>> cd = compile(generator.getD());
+        CompiledGenerator<Trace<E>> ce = compile(generator.getE());
+        CompiledGenerator<Trace<F>> cf = compile(generator.getF());
+
+        return compiledGenerator(in -> {
+            Result<? extends RandomState, Trace<A>> ra = ca.run(in);
+            Result<? extends RandomState, Trace<B>> rb = cb.run(ra.getNextState());
+            Result<? extends RandomState, Trace<C>> rc = cc.run(rb.getNextState());
+            Result<? extends RandomState, Trace<D>> rd = cd.run(rc.getNextState());
+            Result<? extends RandomState, Trace<E>> re = ce.run(rd.getNextState());
+            Result<? extends RandomState, Trace<F>> rf = cf.run(re.getNextState());
+
+            Trace<A> ta = ra.getValue();
+            Trace<B> tb = rb.getValue();
+            Trace<C> tc = rc.getValue();
+            Trace<D> td = rd.getValue();
+            Trace<E> te = re.getValue();
+            Trace<F> tf = rf.getValue();
+
+            return result(rf.getNextState(),
+                    trace(tuple(ta.getResult(),
+                            tb.getResult(),
+                            tc.getResult(),
+                            td.getResult(),
+                            te.getResult(),
+                            tf.getResult()),
+                            generator,
+                            asList(ta, tb, tc, td, te, tf)));
+        });
+    }
+
+    private <A, B, C, D, E, F, G> CompiledGenerator<Trace<Tuple7<A, B, C, D, E, F, G>>> handleProduct7(
+            Generator.Product7<A, B, C, D, E, F, G> generator) {
+        CompiledGenerator<Trace<A>> ca = compile(generator.getA());
+        CompiledGenerator<Trace<B>> cb = compile(generator.getB());
+        CompiledGenerator<Trace<C>> cc = compile(generator.getC());
+        CompiledGenerator<Trace<D>> cd = compile(generator.getD());
+        CompiledGenerator<Trace<E>> ce = compile(generator.getE());
+        CompiledGenerator<Trace<F>> cf = compile(generator.getF());
+        CompiledGenerator<Trace<G>> cg = compile(generator.getG());
+
+        return compiledGenerator(in -> {
+            Result<? extends RandomState, Trace<A>> ra = ca.run(in);
+            Result<? extends RandomState, Trace<B>> rb = cb.run(ra.getNextState());
+            Result<? extends RandomState, Trace<C>> rc = cc.run(rb.getNextState());
+            Result<? extends RandomState, Trace<D>> rd = cd.run(rc.getNextState());
+            Result<? extends RandomState, Trace<E>> re = ce.run(rd.getNextState());
+            Result<? extends RandomState, Trace<F>> rf = cf.run(re.getNextState());
+            Result<? extends RandomState, Trace<G>> rg = cg.run(rf.getNextState());
+
+            Trace<A> ta = ra.getValue();
+            Trace<B> tb = rb.getValue();
+            Trace<C> tc = rc.getValue();
+            Trace<D> td = rd.getValue();
+            Trace<E> te = re.getValue();
+            Trace<F> tf = rf.getValue();
+            Trace<G> tg = rg.getValue();
+
+            return result(rg.getNextState(),
+                    trace(tuple(ta.getResult(),
+                            tb.getResult(),
+                            tc.getResult(),
+                            td.getResult(),
+                            te.getResult(),
+                            tf.getResult(),
+                            tg.getResult()),
+                            generator,
+                            asList(ta, tb, tc, td, te, tf, tg)));
+        });
+    }
+
     private <A, B, C, D, E, F, G, H> CompiledGenerator<Trace<Tuple8<A, B, C, D, E, F, G, H>>> handleProduct8(
             Generator.Product8<A, B, C, D, E, F, G, H> generator) {
         CompiledGenerator<Trace<A>> ca = compile(generator.getA());
@@ -277,17 +488,18 @@ public class TracingInterpreter {
             Trace<F> tf = rf.getValue();
             Trace<G> tg = rg.getValue();
             Trace<H> th = rh.getValue();
-            Tuple8<A, B, C, D, E, F, G, H> tuple = tuple(ta.getResult(),
-                    tb.getResult(),
-                    tc.getResult(),
-                    td.getResult(),
-                    te.getResult(),
-                    tf.getResult(),
-                    tg.getResult(),
-                    th.getResult());
 
             return result(rh.getNextState(),
-                    trace(tuple, generator, asList(ta, tb, tc, td, te, tf, tg, th)));
+                    trace(tuple(ta.getResult(),
+                            tb.getResult(),
+                            tc.getResult(),
+                            td.getResult(),
+                            te.getResult(),
+                            tf.getResult(),
+                            tg.getResult(),
+                            th.getResult()),
+                            generator,
+                            asList(ta, tb, tc, td, te, tf, tg, th)));
         });
     }
 

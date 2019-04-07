@@ -47,5 +47,4 @@ public class Product8Impl<A, B, C, D, E, F, G, H> implements CompiledGenerator<T
         return new Product8Impl<>(a, b, c, d, e, f, g, h);
     }
 
-
 }

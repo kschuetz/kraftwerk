@@ -21,6 +21,12 @@ import static dev.marksman.composablerandom.primitives.NextLongBoundedImpl.nextL
 import static dev.marksman.composablerandom.primitives.NextLongExclusiveImpl.nextLongExclusiveImpl;
 import static dev.marksman.composablerandom.primitives.NextLongImpl.nextLongImpl;
 import static dev.marksman.composablerandom.primitives.NextLongIndexImpl.nextLongIndexImpl;
+import static dev.marksman.composablerandom.primitives.Product2Impl.product2Impl;
+import static dev.marksman.composablerandom.primitives.Product3Impl.product3Impl;
+import static dev.marksman.composablerandom.primitives.Product4Impl.product4Impl;
+import static dev.marksman.composablerandom.primitives.Product5Impl.product5Impl;
+import static dev.marksman.composablerandom.primitives.Product6Impl.product6Impl;
+import static dev.marksman.composablerandom.primitives.Product7Impl.product7Impl;
 import static dev.marksman.composablerandom.primitives.Product8Impl.product8Impl;
 import static dev.marksman.composablerandom.primitives.SizedImpl.sizedImpl;
 
@@ -153,6 +159,63 @@ public class DefaultInterpreter {
             //noinspection unchecked
             return (CompiledGenerator<A>) aggregateImpl(g1.getInitialBuilderSupplier(), g1.getAddFn(),
                     g1.getBuildFn(), map(this::compile, elements));
+        }
+
+        if (generator instanceof Generator.Product2) {
+            Generator.Product2 g1 = (Generator.Product2) generator;
+            //noinspection unchecked
+            return (CompiledGenerator<A>) product2Impl(compile(g1.getA()),
+                    compile(g1.getB()));
+        }
+
+        if (generator instanceof Generator.Product3) {
+            Generator.Product3 g1 = (Generator.Product3) generator;
+            //noinspection unchecked
+            return (CompiledGenerator<A>) product3Impl(compile(g1.getA()),
+                    compile(g1.getB()),
+                    compile(g1.getC()));
+        }
+
+        if (generator instanceof Generator.Product4) {
+            Generator.Product4 g1 = (Generator.Product4) generator;
+            //noinspection unchecked
+            return (CompiledGenerator<A>) product4Impl(compile(g1.getA()),
+                    compile(g1.getB()),
+                    compile(g1.getC()),
+                    compile(g1.getD()));
+        }
+
+        if (generator instanceof Generator.Product5) {
+            Generator.Product5 g1 = (Generator.Product5) generator;
+            //noinspection unchecked
+            return (CompiledGenerator<A>) product5Impl(compile(g1.getA()),
+                    compile(g1.getB()),
+                    compile(g1.getC()),
+                    compile(g1.getD()),
+                    compile(g1.getE()));
+        }
+
+        if (generator instanceof Generator.Product6) {
+            Generator.Product6 g1 = (Generator.Product6) generator;
+            //noinspection unchecked
+            return (CompiledGenerator<A>) product6Impl(compile(g1.getA()),
+                    compile(g1.getB()),
+                    compile(g1.getC()),
+                    compile(g1.getD()),
+                    compile(g1.getE()),
+                    compile(g1.getF()));
+        }
+
+        if (generator instanceof Generator.Product7) {
+            Generator.Product7 g1 = (Generator.Product7) generator;
+            //noinspection unchecked
+            return (CompiledGenerator<A>) product7Impl(compile(g1.getA()),
+                    compile(g1.getB()),
+                    compile(g1.getC()),
+                    compile(g1.getD()),
+                    compile(g1.getE()),
+                    compile(g1.getF()),
+                    compile(g1.getG()));
         }
 
         if (generator instanceof Generator.Product8) {
