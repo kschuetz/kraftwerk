@@ -10,6 +10,7 @@ import java.util.function.Function;
 import static dev.marksman.composablerandom.FrequencyEntry.entry;
 import static dev.marksman.composablerandom.builtin.Generators.generateLongExclusive;
 import static dev.marksman.composablerandom.frequency.FrequencyMap1.checkMultiplier;
+import static dev.marksman.composablerandom.frequency.FrequencyMapN.addLabel;
 import static dev.marksman.composablerandom.frequency.FrequencyMapN.frequencyMapN;
 import static java.util.Arrays.asList;
 
@@ -25,12 +26,12 @@ class FrequencyMap3<A> implements FrequencyMap<A> {
     @Override
     public Generator<A> toGenerator() {
         long thresholdB = weightA + weightB;
-        return generateLongExclusive(weightA + weightB + weightC)
+        return addLabel(generateLongExclusive(weightA + weightB + weightC)
                 .flatMap(n -> n < weightA
                         ? generatorA
                         : n < thresholdB
                         ? generatorB
-                        : generatorC);
+                        : generatorC));
     }
 
     @Override

@@ -34,13 +34,12 @@ class FrequencyMapN<A> implements FrequencyMap<A> {
         long total = 0L;
         TreeMap<Long, Generator<A>> tree = new TreeMap<>();
         for (FrequencyEntry<A> entry : entries) {
-            System.out.println("entry = " + entry);
             total += entry.getWeight();
             tree.put(total, entry.getGenerator());
         }
 
-        return Generators.generateLongExclusive(total)
-                .flatMap(n -> tree.ceilingEntry(1 + n).getValue());
+        return addLabel(Generators.generateLongExclusive(total)
+                .flatMap(n -> tree.ceilingEntry(1 + n).getValue()));
     }
 
     @Override
@@ -72,5 +71,9 @@ class FrequencyMapN<A> implements FrequencyMap<A> {
 
     static <A> FrequencyMapN<A> frequencyMapN(FrequencyEntry<A> first, Iterable<FrequencyEntry<A>> rest) {
         return new FrequencyMapN<>(cons(first, rest));
+    }
+
+    static <A> Generator<A> addLabel(Generator<A> generator) {
+        return generator.labeled("frequency map");
     }
 }

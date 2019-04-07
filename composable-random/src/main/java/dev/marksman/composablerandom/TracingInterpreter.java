@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import static com.jnape.palatable.lambda.adt.hlist.HList.tuple;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Map.map;
 import static dev.marksman.composablerandom.Result.result;
+import static dev.marksman.composablerandom.StandardContext.defaultContext;
 import static dev.marksman.composablerandom.Trace.trace;
 import static dev.marksman.composablerandom.instructions.AggregateImpl.aggregateImpl;
 import static dev.marksman.composablerandom.instructions.ConstantImpl.constantImpl;
@@ -164,7 +165,7 @@ public class TracingInterpreter {
 
         if (generator instanceof Generator.WithMetadata) {
             //noinspection unchecked
-            return traced(generator, (CompiledGenerator<A>) compile(generator));
+            return handleWithMetadata((Generator.WithMetadata) generator);
         }
 
         if (generator instanceof Generator.Sized) {
@@ -222,6 +223,15 @@ public class TracingInterpreter {
 
     }
 
+    private <A> CompiledGenerator<Trace<A>> handleWithMetadata(Generator.WithMetadata<A> generator) {
+        CompiledGenerator<Trace<A>> inner = compile(generator.getOperand());
+        return customImpl(rs -> {
+            Result<? extends RandomState, Trace<A>> run = inner.run(rs);
+            Trace<A> innerTrace = run.getValue();
+            return result(run.getNextState(),
+                    trace(innerTrace.getResult(), generator, singletonList(innerTrace)));
+        });
+    }
 
     private <Elem, Builder, Out> CompiledGenerator<Trace<Out>> handleAggregate(Generator.Aggregate<Elem, Builder, Out> generator) {
         @SuppressWarnings("UnnecessaryLocalVariable")
@@ -288,6 +298,14 @@ public class TracingInterpreter {
             this.traces = new ArrayList<>();
             this.state = state;
         }
+    }
+
+    public static TracingInterpreter tracingInterpreter(Context context) {
+        return new TracingInterpreter(context);
+    }
+
+    public static TracingInterpreter tracingInterpreter() {
+        return tracingInterpreter(defaultContext());
     }
 
 }
