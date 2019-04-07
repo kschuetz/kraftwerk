@@ -10,6 +10,7 @@ import static com.jnape.palatable.lambda.functions.builtin.fn2.Into3.into3;
 import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
 import static dev.marksman.composablerandom.Generator.chooseOneOfValues;
 import static dev.marksman.composablerandom.Generator.generateString;
+import static dev.marksman.composablerandom.MaybeWeights.nothingWeight;
 import static dev.marksman.composablerandom.frequency.FrequencyMap.frequencyMap;
 
 @Value
@@ -54,10 +55,10 @@ public class City {
         static Generator<String> rootName = generateString(part1, part2);
 
         static Generator<City> city =
-                Generator.tupled(prefix.maybe(5, 1)
+                Generator.tupled(prefix.maybe(nothingWeight(5).toJust(1))
                                 .fmap(p -> p.orElse("")),
                         rootName,
-                        suffix.maybe(5, 1)
+                        suffix.maybe(nothingWeight(5).toJust(1))
                                 .fmap(s -> s.orElse("")))
                         .fmap(into3((prefix, root, suffix) -> city(prefix + root + suffix)));
     }

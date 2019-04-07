@@ -11,6 +11,7 @@ import static com.jnape.palatable.lambda.functions.builtin.fn2.Into4.into4;
 import static dev.marksman.composablerandom.FrequencyEntry.entry;
 import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
 import static dev.marksman.composablerandom.Generator.*;
+import static dev.marksman.composablerandom.MaybeWeights.nothingWeight;
 import static java.util.Arrays.asList;
 
 @Value
@@ -60,9 +61,9 @@ public class Name {
 
         static final Generator<Name> name = tupled(
                 first,
-                middle.maybe(6, 1),
+                middle.maybe(nothingWeight(6).toJust(1)),
                 last,
-                suffix.maybe(19, 1)
+                suffix.maybe(nothingWeight(19).toJust(1))
         ).fmap(into4(Name::name));
 
     }

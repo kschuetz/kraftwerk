@@ -89,8 +89,8 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         return generateMaybe(this);
     }
 
-    public final Generator<Maybe<A>> maybe(int nothingWeight, int justWeight) {
-        return generateMaybe(nothingWeight, justWeight, this);
+    public final Generator<Maybe<A>> maybe(MaybeWeights weights) {
+        return generateMaybe(weights, this);
     }
 
     public final <R> Generator<Either<A, R>> left() {
@@ -607,12 +607,8 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         return NextBoolean.INSTANCE;
     }
 
-    public static Generator<Boolean> generateBoolean(int falseWeight, int trueWeight) {
-        return CoProducts.generateBoolean(falseWeight, trueWeight);
-    }
-
-    public static Generator<Boolean> generateBoolean(int trueWeight) {
-        return CoProducts.generateBoolean(trueWeight);
+    public static Generator<Boolean> generateBoolean(BooleanWeights weights) {
+        return CoProducts.generateBoolean(weights);
     }
 
     public static Generator<Double> generateDouble() {
@@ -841,8 +837,8 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         return CoProducts.generateFalse();
     }
 
-    public static <A> Generator<Maybe<A>> generateMaybe(int nothingWeight, int justWeight, Generator<A> g) {
-        return CoProducts.generateMaybe(nothingWeight, justWeight, g);
+    public static <A> Generator<Maybe<A>> generateMaybe(MaybeWeights weights, Generator<A> g) {
+        return CoProducts.generateMaybe(weights, g);
     }
 
     public static <A> Generator<Maybe<A>> generateMaybe(Generator<A> g) {
@@ -857,8 +853,8 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         return CoProducts.generateNothing();
     }
 
-    public static <L, R> Generator<Either<L, R>> generateEither(int leftWeight, int rightWeight, Generator<L> leftGenerator, Generator<R> rightGenerator) {
-        return CoProducts.generateEither(leftWeight, rightWeight, leftGenerator, rightGenerator);
+    public static <L, R> Generator<Either<L, R>> generateEither(EitherWeights weights, Generator<L> leftGenerator, Generator<R> rightGenerator) {
+        return CoProducts.generateEither(weights, leftGenerator, rightGenerator);
     }
 
     public static <L, R> Generator<Either<L, R>> generateEither(Generator<L> leftGenerator, Generator<R> rightGenerator) {

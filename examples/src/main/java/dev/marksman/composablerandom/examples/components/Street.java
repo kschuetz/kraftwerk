@@ -11,6 +11,7 @@ import static dev.marksman.composablerandom.FrequencyEntry.entry;
 import static dev.marksman.composablerandom.FrequencyEntry.entryForValue;
 import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
 import static dev.marksman.composablerandom.Generator.*;
+import static dev.marksman.composablerandom.MaybeWeights.nothingWeight;
 import static dev.marksman.composablerandom.examples.components.City.generateCityRootName;
 
 @Value
@@ -66,7 +67,7 @@ public class Street {
                         entry(2, generateCityRootName()));
 
         static final Generator<Street> street = tupled(
-                generateMaybe(3, 1, compass),
+                compass.maybe(nothingWeight(3).toJust(1)),
                 name,
                 suffix)
                 .fmap(into3(Street::street));
