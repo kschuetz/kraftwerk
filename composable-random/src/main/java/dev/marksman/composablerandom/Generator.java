@@ -325,6 +325,36 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class NextByte extends Generator<Byte> {
+        private static Maybe<String> LABEL = just("byte");
+
+        private static final NextByte INSTANCE = new NextByte();
+
+        @Override
+        public Maybe<String> getLabel() {
+            return LABEL;
+        }
+
+    }
+
+    @EqualsAndHashCode(callSuper = true)
+    @Value
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class NextShort extends Generator<Short> {
+        private static Maybe<String> LABEL = just("short");
+
+        private static final NextShort INSTANCE = new NextShort();
+
+        @Override
+        public Maybe<String> getLabel() {
+            return LABEL;
+        }
+
+    }
+
+    @EqualsAndHashCode(callSuper = true)
+    @Value
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class NextBytes extends Generator<Byte[]> {
         private final int count;
 
@@ -602,6 +632,14 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
 
     public static Generator<Double> generateGaussian() {
         return NextGaussian.INSTANCE;
+    }
+
+    public static Generator<Byte> generateByte() {
+        return NextByte.INSTANCE;
+    }
+
+    public static Generator<Short> generateShort() {
+        return NextShort.INSTANCE;
     }
 
     public static Generator<Byte[]> generateBytes(int count) {

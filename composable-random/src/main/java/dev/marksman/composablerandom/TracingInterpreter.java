@@ -18,6 +18,7 @@ import static dev.marksman.composablerandom.primitives.ConstantImpl.constantImpl
 import static dev.marksman.composablerandom.primitives.CustomImpl.customImpl;
 import static dev.marksman.composablerandom.primitives.MappedImpl.mappedImpl;
 import static dev.marksman.composablerandom.primitives.NextBooleanImpl.nextBooleanImpl;
+import static dev.marksman.composablerandom.primitives.NextByteImpl.nextByteImpl;
 import static dev.marksman.composablerandom.primitives.NextBytesImpl.nextBytesImpl;
 import static dev.marksman.composablerandom.primitives.NextDoubleImpl.nextDoubleImpl;
 import static dev.marksman.composablerandom.primitives.NextFloatImpl.nextFloatImpl;
@@ -32,6 +33,7 @@ import static dev.marksman.composablerandom.primitives.NextLongBoundedImpl.nextL
 import static dev.marksman.composablerandom.primitives.NextLongExclusiveImpl.nextLongExclusiveImpl;
 import static dev.marksman.composablerandom.primitives.NextLongImpl.nextLongImpl;
 import static dev.marksman.composablerandom.primitives.NextLongIndexImpl.nextLongIndexImpl;
+import static dev.marksman.composablerandom.primitives.NextShortImpl.nextShortImpl;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
@@ -156,6 +158,16 @@ public class TracingInterpreter {
         if (generator instanceof Generator.NextGaussian) {
             //noinspection unchecked
             return traced(generator, (CompiledGenerator<A>) nextGaussianImpl());
+        }
+
+        if (generator instanceof Generator.NextByte) {
+            //noinspection unchecked
+            return traced(generator, (CompiledGenerator<A>) nextByteImpl());
+        }
+
+        if (generator instanceof Generator.NextShort) {
+            //noinspection unchecked
+            return traced(generator, (CompiledGenerator<A>) nextShortImpl());
         }
 
         if (generator instanceof Generator.NextBytes) {
