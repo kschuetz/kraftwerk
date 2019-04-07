@@ -24,9 +24,10 @@ public class BenchmarkSandbox {
                 Generators.generateShort(),
                 Generators.tupled(Generators.chooseOneOfValues("foo", "bar", "baz"),
                         Generators.chooseOneFromCollection(asList(1, 2, 3, 4, 5, 6, 7, 8))));
-        Runner.runMark2("tuple", iterations, g);
 
+        Runner.runMark2("tuple", iterations, g);
         Runner.run("tuple", iterations, g);
+        Runner.runTraced("tuple", iterations, g);
     }
 
     private static void sandbox1() {
@@ -73,10 +74,11 @@ public class BenchmarkSandbox {
 
         Runner.runMark2("sandbox3", 100000, g);
         Runner.run("sandbox3", 100000, g);
+        Runner.runTraced("sandbox3", 100000, g);
     }
 
     public static void main(String[] args) {
         runTuples();
-//        sandbox3();
+        sandbox3();
     }
 }
