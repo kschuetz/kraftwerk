@@ -1,15 +1,14 @@
-package dev.marksman.composablerandom.examples.generators;
+package dev.marksman.composablerandom.examples.components;
 
 
 import dev.marksman.composablerandom.Generator;
-import dev.marksman.composablerandom.builtin.Generators;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into3.into3;
 import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
-import static dev.marksman.composablerandom.builtin.Generators.*;
+import static dev.marksman.composablerandom.Generator.*;
 import static dev.marksman.composablerandom.frequency.FrequencyMap.frequencyMap;
 
 @Value
@@ -54,7 +53,7 @@ public class City {
         static Generator<String> rootName = generateString(part1, part2);
 
         static Generator<City> city =
-                Generators.tupled(generateMaybe(5, 1, prefix)
+                Generator.tupled(generateMaybe(5, 1, prefix)
                                 .fmap(p -> p.orElse("")),
                         rootName,
                         generateMaybe(5, 1, suffix)

@@ -1,7 +1,5 @@
-package dev.marksman.composablerandom.builtin;
+package dev.marksman.composablerandom;
 
-import dev.marksman.composablerandom.DiscreteDomain;
-import dev.marksman.composablerandom.Generator;
 import dev.marksman.composablerandom.domain.Characters;
 
 import java.util.ArrayList;
@@ -26,11 +24,11 @@ class Strings {
     }
 
     static Generator<String> generateStringFromCharacters(Generator<Character> g) {
-        return Generators.sized(size -> generateStringFromCharacters(size, g));
+        return Generator.sized(size -> generateStringFromCharacters(size, g));
     }
 
     static Generator<String> generateStringFromCharacters(DiscreteDomain<Character> characters) {
-        return Generators.sized(size -> generateStringFromCharacters(size, Choose.chooseOneFromDomain(characters)));
+        return Generator.sized(size -> generateStringFromCharacters(size, Choose.chooseOneFromDomain(characters)));
     }
 
     static Generator<String> generateStringFromCharacters(int length, Generator<Character> g) {

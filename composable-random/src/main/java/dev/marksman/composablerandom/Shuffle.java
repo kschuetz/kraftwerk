@@ -1,8 +1,4 @@
-package dev.marksman.composablerandom.builtin;
-
-import dev.marksman.composablerandom.DiscreteDomain;
-import dev.marksman.composablerandom.Generator;
-import dev.marksman.composablerandom.RandomState;
+package dev.marksman.composablerandom;
 
 import java.util.ArrayList;
 import java.util.Collection;

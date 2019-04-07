@@ -1,13 +1,11 @@
-package dev.marksman.composablerandom.examples.generators;
+package dev.marksman.composablerandom.examples.components;
 
 import dev.marksman.composablerandom.Generator;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
-import static dev.marksman.composablerandom.Generator.constant;
-import static dev.marksman.composablerandom.builtin.Generators.generateString;
-import static dev.marksman.composablerandom.builtin.Generators.generateStringFromCharacters;
+import static dev.marksman.composablerandom.Generator.*;
 import static dev.marksman.composablerandom.domain.Characters.digits;
 import static dev.marksman.composablerandom.frequency.FrequencyMap.frequencyMap;
 

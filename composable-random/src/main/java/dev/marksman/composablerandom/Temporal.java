@@ -1,10 +1,8 @@
-package dev.marksman.composablerandom.builtin;
-
-import dev.marksman.composablerandom.Generator;
+package dev.marksman.composablerandom;
 
 import java.time.LocalDate;
 
-import static dev.marksman.composablerandom.builtin.Generators.generateLongExclusive;
+import static dev.marksman.composablerandom.Generator.generateLongExclusive;
 import static java.time.temporal.ChronoUnit.DAYS;
 
 class Temporal {

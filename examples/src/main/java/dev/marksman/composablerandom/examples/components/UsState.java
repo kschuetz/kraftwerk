@@ -1,4 +1,4 @@
-package dev.marksman.composablerandom.examples.generators;
+package dev.marksman.composablerandom.examples.components;
 
 import dev.marksman.composablerandom.FrequencyEntry;
 import dev.marksman.composablerandom.Generator;
@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 
 import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
-import static dev.marksman.composablerandom.builtin.Generators.frequency;
+import static dev.marksman.composablerandom.Generator.frequency;
 
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

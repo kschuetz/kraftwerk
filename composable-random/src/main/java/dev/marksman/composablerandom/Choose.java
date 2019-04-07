@@ -1,9 +1,6 @@
-package dev.marksman.composablerandom.builtin;
+package dev.marksman.composablerandom;
 
 import com.jnape.palatable.lambda.functions.builtin.fn3.FoldLeft;
-import dev.marksman.composablerandom.DiscreteDomain;
-import dev.marksman.composablerandom.FrequencyEntry;
-import dev.marksman.composablerandom.Generator;
 import dev.marksman.composablerandom.frequency.FrequencyMap;
 import dev.marksman.composablerandom.frequency.FrequencyMapBuilder;
 
@@ -20,7 +17,7 @@ import static dev.marksman.composablerandom.frequency.FrequencyMap.frequencyMap;
 import static dev.marksman.composablerandom.frequency.FrequencyMapBuilder.frequencyMapBuilder;
 import static java.util.Arrays.asList;
 
-public class Choose {
+class Choose {
 
     @SafeVarargs
     static <A> Generator<A> chooseOneOfValues(A first, A... more) {
@@ -65,7 +62,7 @@ public class Choose {
         if (size == 1) {
             return constant(domain.getValue(0));
         } else {
-            return Primitives.generateLongIndex(size).fmap(domain::getValue);
+            return Generator.generateLongIndex(size).fmap(domain::getValue);
         }
     }
 

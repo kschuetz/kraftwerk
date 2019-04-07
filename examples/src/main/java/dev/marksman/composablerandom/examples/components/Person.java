@@ -1,4 +1,4 @@
-package dev.marksman.composablerandom.examples.generators;
+package dev.marksman.composablerandom.examples.components;
 
 import dev.marksman.composablerandom.Generator;
 import lombok.AccessLevel;
@@ -9,11 +9,9 @@ import java.time.LocalDate;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into3.into3;
 import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
-import static dev.marksman.composablerandom.Generator.generateInt;
-import static dev.marksman.composablerandom.builtin.Generators.generateLocalDateForYear;
-import static dev.marksman.composablerandom.builtin.Generators.tupled;
-import static dev.marksman.composablerandom.examples.generators.Address.generateAddress;
-import static dev.marksman.composablerandom.examples.generators.Name.generateName;
+import static dev.marksman.composablerandom.Generator.*;
+import static dev.marksman.composablerandom.examples.components.Address.generateAddress;
+import static dev.marksman.composablerandom.examples.components.Name.generateName;
 import static dev.marksman.composablerandom.frequency.FrequencyMap.frequencyMap;
 
 @Value

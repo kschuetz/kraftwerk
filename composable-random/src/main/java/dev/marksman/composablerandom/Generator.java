@@ -1,17 +1,26 @@
 package dev.marksman.composablerandom;
 
+import com.jnape.palatable.lambda.adt.Either;
 import com.jnape.palatable.lambda.adt.Maybe;
+import com.jnape.palatable.lambda.adt.Unit;
+import com.jnape.palatable.lambda.adt.choice.*;
 import com.jnape.palatable.lambda.adt.hlist.*;
 import com.jnape.palatable.lambda.functions.Fn1;
 import com.jnape.palatable.lambda.functions.Fn2;
 import com.jnape.palatable.lambda.monad.Monad;
+import dev.marksman.composablerandom.choice.ChoiceBuilder1;
+import dev.marksman.composablerandom.frequency.FrequencyMap;
 import dev.marksman.composablerandom.util.Labeling;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -751,6 +760,304 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
 
     private static void checkCount(int count) {
         if (count < 0) throw new IllegalArgumentException("count must be >= 0");
+    }
+
+    // TODO:  organize these
+
+    public static Generator<Boolean> generateBoolean(int falseWeight, int trueWeight) {
+        return CoProducts.generateBoolean(falseWeight, trueWeight);
+    }
+
+    public static Generator<Boolean> generateBoolean(int trueWeight) {
+        return CoProducts.generateBoolean(trueWeight);
+    }
+
+    public static Generator<String> generateString() {
+        return Strings.generateString();
+    }
+
+    public static Generator<String> generateString(int length, Generator<String> g) {
+        return Strings.generateString(length, g);
+    }
+
+    public static Generator<String> generateStringFromCharacters(int length, Generator<Character> g) {
+        return Strings.generateStringFromCharacters(length, g);
+    }
+
+    public static Generator<String> generateStringFromCharacters(int length, DiscreteDomain<Character> characters) {
+        return Strings.generateStringFromCharacters(length, characters);
+    }
+
+    public static Generator<String> generateStringFromCharacters(Generator<Character> g) {
+        return Strings.generateStringFromCharacters(g);
+    }
+
+    public static Generator<String> generateStringFromCharacters(DiscreteDomain<Character> characters) {
+        return Strings.generateStringFromCharacters(characters);
+    }
+
+    @SafeVarargs
+    public static Generator<String> generateString(Generator<String> first, Generator<String>... more) {
+        return Strings.generateString(first, more);
+    }
+
+    public static Generator<Unit> generateUnit() {
+        return CoProducts.generateUnit();
+    }
+
+    public static Generator<Boolean> generateTrue() {
+        return CoProducts.generateTrue();
+    }
+
+    public static Generator<Boolean> generateFalse() {
+        return CoProducts.generateFalse();
+    }
+
+    public static <A> Generator<Maybe<A>> generateMaybe(int nothingWeight, int justWeight, Generator<A> g) {
+        return CoProducts.generateMaybe(nothingWeight, justWeight, g);
+    }
+
+    public static <A> Generator<Maybe<A>> generateMaybe(int justWeight, Generator<A> g) {
+        return CoProducts.generateMaybe(justWeight, g);
+    }
+
+    public static <A> Generator<Maybe<A>> generateMaybe(Generator<A> g) {
+        return CoProducts.generateMaybe(g);
+    }
+
+    public static <A> Generator<Maybe<A>> generateJust(Generator<A> g) {
+        return CoProducts.generateJust(g);
+    }
+
+    public static <A> Generator<Maybe<A>> generateNothing() {
+        return CoProducts.generateNothing();
+    }
+
+    public static <L, R> Generator<Either<L, R>> generateEither(int leftWeight, int rightWeight, Generator<L> leftGenerator, Generator<R> rightGenerator) {
+        return CoProducts.generateEither(leftWeight, rightWeight, leftGenerator, rightGenerator);
+    }
+
+    public static <L, R> Generator<Either<L, R>> generateEither(int rightWeight, Generator<L> leftGenerator, Generator<R> rightGenerator) {
+        return CoProducts.generateEither(rightWeight, leftGenerator, rightGenerator);
+    }
+
+    public static <L, R> Generator<Either<L, R>> generateEither(Generator<L> leftGenerator, Generator<R> rightGenerator) {
+        return CoProducts.generateEither(leftGenerator, rightGenerator);
+    }
+
+    public static <L, R> Generator<Either<L, R>> generateLeft(Generator<L> g) {
+        return CoProducts.generateLeft(g);
+    }
+
+    public static <L, R> Generator<Either<L, R>> generateRight(Generator<R> g) {
+        return CoProducts.generateRight(g);
+    }
+
+    @SafeVarargs
+    public static <A> Generator<A> chooseOneOf(Generator<A> first, Generator<? extends A>... more) {
+        return Choose.chooseOneOf(first, more);
+    }
+
+    @SafeVarargs
+    public static <A> Generator<A> chooseOneOfValues(A first, A... more) {
+        return Choose.chooseOneOfValues(first, more);
+    }
+
+    @SafeVarargs
+    public static <A> Generator<ArrayList<A>> chooseAtLeastOneOfValues(A first, A... more) {
+        return Choose.chooseAtLeastOneOfValues(first, more);
+    }
+
+    @SafeVarargs
+    public static <A> Generator<ArrayList<A>> chooseAtLeastOneOf(Generator<? extends A> first, Generator<? extends A>... more) {
+        return Choose.chooseAtLeastOneOf(first, more);
+    }
+
+    @SafeVarargs
+    public static <A> Generator<ArrayList<A>> chooseSomeOfValues(A first, A... more) {
+        return Choose.chooseSomeOf(first, more);
+    }
+
+    @SafeVarargs
+    public static <A> Generator<ArrayList<A>> chooseSomeOf(Generator<? extends A> first, Generator<? extends A>... more) {
+        return Choose.chooseSomeOf(first, more);
+    }
+
+    public static <A> Generator<A> chooseOneFromCollection(Collection<A> items) {
+        return Choose.chooseOneFromCollection(items);
+    }
+
+    public static <A> Generator<A> chooseOneFromDomain(DiscreteDomain<A> domain) {
+        return Choose.chooseOneFromDomain(domain);
+    }
+
+    public static <A> Generator<ArrayList<A>> chooseAtLeastOneFromCollection(Collection<A> items) {
+        return Choose.chooseAtLeastOneFromCollection(items);
+    }
+
+    public static <A> Generator<ArrayList<A>> chooseAtLeastOneFromDomain(DiscreteDomain<A> domain) {
+        return Choose.chooseAtLeastOneFromDomain(domain);
+    }
+
+    public static <A> Generator<ArrayList<A>> chooseSomeFromCollection(Collection<A> items) {
+        return Choose.chooseSomeFromDomain(items);
+    }
+
+    public static <A> Generator<ArrayList<A>> chooseSomeFromDomain(DiscreteDomain<A> domain) {
+        return Choose.chooseSomeFromDomain(domain);
+    }
+
+    public static <K, V> Generator<Map.Entry<K, V>> chooseEntryFromMap(Map<K, V> map) {
+        return Choose.chooseEntryFromMap(map);
+    }
+
+    public static <K, V> Generator<K> chooseKeyFromMap(Map<K, V> map) {
+        return Choose.chooseKeyFromMap(map);
+    }
+
+    public static <K, V> Generator<V> chooseValueFromMap(Map<K, V> map) {
+        return Choose.chooseValueFromMap(map);
+    }
+
+    public static <A> Generator<A> frequency(FrequencyMap<A> frequencyMap) {
+        return Choose.frequency(frequencyMap);
+    }
+
+    @SafeVarargs
+    public static <A> Generator<A> frequency(FrequencyEntry<A> first, FrequencyEntry<A>... more) {
+        return Choose.frequency(first, more);
+    }
+
+    public static <A> Generator<A> frequency(Collection<FrequencyEntry<A>> entries) {
+        return Choose.frequency(entries);
+    }
+
+    public static <A> Generator<ArrayList<A>> generateList(Generator<A> g) {
+        return Collections.generateList(g);
+    }
+
+    public static <A> Generator<ArrayList<A>> generateNonEmptyList(Generator<A> g) {
+        return Collections.generateNonEmptyList(g);
+    }
+
+    public static <A> Generator<ArrayList<A>> generateListOfN(int n, Generator<A> g) {
+        return Collections.generateListOfN(n, g);
+    }
+
+    public static <A> Generator<HashSet<A>> generateSet(Generator<A> g) {
+        return Collections.generateSet(g);
+    }
+
+    public static <A> Generator<HashSet<A>> generateNonEmptySet(Generator<A> g) {
+        return Collections.generateNonEmptySet(g);
+    }
+
+    public static <K, V> Generator<Map<K, V>> generateMap(Generator<K> keyGenerator,
+                                                          Generator<V> valueGenerator) {
+        return Collections.generateMap(keyGenerator, valueGenerator);
+    }
+
+    public static <K, V> Generator<Map<K, V>> generateMap(Collection<K> keys,
+                                                          Generator<V> valueGenerator) {
+        return Collections.generateMap(keys, valueGenerator);
+    }
+
+    public static <K, V> Generator<Map<K, V>> generateMap(DiscreteDomain<K> keys,
+                                                          Generator<V> valueGenerator) {
+        return Collections.generateMap(keys, valueGenerator);
+    }
+
+    public static <K, V> Generator<Map<K, V>> generateNonEmptyMap(Generator<K> keyGenerator,
+                                                                  Generator<V> valueGenerator) {
+        return Collections.generateNonEmptyMap(keyGenerator, valueGenerator);
+    }
+
+    public static <A> ChoiceBuilder1<A> choiceBuilder(int weight, Generator<A> firstChoice) {
+        return ChoiceBuilder1.choiceBuilder(weight, firstChoice);
+    }
+
+    public static <A> ChoiceBuilder1<A> choiceBuilder(Generator<A> firstChoice) {
+        return ChoiceBuilder1.choiceBuilder(firstChoice);
+    }
+
+    public static <A> ChoiceBuilder1<A> choiceBuilder(FrequencyEntry<A> firstChoice) {
+        return ChoiceBuilder1.choiceBuilder(firstChoice);
+    }
+
+    public static <A> ChoiceBuilder1<A> choiceBuilderValue(int weight, A firstChoice) {
+        return ChoiceBuilder1.choiceBuilderValue(weight, firstChoice);
+    }
+
+    public static <A> ChoiceBuilder1<A> choiceBuilderValue(A firstChoice) {
+        return ChoiceBuilder1.choiceBuilderValue(firstChoice);
+    }
+
+    public static <A, B> Generator<Choice2<A, B>> generateChoice(FrequencyEntry<A> a,
+                                                                 FrequencyEntry<B> b) {
+        return choiceBuilder(a).or(b).toGenerator();
+    }
+
+    public static <A, B, C> Generator<Choice3<A, B, C>> generateChoice(FrequencyEntry<A> a,
+                                                                       FrequencyEntry<B> b,
+                                                                       FrequencyEntry<C> c) {
+        return choiceBuilder(a).or(b).or(c).toGenerator();
+    }
+
+    public static <A, B, C, D> Generator<Choice4<A, B, C, D>> generateChoice(FrequencyEntry<A> a,
+                                                                             FrequencyEntry<B> b,
+                                                                             FrequencyEntry<C> c,
+                                                                             FrequencyEntry<D> d) {
+        return choiceBuilder(a).or(b).or(c).or(d).toGenerator();
+    }
+
+    public static <A, B, C, D, E> Generator<Choice5<A, B, C, D, E>> generateChoice(FrequencyEntry<A> a,
+                                                                                   FrequencyEntry<B> b,
+                                                                                   FrequencyEntry<C> c,
+                                                                                   FrequencyEntry<D> d,
+                                                                                   FrequencyEntry<E> e) {
+        return choiceBuilder(a).or(b).or(c).or(d).or(e).toGenerator();
+    }
+
+    public static <A, B, C, D, E, F> Generator<Choice6<A, B, C, D, E, F>> generateChoice(FrequencyEntry<A> a,
+                                                                                         FrequencyEntry<B> b,
+                                                                                         FrequencyEntry<C> c,
+                                                                                         FrequencyEntry<D> d,
+                                                                                         FrequencyEntry<E> e,
+                                                                                         FrequencyEntry<F> f) {
+        return choiceBuilder(a).or(b).or(c).or(d).or(e).or(f).toGenerator();
+    }
+
+    public static <A, B, C, D, E, F, G> Generator<Choice7<A, B, C, D, E, F, G>> generateChoice(FrequencyEntry<A> a,
+                                                                                               FrequencyEntry<B> b,
+                                                                                               FrequencyEntry<C> c,
+                                                                                               FrequencyEntry<D> d,
+                                                                                               FrequencyEntry<E> e,
+                                                                                               FrequencyEntry<F> f,
+                                                                                               FrequencyEntry<G> g) {
+        return choiceBuilder(a).or(b).or(c).or(d).or(e).or(f).or(g).toGenerator();
+    }
+
+    public static <A, B, C, D, E, F, G, H> Generator<Choice8<A, B, C, D, E, F, G, H>> generateChoice(FrequencyEntry<A> a,
+                                                                                                     FrequencyEntry<B> b,
+                                                                                                     FrequencyEntry<C> c,
+                                                                                                     FrequencyEntry<D> d,
+                                                                                                     FrequencyEntry<E> e,
+                                                                                                     FrequencyEntry<F> f,
+                                                                                                     FrequencyEntry<G> g,
+                                                                                                     FrequencyEntry<H> h) {
+        return choiceBuilder(a).or(b).or(c).or(d).or(e).or(f).or(g).or(h).toGenerator();
+    }
+
+    public static Generator<LocalDate> generateLocalDate(LocalDate min, LocalDate max) {
+        return Temporal.generateLocalDate(min, max);
+    }
+
+    public static Generator<LocalDate> generateLocalDateExclusive(LocalDate origin, LocalDate bound) {
+        return Temporal.generateLocalDateExclusive(origin, bound);
+    }
+
+    public static Generator<LocalDate> generateLocalDateForYear(int year) {
+        return Temporal.generateLocalDateForYear(year);
     }
 
 }

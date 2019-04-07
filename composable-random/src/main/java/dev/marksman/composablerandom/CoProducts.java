@@ -1,9 +1,8 @@
-package dev.marksman.composablerandom.builtin;
+package dev.marksman.composablerandom;
 
 import com.jnape.palatable.lambda.adt.Either;
 import com.jnape.palatable.lambda.adt.Maybe;
 import com.jnape.palatable.lambda.adt.Unit;
-import dev.marksman.composablerandom.Generator;
 import dev.marksman.composablerandom.frequency.FrequencyMapBuilder;
 
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
@@ -23,7 +22,7 @@ class CoProducts {
         checkWeights("falseWeight", falseWeight,
                 "trueWeight", trueWeight);
         if (trueWeight == falseWeight) {
-            return Primitives.generateBoolean();
+            return Generator.generateBoolean();
         } else {
             return FrequencyMapBuilder.<Boolean>frequencyMapBuilder()
                     .add(falseWeight, generateFalse())

@@ -1,7 +1,4 @@
-package dev.marksman.composablerandom.builtin;
-
-import dev.marksman.composablerandom.DiscreteDomain;
-import dev.marksman.composablerandom.Generator;
+package dev.marksman.composablerandom;
 
 import java.util.*;
 
@@ -36,12 +33,12 @@ class Collections {
 
     static <K, V> Generator<Map<K, V>> generateMap(Generator<K> keyGenerator,
                                                    Generator<V> valueGenerator) {
-        return Generators.sized(n -> generateMapOfN(n, keyGenerator, valueGenerator));
+        return Generator.sized(n -> generateMapOfN(n, keyGenerator, valueGenerator));
     }
 
     static <K, V> Generator<Map<K, V>> generateNonEmptyMap(Generator<K> keyGenerator,
                                                            Generator<V> valueGenerator) {
-        return Generators.sized(n -> generateMapOfN(Math.max(1, n), keyGenerator, valueGenerator));
+        return Generator.sized(n -> generateMapOfN(Math.max(1, n), keyGenerator, valueGenerator));
     }
 
     static <K, V> Generator<Map<K, V>> generateMap(Collection<K> keys,

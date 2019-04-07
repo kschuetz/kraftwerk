@@ -1,9 +1,9 @@
 package dev.marksman.composablerandom.examples;
 
-import dev.marksman.composablerandom.examples.generators.Person;
+import dev.marksman.composablerandom.examples.components.Person;
 
 import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
-import static dev.marksman.composablerandom.examples.generators.Person.generatePerson;
+import static dev.marksman.composablerandom.examples.components.Person.generatePerson;
 
 public class PersonExample {
 

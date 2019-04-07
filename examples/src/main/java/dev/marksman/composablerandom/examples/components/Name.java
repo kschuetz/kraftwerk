@@ -1,4 +1,4 @@
-package dev.marksman.composablerandom.examples.generators;
+package dev.marksman.composablerandom.examples.components;
 
 import com.jnape.palatable.lambda.adt.Maybe;
 import dev.marksman.composablerandom.Generator;
@@ -10,7 +10,7 @@ import lombok.Value;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into4.into4;
 import static dev.marksman.composablerandom.FrequencyEntry.entry;
 import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
-import static dev.marksman.composablerandom.builtin.Generators.*;
+import static dev.marksman.composablerandom.Generator.*;
 import static java.util.Arrays.asList;
 
 @Value

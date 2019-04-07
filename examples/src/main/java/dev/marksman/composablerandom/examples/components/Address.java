@@ -1,4 +1,4 @@
-package dev.marksman.composablerandom.examples.generators;
+package dev.marksman.composablerandom.examples.components;
 
 import com.jnape.palatable.lambda.adt.Maybe;
 import dev.marksman.composablerandom.Generator;
@@ -8,12 +8,11 @@ import lombok.Value;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into.into;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into6.into6;
-import static dev.marksman.composablerandom.Generator.generateInt;
-import static dev.marksman.composablerandom.builtin.Generators.*;
-import static dev.marksman.composablerandom.examples.generators.City.generateCity;
-import static dev.marksman.composablerandom.examples.generators.Street.generateStreet;
-import static dev.marksman.composablerandom.examples.generators.UsState.generateUsState;
-import static dev.marksman.composablerandom.examples.generators.ZipCode.generateZipCode;
+import static dev.marksman.composablerandom.Generator.*;
+import static dev.marksman.composablerandom.examples.components.City.generateCity;
+import static dev.marksman.composablerandom.examples.components.Street.generateStreet;
+import static dev.marksman.composablerandom.examples.components.UsState.generateUsState;
+import static dev.marksman.composablerandom.examples.components.ZipCode.generateZipCode;
 import static dev.marksman.composablerandom.frequency.FrequencyMap.frequencyMap;
 
 @Value

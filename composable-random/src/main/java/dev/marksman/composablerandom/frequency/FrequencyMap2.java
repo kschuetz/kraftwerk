@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 
 import java.util.function.Function;
 
-import static dev.marksman.composablerandom.builtin.Generators.generateLongExclusive;
+import static dev.marksman.composablerandom.Generator.generateLongExclusive;
 import static dev.marksman.composablerandom.frequency.FrequencyMap1.checkMultiplier;
 import static dev.marksman.composablerandom.frequency.FrequencyMap3.frequencyMap3;
 import static dev.marksman.composablerandom.frequency.FrequencyMapN.addLabel;

@@ -4,7 +4,6 @@ import com.jnape.palatable.lambda.adt.hlist.Tuple2;
 import com.jnape.palatable.lambda.adt.hlist.Tuple3;
 import com.jnape.palatable.lambda.functions.Fn1;
 import com.jnape.palatable.lambda.functions.builtin.fn1.Id;
-import dev.marksman.composablerandom.builtin.Generators;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -14,8 +13,8 @@ import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.All.all;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Eq.eq;
 import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
+import static dev.marksman.composablerandom.Generator.*;
 import static dev.marksman.composablerandom.StandardContext.defaultContext;
-import static dev.marksman.composablerandom.builtin.Generators.*;
 import static dev.marksman.composablerandom.random.StandardGen.initStandardGen;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -25,9 +24,9 @@ class GeneratorTest {
     private static final int SEQUENCE_LENGTH = 17;
     private static final DefaultInterpreter interpreter = DefaultInterpreter.defaultInterpreter(defaultContext());
 
-    private static final Generator<Integer> gen1 = Generators.generateInt();
+    private static final Generator<Integer> gen1 = generateInt();
     private static final Generator<Double> gen2 = generateGaussian();
-    private static final Generator<Integer> gen3 = Generators.generateIntExclusive(1, 10);
+    private static final Generator<Integer> gen3 = generateIntExclusive(1, 10);
     private static final Generator<String> gen4 = frequency(FrequencyEntry.entryForValue(3, "foo"),
             FrequencyEntry.entryForValue(7, "bar"));
 

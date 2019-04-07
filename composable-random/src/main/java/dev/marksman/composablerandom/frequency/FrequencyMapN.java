@@ -3,7 +3,6 @@ package dev.marksman.composablerandom.frequency;
 import com.jnape.palatable.lambda.functions.builtin.fn2.Map;
 import dev.marksman.composablerandom.FrequencyEntry;
 import dev.marksman.composablerandom.Generator;
-import dev.marksman.composablerandom.builtin.Generators;
 
 import java.util.TreeMap;
 import java.util.function.Function;
@@ -11,6 +10,7 @@ import java.util.function.Function;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Cons.cons;
 import static com.jnape.palatable.lambda.functions.builtin.fn3.FoldLeft.foldLeft;
 import static dev.marksman.composablerandom.FrequencyEntry.entry;
+import static dev.marksman.composablerandom.Generator.generateLongExclusive;
 import static dev.marksman.composablerandom.frequency.FrequencyMap1.checkMultiplier;
 
 class FrequencyMapN<A> implements FrequencyMap<A> {
@@ -38,7 +38,7 @@ class FrequencyMapN<A> implements FrequencyMap<A> {
             tree.put(total, entry.getGenerator());
         }
 
-        return addLabel(Generators.generateLongExclusive(total)
+        return addLabel(generateLongExclusive(total)
                 .flatMap(n -> tree.ceilingEntry(1 + n).getValue()));
     }
 

@@ -1,4 +1,4 @@
-package dev.marksman.composablerandom.examples.generators;
+package dev.marksman.composablerandom.examples.components;
 
 import com.jnape.palatable.lambda.adt.Maybe;
 import dev.marksman.composablerandom.FrequencyEntry;
@@ -10,8 +10,8 @@ import lombok.Value;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into3.into3;
 import static dev.marksman.composablerandom.FrequencyEntry.entry;
 import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
-import static dev.marksman.composablerandom.builtin.Generators.*;
-import static dev.marksman.composablerandom.examples.generators.City.generateCityRootName;
+import static dev.marksman.composablerandom.Generator.*;
+import static dev.marksman.composablerandom.examples.components.City.generateCityRootName;
 
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

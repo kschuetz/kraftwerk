@@ -4,10 +4,9 @@ import com.jnape.palatable.lambda.adt.hlist.Tuple2;
 import com.jnape.palatable.lambda.adt.hlist.Tuple8;
 import dev.marksman.composablerandom.Generator;
 import dev.marksman.composablerandom.RandomState;
-import dev.marksman.composablerandom.builtin.Generators;
 import dev.marksman.composablerandom.domain.Characters;
 
-import static dev.marksman.composablerandom.builtin.Generators.*;
+import static dev.marksman.composablerandom.Generator.*;
 import static java.util.Arrays.asList;
 
 public class BenchmarkSandbox {
@@ -15,15 +14,15 @@ public class BenchmarkSandbox {
 
     private static void runTuples() {
         int iterations = 500_000;
-        Generator<Tuple8<Integer, Float, Double, Long, Boolean, Byte, Short, Tuple2<String, Integer>>> g = Generators.tupled(generateInt(),
-                Generators.generateFloat(),
-                Generators.generateDouble(),
+        Generator<Tuple8<Integer, Float, Double, Long, Boolean, Byte, Short, Tuple2<String, Integer>>> g = tupled(generateInt(),
+                generateFloat(),
+                generateDouble(),
                 generateLong(),
-                Generators.generateBoolean(),
-                Generators.generateByte(),
-                Generators.generateShort(),
-                Generators.tupled(Generators.chooseOneOfValues("foo", "bar", "baz"),
-                        Generators.chooseOneFromCollection(asList(1, 2, 3, 4, 5, 6, 7, 8))));
+                generateBoolean(),
+                generateByte(),
+                generateShort(),
+                tupled(chooseOneOfValues("foo", "bar", "baz"),
+                        chooseOneFromCollection(asList(1, 2, 3, 4, 5, 6, 7, 8))));
 
         Runner.run("tuple", iterations, g);
         Runner.runTraced("tuple", iterations, g);
@@ -31,13 +30,13 @@ public class BenchmarkSandbox {
 
     private static void sandbox1() {
         Runner.run("int", ITERATIONS, generateInt());
-        Runner.run("float", ITERATIONS, Generators.generateFloat());
-        Runner.run("double", ITERATIONS, Generators.generateDouble());
+        Runner.run("float", ITERATIONS, generateFloat());
+        Runner.run("double", ITERATIONS, generateDouble());
         Runner.run("long", ITERATIONS, generateLong());
-        Runner.run("boolean", ITERATIONS, Generators.generateBoolean());
-        Runner.run("byte", ITERATIONS, Generators.generateByte());
-        Runner.run("short", ITERATIONS, Generators.generateShort());
-        Runner.run("gaussian", ITERATIONS, Generators.generateGaussian());
+        Runner.run("boolean", ITERATIONS, generateBoolean());
+        Runner.run("byte", ITERATIONS, generateByte());
+        Runner.run("short", ITERATIONS, generateShort());
+        Runner.run("gaussian", ITERATIONS, generateGaussian());
         System.out.println("---");
         Runner.runRandomState("nextInt", ITERATIONS, RandomState::nextInt);
         Runner.runRandomState("nextFloat", ITERATIONS, RandomState::nextFloat);
@@ -48,11 +47,11 @@ public class BenchmarkSandbox {
     }
 
     private static void sandbox2() {
-//        Runner.run("int", ITERATIONS, Generators.generateInt());
-//        Runner.run("boolean", ITERATIONS, Generators.generateBoolean());
-//        Runner.run("double", ITERATIONS, Generators.generateDouble());
-//        Runner.run("long", ITERATIONS, Generators.generateLong());
-//        Runner.run("float", ITERATIONS, Generators.generateFloat());
+//        Runner.run("int", ITERATIONS, generateInt());
+//        Runner.run("boolean", ITERATIONS, generateBoolean());
+//        Runner.run("double", ITERATIONS, generateDouble());
+//        Runner.run("long", ITERATIONS, generateLong());
+//        Runner.run("float", ITERATIONS, generateFloat());
     }
 
     private static void sandbox3() {
@@ -67,6 +66,6 @@ public class BenchmarkSandbox {
 
     public static void main(String[] args) {
         runTuples();
-        sandbox3();
+//        sandbox3();
     }
 }
