@@ -1,6 +1,7 @@
 package dev.marksman.composablerandom;
 
 import com.jnape.palatable.lambda.adt.hlist.Tuple8;
+import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.composablerandom.instructions.AggregateImpl;
 
 import java.util.ArrayList;
@@ -12,7 +13,6 @@ import static dev.marksman.composablerandom.Trace.trace;
 import static dev.marksman.composablerandom.instructions.AggregateImpl.aggregateImpl;
 import static dev.marksman.composablerandom.instructions.ConstantImpl.constantImpl;
 import static dev.marksman.composablerandom.instructions.CustomImpl.customImpl;
-import static dev.marksman.composablerandom.instructions.FlatMappedImpl.flatMappedImpl;
 import static dev.marksman.composablerandom.instructions.MappedImpl.mappedImpl;
 import static dev.marksman.composablerandom.instructions.NextBooleanImpl.nextBooleanImpl;
 import static dev.marksman.composablerandom.instructions.NextBytesImpl.nextBytesImpl;
@@ -29,19 +29,16 @@ import static dev.marksman.composablerandom.instructions.NextLongBoundedImpl.nex
 import static dev.marksman.composablerandom.instructions.NextLongExclusiveImpl.nextLongExclusiveImpl;
 import static dev.marksman.composablerandom.instructions.NextLongImpl.nextLongImpl;
 import static dev.marksman.composablerandom.instructions.NextLongIndexImpl.nextLongIndexImpl;
-import static dev.marksman.composablerandom.instructions.SizedImpl.sizedImpl;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
 public class TracingInterpreter {
-    private final SizeSelector sizeSelector;
+    private final CompiledGenerator<Trace<Integer>> sizeGenerator;
 
     private TracingInterpreter(Context context) {
-        this.sizeSelector = SizeSelectors.sizeSelector(context.getSizeParameters());
-    }
-
-    private <A> Result<RandomState, Trace<A>> traceResult(RandomState randomState, Generator<A> generator, A resultValue) {
-        return result(randomState, trace(resultValue, generator));
+        SizeSelector sizeSelector = SizeSelectors.sizeSelector(context.getSizeParameters());
+        this.sizeGenerator = compile(Generator.<Integer>generator(sizeSelector::selectSize)
+                .labeled("sized"));
     }
 
     private <A> Result<RandomState, Trace<A>> traceResult(Generator<A> generator, Result<? extends RandomState, A> resultValue) {
@@ -195,21 +192,36 @@ public class TracingInterpreter {
     }
 
     private <In, Out> CompiledGenerator<Trace<Out>> handleFlatMapped(Generator.FlatMapped<In, Out> generator) {
-        // TODO: fix this function; it is incorrect
-        CompiledGenerator<Trace<In>> compile = compile(generator.getOperand());
-        return flatMappedImpl(t -> {
-                    In r1 = t.getResult();
-                    Generator<Out> apply = generator.getFn().apply(r1);
+        Fn1<? super In, ? extends Generator<Out>> fn = generator.getFn();
+        CompiledGenerator<Trace<In>> g1 = compile(generator.getOperand());
 
-                    return compile(apply);
-                },
-                compile);
+        return customImpl(rs -> {
+            Result<? extends RandomState, Trace<In>> r1 = g1.run(rs);
+            Trace<In> trace1 = r1.getValue();
+            Result<? extends RandomState, Trace<Out>> r2 = compile(fn.apply(trace1.getResult()))
+                    .run(r1.getNextState());
+            Trace<Out> trace2 = r2.getValue();
+            return result(r2.getNextState(),
+                    trace(trace2.getResult(), generator, asList(trace1, trace2)));
+        });
     }
 
-    private <A> CompiledGenerator<Trace<A>> handleSized(Generator.Sized<A> instruction) {
-        // TODO: fix this implementation
-        return sizedImpl(sizeSelector, rs -> compile(instruction.getFn().apply(rs)));
+    private <A> CompiledGenerator<Trace<A>> handleSized(Generator.Sized<A> generator) {
+        Fn1<Integer, Generator<A>> fn = generator.getFn();
+
+        return customImpl(rs -> {
+            Result<? extends RandomState, Trace<Integer>> r1 = sizeGenerator.run(rs);
+            Trace<Integer> sizeTrace = r1.getValue();
+            Generator<A> inner = fn.apply(sizeTrace.getResult());
+            Result<? extends RandomState, Trace<A>> r2 = compile(inner)
+                    .run(r1.getNextState());
+            Trace<A> innerTrace = r2.getValue();
+            return result(r2.getNextState(),
+                    trace(innerTrace.getResult(), inner, asList(sizeTrace, innerTrace)));
+        });
+
     }
+
 
     private <Elem, Builder, Out> CompiledGenerator<Trace<Out>> handleAggregate(Generator.Aggregate<Elem, Builder, Out> generator) {
         @SuppressWarnings("UnnecessaryLocalVariable")
@@ -267,37 +279,6 @@ public class TracingInterpreter {
                     trace(tuple, generator, asList(ta, tb, tc, td, te, tf, tg, th)));
         });
     }
-
-//    private <A, B, C, D, E, F, G, H> CompiledGenerator<Trace<Tuple8<A, B, C, D, E, F, G, H>>> handleProduct8(
-//            Generator.Product8<A, B, C, D, E, F, G, H> instruction) {
-//        CompiledGenerator<Trace<A>> ca = compile(instruction.getA());
-//        CompiledGenerator<Trace<B>> cb = compile(instruction.getB());
-//        CompiledGenerator<Trace<C>> cc = compile(instruction.getC());
-//        CompiledGenerator<Trace<D>> cd = compile(instruction.getD());
-//        CompiledGenerator<Trace<E>> ce = compile(instruction.getE());
-//        CompiledGenerator<Trace<F>> cf = compile(instruction.getF());
-//        CompiledGenerator<Trace<G>> cg = compile(instruction.getG());
-//        CompiledGenerator<Trace<H>> ch = compile(instruction.getH());
-//
-//        Product8Impl<Trace<A>, Trace<B>, Trace<C>, Trace<D>, Trace<E>, Trace<F>, Trace<G>, Trace<H>> tp8 =
-//                product8Impl(ca, cb, cc, cd, ce, cf, cg, ch);
-//
-//        Fn1<RandomState, Result<? extends RandomState, Trace<Tuple8<A, B, C, D, E, F, G, H>>>> fmap = tp8.fmap(r1 -> {
-//            Tuple8<Trace<A>, Trace<B>, Trace<C>, Trace<D>, Trace<E>, Trace<F>, Trace<G>, Trace<H>> value = r1.getValue();
-//            return result(r1.getNextState(),
-//                    trace(tuple(value._1().getResult(),
-//                            value._2().getResult(),
-//                            value._3().getResult(),
-//                            value._4().getResult(),
-//                            value._5().getResult(),
-//                            value._6().getResult(),
-//                            value._7().getResult(),
-//                            value._8().getResult()),
-//                            PRODUCT8,
-//                            asList(value._1(), value._2(), value._3(), value._4(),
-//                                    value._5(), value._6(), value._7(), value._8())));
-//        });
-//    }
 
     private static class TraceCollector<State> {
         ArrayList<Trace<?>> traces;
