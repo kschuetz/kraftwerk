@@ -2,34 +2,35 @@ package dev.marksman.composablerandom;
 
 import com.jnape.palatable.lambda.adt.hlist.Tuple8;
 import com.jnape.palatable.lambda.functions.Fn1;
-import dev.marksman.composablerandom.instructions.AggregateImpl;
+import dev.marksman.composablerandom.primitives.AggregateImpl;
 
 import java.util.ArrayList;
 
 import static com.jnape.palatable.lambda.adt.hlist.HList.tuple;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Map.map;
+import static dev.marksman.composablerandom.CompiledGenerator.compiledGenerator;
 import static dev.marksman.composablerandom.Result.result;
 import static dev.marksman.composablerandom.StandardContext.defaultContext;
 import static dev.marksman.composablerandom.Trace.trace;
-import static dev.marksman.composablerandom.instructions.AggregateImpl.aggregateImpl;
-import static dev.marksman.composablerandom.instructions.ConstantImpl.constantImpl;
-import static dev.marksman.composablerandom.instructions.CustomImpl.customImpl;
-import static dev.marksman.composablerandom.instructions.MappedImpl.mappedImpl;
-import static dev.marksman.composablerandom.instructions.NextBooleanImpl.nextBooleanImpl;
-import static dev.marksman.composablerandom.instructions.NextBytesImpl.nextBytesImpl;
-import static dev.marksman.composablerandom.instructions.NextDoubleImpl.nextDoubleImpl;
-import static dev.marksman.composablerandom.instructions.NextFloatImpl.nextFloatImpl;
-import static dev.marksman.composablerandom.instructions.NextGaussianImpl.nextGaussianImpl;
-import static dev.marksman.composablerandom.instructions.NextIntBetweenImpl.nextIntBetweenImpl;
-import static dev.marksman.composablerandom.instructions.NextIntBoundedImpl.nextIntBoundedImpl;
-import static dev.marksman.composablerandom.instructions.NextIntExclusiveImpl.nextIntExclusiveImpl;
-import static dev.marksman.composablerandom.instructions.NextIntImpl.nextIntImpl;
-import static dev.marksman.composablerandom.instructions.NextIntIndexImpl.nextIntIndexImpl;
-import static dev.marksman.composablerandom.instructions.NextLongBetweenImpl.nextLongBetweenImpl;
-import static dev.marksman.composablerandom.instructions.NextLongBoundedImpl.nextLongBoundedImpl;
-import static dev.marksman.composablerandom.instructions.NextLongExclusiveImpl.nextLongExclusiveImpl;
-import static dev.marksman.composablerandom.instructions.NextLongImpl.nextLongImpl;
-import static dev.marksman.composablerandom.instructions.NextLongIndexImpl.nextLongIndexImpl;
+import static dev.marksman.composablerandom.primitives.AggregateImpl.aggregateImpl;
+import static dev.marksman.composablerandom.primitives.ConstantImpl.constantImpl;
+import static dev.marksman.composablerandom.primitives.CustomImpl.customImpl;
+import static dev.marksman.composablerandom.primitives.MappedImpl.mappedImpl;
+import static dev.marksman.composablerandom.primitives.NextBooleanImpl.nextBooleanImpl;
+import static dev.marksman.composablerandom.primitives.NextBytesImpl.nextBytesImpl;
+import static dev.marksman.composablerandom.primitives.NextDoubleImpl.nextDoubleImpl;
+import static dev.marksman.composablerandom.primitives.NextFloatImpl.nextFloatImpl;
+import static dev.marksman.composablerandom.primitives.NextGaussianImpl.nextGaussianImpl;
+import static dev.marksman.composablerandom.primitives.NextIntBetweenImpl.nextIntBetweenImpl;
+import static dev.marksman.composablerandom.primitives.NextIntBoundedImpl.nextIntBoundedImpl;
+import static dev.marksman.composablerandom.primitives.NextIntExclusiveImpl.nextIntExclusiveImpl;
+import static dev.marksman.composablerandom.primitives.NextIntImpl.nextIntImpl;
+import static dev.marksman.composablerandom.primitives.NextIntIndexImpl.nextIntIndexImpl;
+import static dev.marksman.composablerandom.primitives.NextLongBetweenImpl.nextLongBetweenImpl;
+import static dev.marksman.composablerandom.primitives.NextLongBoundedImpl.nextLongBoundedImpl;
+import static dev.marksman.composablerandom.primitives.NextLongExclusiveImpl.nextLongExclusiveImpl;
+import static dev.marksman.composablerandom.primitives.NextLongImpl.nextLongImpl;
+import static dev.marksman.composablerandom.primitives.NextLongIndexImpl.nextLongIndexImpl;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
@@ -100,24 +101,24 @@ public class TracingInterpreter {
         }
 
         if (generator instanceof Generator.NextIntExclusive) {
-            Generator.NextIntExclusive instruction1 = (Generator.NextIntExclusive) generator;
-            int origin = instruction1.getOrigin();
-            int bound = instruction1.getBound();
+            Generator.NextIntExclusive g1 = (Generator.NextIntExclusive) generator;
+            int origin = g1.getOrigin();
+            int bound = g1.getBound();
             //noinspection unchecked
             return traced(generator, (CompiledGenerator<A>) nextIntExclusiveImpl(origin, bound));
         }
 
         if (generator instanceof Generator.NextIntBetween) {
-            Generator.NextIntBetween instruction1 = (Generator.NextIntBetween) generator;
-            int min = instruction1.getMin();
-            int max = instruction1.getMax();
+            Generator.NextIntBetween g1 = (Generator.NextIntBetween) generator;
+            int min = g1.getMin();
+            int max = g1.getMax();
             //noinspection unchecked
             return traced(generator, (CompiledGenerator<A>) nextIntBetweenImpl(min, max));
         }
 
         if (generator instanceof Generator.NextIntIndex) {
-            Generator.NextIntIndex instruction1 = (Generator.NextIntIndex) generator;
-            int bound = instruction1.getBound();
+            Generator.NextIntIndex g1 = (Generator.NextIntIndex) generator;
+            int bound = g1.getBound();
             //noinspection unchecked
             return traced(generator, (CompiledGenerator<A>) nextIntIndexImpl(bound));
         }
@@ -129,24 +130,24 @@ public class TracingInterpreter {
         }
 
         if (generator instanceof Generator.NextLongExclusive) {
-            Generator.NextLongExclusive instruction1 = (Generator.NextLongExclusive) generator;
-            long origin = instruction1.getOrigin();
-            long bound = instruction1.getBound();
+            Generator.NextLongExclusive g1 = (Generator.NextLongExclusive) generator;
+            long origin = g1.getOrigin();
+            long bound = g1.getBound();
             //noinspection unchecked
             return traced(generator, (CompiledGenerator<A>) nextLongExclusiveImpl(origin, bound));
         }
 
         if (generator instanceof Generator.NextLongBetween) {
-            Generator.NextLongBetween instruction1 = (Generator.NextLongBetween) generator;
-            long min = instruction1.getMin();
-            long max = instruction1.getMax();
+            Generator.NextLongBetween g1 = (Generator.NextLongBetween) generator;
+            long min = g1.getMin();
+            long max = g1.getMax();
             //noinspection unchecked
             return traced(generator, (CompiledGenerator<A>) nextLongBetweenImpl(min, max));
         }
 
         if (generator instanceof Generator.NextLongIndex) {
-            Generator.NextLongIndex instruction1 = (Generator.NextLongIndex) generator;
-            long bound = instruction1.getBound();
+            Generator.NextLongIndex g1 = (Generator.NextLongIndex) generator;
+            long bound = g1.getBound();
             //noinspection unchecked
             return traced(generator, (CompiledGenerator<A>) nextLongIndexImpl(bound));
         }
@@ -157,8 +158,8 @@ public class TracingInterpreter {
         }
 
         if (generator instanceof Generator.NextBytes) {
-            Generator.NextBytes instruction1 = (Generator.NextBytes) generator;
-            int count = instruction1.getCount();
+            Generator.NextBytes g1 = (Generator.NextBytes) generator;
+            int count = g1.getCount();
             //noinspection unchecked
             return traced(generator, (CompiledGenerator<A>) nextBytesImpl(count));
         }
@@ -196,7 +197,7 @@ public class TracingInterpreter {
         Fn1<? super In, ? extends Generator<Out>> fn = generator.getFn();
         CompiledGenerator<Trace<In>> g1 = compile(generator.getOperand());
 
-        return customImpl(rs -> {
+        return compiledGenerator(rs -> {
             Result<? extends RandomState, Trace<In>> r1 = g1.run(rs);
             Trace<In> trace1 = r1.getValue();
             Result<? extends RandomState, Trace<Out>> r2 = compile(fn.apply(trace1.getResult()))
@@ -210,7 +211,7 @@ public class TracingInterpreter {
     private <A> CompiledGenerator<Trace<A>> handleSized(Generator.Sized<A> generator) {
         Fn1<Integer, Generator<A>> fn = generator.getFn();
 
-        return customImpl(rs -> {
+        return compiledGenerator(rs -> {
             Result<? extends RandomState, Trace<Integer>> r1 = sizeGenerator.run(rs);
             Trace<Integer> sizeTrace = r1.getValue();
             Generator<A> inner = fn.apply(sizeTrace.getResult());
@@ -225,7 +226,7 @@ public class TracingInterpreter {
 
     private <A> CompiledGenerator<Trace<A>> handleWithMetadata(Generator.WithMetadata<A> generator) {
         CompiledGenerator<Trace<A>> inner = compile(generator.getOperand());
-        return customImpl(rs -> {
+        return compiledGenerator(rs -> {
             Result<? extends RandomState, Trace<A>> run = inner.run(rs);
             Trace<A> innerTrace = run.getValue();
             return result(run.getNextState(),
@@ -243,7 +244,7 @@ public class TracingInterpreter {
                     return tc;
                 },
                 tc -> trace(generator.getBuildFn().apply(tc.state), generator, tc.traces),
-                map(this::compile, generator.getInstructions()));
+                map(this::compile, generator.getElements()));
         return aggregator;
     }
 
@@ -258,7 +259,7 @@ public class TracingInterpreter {
         CompiledGenerator<Trace<G>> cg = compile(generator.getG());
         CompiledGenerator<Trace<H>> ch = compile(generator.getH());
 
-        return customImpl(in -> {
+        return compiledGenerator(in -> {
             Result<? extends RandomState, Trace<A>> ra = ca.run(in);
             Result<? extends RandomState, Trace<B>> rb = cb.run(ra.getNextState());
             Result<? extends RandomState, Trace<C>> rc = cc.run(rb.getNextState());

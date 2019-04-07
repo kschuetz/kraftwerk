@@ -176,7 +176,7 @@ public class OldInterpreter {
         RandomState current = input;
         B builder = aggregate.getInitialBuilderSupplier().get();
         Fn2<B, A, B> addFn = aggregate.getAddFn();
-        for (Generator<A> generator : aggregate.getInstructions()) {
+        for (Generator<A> generator : aggregate.getElements()) {
             Result<RandomState, A> next = execute(current, generator);
             builder = addFn.apply(builder, next.getValue());
             current = next.getNextState();

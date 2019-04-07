@@ -1,28 +1,28 @@
 package dev.marksman.composablerandom;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Map.map;
-import static dev.marksman.composablerandom.instructions.AggregateImpl.aggregateImpl;
-import static dev.marksman.composablerandom.instructions.ConstantImpl.constantImpl;
-import static dev.marksman.composablerandom.instructions.CustomImpl.customImpl;
-import static dev.marksman.composablerandom.instructions.FlatMappedImpl.flatMappedImpl;
-import static dev.marksman.composablerandom.instructions.MappedImpl.mappedImpl;
-import static dev.marksman.composablerandom.instructions.NextBooleanImpl.nextBooleanImpl;
-import static dev.marksman.composablerandom.instructions.NextBytesImpl.nextBytesImpl;
-import static dev.marksman.composablerandom.instructions.NextDoubleImpl.nextDoubleImpl;
-import static dev.marksman.composablerandom.instructions.NextFloatImpl.nextFloatImpl;
-import static dev.marksman.composablerandom.instructions.NextGaussianImpl.nextGaussianImpl;
-import static dev.marksman.composablerandom.instructions.NextIntBetweenImpl.nextIntBetweenImpl;
-import static dev.marksman.composablerandom.instructions.NextIntBoundedImpl.nextIntBoundedImpl;
-import static dev.marksman.composablerandom.instructions.NextIntExclusiveImpl.nextIntExclusiveImpl;
-import static dev.marksman.composablerandom.instructions.NextIntImpl.nextIntImpl;
-import static dev.marksman.composablerandom.instructions.NextIntIndexImpl.nextIntIndexImpl;
-import static dev.marksman.composablerandom.instructions.NextLongBetweenImpl.nextLongBetweenImpl;
-import static dev.marksman.composablerandom.instructions.NextLongBoundedImpl.nextLongBoundedImpl;
-import static dev.marksman.composablerandom.instructions.NextLongExclusiveImpl.nextLongExclusiveImpl;
-import static dev.marksman.composablerandom.instructions.NextLongImpl.nextLongImpl;
-import static dev.marksman.composablerandom.instructions.NextLongIndexImpl.nextLongIndexImpl;
-import static dev.marksman.composablerandom.instructions.Product8Impl.product8Impl;
-import static dev.marksman.composablerandom.instructions.SizedImpl.sizedImpl;
+import static dev.marksman.composablerandom.primitives.AggregateImpl.aggregateImpl;
+import static dev.marksman.composablerandom.primitives.ConstantImpl.constantImpl;
+import static dev.marksman.composablerandom.primitives.CustomImpl.customImpl;
+import static dev.marksman.composablerandom.primitives.FlatMappedImpl.flatMappedImpl;
+import static dev.marksman.composablerandom.primitives.MappedImpl.mappedImpl;
+import static dev.marksman.composablerandom.primitives.NextBooleanImpl.nextBooleanImpl;
+import static dev.marksman.composablerandom.primitives.NextBytesImpl.nextBytesImpl;
+import static dev.marksman.composablerandom.primitives.NextDoubleImpl.nextDoubleImpl;
+import static dev.marksman.composablerandom.primitives.NextFloatImpl.nextFloatImpl;
+import static dev.marksman.composablerandom.primitives.NextGaussianImpl.nextGaussianImpl;
+import static dev.marksman.composablerandom.primitives.NextIntBetweenImpl.nextIntBetweenImpl;
+import static dev.marksman.composablerandom.primitives.NextIntBoundedImpl.nextIntBoundedImpl;
+import static dev.marksman.composablerandom.primitives.NextIntExclusiveImpl.nextIntExclusiveImpl;
+import static dev.marksman.composablerandom.primitives.NextIntImpl.nextIntImpl;
+import static dev.marksman.composablerandom.primitives.NextIntIndexImpl.nextIntIndexImpl;
+import static dev.marksman.composablerandom.primitives.NextLongBetweenImpl.nextLongBetweenImpl;
+import static dev.marksman.composablerandom.primitives.NextLongBoundedImpl.nextLongBoundedImpl;
+import static dev.marksman.composablerandom.primitives.NextLongExclusiveImpl.nextLongExclusiveImpl;
+import static dev.marksman.composablerandom.primitives.NextLongImpl.nextLongImpl;
+import static dev.marksman.composablerandom.primitives.NextLongIndexImpl.nextLongIndexImpl;
+import static dev.marksman.composablerandom.primitives.Product8Impl.product8Impl;
+import static dev.marksman.composablerandom.primitives.SizedImpl.sizedImpl;
 
 public class DefaultInterpreter {
     private final SizeSelector sizeSelector;
@@ -80,45 +80,45 @@ public class DefaultInterpreter {
         }
 
         if (generator instanceof Generator.NextIntExclusive) {
-            Generator.NextIntExclusive instruction1 = (Generator.NextIntExclusive) generator;
+            Generator.NextIntExclusive g1 = (Generator.NextIntExclusive) generator;
             //noinspection unchecked
-            return (CompiledGenerator<A>) nextIntExclusiveImpl(instruction1.getOrigin(), instruction1.getBound());
+            return (CompiledGenerator<A>) nextIntExclusiveImpl(g1.getOrigin(), g1.getBound());
         }
 
         if (generator instanceof Generator.NextIntBetween) {
-            Generator.NextIntBetween instruction1 = (Generator.NextIntBetween) generator;
+            Generator.NextIntBetween g1 = (Generator.NextIntBetween) generator;
             //noinspection unchecked
-            return (CompiledGenerator<A>) nextIntBetweenImpl(instruction1.getMin(), instruction1.getMax());
+            return (CompiledGenerator<A>) nextIntBetweenImpl(g1.getMin(), g1.getMax());
         }
 
         if (generator instanceof Generator.NextIntIndex) {
-            Generator.NextIntIndex instruction1 = (Generator.NextIntIndex) generator;
+            Generator.NextIntIndex g1 = (Generator.NextIntIndex) generator;
             //noinspection unchecked
-            return (CompiledGenerator<A>) nextIntIndexImpl(instruction1.getBound());
+            return (CompiledGenerator<A>) nextIntIndexImpl(g1.getBound());
         }
 
         if (generator instanceof Generator.NextLongBounded) {
-            Generator.NextLongBounded instruction1 = (Generator.NextLongBounded) generator;
+            Generator.NextLongBounded g1 = (Generator.NextLongBounded) generator;
             //noinspection unchecked
-            return (CompiledGenerator<A>) nextLongBoundedImpl(instruction1.getBound());
+            return (CompiledGenerator<A>) nextLongBoundedImpl(g1.getBound());
         }
 
         if (generator instanceof Generator.NextLongExclusive) {
-            Generator.NextLongExclusive instruction1 = (Generator.NextLongExclusive) generator;
+            Generator.NextLongExclusive g1 = (Generator.NextLongExclusive) generator;
             //noinspection unchecked
-            return (CompiledGenerator<A>) nextLongExclusiveImpl(instruction1.getOrigin(), instruction1.getBound());
+            return (CompiledGenerator<A>) nextLongExclusiveImpl(g1.getOrigin(), g1.getBound());
         }
 
         if (generator instanceof Generator.NextLongBetween) {
-            Generator.NextLongBetween instruction1 = (Generator.NextLongBetween) generator;
+            Generator.NextLongBetween g1 = (Generator.NextLongBetween) generator;
             //noinspection unchecked
-            return (CompiledGenerator<A>) nextLongBetweenImpl(instruction1.getMin(), instruction1.getMax());
+            return (CompiledGenerator<A>) nextLongBetweenImpl(g1.getMin(), g1.getMax());
         }
 
         if (generator instanceof Generator.NextLongIndex) {
-            Generator.NextLongIndex instruction1 = (Generator.NextLongIndex) generator;
+            Generator.NextLongIndex g1 = (Generator.NextLongIndex) generator;
             //noinspection unchecked
-            return (CompiledGenerator<A>) nextLongIndexImpl(instruction1.getBound());
+            return (CompiledGenerator<A>) nextLongIndexImpl(g1.getBound());
         }
 
         if (generator instanceof Generator.NextGaussian) {
@@ -127,45 +127,45 @@ public class DefaultInterpreter {
         }
 
         if (generator instanceof Generator.NextBytes) {
-            Generator.NextBytes instruction1 = (Generator.NextBytes) generator;
+            Generator.NextBytes g1 = (Generator.NextBytes) generator;
             //noinspection unchecked
-            return (CompiledGenerator<A>) nextBytesImpl(instruction1.getCount());
+            return (CompiledGenerator<A>) nextBytesImpl(g1.getCount());
         }
 
         if (generator instanceof Generator.WithMetadata) {
-            Generator.WithMetadata instruction1 = (Generator.WithMetadata) generator;
+            Generator.WithMetadata g1 = (Generator.WithMetadata) generator;
             //noinspection unchecked
-            return compile(instruction1.getOperand());
+            return compile(g1.getOperand());
         }
 
         if (generator instanceof Generator.Sized) {
-            Generator.Sized instruction1 = (Generator.Sized) generator;
+            Generator.Sized g1 = (Generator.Sized) generator;
 
             //noinspection unchecked
-            return sizedImpl(sizeSelector, rs -> compile((Generator<A>) instruction1.getFn().apply(rs)));
+            return sizedImpl(sizeSelector, rs -> compile((Generator<A>) g1.getFn().apply(rs)));
         }
 
         if (generator instanceof Generator.Aggregate) {
-            Generator.Aggregate instruction1 = (Generator.Aggregate) generator;
+            Generator.Aggregate g1 = (Generator.Aggregate) generator;
             //noinspection unchecked
-            Iterable<Generator<A>> instructions = instruction1.getInstructions();
+            Iterable<Generator<A>> elements = g1.getElements();
 
             //noinspection unchecked
-            return (CompiledGenerator<A>) aggregateImpl(instruction1.getInitialBuilderSupplier(), instruction1.getAddFn(),
-                    instruction1.getBuildFn(), map(this::compile, instructions));
+            return (CompiledGenerator<A>) aggregateImpl(g1.getInitialBuilderSupplier(), g1.getAddFn(),
+                    g1.getBuildFn(), map(this::compile, elements));
         }
 
         if (generator instanceof Generator.Product8) {
-            Generator.Product8 instruction1 = (Generator.Product8) generator;
+            Generator.Product8 g1 = (Generator.Product8) generator;
             //noinspection unchecked
-            return (CompiledGenerator<A>) product8Impl(compile(instruction1.getA()),
-                    compile(instruction1.getB()),
-                    compile(instruction1.getC()),
-                    compile(instruction1.getD()),
-                    compile(instruction1.getE()),
-                    compile(instruction1.getF()),
-                    compile(instruction1.getG()),
-                    compile(instruction1.getH()));
+            return (CompiledGenerator<A>) product8Impl(compile(g1.getA()),
+                    compile(g1.getB()),
+                    compile(g1.getC()),
+                    compile(g1.getD()),
+                    compile(g1.getE()),
+                    compile(g1.getF()),
+                    compile(g1.getG()),
+                    compile(g1.getH()));
         }
 
         throw new IllegalStateException("Unimplemented generator");

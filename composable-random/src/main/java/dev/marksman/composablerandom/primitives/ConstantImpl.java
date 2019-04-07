@@ -1,4 +1,4 @@
-package dev.marksman.composablerandom.instructions;
+package dev.marksman.composablerandom.primitives;
 
 import dev.marksman.composablerandom.CompiledGenerator;
 import dev.marksman.composablerandom.RandomState;

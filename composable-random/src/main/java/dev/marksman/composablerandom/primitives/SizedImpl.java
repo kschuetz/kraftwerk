@@ -1,4 +1,4 @@
-package dev.marksman.composablerandom.instructions;
+package dev.marksman.composablerandom.primitives;
 
 import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.composablerandom.CompiledGenerator;

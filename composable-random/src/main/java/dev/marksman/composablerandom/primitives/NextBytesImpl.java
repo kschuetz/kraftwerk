@@ -1,4 +1,4 @@
-package dev.marksman.composablerandom.instructions;
+package dev.marksman.composablerandom.primitives;
 
 import com.jnape.palatable.lambda.adt.Unit;
 import dev.marksman.composablerandom.CompiledGenerator;

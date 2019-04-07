@@ -1,4 +1,4 @@
-package dev.marksman.composablerandom.instructions;
+package dev.marksman.composablerandom.primitives;
 
 import dev.marksman.composablerandom.CompiledGenerator;
 import dev.marksman.composablerandom.RandomState;
@@ -7,16 +7,15 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class NextIntBetweenImpl implements CompiledGenerator<Integer> {
-    private final int min;
-    private final int max;
+public class NextIntBoundedImpl implements CompiledGenerator<Integer> {
+    private final int bound;
 
     @Override
     public Result<? extends RandomState, Integer> run(RandomState input) {
-        return input.nextIntBetween(min, max);
+        return input.nextIntBounded(bound);
     }
 
-    public static NextIntBetweenImpl nextIntBetweenImpl(int min, int max) {
-        return new NextIntBetweenImpl(min, max);
+    public static NextIntBoundedImpl nextIntBoundedImpl(int bound) {
+        return new NextIntBoundedImpl(bound);
     }
 }

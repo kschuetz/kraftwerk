@@ -373,7 +373,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         private final Supplier<Builder> initialBuilderSupplier;
         private final Fn2<Builder, Elem, Builder> addFn;
         private final Fn1<Builder, Out> buildFn;
-        private final Iterable<Generator<Elem>> instructions;
+        private final Iterable<Generator<Elem>> elements;
 
         @Override
         public Maybe<String> getLabel() {
@@ -505,8 +505,8 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     public static <A, Builder, Out> Aggregate<A, Builder, Out> aggregate(Supplier<Builder> initialBuilderSupplier,
                                                                          Fn2<Builder, A, Builder> addFn,
                                                                          Fn1<Builder, Out> buildFn,
-                                                                         Iterable<Generator<A>> instructions) {
-        return new Aggregate<>(initialBuilderSupplier, addFn, buildFn, instructions);
+                                                                         Iterable<Generator<A>> elements) {
+        return new Aggregate<>(initialBuilderSupplier, addFn, buildFn, elements);
     }
 
     public static <Elem, Builder, Out> Generator<Out> aggregate(Supplier<Builder> initialBuilderSupplier,
@@ -518,12 +518,12 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     }
 
     public static <A, C extends Collection<A>> Generator<C> buildCollection(Supplier<C> initialCollectionSupplier,
-                                                                            Iterable<Generator<A>> instructions) {
+                                                                            Iterable<Generator<A>> elements) {
         return new Aggregate<>(initialCollectionSupplier,
                 (collection, item) -> {
                     collection.add(item);
                     return collection;
-                }, id(), instructions);
+                }, id(), elements);
     }
 
     public static <A, C extends Collection<A>> Generator<C> buildCollection(Supplier<C> initialCollectionSupplier,

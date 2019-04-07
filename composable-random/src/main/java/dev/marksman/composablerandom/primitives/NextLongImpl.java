@@ -1,4 +1,4 @@
-package dev.marksman.composablerandom.instructions;
+package dev.marksman.composablerandom.primitives;
 
 import dev.marksman.composablerandom.CompiledGenerator;
 import dev.marksman.composablerandom.RandomState;
@@ -7,15 +7,16 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class NextLongIndexImpl implements CompiledGenerator<Long> {
-    private final long bound;
+public class NextLongImpl implements CompiledGenerator<Long> {
+    private static NextLongImpl INSTANCE = new NextLongImpl();
 
     @Override
     public Result<? extends RandomState, Long> run(RandomState input) {
-        return input.nextLongBounded(bound);
+        return input.nextLong();
     }
 
-    public static NextLongIndexImpl nextLongIndexImpl(long bound) {
-        return new NextLongIndexImpl(bound);
+    public static NextLongImpl nextLongImpl() {
+        return INSTANCE;
     }
+
 }

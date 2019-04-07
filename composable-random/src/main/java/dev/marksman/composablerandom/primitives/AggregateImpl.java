@@ -1,4 +1,4 @@
-package dev.marksman.composablerandom.instructions;
+package dev.marksman.composablerandom.primitives;
 
 import com.jnape.palatable.lambda.functions.Fn1;
 import com.jnape.palatable.lambda.functions.Fn2;
@@ -17,15 +17,15 @@ public class AggregateImpl<Elem, Builder, Out> implements CompiledGenerator<Out>
     private final Supplier<Builder> initialBuilderSupplier;
     private final Fn2<Builder, Elem, Builder> addFn;
     private final Fn1<Builder, Out> buildFn;
-    private final Iterable<CompiledGenerator<Elem>> instructions;
+    private final Iterable<CompiledGenerator<Elem>> elements;
 
     @Override
     public Result<? extends RandomState, Out> run(RandomState input) {
         RandomState current = input;
         Builder builder = initialBuilderSupplier.get();
 
-        for (CompiledGenerator<Elem> instruction : instructions) {
-            Result<? extends RandomState, Elem> next = instruction.run(current);
+        for (CompiledGenerator<Elem> element : elements) {
+            Result<? extends RandomState, Elem> next = element.run(current);
             builder = addFn.apply(builder, next.getValue());
             current = next.getNextState();
         }
@@ -36,7 +36,7 @@ public class AggregateImpl<Elem, Builder, Out> implements CompiledGenerator<Out>
             Supplier<Builder> initialBuilderSupplier,
             Fn2<Builder, Elem, Builder> addFn,
             Fn1<Builder, Out> buildFn,
-            Iterable<CompiledGenerator<Elem>> instructions) {
-        return new AggregateImpl<>(initialBuilderSupplier, addFn, buildFn, instructions);
+            Iterable<CompiledGenerator<Elem>> elements) {
+        return new AggregateImpl<>(initialBuilderSupplier, addFn, buildFn, elements);
     }
 }

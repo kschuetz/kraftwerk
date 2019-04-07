@@ -1,4 +1,4 @@
-package dev.marksman.composablerandom.instructions;
+package dev.marksman.composablerandom.primitives;
 
 import dev.marksman.composablerandom.CompiledGenerator;
 import dev.marksman.composablerandom.RandomState;
@@ -7,15 +7,15 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class NextGaussianImpl implements CompiledGenerator<Double> {
-    private static NextGaussianImpl INSTANCE = new NextGaussianImpl();
+public class NextDoubleImpl implements CompiledGenerator<Double> {
+    private static NextDoubleImpl INSTANCE = new NextDoubleImpl();
 
     @Override
     public Result<? extends RandomState, Double> run(RandomState input) {
-        return input.nextGaussian();
+        return input.nextDouble();
     }
 
-    public static NextGaussianImpl nextGaussianImpl() {
+    public static NextDoubleImpl nextDoubleImpl() {
         return INSTANCE;
     }
 }
