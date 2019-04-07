@@ -60,9 +60,9 @@ public class Name {
 
         static final Generator<Name> name = tupled(
                 first,
-                generateMaybe(6, 1, middle),
+                middle.maybe(6, 1),
                 last,
-                generateMaybe(19, 1, suffix)
+                suffix.maybe(19, 1)
         ).fmap(into4(Name::name));
 
     }
@@ -74,8 +74,6 @@ public class Name {
     public static void main(String[] args) {
         streamFrom(generateNonEmptyMap(generateInt(0, 255), generateName().fmap(Name::pretty)))
                 .next(100).forEach(System.out::println);
-
-//        streamFrom(generateName().fmap(Name::getFullName)).next(100).forEach(System.out::println);
     }
 
 }

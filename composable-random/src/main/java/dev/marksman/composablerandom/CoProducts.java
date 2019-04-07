@@ -54,12 +54,8 @@ class CoProducts {
                 .toGenerator();
     }
 
-    static <A> Generator<Maybe<A>> generateMaybe(int justWeight, Generator<A> g) {
-        return generateMaybe(justWeight, 1, g);
-    }
-
     static <A> Generator<Maybe<A>> generateMaybe(Generator<A> g) {
-        return generateMaybe(9, g);
+        return generateMaybe(1, 9, g);
     }
 
     static <A> Generator<Maybe<A>> generateJust(Generator<A> g) {
@@ -81,12 +77,8 @@ class CoProducts {
                 .toGenerator();
     }
 
-    static <L, R> Generator<Either<L, R>> generateEither(int rightWeight, Generator<L> leftGenerator, Generator<R> rightGenerator) {
-        return generateEither(1, rightWeight, leftGenerator, rightGenerator);
-    }
-
     static <L, R> Generator<Either<L, R>> generateEither(Generator<L> leftGenerator, Generator<R> rightGenerator) {
-        return generateEither(9, leftGenerator, rightGenerator);
+        return generateEither(1, 9, leftGenerator, rightGenerator);
     }
 
     static <L, R> Generator<Either<L, R>> generateLeft(Generator<L> g) {

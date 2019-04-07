@@ -1,7 +1,6 @@
 package dev.marksman.composablerandom.examples.components;
 
 import com.jnape.palatable.lambda.adt.Maybe;
-import dev.marksman.composablerandom.FrequencyEntry;
 import dev.marksman.composablerandom.Generator;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -9,6 +8,7 @@ import lombok.Value;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into3.into3;
 import static dev.marksman.composablerandom.FrequencyEntry.entry;
+import static dev.marksman.composablerandom.FrequencyEntry.entryForValue;
 import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
 import static dev.marksman.composablerandom.Generator.*;
 import static dev.marksman.composablerandom.examples.components.City.generateCityRootName;
@@ -51,13 +51,13 @@ public class Street {
                 chooseOneOfValues("Oak", "Maple", "Elm", "Pine", "Spruce", "Sycamore", "Birch", "Apple", "Peach");
 
         static final Generator<String> suffix =
-                frequency(FrequencyEntry.entryForValue(10, "St."),
-                        FrequencyEntry.entryForValue(7, "Ave."),
-                        FrequencyEntry.entryForValue(5, "Rd."),
-                        FrequencyEntry.entryForValue(3, "Dr."),
-                        FrequencyEntry.entryForValue(3, "La."),
-                        FrequencyEntry.entryForValue(2, "Blvd."),
-                        FrequencyEntry.entryForValue(1, "Ct."));
+                frequency(entryForValue(10, "St."),
+                        entryForValue(7, "Ave."),
+                        entryForValue(5, "Rd."),
+                        entryForValue(3, "Dr."),
+                        entryForValue(3, "La."),
+                        entryForValue(2, "Blvd."),
+                        entryForValue(1, "Ct."));
 
         static final Generator<String> name =
                 frequency(entry(3, ordinal),

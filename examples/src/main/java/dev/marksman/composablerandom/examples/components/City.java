@@ -8,7 +8,8 @@ import lombok.Value;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into3.into3;
 import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
-import static dev.marksman.composablerandom.Generator.*;
+import static dev.marksman.composablerandom.Generator.chooseOneOfValues;
+import static dev.marksman.composablerandom.Generator.generateString;
 import static dev.marksman.composablerandom.frequency.FrequencyMap.frequencyMap;
 
 @Value
@@ -53,10 +54,10 @@ public class City {
         static Generator<String> rootName = generateString(part1, part2);
 
         static Generator<City> city =
-                Generator.tupled(generateMaybe(5, 1, prefix)
+                Generator.tupled(prefix.maybe(5, 1)
                                 .fmap(p -> p.orElse("")),
                         rootName,
-                        generateMaybe(5, 1, suffix)
+                        suffix.maybe(5, 1)
                                 .fmap(s -> s.orElse("")))
                         .fmap(into3((prefix, root, suffix) -> city(prefix + root + suffix)));
     }

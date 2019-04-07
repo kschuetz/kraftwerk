@@ -24,12 +24,33 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.jnape.palatable.lambda.adt.Maybe.*;
+import static com.jnape.palatable.lambda.adt.Maybe.nothing;
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Replicate.replicate;
 
 public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerator<A> {
     private Generator() {
+    }
+
+    @Override
+    public final <B> Generator<B> fmap(Function<? super A, ? extends B> fn) {
+        return mapped(fn, this);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public final <B> Generator<B> flatMap(Function<? super A, ? extends Monad<B, Generator<?>>> f) {
+        return flatMapped((Function<? super A, ? extends Generator<B>>) f, this);
+    }
+
+    @Override
+    public final <B> Generator<B> pure(B b) {
+        return constant(b);
+    }
+
+    @Override
+    public final Generator<A> toGenerator() {
+        return this;
     }
 
     public Maybe<String> getLabel() {
@@ -45,39 +66,54 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     }
 
     public final Generator<A> labeled(String label) {
-        return withMetadata(maybe(label), this.getApplicationData(), this);
+        return withMetadata(Maybe.maybe(label), this.getApplicationData(), this);
     }
 
     public final Generator<A> attachApplicationData(Object applicationData) {
-        return withMetadata(getLabel(), maybe(applicationData), this);
+        return withMetadata(getLabel(), Maybe.maybe(applicationData), this);
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public final <B> Generator<B> flatMap(Function<? super A, ? extends Monad<B, Generator<?>>> f) {
-        return flatMapped((Function<? super A, ? extends Generator<B>>) f, this);
+    public final Generator<Tuple2<A, A>> pair() {
+        return tupled(this, this);
     }
 
-    @Override
-    public final <B> Generator<B> fmap(Function<? super A, ? extends B> fn) {
-        return mapped(fn, this);
+    public final Generator<Tuple3<A, A, A>> triple() {
+        return tupled(this, this, this);
     }
 
-    @Override
-    public final <B> Generator<B> pure(B b) {
-        return constant(b);
+    public final Generator<Maybe<A>> just() {
+        return generateJust(this);
     }
 
-    @Override
-    public final Generator<A> toGenerator() {
-        return this;
+    public final Generator<Maybe<A>> maybe() {
+        return generateMaybe(this);
+    }
+
+    public final Generator<Maybe<A>> maybe(int nothingWeight, int justWeight) {
+        return generateMaybe(nothingWeight, justWeight, this);
+    }
+
+    public final <R> Generator<Either<A, R>> left() {
+        return CoProducts.generateLeft(this);
+    }
+
+    public final <L> Generator<Either<L, A>> right() {
+        return CoProducts.generateRight(this);
+    }
+
+    public final Generator<ArrayList<A>> list() {
+        return generateList(this);
+    }
+
+    public final Generator<ArrayList<A>> listOfN(int count) {
+        return generateListOfN(count, this);
     }
 
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Constant<A> extends Generator<A> {
-        private static Maybe<String> LABEL = just("constant");
+        private static Maybe<String> LABEL = Maybe.just("constant");
 
         private final A value;
 
@@ -91,9 +127,14 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Custom<A> extends Generator<A> {
-        private static Maybe<String> LABEL = just("custom");
+        private static Maybe<String> LABEL = Maybe.just("custom");
 
         private final Fn1<? super RandomState, Result<RandomState, A>> fn;
+
+        @Override
+        public boolean isPrimitive() {
+            return false;
+        }
 
         @Override
         public Maybe<String> getLabel() {
@@ -105,7 +146,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Mapped<In, A> extends Generator<A> {
-        private static Maybe<String> LABEL = just("fmap");
+        private static Maybe<String> LABEL = Maybe.just("fmap");
 
         private final Fn1<In, A> fn;
         private final Generator<In> operand;
@@ -121,7 +162,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class FlatMapped<In, A> extends Generator<A> {
-        private static Maybe<String> LABEL = just("flatMap");
+        private static Maybe<String> LABEL = Maybe.just("flatMap");
 
         private final Fn1<? super In, ? extends Generator<A>> fn;
         private final Generator<In> operand;
@@ -137,7 +178,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class NextBoolean extends Generator<Boolean> {
-        private static Maybe<String> LABEL = just("boolean");
+        private static Maybe<String> LABEL = Maybe.just("boolean");
 
         private static final NextBoolean INSTANCE = new NextBoolean();
 
@@ -152,7 +193,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class NextDouble extends Generator<Double> {
-        private static Maybe<String> LABEL = just("double");
+        private static Maybe<String> LABEL = Maybe.just("double");
 
         private static final NextDouble INSTANCE = new NextDouble();
 
@@ -167,7 +208,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class NextFloat extends Generator<Float> {
-        private static Maybe<String> LABEL = just("float");
+        private static Maybe<String> LABEL = Maybe.just("float");
 
         private static final NextFloat INSTANCE = new NextFloat();
 
@@ -182,7 +223,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class NextInt extends Generator<Integer> {
-        private static Maybe<String> LABEL = just("int");
+        private static Maybe<String> LABEL = Maybe.just("int");
 
         private static final NextInt INSTANCE = new NextInt();
 
@@ -201,7 +242,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
 
         @Override
         public Maybe<String> getLabel() {
-            return just(Labeling.intInterval(0, bound, true));
+            return Maybe.just(Labeling.intInterval(0, bound, true));
         }
 
     }
@@ -215,7 +256,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
 
         @Override
         public Maybe<String> getLabel() {
-            return just(Labeling.intInterval(origin, bound, true));
+            return Maybe.just(Labeling.intInterval(origin, bound, true));
         }
 
     }
@@ -229,7 +270,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
 
         @Override
         public Maybe<String> getLabel() {
-            return just(Labeling.intInterval(min, max, false));
+            return Maybe.just(Labeling.intInterval(min, max, false));
         }
 
     }
@@ -242,7 +283,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
 
         @Override
         public Maybe<String> getLabel() {
-            return just(Labeling.interval("index", 0, bound, true));
+            return Maybe.just(Labeling.interval("index", 0, bound, true));
         }
 
     }
@@ -251,7 +292,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class NextLong extends Generator<Long> {
-        private static Maybe<String> LABEL = just("long");
+        private static Maybe<String> LABEL = Maybe.just("long");
 
         private static final NextLong INSTANCE = new NextLong();
 
@@ -270,7 +311,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
 
         @Override
         public Maybe<String> getLabel() {
-            return just(Labeling.longInterval(0, bound, true));
+            return Maybe.just(Labeling.longInterval(0, bound, true));
         }
 
     }
@@ -284,7 +325,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
 
         @Override
         public Maybe<String> getLabel() {
-            return just(Labeling.longInterval(origin, bound, true));
+            return Maybe.just(Labeling.longInterval(origin, bound, true));
         }
 
     }
@@ -298,7 +339,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
 
         @Override
         public Maybe<String> getLabel() {
-            return just(Labeling.longInterval(min, max, false));
+            return Maybe.just(Labeling.longInterval(min, max, false));
         }
 
     }
@@ -311,7 +352,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
 
         @Override
         public Maybe<String> getLabel() {
-            return just(Labeling.longInterval(0, bound, true));
+            return Maybe.just(Labeling.longInterval(0, bound, true));
         }
 
     }
@@ -320,7 +361,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class NextGaussian extends Generator<Double> {
-        private static Maybe<String> LABEL = just("gaussian");
+        private static Maybe<String> LABEL = Maybe.just("gaussian");
 
         private static final NextGaussian INSTANCE = new NextGaussian();
 
@@ -335,7 +376,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class NextByte extends Generator<Byte> {
-        private static Maybe<String> LABEL = just("byte");
+        private static Maybe<String> LABEL = Maybe.just("byte");
 
         private static final NextByte INSTANCE = new NextByte();
 
@@ -350,7 +391,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class NextShort extends Generator<Short> {
-        private static Maybe<String> LABEL = just("short");
+        private static Maybe<String> LABEL = Maybe.just("short");
 
         private static final NextShort INSTANCE = new NextShort();
 
@@ -369,7 +410,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
 
         @Override
         public Maybe<String> getLabel() {
-            return just("bytes[" + count + "]");
+            return Maybe.just("bytes[" + count + "]");
         }
 
     }
@@ -378,7 +419,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Sized<A> extends Generator<A> {
-        private static Maybe<String> LABEL = just("sized");
+        private static Maybe<String> LABEL = Maybe.just("sized");
 
         private final Fn1<Integer, Generator<A>> fn;
 
@@ -407,7 +448,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Aggregate<Elem, Builder, Out> extends Generator<Out> {
-        private static Maybe<String> LABEL = just("aggregate");
+        private static Maybe<String> LABEL = Maybe.just("aggregate");
 
         private final Supplier<Builder> initialBuilderSupplier;
         private final Fn2<Builder, Elem, Builder> addFn;
@@ -425,7 +466,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Product2<A, B> extends Generator<Tuple2<A, B>> {
-        private static Maybe<String> LABEL = just("product2");
+        private static Maybe<String> LABEL = Maybe.just("product2");
 
         private final Generator<A> a;
         private final Generator<B> b;
@@ -441,7 +482,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Product3<A, B, C> extends Generator<Tuple3<A, B, C>> {
-        private static Maybe<String> LABEL = just("product3");
+        private static Maybe<String> LABEL = Maybe.just("product3");
 
         private final Generator<A> a;
         private final Generator<B> b;
@@ -458,7 +499,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Product4<A, B, C, D> extends Generator<Tuple4<A, B, C, D>> {
-        private static Maybe<String> LABEL = just("product4");
+        private static Maybe<String> LABEL = Maybe.just("product4");
 
         private final Generator<A> a;
         private final Generator<B> b;
@@ -476,7 +517,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Product5<A, B, C, D, E> extends Generator<Tuple5<A, B, C, D, E>> {
-        private static Maybe<String> LABEL = just("product5");
+        private static Maybe<String> LABEL = Maybe.just("product5");
 
         private final Generator<A> a;
         private final Generator<B> b;
@@ -495,7 +536,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Product6<A, B, C, D, E, F> extends Generator<Tuple6<A, B, C, D, E, F>> {
-        private static Maybe<String> LABEL = just("product6");
+        private static Maybe<String> LABEL = Maybe.just("product6");
 
         private final Generator<A> a;
         private final Generator<B> b;
@@ -515,7 +556,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Product7<A, B, C, D, E, F, G> extends Generator<Tuple7<A, B, C, D, E, F, G>> {
-        private static Maybe<String> LABEL = just("product7");
+        private static Maybe<String> LABEL = Maybe.just("product7");
 
         private final Generator<A> a;
         private final Generator<B> b;
@@ -536,7 +577,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Product8<A, B, C, D, E, F, G, H> extends Generator<Tuple8<A, B, C, D, E, F, G, H>> {
-        private static Maybe<String> LABEL = just("product8");
+        private static Maybe<String> LABEL = Maybe.just("product8");
 
         private final Generator<A> a;
         private final Generator<B> b;
@@ -554,15 +595,6 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
 
     }
 
-    private static <A> Generator<A> withMetadata(Maybe<String> label, Maybe<Object> applicationData, Generator<A> operand) {
-        if (operand instanceof WithMetadata) {
-            WithMetadata<A> target1 = (WithMetadata<A>) operand;
-            return new WithMetadata<>(label, applicationData, target1.getOperand());
-        } else {
-            return new WithMetadata<>(label, applicationData, operand);
-        }
-    }
-
     public static <A> Generator<A> constant(A a) {
         return new Constant<>(a);
     }
@@ -571,24 +603,42 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         return new Custom<A>(fn::apply);
     }
 
-    private static <A, B> Generator<B> mapped(Function<? super A, ? extends B> fn, Generator<A> operand) {
-        return new Mapped<>(fn::apply, operand);
-    }
-
-    private static <A, B> Generator<B> flatMapped(Function<? super A, ? extends Generator<B>> fn, Generator<A> operand) {
-        return new FlatMapped<>(fn::apply, operand);
-    }
-
     public static Generator<Boolean> generateBoolean() {
         return NextBoolean.INSTANCE;
+    }
+
+    public static Generator<Boolean> generateBoolean(int falseWeight, int trueWeight) {
+        return CoProducts.generateBoolean(falseWeight, trueWeight);
+    }
+
+    public static Generator<Boolean> generateBoolean(int trueWeight) {
+        return CoProducts.generateBoolean(trueWeight);
     }
 
     public static Generator<Double> generateDouble() {
         return NextDouble.INSTANCE;
     }
 
+    public static Generator<Double> generateDouble(double scale) {
+        return generateDouble().fmap(n -> n * scale);
+    }
+
+    public static Generator<Double> generateDouble(double min, double max) {
+        double scale = max - min;
+        return generateDouble().fmap(n -> min + n * scale);
+    }
+
     public static Generator<Float> generateFloat() {
         return NextFloat.INSTANCE;
+    }
+
+    public static Generator<Float> generateFloat(float scale) {
+        return generateFloat().fmap(n -> n * scale);
+    }
+
+    public static Generator<Float> generateFloat(float min, float max) {
+        float scale = max - min;
+        return generateFloat().fmap(n -> min + n * scale);
     }
 
     public static Generator<Integer> generateInt() {
@@ -639,16 +689,16 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         return new NextLongIndex(bound);
     }
 
-    public static Generator<Double> generateGaussian() {
-        return NextGaussian.INSTANCE;
-    }
-
     public static Generator<Byte> generateByte() {
         return NextByte.INSTANCE;
     }
 
     public static Generator<Short> generateShort() {
         return NextShort.INSTANCE;
+    }
+
+    public static Generator<Double> generateGaussian() {
+        return NextGaussian.INSTANCE;
     }
 
     public static Generator<Byte[]> generateBytes(int count) {
@@ -746,31 +796,9 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         return new Product8<>(a, b, c, d, e, f, g, h);
     }
 
-    private static void checkBound(long bound) {
-        if (bound < 1) throw new IllegalArgumentException("bound must be > 0");
-    }
-
-    private static void checkOriginBound(long origin, long bound) {
-        if (origin >= bound) throw new IllegalArgumentException("bound must be > origin");
-    }
-
-    private static void checkMinMax(long min, long max) {
-        if (min > max) throw new IllegalArgumentException("max must be >= min");
-    }
-
-    private static void checkCount(int count) {
-        if (count < 0) throw new IllegalArgumentException("count must be >= 0");
-    }
 
     // TODO:  organize these
 
-    public static Generator<Boolean> generateBoolean(int falseWeight, int trueWeight) {
-        return CoProducts.generateBoolean(falseWeight, trueWeight);
-    }
-
-    public static Generator<Boolean> generateBoolean(int trueWeight) {
-        return CoProducts.generateBoolean(trueWeight);
-    }
 
     public static Generator<String> generateString() {
         return Strings.generateString();
@@ -817,10 +845,6 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         return CoProducts.generateMaybe(nothingWeight, justWeight, g);
     }
 
-    public static <A> Generator<Maybe<A>> generateMaybe(int justWeight, Generator<A> g) {
-        return CoProducts.generateMaybe(justWeight, g);
-    }
-
     public static <A> Generator<Maybe<A>> generateMaybe(Generator<A> g) {
         return CoProducts.generateMaybe(g);
     }
@@ -835,10 +859,6 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
 
     public static <L, R> Generator<Either<L, R>> generateEither(int leftWeight, int rightWeight, Generator<L> leftGenerator, Generator<R> rightGenerator) {
         return CoProducts.generateEither(leftWeight, rightWeight, leftGenerator, rightGenerator);
-    }
-
-    public static <L, R> Generator<Either<L, R>> generateEither(int rightWeight, Generator<L> leftGenerator, Generator<R> rightGenerator) {
-        return CoProducts.generateEither(rightWeight, leftGenerator, rightGenerator);
     }
 
     public static <L, R> Generator<Either<L, R>> generateEither(Generator<L> leftGenerator, Generator<R> rightGenerator) {
@@ -1058,6 +1078,39 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
 
     public static Generator<LocalDate> generateLocalDateForYear(int year) {
         return Temporal.generateLocalDateForYear(year);
+    }
+
+    private static <A, B> Generator<B> mapped(Function<? super A, ? extends B> fn, Generator<A> operand) {
+        return new Mapped<>(fn::apply, operand);
+    }
+
+    private static <A, B> Generator<B> flatMapped(Function<? super A, ? extends Generator<B>> fn, Generator<A> operand) {
+        return new FlatMapped<>(fn::apply, operand);
+    }
+
+    private static <A> Generator<A> withMetadata(Maybe<String> label, Maybe<Object> applicationData, Generator<A> operand) {
+        if (operand instanceof WithMetadata) {
+            WithMetadata<A> target1 = (WithMetadata<A>) operand;
+            return new WithMetadata<>(label, applicationData, target1.getOperand());
+        } else {
+            return new WithMetadata<>(label, applicationData, operand);
+        }
+    }
+
+    private static void checkBound(long bound) {
+        if (bound < 1) throw new IllegalArgumentException("bound must be > 0");
+    }
+
+    private static void checkOriginBound(long origin, long bound) {
+        if (origin >= bound) throw new IllegalArgumentException("bound must be > origin");
+    }
+
+    private static void checkMinMax(long min, long max) {
+        if (min > max) throw new IllegalArgumentException("max must be >= min");
+    }
+
+    private static void checkCount(int count) {
+        if (count < 0) throw new IllegalArgumentException("count must be >= 0");
     }
 
 }

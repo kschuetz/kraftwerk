@@ -63,7 +63,7 @@ public class Address {
         static Generator<Address> address =
                 tupled(number,
                         generateStreet(),
-                        generateMaybe(4, 1, unit),
+                        unit.maybe(4, 1),
                         generateCity(),
                         generateUsState(),
                         generateZipCode())
