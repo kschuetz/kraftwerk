@@ -25,21 +25,11 @@ public class BenchmarkSandbox {
                 Generators.tupled(Generators.chooseOneOfValues("foo", "bar", "baz"),
                         Generators.chooseOneFromCollection(asList(1, 2, 3, 4, 5, 6, 7, 8))));
 
-        Runner.runMark2("tuple", iterations, g);
         Runner.run("tuple", iterations, g);
         Runner.runTraced("tuple", iterations, g);
     }
 
     private static void sandbox1() {
-        Runner.runMark2("int", ITERATIONS, generateInt());
-        Runner.runMark2("float", ITERATIONS, Generators.generateFloat());
-        Runner.runMark2("double", ITERATIONS, Generators.generateDouble());
-        Runner.runMark2("long", ITERATIONS, generateLong());
-        Runner.runMark2("boolean", ITERATIONS, Generators.generateBoolean());
-        Runner.runMark2("byte", ITERATIONS, Generators.generateByte());
-        Runner.runMark2("short", ITERATIONS, Generators.generateShort());
-        Runner.runMark2("gaussian", ITERATIONS, Generators.generateGaussian());
-        System.out.println("---");
         Runner.run("int", ITERATIONS, generateInt());
         Runner.run("float", ITERATIONS, Generators.generateFloat());
         Runner.run("double", ITERATIONS, Generators.generateDouble());
@@ -63,7 +53,6 @@ public class BenchmarkSandbox {
 //        Runner.run("double", ITERATIONS, Generators.generateDouble());
 //        Runner.run("long", ITERATIONS, Generators.generateLong());
 //        Runner.run("float", ITERATIONS, Generators.generateFloat());
-        Runner.runMark2("int exclusive", ITERATIONS, Generators.generateIntExclusive(65537));
     }
 
     private static void sandbox3() {
@@ -72,7 +61,6 @@ public class BenchmarkSandbox {
                 .flatMap(l -> generateString(l.intValue() & 31,
                         generateStringFromCharacters(Characters.alphaLower())));
 
-        Runner.runMark2("sandbox3", 100000, g);
         Runner.run("sandbox3", 100000, g);
         Runner.runTraced("sandbox3", 100000, g);
     }
