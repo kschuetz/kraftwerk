@@ -11,6 +11,7 @@ import dev.marksman.composablerandom.Generator;
 import dev.marksman.composablerandom.choice.ChoiceBuilder1;
 import dev.marksman.composablerandom.frequency.FrequencyMap;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -101,6 +102,10 @@ public class Generators {
 
     public static Generator<String> generateStringFromCharacters(int length, Generator<Character> g) {
         return Strings.generateStringFromCharacters(length, g);
+    }
+
+    public static Generator<String> generateStringFromCharacters(int length, DiscreteDomain<Character> characters) {
+        return Strings.generateStringFromCharacters(length, characters);
     }
 
     public static Generator<String> generateStringFromCharacters(Generator<Character> g) {
@@ -211,13 +216,13 @@ public class Generators {
     }
 
     @SafeVarargs
-    public static <A> Generator<A> chooseOneOfValues(A first, A... more) {
-        return Choose.chooseOneOfValues(first, more);
+    public static <A> Generator<A> chooseOneOf(Generator<A> first, Generator<? extends A>... more) {
+        return Choose.chooseOneOf(first, more);
     }
 
     @SafeVarargs
-    public static <A> Generator<A> chooseOneOfValues(Generator<? extends A> first, Generator<? extends A>... more) {
-        return Choose.chooseOneOf(first, more);
+    public static <A> Generator<A> chooseOneOfValues(A first, A... more) {
+        return Choose.chooseOneOfValues(first, more);
     }
 
     @SafeVarargs
@@ -408,4 +413,17 @@ public class Generators {
                                                                                                      FrequencyEntry<H> h) {
         return choiceBuilder(a).or(b).or(c).or(d).or(e).or(f).or(g).or(h).toGenerator();
     }
+
+    public static Generator<LocalDate> generateLocalDate(LocalDate min, LocalDate max) {
+        return Temporal.generateLocalDate(min, max);
+    }
+
+    public static Generator<LocalDate> generateLocalDateExclusive(LocalDate origin, LocalDate bound) {
+        return Temporal.generateLocalDateExclusive(origin, bound);
+    }
+
+    public static Generator<LocalDate> generateLocalDateForYear(int year) {
+        return Temporal.generateLocalDateForYear(year);
+    }
+
 }

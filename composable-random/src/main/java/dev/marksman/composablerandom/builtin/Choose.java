@@ -13,8 +13,10 @@ import java.util.Map;
 import java.util.Set;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Cons.cons;
+import static com.jnape.palatable.lambda.functions.builtin.fn3.FoldLeft.foldLeft;
 import static dev.marksman.composablerandom.Generator.constant;
 import static dev.marksman.composablerandom.domain.Choices.choices;
+import static dev.marksman.composablerandom.frequency.FrequencyMap.frequencyMap;
 import static dev.marksman.composablerandom.frequency.FrequencyMapBuilder.frequencyMapBuilder;
 import static java.util.Arrays.asList;
 
@@ -29,8 +31,8 @@ public class Choose {
     }
 
     @SafeVarargs
-    static <A> Generator<A> chooseOneOf(Generator<? extends A> first, Generator<? extends A>... more) {
-        return null;
+    static <A> Generator<A> chooseOneOf(Generator<A> first, Generator<? extends A>... more) {
+        return foldLeft(FrequencyMap::add, frequencyMap(first), asList(more)).toGenerator();
     }
 
     @SafeVarargs

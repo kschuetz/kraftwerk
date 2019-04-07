@@ -1,4 +1,4 @@
-package dev.marksman.composablerandom.examples;
+package dev.marksman.composablerandom.examples.generators;
 
 import com.jnape.palatable.lambda.adt.Maybe;
 import dev.marksman.composablerandom.FrequencyEntry;
@@ -9,8 +9,9 @@ import lombok.Value;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into3.into3;
 import static dev.marksman.composablerandom.FrequencyEntry.entry;
+import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
 import static dev.marksman.composablerandom.builtin.Generators.*;
-import static dev.marksman.composablerandom.legacy.OldGeneratedStream.streamFrom;
+import static dev.marksman.composablerandom.examples.generators.City.generateCityRootName;
 
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -19,22 +20,22 @@ public class Street {
     private final String name;
     private final String suffix;
 
-    public String getFullName() {
+    public String pretty() {
         return compass.match(__ -> "", s -> s + " ")
                 + name
                 + " " + suffix;
     }
 
-    public static final Street street(Maybe<String> compass, String name, String suffix) {
+    public static Street street(Maybe<String> compass, String name, String suffix) {
         return new Street(compass, name, suffix);
     }
 
-    private static class Generators {
-        private static final Generator<String> compass =
+    private static class generators {
+        static final Generator<String> compass =
                 frequency(entry(8, chooseOneOfValues("N.", "S.", "W.", "E.")),
                         entry(1, chooseOneOfValues("NW", "NE", "SW", "SE")));
 
-        private static final Generator<String> ordinal =
+        static final Generator<String> ordinal =
                 generateInt(1, 99).fmap(n -> {
                     if (n == 11) return "11th";
                     else if (n % 10 == 1) return n + "st";
@@ -43,13 +44,13 @@ public class Street {
                     else return n + "th";
                 });
 
-        private static final Generator<String> president =
+        static final Generator<String> president =
                 chooseOneOfValues("Washington", "Adams", "Jefferson", "Madison", "Monroe", "Lincoln");
 
-        private static final Generator<String> tree =
+        static final Generator<String> tree =
                 chooseOneOfValues("Oak", "Maple", "Elm", "Pine", "Spruce", "Sycamore", "Birch", "Apple", "Peach");
 
-        private static final Generator<String> suffix =
+        static final Generator<String> suffix =
                 frequency(FrequencyEntry.entryForValue(10, "St."),
                         FrequencyEntry.entryForValue(7, "Ave."),
                         FrequencyEntry.entryForValue(5, "Rd."),
@@ -58,12 +59,13 @@ public class Street {
                         FrequencyEntry.entryForValue(2, "Blvd."),
                         FrequencyEntry.entryForValue(1, "Ct."));
 
-        private static final Generator<String> name =
+        static final Generator<String> name =
                 frequency(entry(3, ordinal),
                         entry(2, tree),
-                        entry(2, president));
+                        entry(2, president),
+                        entry(2, generateCityRootName()));
 
-        private static final Generator<Street> street = tupled(
+        static final Generator<Street> street = tupled(
                 generateMaybe(3, 1, compass),
                 name,
                 suffix)
@@ -71,10 +73,10 @@ public class Street {
     }
 
     public static Generator<Street> generateStreet() {
-        return Generators.street;
+        return generators.street;
     }
 
     public static void main(String[] args) {
-        streamFrom(generateStreet().fmap(Street::getFullName)).next(100).forEach(System.out::println);
+        streamFrom(generateStreet().fmap(Street::pretty)).next(100).forEach(System.out::println);
     }
 }

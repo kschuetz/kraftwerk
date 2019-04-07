@@ -1,4 +1,4 @@
-package dev.marksman.composablerandom.examples;
+package dev.marksman.composablerandom.examples.generators;
 
 import com.jnape.palatable.lambda.adt.Maybe;
 import dev.marksman.composablerandom.Generator;
@@ -9,8 +9,8 @@ import lombok.Value;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into4.into4;
 import static dev.marksman.composablerandom.FrequencyEntry.entry;
+import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
 import static dev.marksman.composablerandom.builtin.Generators.*;
-import static dev.marksman.composablerandom.legacy.OldGeneratedStream.streamFrom;
 import static java.util.Arrays.asList;
 
 @Value
@@ -21,7 +21,7 @@ public class Name {
     private final String last;
     private final Maybe<String> suffix;
 
-    public String getFullName() {
+    public String pretty() {
         return first +
                 middle.match(__ -> "", s -> " " + s)
                 + " " + last
@@ -32,23 +32,23 @@ public class Name {
         return new Name(first, middle, last, suffix);
     }
 
-    private static class Generators {
-        private static final Generator<String> initial = chooseOneFromDomain(Characters.alphaUpper()).fmap(c -> c + ".");
+    private static class generators {
+        static final Generator<String> initial = chooseOneFromDomain(Characters.alphaUpper()).fmap(c -> c + ".");
 
-        private static final Generator<String> givenNames =
+        static final Generator<String> givenNames =
                 chooseOneOfValues("Alice", "Barbara", "Bart", "Billy", "Bobby", "Carol", "Cindy", "Elizabeth",
                         "Eric", "George", "Greg", "Homer", "James", "Jan", "John", "Kenny", "Kyle", "Linda", "Lisa",
                         "Maggie", "Marcia", "Marge", "Mary", "Mike", "Oliver", "Patricia", "Peter", "Stan");
 
-        private static final Generator<String> first =
+        static final Generator<String> first =
                 frequency(entry(15, givenNames),
                         entry(1, initial));
 
-        private static final Generator<String> middle =
+        static final Generator<String> middle =
                 frequency(entry(1, givenNames),
                         entry(5, initial));
 
-        private static final Generator<String> last =
+        static final Generator<String> last =
                 chooseOneFromCollection(asList(
                         "Allen", "Anderson", "Brown", "Clark", "Davis", "Foobar", "Garcia", "Hall", "Harris",
                         "Hernandez", "Jackson", "Johnson", "Jones", "King", "Lee", "Lewis", "Lopez", "Martin",
@@ -56,9 +56,9 @@ public class Name {
                         "Thomas", "Thompson", "Walker", "White", "Williams", "Wilson", "Wright", "Young"
                 ));
 
-        private static final Generator<String> suffix = chooseOneOfValues("Jr.", "III", "Sr.");
+        static final Generator<String> suffix = chooseOneOfValues("Jr.", "III", "Sr.");
 
-        private static final Generator<Name> name = tupled(
+        static final Generator<Name> name = tupled(
                 first,
                 generateMaybe(6, 1, middle),
                 last,
@@ -68,11 +68,11 @@ public class Name {
     }
 
     public static Generator<Name> generateName() {
-        return Generators.name;
+        return generators.name;
     }
 
     public static void main(String[] args) {
-        streamFrom(generateNonEmptyMap(generateInt(0, 255), generateName().fmap(Name::getFullName)))
+        streamFrom(generateNonEmptyMap(generateInt(0, 255), generateName().fmap(Name::pretty)))
                 .next(100).forEach(System.out::println);
 
 //        streamFrom(generateName().fmap(Name::getFullName)).next(100).forEach(System.out::println);

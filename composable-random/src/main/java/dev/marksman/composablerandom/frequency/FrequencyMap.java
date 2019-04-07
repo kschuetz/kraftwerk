@@ -53,6 +53,10 @@ public interface FrequencyMap<A> extends ToGenerator<A> {
         return frequencyMap1(weight1, constant(value1));
     }
 
+    static <A> FrequencyMap<A> frequencyMap(Generator<A> generator1) {
+        return frequencyMap1(1, generator1);
+    }
+
     static <A> FrequencyMap<A> frequencyMap(FrequencyEntry<A> entry) {
         return frequencyMap1(entry._1(), entry._2());
     }

@@ -42,6 +42,10 @@ class Strings {
         }
     }
 
+    static Generator<String> generateStringFromCharacters(int length, DiscreteDomain<Character> characters) {
+        return generateStringFromCharacters(length, Choose.chooseOneFromDomain(characters));
+    }
+
     @SafeVarargs
     static Generator<String> generateString(Generator<String> first, Generator<String>... more) {
         if (more.length == 0) return first;

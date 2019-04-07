@@ -1,4 +1,4 @@
-package dev.marksman.composablerandom.examples;
+package dev.marksman.composablerandom.examples.generators;
 
 import dev.marksman.composablerandom.FrequencyEntry;
 import dev.marksman.composablerandom.Generator;
@@ -6,8 +6,8 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
+import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
 import static dev.marksman.composablerandom.builtin.Generators.frequency;
-import static dev.marksman.composablerandom.legacy.OldGeneratedStream.streamFrom;
 
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -18,7 +18,11 @@ public class UsState {
         return new UsState(code);
     }
 
-    private static class Generators {
+    public String pretty() {
+        return code;
+    }
+
+    private static class generators {
         private static final Generator<UsState> usState = frequency(
                 FrequencyEntry.entryForValue(39, "CA"), FrequencyEntry.entryForValue(28, "TX"), FrequencyEntry.entryForValue(21, "FL"),
                 FrequencyEntry.entryForValue(19, "NY"), FrequencyEntry.entryForValue(12, "PA"), FrequencyEntry.entryForValue(12, "IL"),
@@ -41,7 +45,7 @@ public class UsState {
     }
 
     public static Generator<UsState> generateUsState() {
-        return Generators.usState;
+        return generators.usState;
     }
 
     public static void main(String[] args) {
