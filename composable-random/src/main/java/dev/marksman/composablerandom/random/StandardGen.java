@@ -133,6 +133,11 @@ public final class StandardGen implements RandomState {
         if (origin >= bound) {
             throw new IllegalArgumentException("bound must be greater than origin");
         }
+
+        if (origin < 0 && bound > 0 && bound > Math.abs(origin - Long.MIN_VALUE)) {
+            return nextLongExclusiveWithOverflow(origin, bound);
+        }
+
         long n = bound - origin;
         long m = n - 1;
 
@@ -170,6 +175,17 @@ public final class StandardGen implements RandomState {
         } else {
             return nextLongExclusive(min, max + 1);
         }
+    }
+
+    private Result<StandardGen, Long> nextLongExclusiveWithOverflow(long origin, long bound) {
+        Result<StandardGen, Long> result = nextLong();
+        long value = result.getValue();
+        // since we are covering more than half the range of longs, this loop shouldn't take too long
+        while (value < origin || value >= bound) {
+            result = result.getNextState().nextLong();
+            value = result.getValue();
+        }
+        return result;
     }
 
     @Override

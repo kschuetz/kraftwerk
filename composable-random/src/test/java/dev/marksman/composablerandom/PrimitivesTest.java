@@ -59,16 +59,15 @@ class PrimitivesTest {
         assertForAll(generateLong(0, 1), n -> n == 0 || n == 1);
         assertForAll(generateLong(-1, 1), n -> n >= -1 && n <= 1);
         assertForAll(generateLong(-1, 1), n -> n >= -1 && n <= 1);
-        // TODO: infinite loop in next test case
-//        assertForAll(generateLong(Long.MIN_VALUE, 0L), lte(0L));
-//        assertForAll(generateLong(Long.MIN_VALUE, -1), lt(0L));
-//        assertForAll(generateLong(0, Long.MAX_VALUE), gte(0L));
-//        assertForAll(generateLong(0, Long.MAX_VALUE), gte(0L));
-//        assertForAll(generateLong().flatMap(lowerBound ->
-//                        generateLong(lowerBound, Long.MAX_VALUE)
-//                                .flatMap(upperBound -> generateLong(lowerBound, upperBound)
-//                                        .fmap(n -> n >= lowerBound && n <= upperBound))),
-//                id());
+        assertForAll(generateLong(Long.MIN_VALUE, 0L), lte(0L));
+        assertForAll(generateLong(Long.MIN_VALUE, -1), lt(0L));
+        assertForAll(generateLong(0, Long.MAX_VALUE), gte(0L));
+        assertForAll(generateLong(0, Long.MAX_VALUE), gte(0L));
+        assertForAll(generateLong().flatMap(lowerBound ->
+                        generateLong(lowerBound, Long.MAX_VALUE)
+                                .flatMap(upperBound -> generateLong(lowerBound, upperBound)
+                                        .fmap(n -> n >= lowerBound && n <= upperBound))),
+                id());
 
     }
 
