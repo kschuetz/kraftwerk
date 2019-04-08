@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -1062,6 +1063,18 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
                                                                                                      FrequencyEntry<G> g,
                                                                                                      FrequencyEntry<H> h) {
         return choiceBuilder(a).or(b).or(c).or(d).or(e).or(f).or(g).or(h).toGenerator();
+    }
+
+    public static Generator<BigInteger> generateBigInteger(BigInteger min, BigInteger max) {
+        return BigNumbers.generateBigInteger(min, max);
+    }
+
+    public static Generator<BigInteger> generateBigIntegerExclusive(BigInteger bound) {
+        return BigNumbers.generateBigIntegerExclusive(bound);
+    }
+
+    public static Generator<BigInteger> generateBigIntegerExclusive(BigInteger origin, BigInteger bound) {
+        return BigNumbers.generateBigIntegerExclusive(origin, bound);
     }
 
     public static Generator<LocalDate> generateLocalDate(LocalDate min, LocalDate max) {
