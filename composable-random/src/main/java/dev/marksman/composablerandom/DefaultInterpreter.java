@@ -32,14 +32,9 @@ import static dev.marksman.composablerandom.primitives.Product7Impl.product7Impl
 import static dev.marksman.composablerandom.primitives.Product8Impl.product8Impl;
 import static dev.marksman.composablerandom.primitives.SizedImpl.sizedImpl;
 
-public class DefaultInterpreter {
-    private final SizeSelector sizeSelector;
-
-    private DefaultInterpreter(Context context) {
-        this.sizeSelector = SizeSelectors.sizeSelector(context.getSizeParameters());
-    }
-
-    public <A> CompiledGenerator<A> compile(Generator<A> generator) {
+public class DefaultInterpreter implements Interpreter {
+    @Override
+    public <A> CompiledGenerator<A> handle(InterpreterContext context, Generator<A> generator) {
         if (generator instanceof Generator.Constant) {
             return constantImpl(((Generator.Constant<A>) generator).getValue());
         }
@@ -49,11 +44,11 @@ public class DefaultInterpreter {
         }
 
         if (generator instanceof Generator.Mapped) {
-            return handleMapped((Generator.Mapped<?, A>) generator);
+            return handleMapped(context, (Generator.Mapped<?, A>) generator);
         }
 
         if (generator instanceof Generator.FlatMapped) {
-            return handleFlatMapped((Generator.FlatMapped<?, A>) generator);
+            return handleFlatMapped(context, (Generator.FlatMapped<?, A>) generator);
         }
 
         if (generator instanceof Generator.NextInt) {
@@ -153,14 +148,15 @@ public class DefaultInterpreter {
         if (generator instanceof Generator.WithMetadata) {
             Generator.WithMetadata g1 = (Generator.WithMetadata) generator;
             //noinspection unchecked
-            return compile(g1.getOperand());
+            return context.recurse(g1.getOperand());
         }
 
         if (generator instanceof Generator.Sized) {
             Generator.Sized g1 = (Generator.Sized) generator;
 
             //noinspection unchecked
-            return sizedImpl(sizeSelector, rs -> compile((Generator<A>) g1.getFn().apply(rs)));
+            return sizedImpl(context.getParameters().getSizeSelector(),
+                    rs -> context.recurse((Generator<A>) g1.getFn().apply(rs)));
         }
 
         if (generator instanceof Generator.Aggregate) {
@@ -170,93 +166,95 @@ public class DefaultInterpreter {
 
             //noinspection unchecked
             return (CompiledGenerator<A>) aggregateImpl(g1.getInitialBuilderSupplier(), g1.getAddFn(),
-                    g1.getBuildFn(), map(this::compile, elements));
+                    g1.getBuildFn(), map(context::recurse, elements));
         }
 
         if (generator instanceof Generator.Product2) {
             Generator.Product2 g1 = (Generator.Product2) generator;
             //noinspection unchecked
-            return (CompiledGenerator<A>) product2Impl(compile(g1.getA()),
-                    compile(g1.getB()));
+            return (CompiledGenerator<A>) product2Impl(context.recurse(g1.getA()),
+                    context.recurse(g1.getB()));
         }
 
         if (generator instanceof Generator.Product3) {
             Generator.Product3 g1 = (Generator.Product3) generator;
             //noinspection unchecked
-            return (CompiledGenerator<A>) product3Impl(compile(g1.getA()),
-                    compile(g1.getB()),
-                    compile(g1.getC()));
+            return (CompiledGenerator<A>) product3Impl(context.recurse(g1.getA()),
+                    context.recurse(g1.getB()),
+                    context.recurse(g1.getC()));
         }
 
         if (generator instanceof Generator.Product4) {
             Generator.Product4 g1 = (Generator.Product4) generator;
             //noinspection unchecked
-            return (CompiledGenerator<A>) product4Impl(compile(g1.getA()),
-                    compile(g1.getB()),
-                    compile(g1.getC()),
-                    compile(g1.getD()));
+            return (CompiledGenerator<A>) product4Impl(context.recurse(g1.getA()),
+                    context.recurse(g1.getB()),
+                    context.recurse(g1.getC()),
+                    context.recurse(g1.getD()));
         }
 
         if (generator instanceof Generator.Product5) {
             Generator.Product5 g1 = (Generator.Product5) generator;
             //noinspection unchecked
-            return (CompiledGenerator<A>) product5Impl(compile(g1.getA()),
-                    compile(g1.getB()),
-                    compile(g1.getC()),
-                    compile(g1.getD()),
-                    compile(g1.getE()));
+            return (CompiledGenerator<A>) product5Impl(context.recurse(g1.getA()),
+                    context.recurse(g1.getB()),
+                    context.recurse(g1.getC()),
+                    context.recurse(g1.getD()),
+                    context.recurse(g1.getE()));
         }
 
         if (generator instanceof Generator.Product6) {
             Generator.Product6 g1 = (Generator.Product6) generator;
             //noinspection unchecked
-            return (CompiledGenerator<A>) product6Impl(compile(g1.getA()),
-                    compile(g1.getB()),
-                    compile(g1.getC()),
-                    compile(g1.getD()),
-                    compile(g1.getE()),
-                    compile(g1.getF()));
+            return (CompiledGenerator<A>) product6Impl(context.recurse(g1.getA()),
+                    context.recurse(g1.getB()),
+                    context.recurse(g1.getC()),
+                    context.recurse(g1.getD()),
+                    context.recurse(g1.getE()),
+                    context.recurse(g1.getF()));
         }
 
         if (generator instanceof Generator.Product7) {
             Generator.Product7 g1 = (Generator.Product7) generator;
             //noinspection unchecked
-            return (CompiledGenerator<A>) product7Impl(compile(g1.getA()),
-                    compile(g1.getB()),
-                    compile(g1.getC()),
-                    compile(g1.getD()),
-                    compile(g1.getE()),
-                    compile(g1.getF()),
-                    compile(g1.getG()));
+            return (CompiledGenerator<A>) product7Impl(context.recurse(g1.getA()),
+                    context.recurse(g1.getB()),
+                    context.recurse(g1.getC()),
+                    context.recurse(g1.getD()),
+                    context.recurse(g1.getE()),
+                    context.recurse(g1.getF()),
+                    context.recurse(g1.getG()));
         }
 
         if (generator instanceof Generator.Product8) {
             Generator.Product8 g1 = (Generator.Product8) generator;
             //noinspection unchecked
-            return (CompiledGenerator<A>) product8Impl(compile(g1.getA()),
-                    compile(g1.getB()),
-                    compile(g1.getC()),
-                    compile(g1.getD()),
-                    compile(g1.getE()),
-                    compile(g1.getF()),
-                    compile(g1.getG()),
-                    compile(g1.getH()));
+            return (CompiledGenerator<A>) product8Impl(context.recurse(g1.getA()),
+                    context.recurse(g1.getB()),
+                    context.recurse(g1.getC()),
+                    context.recurse(g1.getD()),
+                    context.recurse(g1.getE()),
+                    context.recurse(g1.getF()),
+                    context.recurse(g1.getG()),
+                    context.recurse(g1.getH()));
         }
 
-        throw new IllegalStateException("Unimplemented generator");
+        return context.callNextHandler(generator);
     }
 
-    private <In, Out> CompiledGenerator<Out> handleMapped(Generator.Mapped<In, Out> mapped) {
-        return mappedImpl(mapped.getFn(), compile(mapped.getOperand()));
+    private <In, Out> CompiledGenerator<Out> handleMapped(InterpreterContext context,
+                                                          Generator.Mapped<In, Out> mapped) {
+        return mappedImpl(mapped.getFn(), context.recurse(mapped.getOperand()));
     }
 
-    private <In, Out> CompiledGenerator<Out> handleFlatMapped(Generator.FlatMapped<In, Out> flatMapped) {
-        return flatMappedImpl(in -> compile(flatMapped.getFn().apply(in)),
-                compile(flatMapped.getOperand()));
+    private <In, Out> CompiledGenerator<Out> handleFlatMapped(InterpreterContext context,
+                                                              Generator.FlatMapped<In, Out> flatMapped) {
+        return flatMappedImpl(in -> context.recurse(flatMapped.getFn().apply(in)),
+                context.recurse(flatMapped.getOperand()));
     }
 
-    public static DefaultInterpreter defaultInterpreter(Context context) {
-        return new DefaultInterpreter(context);
+    public static DefaultInterpreter defaultInterpreter() {
+        return new DefaultInterpreter();
     }
 
 }

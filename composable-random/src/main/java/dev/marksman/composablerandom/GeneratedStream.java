@@ -6,7 +6,7 @@ import java.util.Iterator;
 import static dev.marksman.composablerandom.DefaultInterpreter.defaultInterpreter;
 import static dev.marksman.composablerandom.Initialize.createInitialRandomState;
 import static dev.marksman.composablerandom.Initialize.randomInitialRandomState;
-import static dev.marksman.composablerandom.StandardContext.defaultContext;
+import static dev.marksman.composablerandom.StandardParameters.defaultParameters;
 
 public class GeneratedStream<A> implements Iterator<A> {
     private final CompiledGenerator<A> generate;
@@ -78,11 +78,11 @@ public class GeneratedStream<A> implements Iterator<A> {
         return streamFrom(compile(generator), createInitialRandomState(initialSeedValue));
     }
 
-    public static <A> GeneratedStream<A> streamFrom(Generator<A> generator, Context context) {
+    public static <A> GeneratedStream<A> streamFrom(Generator<A> generator, Parameters parameters) {
         return streamFrom(compile(generator), randomInitialRandomState());
     }
 
-    public static <A> GeneratedStream<A> streamFrom(Generator<A> generator, Context context, long initialSeedValue) {
+    public static <A> GeneratedStream<A> streamFrom(Generator<A> generator, Parameters parameters, long initialSeedValue) {
         return streamFrom(compile(generator), createInitialRandomState(initialSeedValue));
     }
 
@@ -91,8 +91,8 @@ public class GeneratedStream<A> implements Iterator<A> {
     }
 
     private static <A> CompiledGenerator<A> compile(Generator<A> generator) {
-        DefaultInterpreter interpreter = defaultInterpreter(defaultContext());
-        return interpreter.compile(generator);
+        Parameters parameters = defaultParameters();
+        return defaultInterpreter().compile(parameters, generator);
     }
 
 }

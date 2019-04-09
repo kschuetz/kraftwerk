@@ -24,19 +24,20 @@ public class BenchmarkSandbox {
                 tupled(chooseOneOfValues("foo", "bar", "baz"),
                         chooseOneFromCollection(asList(1, 2, 3, 4, 5, 6, 7, 8))));
 
+        Runner.runMark3("tuple", iterations, g);
         Runner.run("tuple", iterations, g);
         Runner.runTraced("tuple", iterations, g);
     }
 
     private static void sandbox1() {
-        Runner.run("int", ITERATIONS, generateInt());
-        Runner.run("float", ITERATIONS, generateFloat());
-        Runner.run("double", ITERATIONS, generateDouble());
-        Runner.run("long", ITERATIONS, generateLong());
-        Runner.run("boolean", ITERATIONS, generateBoolean());
-        Runner.run("byte", ITERATIONS, generateByte());
-        Runner.run("short", ITERATIONS, generateShort());
-        Runner.run("gaussian", ITERATIONS, generateGaussian());
+        Runner.runMark3("int", ITERATIONS, generateInt());
+        Runner.runMark3("float", ITERATIONS, generateFloat());
+        Runner.runMark3("double", ITERATIONS, generateDouble());
+        Runner.runMark3("long", ITERATIONS, generateLong());
+        Runner.runMark3("boolean", ITERATIONS, generateBoolean());
+        Runner.runMark3("byte", ITERATIONS, generateByte());
+        Runner.runMark3("short", ITERATIONS, generateShort());
+        Runner.runMark3("gaussian", ITERATIONS, generateGaussian());
         System.out.println("---");
         Runner.runRandomState("nextInt", ITERATIONS, RandomState::nextInt);
         Runner.runRandomState("nextFloat", ITERATIONS, RandomState::nextFloat);
@@ -60,12 +61,13 @@ public class BenchmarkSandbox {
                 .flatMap(l -> generateString(l.intValue() & 31,
                         generateStringFromCharacters(Characters.alphaLower())));
 
+        Runner.runMark3("sandbox3", 100000, g);
         Runner.run("sandbox3", 100000, g);
         Runner.runTraced("sandbox3", 100000, g);
     }
 
     public static void main(String[] args) {
         runTuples();
-//        sandbox3();
+        sandbox3();
     }
 }

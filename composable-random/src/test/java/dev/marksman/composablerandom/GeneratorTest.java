@@ -12,9 +12,10 @@ import static com.jnape.palatable.lambda.adt.hlist.HList.tuple;
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.All.all;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Eq.eq;
+import static dev.marksman.composablerandom.DefaultInterpreter.defaultInterpreter;
 import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
 import static dev.marksman.composablerandom.Generator.*;
-import static dev.marksman.composablerandom.StandardContext.defaultContext;
+import static dev.marksman.composablerandom.StandardParameters.defaultParameters;
 import static dev.marksman.composablerandom.random.StandardGen.initStandardGen;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -22,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class GeneratorTest {
 
     private static final int SEQUENCE_LENGTH = 17;
-    private static final DefaultInterpreter interpreter = DefaultInterpreter.defaultInterpreter(defaultContext());
 
     private static final Generator<Integer> gen1 = generateInt();
     private static final Generator<Double> gen2 = generateGaussian();
@@ -105,7 +105,8 @@ class GeneratorTest {
 
     @SuppressWarnings("unchecked")
     private static <A> Result<RandomState, A> run(Generator<A> generator, RandomState input) {
-        return (Result<RandomState, A>) interpreter.compile(generator).run(input);
+        CompiledGenerator<A> compiled = defaultInterpreter().compile(defaultParameters(), generator);
+        return (Result<RandomState, A>) compiled.run(input);
     }
 
 }

@@ -11,7 +11,7 @@ import static com.jnape.palatable.lambda.adt.hlist.HList.tuple;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Map.map;
 import static dev.marksman.composablerandom.CompiledGenerator.compiledGenerator;
 import static dev.marksman.composablerandom.Result.result;
-import static dev.marksman.composablerandom.StandardContext.defaultContext;
+import static dev.marksman.composablerandom.StandardParameters.defaultParameters;
 import static dev.marksman.composablerandom.Trace.trace;
 import static dev.marksman.composablerandom.primitives.AggregateImpl.aggregateImpl;
 import static dev.marksman.composablerandom.primitives.ConstantImpl.constantImpl;
@@ -40,8 +40,8 @@ import static java.util.Collections.singletonList;
 public class TracingInterpreter {
     private final CompiledGenerator<Trace<Integer>> sizeGenerator;
 
-    private TracingInterpreter(Context context) {
-        SizeSelector sizeSelector = SizeSelectors.sizeSelector(context.getSizeParameters());
+    private TracingInterpreter(Parameters parameters) {
+        SizeSelector sizeSelector = parameters.getSizeSelector();
         this.sizeGenerator = compile(Generator.<Integer>generator(sizeSelector::selectSize)
                 .labeled("sized"));
     }
@@ -525,12 +525,12 @@ public class TracingInterpreter {
         }
     }
 
-    public static TracingInterpreter tracingInterpreter(Context context) {
-        return new TracingInterpreter(context);
+    public static TracingInterpreter tracingInterpreter(Parameters parameters) {
+        return new TracingInterpreter(parameters);
     }
 
     public static TracingInterpreter tracingInterpreter() {
-        return tracingInterpreter(defaultContext());
+        return tracingInterpreter(defaultParameters());
     }
 
 }
