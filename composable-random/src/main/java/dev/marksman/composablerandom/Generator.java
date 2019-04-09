@@ -5,8 +5,7 @@ import com.jnape.palatable.lambda.adt.Maybe;
 import com.jnape.palatable.lambda.adt.Unit;
 import com.jnape.palatable.lambda.adt.choice.*;
 import com.jnape.palatable.lambda.adt.hlist.*;
-import com.jnape.palatable.lambda.functions.Fn1;
-import com.jnape.palatable.lambda.functions.Fn2;
+import com.jnape.palatable.lambda.functions.*;
 import com.jnape.palatable.lambda.monad.Monad;
 import dev.marksman.composablerandom.choice.ChoiceBuilder1;
 import dev.marksman.composablerandom.frequency.FrequencyMap;
@@ -466,11 +465,12 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Product2<A, B> extends Generator<Tuple2<A, B>> {
+    public static class Product2<A, B, Out> extends Generator<Out> {
         private static Maybe<String> LABEL = Maybe.just("product2");
 
         private final Generator<A> a;
         private final Generator<B> b;
+        private final Fn2<A, B, Out> combine;
 
         @Override
         public Maybe<String> getLabel() {
@@ -482,12 +482,13 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Product3<A, B, C> extends Generator<Tuple3<A, B, C>> {
+    public static class Product3<A, B, C, Out> extends Generator<Out> {
         private static Maybe<String> LABEL = Maybe.just("product3");
 
         private final Generator<A> a;
         private final Generator<B> b;
         private final Generator<C> c;
+        private final Fn3<A, B, C, Out> combine;
 
         @Override
         public Maybe<String> getLabel() {
@@ -499,13 +500,14 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Product4<A, B, C, D> extends Generator<Tuple4<A, B, C, D>> {
+    public static class Product4<A, B, C, D, Out> extends Generator<Out> {
         private static Maybe<String> LABEL = Maybe.just("product4");
 
         private final Generator<A> a;
         private final Generator<B> b;
         private final Generator<C> c;
         private final Generator<D> d;
+        private final Fn4<A, B, C, D, Out> combine;
 
         @Override
         public Maybe<String> getLabel() {
@@ -517,7 +519,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Product5<A, B, C, D, E> extends Generator<Tuple5<A, B, C, D, E>> {
+    public static class Product5<A, B, C, D, E, Out> extends Generator<Out> {
         private static Maybe<String> LABEL = Maybe.just("product5");
 
         private final Generator<A> a;
@@ -525,6 +527,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         private final Generator<C> c;
         private final Generator<D> d;
         private final Generator<E> e;
+        private final Fn5<A, B, C, D, E, Out> combine;
 
         @Override
         public Maybe<String> getLabel() {
@@ -536,7 +539,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Product6<A, B, C, D, E, F> extends Generator<Tuple6<A, B, C, D, E, F>> {
+    public static class Product6<A, B, C, D, E, F, Out> extends Generator<Out> {
         private static Maybe<String> LABEL = Maybe.just("product6");
 
         private final Generator<A> a;
@@ -545,6 +548,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         private final Generator<D> d;
         private final Generator<E> e;
         private final Generator<F> f;
+        private final Fn6<A, B, C, D, E, F, Out> combine;
 
         @Override
         public Maybe<String> getLabel() {
@@ -556,7 +560,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Product7<A, B, C, D, E, F, G> extends Generator<Tuple7<A, B, C, D, E, F, G>> {
+    public static class Product7<A, B, C, D, E, F, G, Out> extends Generator<Out> {
         private static Maybe<String> LABEL = Maybe.just("product7");
 
         private final Generator<A> a;
@@ -566,6 +570,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         private final Generator<E> e;
         private final Generator<F> f;
         private final Generator<G> g;
+        private final Fn7<A, B, C, D, E, F, G, Out> combine;
 
         @Override
         public Maybe<String> getLabel() {
@@ -577,7 +582,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Product8<A, B, C, D, E, F, G, H> extends Generator<Tuple8<A, B, C, D, E, F, G, H>> {
+    public static class Product8<A, B, C, D, E, F, G, H, Out> extends Generator<Out> {
         private static Maybe<String> LABEL = Maybe.just("product8");
 
         private final Generator<A> a;
@@ -588,6 +593,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         private final Generator<F> f;
         private final Generator<G> g;
         private final Generator<H> h;
+        private final Fn8<A, B, C, D, E, F, G, H, Out> combine;
 
         @Override
         public Maybe<String> getLabel() {
@@ -737,22 +743,88 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         return buildCollection(initialCollectionSupplier, replicate(size, generator));
     }
 
+    public static <A, B, C, D, E, F, G, H, Out> Generator<Out> product(Generator<A> a,
+                                                                       Generator<B> b,
+                                                                       Fn2<A, B, Out> combine) {
+        return new Product2<>(a, b, combine);
+    }
+
+    public static <A, B, C, D, E, F, G, H, Out> Generator<Out> product(Generator<A> a,
+                                                                       Generator<B> b,
+                                                                       Generator<C> c,
+                                                                       Fn3<A, B, C, Out> combine) {
+        return new Product3<>(a, b, c, combine);
+    }
+
+
+    public static <A, B, C, D, E, F, G, H, Out> Generator<Out> product(Generator<A> a,
+                                                                       Generator<B> b,
+                                                                       Generator<C> c,
+                                                                       Generator<D> d,
+                                                                       Fn4<A, B, C, D, Out> combine) {
+        return new Product4<>(a, b, c, d, combine);
+    }
+
+
+    public static <A, B, C, D, E, F, G, H, Out> Generator<Out> product(Generator<A> a,
+                                                                       Generator<B> b,
+                                                                       Generator<C> c,
+                                                                       Generator<D> d,
+                                                                       Generator<E> e,
+                                                                       Fn5<A, B, C, D, E, Out> combine) {
+        return new Product5<>(a, b, c, d, e, combine);
+    }
+
+
+    public static <A, B, C, D, E, F, G, H, Out> Generator<Out> product(Generator<A> a,
+                                                                       Generator<B> b,
+                                                                       Generator<C> c,
+                                                                       Generator<D> d,
+                                                                       Generator<E> e,
+                                                                       Generator<F> f,
+                                                                       Fn6<A, B, C, D, E, F, Out> combine) {
+        return new Product6<>(a, b, c, d, e, f, combine);
+    }
+
+    public static <A, B, C, D, E, F, G, H, Out> Generator<Out> product(Generator<A> a,
+                                                                       Generator<B> b,
+                                                                       Generator<C> c,
+                                                                       Generator<D> d,
+                                                                       Generator<E> e,
+                                                                       Generator<F> f,
+                                                                       Generator<G> g,
+                                                                       Fn7<A, B, C, D, E, F, G, Out> combine) {
+        return new Product7<>(a, b, c, d, e, f, g, combine);
+    }
+
+    public static <A, B, C, D, E, F, G, H, Out> Generator<Out> product(Generator<A> a,
+                                                                       Generator<B> b,
+                                                                       Generator<C> c,
+                                                                       Generator<D> d,
+                                                                       Generator<E> e,
+                                                                       Generator<F> f,
+                                                                       Generator<G> g,
+                                                                       Generator<H> h,
+                                                                       Fn8<A, B, C, D, E, F, G, H, Out> combine) {
+        return new Product8<>(a, b, c, d, e, f, g, h, combine);
+    }
+
     public static <A, B> Generator<Tuple2<A, B>> tupled(Generator<A> a,
                                                         Generator<B> b) {
-        return new Product2<>(a, b);
+        return new Product2<>(a, b, Tuple2::tuple);
     }
 
     public static <A, B, C> Generator<Tuple3<A, B, C>> tupled(Generator<A> a,
                                                               Generator<B> b,
                                                               Generator<C> c) {
-        return new Product3<>(a, b, c);
+        return new Product3<>(a, b, c, Tuple3::tuple);
     }
 
     public static <A, B, C, D> Generator<Tuple4<A, B, C, D>> tupled(Generator<A> a,
                                                                     Generator<B> b,
                                                                     Generator<C> c,
                                                                     Generator<D> d) {
-        return new Product4<>(a, b, c, d);
+        return new Product4<>(a, b, c, d, Tuple4::tuple);
     }
 
     public static <A, B, C, D, E> Generator<Tuple5<A, B, C, D, E>> tupled(Generator<A> a,
@@ -760,7 +832,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
                                                                           Generator<C> c,
                                                                           Generator<D> d,
                                                                           Generator<E> e) {
-        return new Product5<>(a, b, c, d, e);
+        return new Product5<>(a, b, c, d, e, Tuple5::tuple);
     }
 
     public static <A, B, C, D, E, F> Generator<Tuple6<A, B, C, D, E, F>> tupled(Generator<A> a,
@@ -769,7 +841,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
                                                                                 Generator<D> d,
                                                                                 Generator<E> e,
                                                                                 Generator<F> f) {
-        return new Product6<>(a, b, c, d, e, f);
+        return new Product6<>(a, b, c, d, e, f, Tuple6::tuple);
     }
 
     public static <A, B, C, D, E, F, G> Generator<Tuple7<A, B, C, D, E, F, G>> tupled(Generator<A> a,
@@ -779,7 +851,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
                                                                                       Generator<E> e,
                                                                                       Generator<F> f,
                                                                                       Generator<G> g) {
-        return new Product7<>(a, b, c, d, e, f, g);
+        return new Product7<>(a, b, c, d, e, f, g, Tuple7::tuple);
     }
 
     public static <A, B, C, D, E, F, G, H> Generator<Tuple8<A, B, C, D, E, F, G, H>> tupled(Generator<A> a,
@@ -790,7 +862,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
                                                                                             Generator<F> f,
                                                                                             Generator<G> g,
                                                                                             Generator<H> h) {
-        return new Product8<>(a, b, c, d, e, f, g, h);
+        return new Product8<>(a, b, c, d, e, f, g, h, Tuple8::tuple);
     }
 
 

@@ -182,7 +182,8 @@ public class DefaultInterpreterMark3 {
             Generator.Product2 g1 = (Generator.Product2) generator;
             //noinspection unchecked
             return (CompiledGenerator<A>) product2Impl(compile(g1.getA()),
-                    compile(g1.getB()));
+                    compile(g1.getB()),
+                    g1.getCombine());
         }
 
         if (generator instanceof Generator.Product3) {
@@ -190,7 +191,8 @@ public class DefaultInterpreterMark3 {
             //noinspection unchecked
             return (CompiledGenerator<A>) product3Impl(compile(g1.getA()),
                     compile(g1.getB()),
-                    compile(g1.getC()));
+                    compile(g1.getC()),
+                    g1.getCombine());
         }
 
         if (generator instanceof Generator.Product4) {
@@ -199,7 +201,8 @@ public class DefaultInterpreterMark3 {
             return (CompiledGenerator<A>) product4Impl(compile(g1.getA()),
                     compile(g1.getB()),
                     compile(g1.getC()),
-                    compile(g1.getD()));
+                    compile(g1.getD()),
+                    g1.getCombine());
         }
 
         if (generator instanceof Generator.Product5) {
@@ -209,7 +212,8 @@ public class DefaultInterpreterMark3 {
                     compile(g1.getB()),
                     compile(g1.getC()),
                     compile(g1.getD()),
-                    compile(g1.getE()));
+                    compile(g1.getE()),
+                    g1.getCombine());
         }
 
         if (generator instanceof Generator.Product6) {
@@ -220,7 +224,8 @@ public class DefaultInterpreterMark3 {
                     compile(g1.getC()),
                     compile(g1.getD()),
                     compile(g1.getE()),
-                    compile(g1.getF()));
+                    compile(g1.getF()),
+                    g1.getCombine());
         }
 
         if (generator instanceof Generator.Product7) {
@@ -232,7 +237,8 @@ public class DefaultInterpreterMark3 {
                     compile(g1.getD()),
                     compile(g1.getE()),
                     compile(g1.getF()),
-                    compile(g1.getG()));
+                    compile(g1.getG()),
+                    g1.getCombine());
         }
 
         if (generator instanceof Generator.Product8) {
@@ -245,7 +251,8 @@ public class DefaultInterpreterMark3 {
                     compile(g1.getE()),
                     compile(g1.getF()),
                     compile(g1.getG()),
-                    compile(g1.getH()));
+                    compile(g1.getH()),
+                    g1.getCombine());
         }
 
         throw new IllegalStateException("Unimplemented generator");

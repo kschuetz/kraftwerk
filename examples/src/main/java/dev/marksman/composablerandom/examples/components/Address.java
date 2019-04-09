@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into.into;
-import static com.jnape.palatable.lambda.functions.builtin.fn2.Into6.into6;
 import static dev.marksman.composablerandom.Generator.*;
 import static dev.marksman.composablerandom.MaybeWeights.nothingWeight;
 import static dev.marksman.composablerandom.examples.components.City.generateCity;
@@ -62,13 +61,13 @@ public class Address {
                         .fmap(into((unitName, number) -> unitName + number));
 
         static Generator<Address> address =
-                tupled(number,
+                product(number,
                         generateStreet(),
                         unit.maybe(nothingWeight(4).toJust(1)),
                         generateCity(),
                         generateUsState(),
-                        generateZipCode())
-                        .fmap(into6(Address::address));
+                        generateZipCode(),
+                        Address::address);
     }
 
     public static Generator<Address> generateAddress() {
