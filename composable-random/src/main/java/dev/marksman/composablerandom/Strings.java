@@ -1,6 +1,7 @@
 package dev.marksman.composablerandom;
 
-import dev.marksman.composablerandom.domain.Characters;
+import dev.marksman.discretedomain.builtin.Characters;
+import dev.marksman.discretedomain.DiscreteDomain;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -3,6 +3,7 @@ package dev.marksman.composablerandom;
 import com.jnape.palatable.lambda.functions.builtin.fn3.FoldLeft;
 import dev.marksman.composablerandom.frequency.FrequencyMap;
 import dev.marksman.composablerandom.frequency.FrequencyMapBuilder;
+import dev.marksman.discretedomain.DiscreteDomain;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,9 +13,9 @@ import java.util.Set;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Cons.cons;
 import static com.jnape.palatable.lambda.functions.builtin.fn3.FoldLeft.foldLeft;
 import static dev.marksman.composablerandom.Generator.constant;
-import static dev.marksman.composablerandom.domain.Choices.choices;
 import static dev.marksman.composablerandom.frequency.FrequencyMap.frequencyMap;
 import static dev.marksman.composablerandom.frequency.FrequencyMapBuilder.frequencyMapBuilder;
+import static dev.marksman.discretedomain.builtin.Choices.choices;
 import static java.util.Arrays.asList;
 
 class Choose {

@@ -1,4 +1,4 @@
-package dev.marksman.composablerandom;
+package dev.marksman.discretedomain;
 
 import java.util.Iterator;
 import java.util.function.Function;

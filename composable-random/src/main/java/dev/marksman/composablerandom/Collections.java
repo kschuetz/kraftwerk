@@ -1,5 +1,7 @@
 package dev.marksman.composablerandom;
 
+import dev.marksman.discretedomain.DiscreteDomain;
+
 import java.util.*;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Zip.zip;

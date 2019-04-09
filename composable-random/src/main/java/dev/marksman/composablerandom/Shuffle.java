@@ -1,5 +1,7 @@
 package dev.marksman.composablerandom;
 
+import dev.marksman.discretedomain.DiscreteDomain;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.Function;

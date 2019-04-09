@@ -10,6 +10,7 @@ import com.jnape.palatable.lambda.monad.Monad;
 import dev.marksman.composablerandom.choice.ChoiceBuilder1;
 import dev.marksman.composablerandom.frequency.FrequencyMap;
 import dev.marksman.composablerandom.util.Labeling;
+import dev.marksman.discretedomain.DiscreteDomain;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

@@ -12,10 +12,10 @@ import static com.jnape.palatable.lambda.adt.hlist.HList.tuple;
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.All.all;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Eq.eq;
-import static dev.marksman.composablerandom.DefaultInterpreter.defaultInterpreter;
 import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
 import static dev.marksman.composablerandom.Generator.*;
 import static dev.marksman.composablerandom.StandardParameters.defaultParameters;
+import static dev.marksman.composablerandom.legacy.DefaultInterpreterMark3.defaultInterpreter;
 import static dev.marksman.composablerandom.random.StandardGen.initStandardGen;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -105,7 +105,7 @@ class GeneratorTest {
 
     @SuppressWarnings("unchecked")
     private static <A> Result<RandomState, A> run(Generator<A> generator, RandomState input) {
-        CompiledGenerator<A> compiled = defaultInterpreter().compile(defaultParameters(), generator);
+        CompiledGenerator<A> compiled = defaultInterpreter(defaultParameters()).compile(generator);
         return (Result<RandomState, A>) compiled.run(input);
     }
 

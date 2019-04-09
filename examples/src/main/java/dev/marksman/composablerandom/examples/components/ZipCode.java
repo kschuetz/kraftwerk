@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 
 import static dev.marksman.composablerandom.Generator.*;
-import static dev.marksman.composablerandom.domain.Characters.digits;
+import static dev.marksman.discretedomain.builtin.Characters.digits;
 import static dev.marksman.composablerandom.frequency.FrequencyMap.frequencyMap;
 
 @Value

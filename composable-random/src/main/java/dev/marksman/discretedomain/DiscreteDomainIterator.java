@@ -1,4 +1,4 @@
-package dev.marksman.composablerandom;
+package dev.marksman.discretedomain;
 
 import com.jnape.palatable.lambda.iteration.ImmutableIterator;
 

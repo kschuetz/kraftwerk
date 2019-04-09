@@ -1,8 +1,8 @@
-package dev.marksman.composablerandom.domain;
+package dev.marksman.discretedomain.builtin;
 
-import dev.marksman.composablerandom.DiscreteDomain;
+import dev.marksman.discretedomain.DiscreteDomain;
 
-import static dev.marksman.composablerandom.DiscreteDomain.discreteDomain;
+import static dev.marksman.discretedomain.DiscreteDomain.discreteDomain;
 
 public class Numbers {
 
