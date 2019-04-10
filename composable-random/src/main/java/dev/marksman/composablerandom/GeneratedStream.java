@@ -1,10 +1,9 @@
 package dev.marksman.composablerandom;
 
-import dev.marksman.composablerandom.legacy.DefaultInterpreterMark3;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import static dev.marksman.composablerandom.DefaultInterpreter.defaultInterpreter;
 import static dev.marksman.composablerandom.Initialize.createInitialRandomState;
 import static dev.marksman.composablerandom.Initialize.randomInitialRandomState;
 import static dev.marksman.composablerandom.StandardParameters.defaultParameters;
@@ -93,8 +92,7 @@ public class GeneratedStream<A> implements Iterator<A> {
 
     private static <A> CompiledGenerator<A> compile(Generator<A> generator) {
         Parameters parameters = defaultParameters();
-        DefaultInterpreterMark3 defaultInterpreterMark3 = DefaultInterpreterMark3.defaultInterpreter(parameters);
-        return defaultInterpreterMark3.compile(generator);
+        return defaultInterpreter().compile(parameters, generator);
     }
 
 }

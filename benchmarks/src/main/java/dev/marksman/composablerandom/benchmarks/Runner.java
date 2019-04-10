@@ -36,9 +36,9 @@ public class Runner {
             return ctx.callNextHandler(gen);
         });
 
-        Interpreter spikeInterpreter = DefaultInterpreter.defaultInterpreter()
+        Interpreter interpreter = DefaultInterpreter.defaultInterpreter()
                 .overrideWith(overrides);
-        CompiledGenerator<A> compiled = spikeInterpreter.compile(defaultParameters(), generator);
+        CompiledGenerator<A> compiled = interpreter.compile(defaultParameters(), generator);
         RandomState current = initStandardGen();
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < iterations; i++) {
