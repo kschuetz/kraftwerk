@@ -1,8 +1,10 @@
 package dev.marksman.discretedomain.builtin;
 
 import dev.marksman.discretedomain.DiscreteDomain;
+import dev.marksman.discretedomain.SmallDomain;
 
 import static dev.marksman.discretedomain.DiscreteDomain.discreteDomain;
+import static dev.marksman.discretedomain.SmallDomain.smallDomain;
 
 public class Numbers {
 
@@ -27,12 +29,12 @@ public class Numbers {
         return discreteDomain(Integer.MAX_VALUE / 2, n -> 1 + n.intValue() * 2);
     }
 
-    public static DiscreteDomain<Integer> intPowersOfTwo() {
-        return discreteDomain(31, n -> 1 << n);
+    public static SmallDomain<Integer> intPowersOfTwo() {
+        return smallDomain(31, n -> 1 << n);
     }
 
-    public static DiscreteDomain<Long> longPowersOfTwo() {
-        return discreteDomain(63, n -> (long) 1 << n.intValue());
+    public static SmallDomain<Long> longPowersOfTwo() {
+        return smallDomain(63, n -> (long) 1 << n.intValue());
     }
 
 }
