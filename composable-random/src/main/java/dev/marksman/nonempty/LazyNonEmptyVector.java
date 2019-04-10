@@ -20,6 +20,11 @@ class LazyNonEmptyVector<A> implements NonEmptyVector<A> {
     }
 
     @Override
+    public ImmutableCollection<A> slice(int startIndex) {
+        return null;
+    }
+
+    @Override
     public A get(int index) {
         validateBounds(size, index);
         return fn.apply(index);

@@ -13,6 +13,11 @@ public class SingletonVector<A> implements NonEmptyVector<A> {
     private final A value;
 
     @Override
+    public ImmutableCollection<A> slice(int startIndex) {
+        return null;
+    }
+
+    @Override
     public int size() {
         return 1;
     }

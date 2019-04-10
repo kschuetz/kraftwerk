@@ -6,7 +6,7 @@ import java.util.function.Function;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Drop.drop;
 
-public interface NonEmptyVector<A> extends NonEmptyIterable<A>, Functor<A, NonEmptyVector<?>> {
+public interface NonEmptyVector<A> extends NonEmptyCollection<A>, Functor<A, NonEmptyVector<?>> {
     int size();
 
     A get(int index);
