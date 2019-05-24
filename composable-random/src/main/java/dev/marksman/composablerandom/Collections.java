@@ -1,6 +1,6 @@
 package dev.marksman.composablerandom;
 
-import dev.marksman.discretedomain.DiscreteDomain;
+import dev.marksman.collectionviews.NonEmptyVector;
 
 import java.util.*;
 
@@ -48,9 +48,9 @@ class Collections {
         return generateMapImpl(keys.size(), keys, valueGenerator);
     }
 
-    static <K, V> Generator<Map<K, V>> generateMap(DiscreteDomain<K> keys,
+    static <K, V> Generator<Map<K, V>> generateMap(NonEmptyVector<K> keys,
                                                    Generator<V> valueGenerator) {
-        return generateMapImpl((int) keys.getSize(), keys, valueGenerator);
+        return generateMapImpl((int) keys.size(), keys, valueGenerator);
     }
 
     private static <A> Generator<ArrayList<A>> buildArrayList(int n, Generator<A> generator) {

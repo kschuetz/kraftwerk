@@ -1,7 +1,7 @@
 package dev.marksman.composablerandom;
 
-import dev.marksman.discretedomain.builtin.Characters;
-import dev.marksman.discretedomain.DiscreteDomain;
+import dev.marksman.collectionviews.NonEmptyVector;
+import dev.marksman.composablerandom.domain.Characters;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,7 +28,7 @@ class Strings {
         return Generator.sized(size -> generateStringFromCharacters(size, g));
     }
 
-    static Generator<String> generateStringFromCharacters(DiscreteDomain<Character> characters) {
+    static Generator<String> generateStringFromCharacters(NonEmptyVector<Character> characters) {
         return Generator.sized(size -> generateStringFromCharacters(size, Choose.chooseOneFromDomain(characters)));
     }
 
@@ -41,7 +41,7 @@ class Strings {
         }
     }
 
-    static Generator<String> generateStringFromCharacters(int length, DiscreteDomain<Character> characters) {
+    static Generator<String> generateStringFromCharacters(int length, NonEmptyVector<Character> characters) {
         return generateStringFromCharacters(length, Choose.chooseOneFromDomain(characters));
     }
 

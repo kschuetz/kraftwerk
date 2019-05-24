@@ -1,7 +1,7 @@
 package dev.marksman.composablerandom;
 
 import com.jnape.palatable.lambda.functions.Fn1;
-import dev.marksman.discretedomain.DiscreteDomain;
+import dev.marksman.collectionviews.NonEmptyVector;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,12 +40,9 @@ class Shuffle {
         return generateShuffled(inputList.size(), inputList::get);
     }
 
-    public static <A> Generator<ArrayList<A>> generateShuffled(DiscreteDomain<A> domain) {
-        long size = Math.max(domain.getSize(), 0);
-        if (size > Integer.MAX_VALUE) {
-            throw new IllegalArgumentException("DiscreteDomain too large; size should not exceed Integer.MAX_VALUE");
-        }
-        return generateShuffled((int) size, domain::getValue);
+    public static <A> Generator<ArrayList<A>> generateShuffled(NonEmptyVector<A> domain) {
+        int size = Math.max(domain.size(), 0);
+        return generateShuffled((int) size, domain::unsafeGet);
     }
 
     private static <A> ArrayList<A> newInputInstance(int count, Function<Integer, A> fn) {

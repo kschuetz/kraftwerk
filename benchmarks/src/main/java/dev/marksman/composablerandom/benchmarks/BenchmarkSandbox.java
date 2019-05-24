@@ -4,7 +4,7 @@ import com.jnape.palatable.lambda.adt.hlist.Tuple2;
 import com.jnape.palatable.lambda.adt.hlist.Tuple8;
 import dev.marksman.composablerandom.Generator;
 import dev.marksman.composablerandom.RandomState;
-import dev.marksman.discretedomain.builtin.Characters;
+import dev.marksman.composablerandom.domain.Characters;
 
 import static dev.marksman.composablerandom.Generator.*;
 import static java.util.Arrays.asList;

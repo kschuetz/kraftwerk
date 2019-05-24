@@ -2,7 +2,7 @@ package dev.marksman.composablerandom.examples.components;
 
 import com.jnape.palatable.lambda.adt.Maybe;
 import dev.marksman.composablerandom.Generator;
-import dev.marksman.discretedomain.builtin.Characters;
+import dev.marksman.composablerandom.domain.Characters;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;

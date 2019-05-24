@@ -1,9 +1,10 @@
 package dev.marksman.composablerandom;
 
 import com.jnape.palatable.lambda.functions.builtin.fn3.FoldLeft;
+import dev.marksman.collectionviews.NonEmptyVector;
+import dev.marksman.collectionviews.Vector;
 import dev.marksman.composablerandom.frequency.FrequencyMap;
 import dev.marksman.composablerandom.frequency.FrequencyMapBuilder;
-import dev.marksman.discretedomain.DiscreteDomain;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,7 +16,6 @@ import static com.jnape.palatable.lambda.functions.builtin.fn3.FoldLeft.foldLeft
 import static dev.marksman.composablerandom.Generator.constant;
 import static dev.marksman.composablerandom.frequency.FrequencyMap.frequencyMap;
 import static dev.marksman.composablerandom.frequency.FrequencyMapBuilder.frequencyMapBuilder;
-import static dev.marksman.discretedomain.builtin.Choices.choices;
 import static java.util.Arrays.asList;
 
 class Choose {
@@ -35,7 +35,7 @@ class Choose {
 
     @SafeVarargs
     static <A> Generator<ArrayList<A>> chooseAtLeastOneOfValues(A first, A... more) {
-        return chooseAtLeastOneFromDomain(choices(cons(first, asList(more))));
+        return chooseAtLeastOneFromDomain(Vector.of(first, more));
     }
 
     @SafeVarargs
@@ -45,7 +45,7 @@ class Choose {
 
     @SafeVarargs
     static <A> Generator<ArrayList<A>> chooseSomeOf(A first, A... more) {
-        return chooseSomeFromDomain(choices(cons(first, asList(more))));
+        return chooseSomeFromDomain(Vector.of(first, more));
     }
 
     @SafeVarargs
@@ -55,33 +55,33 @@ class Choose {
 
     static <A> Generator<A> chooseOneFromCollection(Collection<A> items) {
         requireNonEmptyChoices("chooseOneFrom", items);
-        return chooseOneFromDomain(choices(items));
+        return chooseOneFromDomain(NonEmptyVector.copyFromOrThrow(items));
     }
 
-    static <A> Generator<A> chooseOneFromDomain(DiscreteDomain<A> domain) {
-        long size = domain.getSize();
+    static <A> Generator<A> chooseOneFromDomain(NonEmptyVector<A> domain) {
+        int size = domain.size();
         if (size == 1) {
-            return constant(domain.getValue(0));
+            return constant(domain.unsafeGet(0));
         } else {
-            return Generator.generateLongIndex(size).fmap(domain::getValue);
+            return Generator.generateIntIndex(size).fmap(domain::unsafeGet);
         }
     }
 
     static <A> Generator<ArrayList<A>> chooseAtLeastOneFromCollection(Collection<A> items) {
         requireNonEmptyChoices("chooseAtLeastOneFrom", items);
-        return chooseAtLeastOneFromDomain(choices(items));
+        return chooseAtLeastOneFromDomain(NonEmptyVector.copyFromOrThrow(items));
     }
 
-    static <A> Generator<ArrayList<A>> chooseAtLeastOneFromDomain(DiscreteDomain<A> domain) {
+    static <A> Generator<ArrayList<A>> chooseAtLeastOneFromDomain(NonEmptyVector<A> domain) {
         return null;
     }
 
     static <A> Generator<ArrayList<A>> chooseSomeFromDomain(Collection<A> items) {
         requireNonEmptyChoices("chooseSomeFrom", items);
-        return chooseSomeFromDomain(choices(items));
+        return chooseSomeFromDomain(NonEmptyVector.copyFromOrThrow(items));
     }
 
-    static <A> Generator<ArrayList<A>> chooseSomeFromDomain(DiscreteDomain<A> domain) {
+    static <A> Generator<ArrayList<A>> chooseSomeFromDomain(NonEmptyVector<A> domain) {
         return null;
     }
 

@@ -7,10 +7,10 @@ import com.jnape.palatable.lambda.adt.choice.*;
 import com.jnape.palatable.lambda.adt.hlist.*;
 import com.jnape.palatable.lambda.functions.*;
 import com.jnape.palatable.lambda.monad.Monad;
+import dev.marksman.collectionviews.NonEmptyVector;
 import dev.marksman.composablerandom.choice.ChoiceBuilder1;
 import dev.marksman.composablerandom.frequency.FrequencyMap;
 import dev.marksman.composablerandom.util.Labeling;
-import dev.marksman.discretedomain.DiscreteDomain;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -882,7 +882,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         return Strings.generateStringFromCharacters(length, g);
     }
 
-    public static Generator<String> generateStringFromCharacters(int length, DiscreteDomain<Character> characters) {
+    public static Generator<String> generateStringFromCharacters(int length, NonEmptyVector<Character> characters) {
         return Strings.generateStringFromCharacters(length, characters);
     }
 
@@ -890,7 +890,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         return Strings.generateStringFromCharacters(g);
     }
 
-    public static Generator<String> generateStringFromCharacters(DiscreteDomain<Character> characters) {
+    public static Generator<String> generateStringFromCharacters(NonEmptyVector<Character> characters) {
         return Strings.generateStringFromCharacters(characters);
     }
 
@@ -977,7 +977,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         return Choose.chooseOneFromCollection(items);
     }
 
-    public static <A> Generator<A> chooseOneFromDomain(DiscreteDomain<A> domain) {
+    public static <A> Generator<A> chooseOneFromDomain(NonEmptyVector<A> domain) {
         return Choose.chooseOneFromDomain(domain);
     }
 
@@ -985,7 +985,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         return Choose.chooseAtLeastOneFromCollection(items);
     }
 
-    public static <A> Generator<ArrayList<A>> chooseAtLeastOneFromDomain(DiscreteDomain<A> domain) {
+    public static <A> Generator<ArrayList<A>> chooseAtLeastOneFromDomain(NonEmptyVector<A> domain) {
         return Choose.chooseAtLeastOneFromDomain(domain);
     }
 
@@ -993,7 +993,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         return Choose.chooseSomeFromDomain(items);
     }
 
-    public static <A> Generator<ArrayList<A>> chooseSomeFromDomain(DiscreteDomain<A> domain) {
+    public static <A> Generator<ArrayList<A>> chooseSomeFromDomain(NonEmptyVector<A> domain) {
         return Choose.chooseSomeFromDomain(domain);
     }
 
@@ -1052,7 +1052,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         return Collections.generateMap(keys, valueGenerator);
     }
 
-    public static <K, V> Generator<Map<K, V>> generateMap(DiscreteDomain<K> keys,
+    public static <K, V> Generator<Map<K, V>> generateMap(NonEmptyVector<K> keys,
                                                           Generator<V> valueGenerator) {
         return Collections.generateMap(keys, valueGenerator);
     }
