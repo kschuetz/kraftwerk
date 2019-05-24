@@ -2,6 +2,7 @@ package dev.marksman.discretedomain;
 
 import com.jnape.palatable.lambda.adt.Maybe;
 import com.jnape.palatable.lambda.adt.hlist.Tuple2;
+import com.jnape.palatable.lambda.functions.Fn1;
 import com.jnape.palatable.lambda.functor.Functor;
 
 import java.util.Iterator;
@@ -49,7 +50,7 @@ public interface DiscreteDomain<A> extends Iterable<A>, Functor<A, DiscreteDomai
     A getValue(long index);
 
     @Override
-    default <B> DiscreteDomain<B> fmap(Function<? super A, ? extends B> fn) {
+    default <B> DiscreteDomain<B> fmap(Fn1<? super A, ? extends B> fn) {
         return mapped(this, fn);
     }
 

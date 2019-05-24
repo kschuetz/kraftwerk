@@ -1,8 +1,8 @@
 package dev.marksman.composablerandom;
 
-import com.jnape.palatable.lambda.lens.Lens;
+import com.jnape.palatable.lambda.optics.Lens;
 
-import static com.jnape.palatable.lambda.lens.Lens.simpleLens;
+import static com.jnape.palatable.lambda.optics.Lens.simpleLens;
 
 public class ResultLens {
 

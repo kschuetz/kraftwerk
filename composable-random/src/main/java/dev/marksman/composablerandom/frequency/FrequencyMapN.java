@@ -1,11 +1,11 @@
 package dev.marksman.composablerandom.frequency;
 
+import com.jnape.palatable.lambda.functions.Fn1;
 import com.jnape.palatable.lambda.functions.builtin.fn2.Map;
 import dev.marksman.composablerandom.FrequencyEntry;
 import dev.marksman.composablerandom.Generator;
 
 import java.util.TreeMap;
-import java.util.function.Function;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Cons.cons;
 import static com.jnape.palatable.lambda.functions.builtin.fn3.FoldLeft.foldLeft;
@@ -58,7 +58,7 @@ class FrequencyMapN<A> implements FrequencyMap<A> {
     }
 
     @Override
-    public <B> FrequencyMap<B> fmap(Function<? super A, ? extends B> fn) {
+    public <B> FrequencyMap<B> fmap(Fn1<? super A, ? extends B> fn) {
         return new FrequencyMapN<>(Map.map(t -> entry(t._1(), t._2().fmap(fn)), entries));
     }
 

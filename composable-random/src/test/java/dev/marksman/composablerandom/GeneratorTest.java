@@ -75,11 +75,11 @@ class GeneratorTest {
     private static <A> void testFunctorComposition(Generator<A> generator) {
         Fn1<A, Tuple2<A, A>> f = a -> tuple(a, a);
         Fn1<Tuple2<A, A>, Tuple3<A, A, A>> g = t -> t.cons(t._1());
-        testEquivalent(generator.fmap(f).fmap(g), generator.fmap(f.andThen(g)));
+        testEquivalent(generator.fmap(f).fmap(g), generator.fmap(f.fmap(g)));
     }
 
     private static <A> void testMonadLeftIdentity(A someValue, Generator<A> generator) {
-        Fn1<A, Generator<A>> fn = Id.<A>id().andThen(generator::pure);
+        Fn1<A, Generator<A>> fn = Id.<A>id().fmap(generator::pure);
 
         Generator<A> generator1 = fn.apply(someValue);
         Generator<A> generator2 = generator.pure(someValue).flatMap(fn);

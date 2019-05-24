@@ -3,8 +3,6 @@ package dev.marksman.composablerandom;
 import com.jnape.palatable.lambda.functions.Fn1;
 import com.jnape.palatable.lambda.monad.Monad;
 
-import java.util.function.Function;
-
 import static dev.marksman.composablerandom.Result.result;
 
 public interface CompiledGenerator<A> extends Monad<A, CompiledGenerator<?>> {
@@ -15,12 +13,12 @@ public interface CompiledGenerator<A> extends Monad<A, CompiledGenerator<?>> {
     }
 
     @Override
-    default <B> CompiledGenerator<B> fmap(Function<? super A, ? extends B> fn) {
+    default <B> CompiledGenerator<B> fmap(Fn1<? super A, ? extends B> fn) {
         return compiledGenerator(getRun().fmap(a -> a.fmap(fn)));
     }
 
     @Override
-    default <B> CompiledGenerator<B> flatMap(Function<? super A, ? extends Monad<B, CompiledGenerator<?>>> fn) {
+    default <B> CompiledGenerator<B> flatMap(Fn1<? super A, ? extends Monad<B, CompiledGenerator<?>>> fn) {
         return compiledGenerator(rs -> {
             Result<? extends RandomState, A> x = run(rs);
             return ((CompiledGenerator<B>) fn.apply(x._2())).run(x._1());
@@ -46,7 +44,4 @@ public interface CompiledGenerator<A> extends Monad<A, CompiledGenerator<?>> {
         };
     }
 
-    static <A> CompiledGenerator<A> compiledGenerator(Function<RandomState, Result<? extends RandomState, A>> fn) {
-        return compiledGenerator(fn::apply);
-    }
 }

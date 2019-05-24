@@ -1,14 +1,13 @@
 package dev.marksman.discretedomain;
 
+import com.jnape.palatable.lambda.functions.Fn1;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-
-import java.util.function.Function;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 class Mapped<A, B> implements DiscreteDomain<B> {
     private final DiscreteDomain<A> source;
-    private final Function<? super A, ? extends B> fn;
+    private final Fn1<? super A, ? extends B> fn;
 
     @Override
     public long getSize() {
@@ -20,7 +19,7 @@ class Mapped<A, B> implements DiscreteDomain<B> {
         return fn.apply(source.getValue(index));
     }
 
-    static <A, B> Mapped<A, B> mapped(DiscreteDomain<A> source, Function<? super A, ? extends B> fn) {
+    static <A, B> Mapped<A, B> mapped(DiscreteDomain<A> source, Fn1<? super A, ? extends B> fn) {
         return new Mapped<>(source, fn);
     }
 }

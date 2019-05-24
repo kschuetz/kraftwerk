@@ -1,9 +1,8 @@
 package dev.marksman.composablerandom.frequency;
 
+import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.composablerandom.FrequencyEntry;
 import dev.marksman.composablerandom.Generator;
-
-import java.util.function.Function;
 
 import static dev.marksman.composablerandom.Generator.constant;
 import static dev.marksman.composablerandom.frequency.FrequencyMapBuilder0.frequencyMapBuilder0;
@@ -15,7 +14,7 @@ public interface FrequencyMapBuilder<A> {
 
     FrequencyMap<A> build();
 
-    <B> FrequencyMapBuilder<B> fmap(Function<? super A, ? extends B> fn);
+    <B> FrequencyMapBuilder<B> fmap(Fn1<? super A, ? extends B> fn);
 
     FrequencyMapBuilder<A> multiply(int positiveFactor);
 

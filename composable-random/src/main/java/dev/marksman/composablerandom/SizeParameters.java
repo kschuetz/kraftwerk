@@ -1,11 +1,10 @@
 package dev.marksman.composablerandom;
 
 import com.jnape.palatable.lambda.adt.Maybe;
+import com.jnape.palatable.lambda.functions.Fn1;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
-
-import java.util.function.Function;
 
 import static com.jnape.palatable.lambda.adt.Maybe.just;
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
@@ -21,13 +20,13 @@ public class SizeParameters {
 
     public SizeParameters withMinSize(int size) {
         int min = Math.max(size, 0);
-        Function<Integer, Integer> clamp = clampToFloor(min);
+        Fn1<Integer, Integer> clamp = clampToFloor(min);
         return sizeParameters(just(min), maxSize.fmap(clamp), preferredSize.fmap(clampToFloor(min)));
     }
 
     public SizeParameters withMaxSize(int size) {
         int max = Math.max(size, 0);
-        Function<Integer, Integer> clamp = clampToCeiling(max);
+        Fn1<Integer, Integer> clamp = clampToCeiling(max);
         return sizeParameters(minSize.fmap(clamp), just(max), preferredSize.fmap(clamp));
     }
 
@@ -71,11 +70,11 @@ public class SizeParameters {
         return NO_SIZE_LIMITS;
     }
 
-    private static Function<Integer, Integer> clampToCeiling(int max) {
+    private static Fn1<Integer, Integer> clampToCeiling(int max) {
         return n -> Math.min(n, max);
     }
 
-    private static Function<Integer, Integer> clampToFloor(int min) {
+    private static Fn1<Integer, Integer> clampToFloor(int min) {
         return n -> Math.max(n, min);
     }
 

@@ -1,6 +1,6 @@
 package dev.marksman.discretedomain;
 
-import com.jnape.palatable.lambda.iteration.ImmutableIterator;
+import com.jnape.palatable.lambda.internal.iteration.ImmutableIterator;
 
 class DiscreteDomainIterator<A> extends ImmutableIterator<A> {
     private final DiscreteDomain<A> domain;

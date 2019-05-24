@@ -34,14 +34,14 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     }
 
     @Override
-    public final <B> Generator<B> fmap(Function<? super A, ? extends B> fn) {
+    public final <B> Generator<B> fmap(Fn1<? super A, ? extends B> fn) {
         return mapped(fn, this);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public final <B> Generator<B> flatMap(Function<? super A, ? extends Monad<B, Generator<?>>> f) {
-        return flatMapped((Function<? super A, ? extends Generator<B>>) f, this);
+    public final <B> Generator<B> flatMap(Fn1<? super A, ? extends Monad<B, Generator<?>>> f) {
+        return flatMapped((Fn1<? super A, ? extends Generator<B>>) f, this);
     }
 
     @Override
@@ -1162,11 +1162,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         return Temporal.generateLocalDateForYear(year);
     }
 
-    private static <A, B> Generator<B> mapped(Function<? super A, ? extends B> fn, Generator<A> operand) {
+    private static <A, B> Generator<B> mapped(Fn1<? super A, ? extends B> fn, Generator<A> operand) {
         return new Mapped<>(fn::apply, operand);
     }
 
-    private static <A, B> Generator<B> flatMapped(Function<? super A, ? extends Generator<B>> fn, Generator<A> operand) {
+    private static <A, B> Generator<B> flatMapped(Fn1<? super A, ? extends Generator<B>> fn, Generator<A> operand) {
         return new FlatMapped<>(fn::apply, operand);
     }
 

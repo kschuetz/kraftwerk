@@ -1,11 +1,10 @@
 package dev.marksman.composablerandom.frequency;
 
+import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.composablerandom.FrequencyEntry;
 import dev.marksman.composablerandom.Generator;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-
-import java.util.function.Function;
 
 import static dev.marksman.composablerandom.FrequencyEntry.entry;
 import static dev.marksman.composablerandom.Generator.generateLongExclusive;
@@ -62,7 +61,7 @@ class FrequencyMap3<A> implements FrequencyMap<A> {
     }
 
     @Override
-    public <B> FrequencyMap<B> fmap(Function<? super A, ? extends B> fn) {
+    public <B> FrequencyMap<B> fmap(Fn1<? super A, ? extends B> fn) {
         return frequencyMap3(weightA, generatorA.fmap(fn),
                 weightB, generatorB.fmap(fn),
                 weightC, generatorC.fmap(fn));

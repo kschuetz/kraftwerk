@@ -1,10 +1,9 @@
 package dev.marksman.composablerandom.frequency;
 
+import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.composablerandom.FrequencyEntry;
 import dev.marksman.composablerandom.Generator;
 import dev.marksman.composablerandom.ToGenerator;
-
-import java.util.function.Function;
 
 import static dev.marksman.composablerandom.Generator.constant;
 import static dev.marksman.composablerandom.frequency.FrequencyMap1.frequencyMap1;
@@ -17,7 +16,7 @@ public interface FrequencyMap<A> extends ToGenerator<A> {
 
     FrequencyMap<A> combine(FrequencyMap<A> other);
 
-    <B> FrequencyMap<B> fmap(Function<? super A, ? extends B> fn);
+    <B> FrequencyMap<B> fmap(Fn1<? super A, ? extends B> fn);
 
     /**
      * Multiplies existing weights by `positiveFactor`.  Useful for combining with

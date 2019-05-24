@@ -1,5 +1,6 @@
 package dev.marksman.composablerandom;
 
+import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.discretedomain.DiscreteDomain;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ class Shuffle {
         return generateShuffled(count, id());
     }
 
-    public static <A> Generator<ArrayList<A>> generateShuffled(int count, Function<Integer, A> fn) {
+    public static <A> Generator<ArrayList<A>> generateShuffled(int count, Fn1<Integer, A> fn) {
 //        return Generator.toGenerator(stateIn -> {
 //            ArrayList<A> target = newInputInstance(count, fn);
 //            RandomState stateOut = shuffleInPlace(stateIn, target);
