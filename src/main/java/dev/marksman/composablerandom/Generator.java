@@ -866,7 +866,6 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         return new Product8<>(a, b, c, d, e, f, g, h, Tuple8::tuple);
     }
 
-
     // TODO:  organize these
 
 
