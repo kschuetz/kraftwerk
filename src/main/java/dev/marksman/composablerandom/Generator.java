@@ -7,10 +7,11 @@ import com.jnape.palatable.lambda.adt.choice.*;
 import com.jnape.palatable.lambda.adt.hlist.*;
 import com.jnape.palatable.lambda.functions.*;
 import com.jnape.palatable.lambda.monad.Monad;
-import dev.marksman.collectionviews.NonEmptyVector;
+import dev.marksman.collectionviews.*;
 import dev.marksman.composablerandom.choice.ChoiceBuilder1;
 import dev.marksman.composablerandom.frequency.FrequencyMap;
 import dev.marksman.composablerandom.util.Labeling;
+import dev.marksman.enhancediterables.NonEmptyIterable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -744,6 +745,29 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         return buildCollection(initialCollectionSupplier, replicate(size, generator));
     }
 
+    public static <A> Generator<ImmutableVector<A>> buildVector(Iterable<Generator<A>> elements) {
+        return new Aggregate<>(Vector::<A>builder, VectorBuilder::add, VectorBuilder::build, elements);
+    }
+
+    public static <A> Generator<ImmutableVector<A>> buildVector(int size, Generator<A> generator) {
+        return new Aggregate<A, VectorBuilder<A>, ImmutableVector<A>>(() -> Vector.builder(size), VectorBuilder::add,
+                VectorBuilder::build, replicate(size, generator));
+    }
+
+    public static <A> Generator<ImmutableNonEmptyVector<A>> buildNonEmptyVector(NonEmptyIterable<Generator<A>> elements) {
+        return new Aggregate<>(Vector::<A>builder, VectorBuilder::add, b -> b.build().toNonEmptyOrThrow(), elements);
+    }
+
+    public static <A> Generator<ImmutableNonEmptyVector<A>> buildNonEmptyVector(int size, Generator<A> generator) {
+        if (size < 1) {
+            throw new IllegalArgumentException("size must be >= 1");
+
+        }
+        return new Aggregate<A, VectorBuilder<A>, ImmutableNonEmptyVector<A>>(() -> Vector.builder(size), VectorBuilder::add,
+                aVectorBuilder -> aVectorBuilder.build().toNonEmptyOrThrow(),
+                replicate(size, generator));
+    }
+
     public static <A, B, C, D, E, F, G, H, Out> Generator<Out> product(Generator<A> a,
                                                                        Generator<B> b,
                                                                        Fn2<A, B, Out> combine) {
@@ -1039,6 +1063,22 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
 
     public static <A> Generator<HashSet<A>> generateNonEmptySet(Generator<A> g) {
         return Collections.generateNonEmptySet(g);
+    }
+
+    static <A> Generator<ImmutableVector<A>> generateVector(Generator<A> g) {
+        return Collections.generateVector(g);
+    }
+
+    static <A> Generator<ImmutableNonEmptyVector<A>> generateNonEmptyVector(Generator<A> g) {
+        return Collections.generateNonEmptyVector(g);
+    }
+
+    static <A> Generator<ImmutableVector<A>> generateVectorOfN(int n, Generator<A> g) {
+        return Collections.generateVectorOfN(n, g);
+    }
+
+    static <A> Generator<ImmutableNonEmptyVector<A>> generateNonEmptyVectorOfN(int n, Generator<A> g) {
+        return Collections.generateNonEmptyVectorOfN(n, g);
     }
 
     public static <K, V> Generator<Map<K, V>> generateMap(Generator<K> keyGenerator,

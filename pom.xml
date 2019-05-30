@@ -17,7 +17,7 @@
 
     <properties>
         <lambda.version>4.0.0</lambda.version>
-        <collection-views.version>0.4.0</collection-views.version>
+        <collection-views.version>0.4.1</collection-views.version>
         <junit.version>5.4.0</junit.version>
         <commons-math.version>3.6.1</commons-math.version>
         <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>

@@ -1,12 +1,13 @@
 package dev.marksman.composablerandom;
 
+import dev.marksman.collectionviews.ImmutableNonEmptyVector;
+import dev.marksman.collectionviews.ImmutableVector;
 import dev.marksman.collectionviews.NonEmptyVector;
 
 import java.util.*;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Zip.zip;
-import static dev.marksman.composablerandom.Generator.buildCollection;
-import static dev.marksman.composablerandom.Generator.sized;
+import static dev.marksman.composablerandom.Generator.*;
 
 class Collections {
 
@@ -31,6 +32,28 @@ class Collections {
 
     static <A> Generator<HashSet<A>> generateNonEmptySet(Generator<A> g) {
         return sized(n -> buildHashSet(Math.max(1, n), g));
+    }
+
+    static <A> Generator<ImmutableVector<A>> generateVector(Generator<A> g) {
+        return sized(n -> buildVector(n, g));
+    }
+
+    static <A> Generator<ImmutableNonEmptyVector<A>> generateNonEmptyVector(Generator<A> g) {
+        return sized(n -> buildNonEmptyVector(Math.max(1, n), g));
+    }
+
+    static <A> Generator<ImmutableVector<A>> generateVectorOfN(int n, Generator<A> g) {
+        if (n < 0) {
+            throw new IllegalArgumentException("n must be >= 0");
+        }
+        return buildVector(n, g);
+    }
+
+    static <A> Generator<ImmutableNonEmptyVector<A>> generateNonEmptyVectorOfN(int n, Generator<A> g) {
+        if (n < 1) {
+            throw new IllegalArgumentException("n must be >= 1");
+        }
+        return buildNonEmptyVector(n, g);
     }
 
     static <K, V> Generator<Map<K, V>> generateMap(Generator<K> keyGenerator,
