@@ -977,22 +977,22 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     }
 
     @SafeVarargs
-    public static <A> Generator<ArrayList<A>> chooseAtLeastOneOfValues(A first, A... more) {
+    public static <A> Generator<ImmutableNonEmptyVector<A>> chooseAtLeastOneOfValues(A first, A... more) {
         return Choose.chooseAtLeastOneOfValues(first, more);
     }
 
     @SafeVarargs
-    public static <A> Generator<ArrayList<A>> chooseAtLeastOneOf(Generator<? extends A> first, Generator<? extends A>... more) {
+    public static <A> Generator<ImmutableNonEmptyVector<A>> chooseAtLeastOneOf(Generator<? extends A> first, Generator<? extends A>... more) {
         return Choose.chooseAtLeastOneOf(first, more);
     }
 
     @SafeVarargs
-    public static <A> Generator<ArrayList<A>> chooseSomeOfValues(A first, A... more) {
+    public static <A> Generator<ImmutableVector<A>> chooseSomeOfValues(A first, A... more) {
         return Choose.chooseSomeOf(first, more);
     }
 
     @SafeVarargs
-    public static <A> Generator<ArrayList<A>> chooseSomeOf(Generator<? extends A> first, Generator<? extends A>... more) {
+    public static <A> Generator<ImmutableVector<A>> chooseSomeOf(Generator<? extends A> first, Generator<? extends A>... more) {
         return Choose.chooseSomeOf(first, more);
     }
 
@@ -1004,19 +1004,19 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         return Choose.chooseOneFromDomain(domain);
     }
 
-    public static <A> Generator<ArrayList<A>> chooseAtLeastOneFromCollection(Collection<A> items) {
+    public static <A> Generator<ImmutableNonEmptyVector<A>> chooseAtLeastOneFromCollection(Collection<A> items) {
         return Choose.chooseAtLeastOneFromCollection(items);
     }
 
-    public static <A> Generator<ArrayList<A>> chooseAtLeastOneFromDomain(NonEmptyVector<A> domain) {
+    public static <A> Generator<ImmutableNonEmptyVector<A>> chooseAtLeastOneFromDomain(NonEmptyVector<A> domain) {
         return Choose.chooseAtLeastOneFromDomain(domain);
     }
 
-    public static <A> Generator<ArrayList<A>> chooseSomeFromCollection(Collection<A> items) {
+    public static <A> Generator<ImmutableVector<A>> chooseSomeFromCollection(Collection<A> items) {
         return Choose.chooseSomeFromDomain(items);
     }
 
-    public static <A> Generator<ArrayList<A>> chooseSomeFromDomain(NonEmptyVector<A> domain) {
+    public static <A> Generator<ImmutableVector<A>> chooseSomeFromDomain(NonEmptyVector<A> domain) {
         return Choose.chooseSomeFromDomain(domain);
     }
 
