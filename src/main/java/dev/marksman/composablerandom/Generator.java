@@ -711,7 +711,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         return new NextBytes(count);
     }
 
-    public static <A> Generator<A> sized(Function<Integer, Generator<A>> fn) {
+    public static <A> Generator<A> sized(Fn1<Integer, Generator<A>> fn) {
         return new Sized<>(fn::apply);
     }
 

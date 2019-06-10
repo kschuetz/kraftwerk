@@ -14,6 +14,7 @@ import java.util.Set;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Cons.cons;
 import static com.jnape.palatable.lambda.functions.builtin.fn3.FoldLeft.foldLeft;
 import static dev.marksman.composablerandom.Generator.constant;
+import static dev.marksman.composablerandom.ReservoirSample.reservoirSample;
 import static dev.marksman.composablerandom.frequency.FrequencyMap.frequencyMap;
 import static dev.marksman.composablerandom.frequency.FrequencyMapBuilder.frequencyMapBuilder;
 import static java.util.Arrays.asList;
@@ -73,7 +74,7 @@ class Choose {
     }
 
     static <A> Generator<ArrayList<A>> chooseAtLeastOneFromDomain(NonEmptyVector<A> domain) {
-        return null;
+        return chooseSomeFromValues(1, domain);
     }
 
     static <A> Generator<ArrayList<A>> chooseSomeFromDomain(Collection<A> items) {
@@ -82,7 +83,7 @@ class Choose {
     }
 
     static <A> Generator<ArrayList<A>> chooseSomeFromDomain(NonEmptyVector<A> domain) {
-        return null;
+        return chooseSomeFromValues(0, domain);
     }
 
     static <K, V> Generator<Map.Entry<K, V>> chooseEntryFromMap(Map<K, V> map) {
@@ -129,6 +130,21 @@ class Choose {
         if (!items.iterator().hasNext()) {
             throw new IllegalArgumentException(methodName + " requires at least one choice");
         }
+    }
+
+    private static <A> Generator<ArrayList<A>> chooseSomeFromValues(int min, NonEmptyVector<A> domain) {
+        return Generator.sized(k -> reservoirSample(domain.size(), Math.max(k, min))
+                .fmap(indices -> {
+                    ArrayList<A> result = new ArrayList<A>();
+                    for (Integer idx : indices) {
+                        result.add(domain.unsafeGet(idx));
+                    }
+                    return result;
+                }));
+    }
+
+    private static <A> Generator<ArrayList<A>> chooseSomeFromGenerators(int min, NonEmptyVector<Generator<A>> domain) {
+        return null;
     }
 
 }
