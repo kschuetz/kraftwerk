@@ -13,6 +13,7 @@ import java.util.Set;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Cons.cons;
 import static com.jnape.palatable.lambda.functions.builtin.fn3.FoldLeft.foldLeft;
+import static dev.marksman.composablerandom.Generator.buildCollection;
 import static dev.marksman.composablerandom.Generator.constant;
 import static dev.marksman.composablerandom.ReservoirSample.reservoirSample;
 import static dev.marksman.composablerandom.frequency.FrequencyMap.frequencyMap;
@@ -41,7 +42,7 @@ class Choose {
 
     @SafeVarargs
     static <A> Generator<ArrayList<A>> chooseAtLeastOneOf(Generator<? extends A> first, Generator<? extends A>... more) {
-        return null;
+        return chooseSomeFromGenerators(1, NonEmptyVector.of(first, more));
     }
 
     @SafeVarargs
@@ -51,7 +52,7 @@ class Choose {
 
     @SafeVarargs
     static <A> Generator<ArrayList<A>> chooseSomeOf(Generator<? extends A> first, Generator<? extends A>... more) {
-        return null;
+        return chooseSomeFromGenerators(0, NonEmptyVector.of(first, more));
     }
 
     static <A> Generator<A> chooseOneFromCollection(Collection<A> items) {
@@ -109,7 +110,6 @@ class Choose {
     }
 
     @SafeVarargs
-    @SuppressWarnings("unchecked")
     static <A> Generator<A> frequency(FrequencyEntry<A> first, FrequencyEntry<A>... more) {
         return frequencyImpl(cons(first, asList(more)));
     }
@@ -135,7 +135,7 @@ class Choose {
     private static <A> Generator<ArrayList<A>> chooseSomeFromValues(int min, NonEmptyVector<A> domain) {
         return Generator.sized(k -> reservoirSample(domain.size(), Math.max(k, min))
                 .fmap(indices -> {
-                    ArrayList<A> result = new ArrayList<A>();
+                    ArrayList<A> result = new ArrayList<>();
                     for (Integer idx : indices) {
                         result.add(domain.unsafeGet(idx));
                     }
@@ -143,8 +143,16 @@ class Choose {
                 }));
     }
 
-    private static <A> Generator<ArrayList<A>> chooseSomeFromGenerators(int min, NonEmptyVector<Generator<A>> domain) {
-        return null;
+    @SuppressWarnings("unchecked")
+    private static <A> Generator<ArrayList<A>> chooseSomeFromGenerators(int min, NonEmptyVector<Generator<? extends A>> domain) {
+        return Generator.sized(k -> reservoirSample(domain.size(), Math.max(k, min))
+                .flatMap(indices -> {
+                    ArrayList<Generator<A>> generators = new ArrayList<>();
+                    for (Integer idx : indices) {
+                        generators.add((Generator<A>) domain.unsafeGet(idx));
+                    }
+                    return buildCollection(ArrayList::new, generators);
+                }));
     }
 
 }
