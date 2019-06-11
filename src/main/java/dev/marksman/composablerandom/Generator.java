@@ -103,12 +103,32 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         return CoProducts.generateRight(this);
     }
 
-    public final Generator<ArrayList<A>> list() {
-        return generateList(this);
+    public final Generator<ArrayList<A>> arrayList() {
+        return generateArrayList(this);
     }
 
-    public final Generator<ArrayList<A>> listOfN(int count) {
-        return generateListOfN(count, this);
+    public final Generator<ArrayList<A>> nonEmptyArrayList() {
+        return generateNonEmptyArrayList(this);
+    }
+
+    public final Generator<ArrayList<A>> arrayListOfN(int count) {
+        return generateArrayListOfN(count, this);
+    }
+
+    public final Generator<ImmutableVector<A>> vector() {
+        return generateVector(this);
+    }
+
+    public final Generator<ImmutableVector<A>> vectorOfN(int count) {
+        return generateVectorOfN(count, this);
+    }
+
+    public final Generator<ImmutableNonEmptyVector<A>> nonEmptyVector() {
+        return generateNonEmptyVector(this);
+    }
+
+    public final Generator<ImmutableNonEmptyVector<A>> nonEmptyVectorOfN(int count) {
+        return generateNonEmptyVectorOfN(count, this);
     }
 
     @EqualsAndHashCode(callSuper = true)
@@ -1045,24 +1065,24 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         return Choose.frequency(entries);
     }
 
-    public static <A> Generator<ArrayList<A>> generateList(Generator<A> g) {
-        return Collections.generateList(g);
+    public static <A> Generator<ArrayList<A>> generateArrayList(Generator<A> g) {
+        return Collections.generateArrayList(g);
     }
 
-    public static <A> Generator<ArrayList<A>> generateNonEmptyList(Generator<A> g) {
-        return Collections.generateNonEmptyList(g);
+    public static <A> Generator<ArrayList<A>> generateNonEmptyArrayList(Generator<A> g) {
+        return Collections.generateNonEmptyArrayList(g);
     }
 
-    public static <A> Generator<ArrayList<A>> generateListOfN(int n, Generator<A> g) {
-        return Collections.generateListOfN(n, g);
+    public static <A> Generator<ArrayList<A>> generateArrayListOfN(int n, Generator<A> g) {
+        return Collections.generateArrayListOfN(n, g);
     }
 
-    public static <A> Generator<HashSet<A>> generateSet(Generator<A> g) {
-        return Collections.generateSet(g);
+    public static <A> Generator<HashSet<A>> generateHashSet(Generator<A> g) {
+        return Collections.generateHashSet(g);
     }
 
-    public static <A> Generator<HashSet<A>> generateNonEmptySet(Generator<A> g) {
-        return Collections.generateNonEmptySet(g);
+    public static <A> Generator<HashSet<A>> generateNonEmptyHashSet(Generator<A> g) {
+        return Collections.generateNonEmptyHashSet(g);
     }
 
     static <A> Generator<ImmutableVector<A>> generateVector(Generator<A> g) {

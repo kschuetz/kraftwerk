@@ -12,7 +12,8 @@ import java.util.Set;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Cons.cons;
 import static com.jnape.palatable.lambda.functions.builtin.fn3.FoldLeft.foldLeft;
-import static dev.marksman.composablerandom.Generator.*;
+import static dev.marksman.composablerandom.Generator.buildVector;
+import static dev.marksman.composablerandom.Generator.constant;
 import static dev.marksman.composablerandom.ReservoirSample.reservoirSample;
 import static dev.marksman.composablerandom.frequency.FrequencyMap.frequencyMap;
 import static dev.marksman.composablerandom.frequency.FrequencyMapBuilder.frequencyMapBuilder;
@@ -128,17 +129,6 @@ class Choose {
         }
     }
 
-//    private static <A> Generator<ArrayList<A>> chooseSomeFromValues(int min, NonEmptyVector<A> domain) {
-//        return Generator.sized(k -> reservoirSample(domain.size(), Math.max(k, min))
-//                .fmap(indices -> {
-//                    ArrayList<A> result = new ArrayList<>();
-//                    for (Integer idx : indices) {
-//                        result.add(domain.unsafeGet(idx));
-//                    }
-//                    return result;
-//                }));
-//    }
-
     private static <A> Generator<ImmutableVector<A>> chooseSomeFromValues(int min, NonEmptyVector<A> domain) {
         return Generator.sized(k -> reservoirSample(domain.size(), Math.max(k, min))
                 .fmap(indices -> {
@@ -159,18 +149,6 @@ class Choose {
                         generators.add((Generator<A>) domain.unsafeGet(idx));
                     }
                     return buildVector(generators);
-                }));
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <A> Generator<ArrayList<A>> chooseSomeFromGenerators_Old(int min, NonEmptyVector<Generator<? extends A>> domain) {
-        return Generator.sized(k -> reservoirSample(domain.size(), Math.max(k, min))
-                .flatMap(indices -> {
-                    ArrayList<Generator<A>> generators = new ArrayList<>();
-                    for (Integer idx : indices) {
-                        generators.add((Generator<A>) domain.unsafeGet(idx));
-                    }
-                    return buildCollection(ArrayList::new, generators);
                 }));
     }
 

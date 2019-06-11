@@ -11,26 +11,26 @@ import static dev.marksman.composablerandom.Generator.*;
 
 class Collections {
 
-    static <A> Generator<ArrayList<A>> generateList(Generator<A> g) {
+    static <A> Generator<ArrayList<A>> generateArrayList(Generator<A> g) {
         return sized(n -> buildArrayList(n, g));
     }
 
-    static <A> Generator<ArrayList<A>> generateNonEmptyList(Generator<A> g) {
+    static <A> Generator<ArrayList<A>> generateNonEmptyArrayList(Generator<A> g) {
         return sized(n -> buildArrayList(Math.max(1, n), g));
     }
 
-    static <A> Generator<ArrayList<A>> generateListOfN(int n, Generator<A> g) {
+    static <A> Generator<ArrayList<A>> generateArrayListOfN(int n, Generator<A> g) {
         if (n < 0) {
             throw new IllegalArgumentException("n must be >= 0");
         }
         return buildArrayList(n, g);
     }
 
-    static <A> Generator<HashSet<A>> generateSet(Generator<A> g) {
+    static <A> Generator<HashSet<A>> generateHashSet(Generator<A> g) {
         return sized(n -> buildHashSet(n, g));
     }
 
-    static <A> Generator<HashSet<A>> generateNonEmptySet(Generator<A> g) {
+    static <A> Generator<HashSet<A>> generateNonEmptyHashSet(Generator<A> g) {
         return sized(n -> buildHashSet(Math.max(1, n), g));
     }
 
@@ -87,7 +87,7 @@ class Collections {
     private static <K, V> Generator<Map<K, V>> generateMapImpl(int size,
                                                                Iterable<K> keys,
                                                                Generator<V> valueGenerator) {
-        return generateListOfN(size, valueGenerator)
+        return generateArrayListOfN(size, valueGenerator)
                 .fmap(values -> {
                     HashMap<K, V> result = new HashMap<>();
                     zip(keys, values)
@@ -97,7 +97,7 @@ class Collections {
     }
 
     private static <K, V> Generator<Map<K, V>> generateMapOfN(int n, Generator<K> keyGenerator, Generator<V> valueGenerator) {
-        return generateListOfN(n, keyGenerator)
+        return generateArrayListOfN(n, keyGenerator)
                 .flatMap(keys -> generateMapImpl(keys.size(), keys, valueGenerator));
     }
 
