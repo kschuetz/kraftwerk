@@ -11,6 +11,8 @@ import dev.marksman.collectionviews.*;
 import dev.marksman.composablerandom.choice.ChoiceBuilder1;
 import dev.marksman.composablerandom.frequency.FrequencyMap;
 import dev.marksman.composablerandom.util.Labeling;
+import dev.marksman.enhancediterables.EnhancedIterable;
+import dev.marksman.enhancediterables.ImmutableNonEmptyIterable;
 import dev.marksman.enhancediterables.NonEmptyIterable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -624,6 +626,20 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
 
     }
 
+    @EqualsAndHashCode(callSuper = true)
+    @Value
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class Infinite<A> extends Generator<ImmutableNonEmptyIterable<A>> {
+        private static Maybe<String> LABEL = Maybe.just("infinite");
+
+        private final Generator<A> generator;
+
+        @Override
+        public Maybe<String> getLabel() {
+            return LABEL;
+        }
+    }
+
     public static <A> Generator<A> constant(A a) {
         return new Constant<>(a);
     }
@@ -1119,6 +1135,10 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     public static <K, V> Generator<Map<K, V>> generateNonEmptyMap(Generator<K> keyGenerator,
                                                                   Generator<V> valueGenerator) {
         return Collections.generateNonEmptyMap(keyGenerator, valueGenerator);
+    }
+
+    public static <A> Generator<ImmutableNonEmptyIterable<A>> generateInfiniteIterable(Generator<A> generator) {
+        return new Infinite<>(generator);
     }
 
     public static <A> ChoiceBuilder1<A> choiceBuilder(int weight, Generator<A> firstChoice) {
