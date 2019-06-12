@@ -1,12 +1,12 @@
 package testsupport;
 
+import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.composablerandom.RandomState;
 import dev.marksman.composablerandom.random.StandardGen;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 import java.util.Random;
-import java.util.function.Function;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class GeneratorPair {
@@ -30,7 +30,7 @@ public class GeneratorPair {
         return new GeneratorPair(initialSeedValue, random, rs);
     }
 
-    public GeneratorPair updateRandomState(Function<RandomState, RandomState> f) {
+    public GeneratorPair updateRandomState(Fn1<RandomState, RandomState> f) {
         return withRandomState(f.apply(randomState));
     }
 

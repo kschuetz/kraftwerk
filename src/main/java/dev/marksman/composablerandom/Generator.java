@@ -26,8 +26,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
@@ -475,7 +473,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     public static class Aggregate<Elem, Builder, Out> extends Generator<Out> {
         private static Maybe<String> LABEL = Maybe.just("aggregate");
 
-        private final Supplier<Builder> initialBuilderSupplier;
+        private final Fn0<Builder> initialBuilderSupplier;
         private final Fn2<Builder, Elem, Builder> addFn;
         private final Fn1<Builder, Out> buildFn;
         private final Iterable<Generator<Elem>> elements;
@@ -645,7 +643,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         return new Constant<>(a);
     }
 
-    public static <A> Generator<A> generator(Function<? super RandomState, Result> fn) {
+    public static <A> Generator<A> generator(Fn1<? super RandomState, Result> fn) {
         return new Custom<A>(fn::apply);
     }
 
@@ -752,14 +750,14 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         return new Sized<>(fn::apply);
     }
 
-    public static <A, Builder, Out> Aggregate<A, Builder, Out> aggregate(Supplier<Builder> initialBuilderSupplier,
+    public static <A, Builder, Out> Aggregate<A, Builder, Out> aggregate(Fn0<Builder> initialBuilderSupplier,
                                                                          Fn2<Builder, A, Builder> addFn,
                                                                          Fn1<Builder, Out> buildFn,
                                                                          Iterable<Generator<A>> elements) {
         return new Aggregate<>(initialBuilderSupplier, addFn, buildFn, elements);
     }
 
-    public static <Elem, Builder, Out> Generator<Out> aggregate(Supplier<Builder> initialBuilderSupplier,
+    public static <Elem, Builder, Out> Generator<Out> aggregate(Fn0<Builder> initialBuilderSupplier,
                                                                 Fn2<Builder, Elem, Builder> addFn,
                                                                 Fn1<Builder, Out> buildFn,
                                                                 int size,
@@ -767,7 +765,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         return new Aggregate<>(initialBuilderSupplier, addFn, buildFn, replicate(size, generator));
     }
 
-    public static <A, C extends Collection<A>> Generator<C> buildCollection(Supplier<C> initialCollectionSupplier,
+    public static <A, C extends Collection<A>> Generator<C> buildCollection(Fn0<C> initialCollectionSupplier,
                                                                             Iterable<Generator<A>> elements) {
         return new Aggregate<>(initialCollectionSupplier,
                 (collection, item) -> {
@@ -776,7 +774,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
                 }, id(), elements);
     }
 
-    public static <A, C extends Collection<A>> Generator<C> buildCollection(Supplier<C> initialCollectionSupplier,
+    public static <A, C extends Collection<A>> Generator<C> buildCollection(Fn0<C> initialCollectionSupplier,
                                                                             int size,
                                                                             Generator<A> generator) {
         return buildCollection(initialCollectionSupplier, replicate(size, generator));

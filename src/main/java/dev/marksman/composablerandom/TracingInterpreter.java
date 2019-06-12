@@ -304,7 +304,7 @@ public class TracingInterpreter {
     private <Elem, Builder, Out> CompiledGenerator<Trace<Out>> handleAggregate(Generator.Aggregate<Elem, Builder, Out> generator) {
         @SuppressWarnings("UnnecessaryLocalVariable")
         AggregateImpl<Trace<Elem>, TraceCollector<Builder>, Trace<Out>> aggregator = aggregateImpl(
-                () -> new TraceCollector<>(generator.getInitialBuilderSupplier().get()),
+                () -> new TraceCollector<>(generator.getInitialBuilderSupplier().apply()),
                 (tc, tracedElem) -> {
                     tc.state = generator.getAddFn().apply(tc.state, tracedElem.getResult());
                     tc.traces.add(tracedElem);

@@ -1,9 +1,5 @@
 package dev.marksman.composablerandom.benchmarks;
 
-import dev.marksman.composablerandom.*;
-
-import java.util.function.Function;
-
 import static dev.marksman.composablerandom.StandardParameters.defaultParameters;
 import static dev.marksman.composablerandom.TracingInterpreter.tracingInterpreter;
 import static dev.marksman.composablerandom.legacy.DefaultInterpreterMark3.defaultInterpreter;
@@ -63,7 +59,7 @@ public class Runner {
         System.out.println("traced " + label + ": " + t + " ms");
     }
 
-    public static <A> void runRandomState(String label, int iterations, Function<RandomState, Result<? extends RandomState, A>> fn) {
+    public static <A> void runRandomState(String label, int iterations, Fn1<RandomState, Result<? extends RandomState, A>> fn) {
         RandomState currentState = initStandardGen();
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < iterations; i++) {

@@ -5,7 +5,6 @@ import dev.marksman.collectionviews.NonEmptyVector;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.function.Function;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
 
@@ -45,7 +44,7 @@ class Shuffle {
         return generateShuffled((int) size, domain::unsafeGet);
     }
 
-    private static <A> ArrayList<A> newInputInstance(int count, Function<Integer, A> fn) {
+    private static <A> ArrayList<A> newInputInstance(int count, Fn1<Integer, A> fn) {
         ArrayList<A> result = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
             result.add(fn.apply(i));

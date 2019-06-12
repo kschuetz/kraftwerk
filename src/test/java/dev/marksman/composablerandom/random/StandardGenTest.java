@@ -1,12 +1,12 @@
 package dev.marksman.composablerandom.random;
 
 import com.jnape.palatable.lambda.adt.product.Product2;
+import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.composablerandom.RandomState;
 import org.junit.jupiter.api.Test;
 import testsupport.GeneratorPair;
 
 import java.util.Random;
-import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static testsupport.GeneratorPair.newRandomGeneratorPair;
@@ -132,16 +132,16 @@ class StandardGenTest {
         assertEquals(seed, randomGen.getSeedValue());
     }
 
-    private <A> void testAgainstUtilRandom(Function<Random, A> getNextExpected,
-                                           Function<RandomState, Product2<? extends RandomState, A>> getNextResult) {
+    private <A> void testAgainstUtilRandom(Fn1<Random, A> getNextExpected,
+                                           Fn1<RandomState, Product2<? extends RandomState, A>> getNextResult) {
         GeneratorPair gp = newRandomGeneratorPair();
         testAgainstUtilRandom(gp, SEQUENCE_LENGTH, getNextExpected, getNextResult);
     }
 
     private <A> GeneratorPair testAgainstUtilRandom(GeneratorPair gp,
                                                     int times,
-                                                    Function<Random, A> getNextExpected,
-                                                    Function<RandomState, Product2<? extends RandomState, A>> getNextResult) {
+                                                    Fn1<Random, A> getNextExpected,
+                                                    Fn1<RandomState, Product2<? extends RandomState, A>> getNextResult) {
         RandomState current = gp.getRandomState();
         Random random = gp.getRandom();
         for (int i = 0; i < times; i++) {

@@ -1,5 +1,6 @@
 package dev.marksman.composablerandom.primitives;
 
+import com.jnape.palatable.lambda.functions.Fn0;
 import com.jnape.palatable.lambda.functions.Fn1;
 import com.jnape.palatable.lambda.functions.Fn2;
 import dev.marksman.composablerandom.CompiledGenerator;
@@ -8,13 +9,11 @@ import dev.marksman.composablerandom.Result;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
-import java.util.function.Supplier;
-
 import static dev.marksman.composablerandom.Result.result;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class AggregateImpl<Elem, Builder, Out> implements CompiledGenerator<Out> {
-    private final Supplier<Builder> initialBuilderSupplier;
+    private final Fn0<Builder> initialBuilderSupplier;
     private final Fn2<Builder, Elem, Builder> addFn;
     private final Fn1<Builder, Out> buildFn;
     private final Iterable<CompiledGenerator<Elem>> elements;
@@ -22,7 +21,7 @@ public class AggregateImpl<Elem, Builder, Out> implements CompiledGenerator<Out>
     @Override
     public Result<? extends RandomState, Out> run(RandomState input) {
         RandomState current = input;
-        Builder builder = initialBuilderSupplier.get();
+        Builder builder = initialBuilderSupplier.apply();
 
         for (CompiledGenerator<Elem> element : elements) {
             Result<? extends RandomState, Elem> next = element.run(current);
@@ -33,7 +32,7 @@ public class AggregateImpl<Elem, Builder, Out> implements CompiledGenerator<Out>
     }
 
     public static <Elem, Builder, Out> AggregateImpl<Elem, Builder, Out> aggregateImpl(
-            Supplier<Builder> initialBuilderSupplier,
+            Fn0<Builder> initialBuilderSupplier,
             Fn2<Builder, Elem, Builder> addFn,
             Fn1<Builder, Out> buildFn,
             Iterable<CompiledGenerator<Elem>> elements) {
