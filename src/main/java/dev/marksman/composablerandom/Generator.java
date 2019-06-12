@@ -7,11 +7,12 @@ import com.jnape.palatable.lambda.adt.choice.*;
 import com.jnape.palatable.lambda.adt.hlist.*;
 import com.jnape.palatable.lambda.functions.*;
 import com.jnape.palatable.lambda.monad.Monad;
+import com.jnape.palatable.lambda.monoid.Monoid;
+import com.jnape.palatable.lambda.semigroup.Semigroup;
 import dev.marksman.collectionviews.*;
 import dev.marksman.composablerandom.choice.ChoiceBuilder1;
 import dev.marksman.composablerandom.frequency.FrequencyMap;
 import dev.marksman.composablerandom.util.Labeling;
-import dev.marksman.enhancediterables.EnhancedIterable;
 import dev.marksman.enhancediterables.ImmutableNonEmptyIterable;
 import dev.marksman.enhancediterables.NonEmptyIterable;
 import lombok.AccessLevel;
@@ -1239,6 +1240,23 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
 
     public static Generator<LocalDate> generateLocalDateForYear(int year) {
         return Temporal.generateLocalDateForYear(year);
+    }
+
+    static <A> Generator<A> generateFromSemigroup(Semigroup<A> semigroup, Generator<A> generator) {
+        return Lambda.generateFromSemigroup(semigroup, generator);
+
+    }
+
+    static <A> Generator<A> generateNFromSemigroup(Semigroup<A> semigroup, Generator<A> generator, int count) {
+        return Lambda.generateNFromSemigroup(semigroup, generator, count);
+    }
+
+    static <A> Generator<A> generateFromMonoid(Monoid<A> monoid, Generator<A> generator) {
+        return Lambda.generateFromMonoid(monoid, generator);
+    }
+
+    static <A> Generator<A> generateNFromMonoid(Monoid<A> monoid, Generator<A> generator, int count) {
+        return Lambda.generateNFromMonoid(monoid, generator, count);
     }
 
     private static <A, B> Generator<B> mapped(Fn1<? super A, ? extends B> fn, Generator<A> operand) {
