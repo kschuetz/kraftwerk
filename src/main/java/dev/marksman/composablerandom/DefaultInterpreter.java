@@ -1,13 +1,13 @@
 package dev.marksman.composablerandom;
 
 import dev.marksman.enhancediterables.ImmutableNonEmptyIterable;
-import dev.marksman.enhancediterables.NonEmptyIterable;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Map.map;
 import static dev.marksman.composablerandom.primitives.AggregateImpl.aggregateImpl;
 import static dev.marksman.composablerandom.primitives.ConstantImpl.constantImpl;
 import static dev.marksman.composablerandom.primitives.CustomImpl.customImpl;
 import static dev.marksman.composablerandom.primitives.FlatMappedImpl.flatMappedImpl;
+import static dev.marksman.composablerandom.primitives.HigherOrderImpl.higherOrderImpl;
 import static dev.marksman.composablerandom.primitives.InfiniteImpl.infiniteImpl;
 import static dev.marksman.composablerandom.primitives.MappedImpl.mappedImpl;
 import static dev.marksman.composablerandom.primitives.NextBooleanImpl.nextBooleanImpl;
@@ -58,6 +58,11 @@ public class DefaultInterpreter implements Interpreter {
         if (generator instanceof Generator.Infinite) {
             //noinspection unchecked
             return (CompiledGenerator<A>) handleInfinite(context, (Generator.Infinite<A>) generator);
+        }
+
+        if (generator instanceof Generator.HigherOrder) {
+            //noinspection unchecked
+            return (CompiledGenerator<A>) handleHigherOrder(context, (Generator.HigherOrder<?, A>) generator);
         }
 
         if (generator instanceof Generator.NextInt) {
@@ -272,6 +277,10 @@ public class DefaultInterpreter implements Interpreter {
     private <A> CompiledGenerator<ImmutableNonEmptyIterable<A>> handleInfinite(InterpreterContext context,
                                                                                Generator.Infinite<A> infinite) {
         return infiniteImpl(context.recurse(infinite.getGenerator()));
+    }
+
+    private <In, Out> CompiledGenerator<Out> handleHigherOrder(InterpreterContext context, Generator.HigherOrder<In, Out> generator) {
+        return higherOrderImpl(context.recurse(generator.getGenerator()), generator.getFn());
     }
 
     public static DefaultInterpreter defaultInterpreter() {
