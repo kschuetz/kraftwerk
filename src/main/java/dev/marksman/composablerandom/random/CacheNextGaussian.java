@@ -80,6 +80,11 @@ final class CacheNextGaussian implements RandomState {
         return result(inner, nextGaussian);
     }
 
+    @Override
+    public RandomState perturb(long value) {
+        return inner.perturb(value);
+    }
+
     private <A> Result<CacheNextGaussian, A> wrap(Result<StandardGen, A> result) {
         return result(cacheNextGaussian(result._1(), nextGaussian), result._2());
     }

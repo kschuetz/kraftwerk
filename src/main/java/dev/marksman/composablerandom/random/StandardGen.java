@@ -238,6 +238,12 @@ public final class StandardGen implements RandomState {
         return result(cacheNextGaussian(newSeed, nextResult), result);
     }
 
+    @Override
+    public final RandomState perturb(long value) {
+        long newSeed = nextLong().getValue() ^ value;
+        return nextStandardGen(newSeed);
+    }
+
     private Result<StandardGen, Integer> next(int bits) {
         long newSeedValue = (seedValue * 0x5DEECE66DL + 0xBL) & ((1L << 48) - 1);
         int result = (int) (newSeedValue >>> (48 - bits));

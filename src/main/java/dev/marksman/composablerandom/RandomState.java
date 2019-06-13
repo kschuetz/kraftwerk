@@ -30,4 +30,6 @@ public interface RandomState {
 
     Result<? extends RandomState, Double> nextGaussian();
 
+    RandomState perturb(long value);
+
 }
