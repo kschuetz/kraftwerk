@@ -628,20 +628,6 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Infinite<A> extends Generator<ImmutableNonEmptyIterable<A>> {
-        private static Maybe<String> LABEL = Maybe.just("infinite");
-
-        private final Generator<A> generator;
-
-        @Override
-        public Maybe<String> getLabel() {
-            return LABEL;
-        }
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Tap<A, B> extends Generator<B> {
         private static Maybe<String> LABEL = Maybe.just("tap");
 
@@ -1157,7 +1143,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     }
 
     public static <A> Generator<ImmutableNonEmptyIterable<A>> generateInfiniteIterable(Generator<A> generator) {
-        return new Infinite<>(generator);
+        return Infinite.generateInfiniteIterable(generator);
     }
 
     public static <A> ChoiceBuilder1<A> choiceBuilder(int weight, Generator<A> firstChoice) {

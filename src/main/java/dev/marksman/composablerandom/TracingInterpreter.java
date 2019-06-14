@@ -3,11 +3,9 @@ package dev.marksman.composablerandom;
 import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.composablerandom.Generator.Product6;
 import dev.marksman.composablerandom.primitives.AggregateImpl;
-import dev.marksman.enhancediterables.ImmutableNonEmptyIterable;
 
 import java.util.ArrayList;
 
-import static com.jnape.palatable.lambda.functions.builtin.fn1.Upcast.upcast;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Map.map;
 import static dev.marksman.composablerandom.CompiledGenerator.compiledGenerator;
 import static dev.marksman.composablerandom.Result.result;
@@ -16,7 +14,6 @@ import static dev.marksman.composablerandom.Trace.trace;
 import static dev.marksman.composablerandom.primitives.AggregateImpl.aggregateImpl;
 import static dev.marksman.composablerandom.primitives.ConstantImpl.constantImpl;
 import static dev.marksman.composablerandom.primitives.CustomImpl.customImpl;
-import static dev.marksman.composablerandom.primitives.InfiniteImpl.infiniteImpl;
 import static dev.marksman.composablerandom.primitives.MappedImpl.mappedImpl;
 import static dev.marksman.composablerandom.primitives.NextBooleanImpl.nextBooleanImpl;
 import static dev.marksman.composablerandom.primitives.NextByteImpl.nextByteImpl;
@@ -75,9 +72,8 @@ public class TracingInterpreter {
             return handleFlatMapped((Generator.FlatMapped<?, A>) generator);
         }
 
-        if (generator instanceof Generator.Infinite) {
-            //noinspection unchecked
-            return handleInfinite((Generator.Infinite<A>) generator);
+        if (generator instanceof Generator.Tap) {
+            return handleTap((Generator.Tap<?, A>) generator);
         }
 
         if (generator instanceof Generator.NextInt) {
@@ -259,20 +255,26 @@ public class TracingInterpreter {
         });
     }
 
-    @SuppressWarnings("unchecked")
-    private <Elem, Out> CompiledGenerator<Trace<Out>> handleInfinite(Generator.Infinite<Elem> generator) {
-        CompiledGenerator<Trace<Elem>> inner = compile(generator.getGenerator());
-        CompiledGenerator<ImmutableNonEmptyIterable<Trace<Elem>>> traceInfinite = infiniteImpl(inner);
+//
+//    @SuppressWarnings("unchecked")
+//    private <Elem, Out> CompiledGenerator<Trace<Out>> handleInfinite(Generator.Infinite<Elem> generator) {
+//        CompiledGenerator<Trace<Elem>> inner = compile(generator.getGenerator());
+//        CompiledGenerator<ImmutableNonEmptyIterable<Trace<Elem>>> traceInfinite = infiniteImpl(inner);
+//
+//        return compiledGenerator(rs -> {
+//            Result<? extends RandomState, ImmutableNonEmptyIterable<Trace<Elem>>> r1 = traceInfinite.run(rs);
+//            ImmutableNonEmptyIterable<Trace<Elem>> tracedValues = r1.getValue();
+//            return result(r1.getNextState(),
+//                    (Trace<Out>) trace(tracedValues.fmap(Trace::getResult),
+//                            generator,
+//                            tracedValues.take(INFINITE_ELISION_COUNT).fmap(upcast())));
+//        });
+//
+//    }
 
-        return compiledGenerator(rs -> {
-            Result<? extends RandomState, ImmutableNonEmptyIterable<Trace<Elem>>> r1 = traceInfinite.run(rs);
-            ImmutableNonEmptyIterable<Trace<Elem>> tracedValues = r1.getValue();
-            return result(r1.getNextState(),
-                    (Trace<Out>) trace(tracedValues.fmap(Trace::getResult),
-                            generator,
-                            tracedValues.take(INFINITE_ELISION_COUNT).fmap(upcast())));
-        });
-
+    // TODO: handleTap
+    private <Elem, Out> CompiledGenerator<Trace<Out>> handleTap(Generator.Tap<Elem, Out> generator) {
+        throw new UnsupportedOperationException();
     }
 
     private <A> CompiledGenerator<Trace<A>> handleSized(Generator.Sized<A> generator) {

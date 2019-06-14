@@ -1,13 +1,10 @@
 package dev.marksman.composablerandom;
 
-import dev.marksman.enhancediterables.ImmutableNonEmptyIterable;
-
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Map.map;
 import static dev.marksman.composablerandom.primitives.AggregateImpl.aggregateImpl;
 import static dev.marksman.composablerandom.primitives.ConstantImpl.constantImpl;
 import static dev.marksman.composablerandom.primitives.CustomImpl.customImpl;
 import static dev.marksman.composablerandom.primitives.FlatMappedImpl.flatMappedImpl;
-import static dev.marksman.composablerandom.primitives.InfiniteImpl.infiniteImpl;
 import static dev.marksman.composablerandom.primitives.MappedImpl.mappedImpl;
 import static dev.marksman.composablerandom.primitives.NextBooleanImpl.nextBooleanImpl;
 import static dev.marksman.composablerandom.primitives.NextByteImpl.nextByteImpl;
@@ -53,11 +50,6 @@ public class DefaultInterpreter implements Interpreter {
 
         if (generator instanceof Generator.FlatMapped) {
             return handleFlatMapped(context, (Generator.FlatMapped<?, A>) generator);
-        }
-
-        if (generator instanceof Generator.Infinite) {
-            //noinspection unchecked
-            return (CompiledGenerator<A>) handleInfinite(context, (Generator.Infinite<A>) generator);
         }
 
         if (generator instanceof Generator.Tap) {
@@ -271,11 +263,6 @@ public class DefaultInterpreter implements Interpreter {
                                                               Generator.FlatMapped<In, Out> flatMapped) {
         return flatMappedImpl(in -> context.recurse(flatMapped.getFn().apply(in)),
                 context.recurse(flatMapped.getOperand()));
-    }
-
-    private <A> CompiledGenerator<ImmutableNonEmptyIterable<A>> handleInfinite(InterpreterContext context,
-                                                                               Generator.Infinite<A> infinite) {
-        return infiniteImpl(context.recurse(infinite.getGenerator()));
     }
 
     private <In, Out> CompiledGenerator<Out> handleTap(InterpreterContext context, Generator.Tap<In, Out> generator) {
