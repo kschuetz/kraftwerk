@@ -1106,19 +1106,19 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         return Collections.generateNonEmptyHashSet(g);
     }
 
-    static <A> Generator<ImmutableVector<A>> generateVector(Generator<A> g) {
+    public static <A> Generator<ImmutableVector<A>> generateVector(Generator<A> g) {
         return Collections.generateVector(g);
     }
 
-    static <A> Generator<ImmutableNonEmptyVector<A>> generateNonEmptyVector(Generator<A> g) {
+    public static <A> Generator<ImmutableNonEmptyVector<A>> generateNonEmptyVector(Generator<A> g) {
         return Collections.generateNonEmptyVector(g);
     }
 
-    static <A> Generator<ImmutableVector<A>> generateVectorOfN(int n, Generator<A> g) {
+    public static <A> Generator<ImmutableVector<A>> generateVectorOfN(int n, Generator<A> g) {
         return Collections.generateVectorOfN(n, g);
     }
 
-    static <A> Generator<ImmutableNonEmptyVector<A>> generateNonEmptyVectorOfN(int n, Generator<A> g) {
+    public static <A> Generator<ImmutableNonEmptyVector<A>> generateNonEmptyVectorOfN(int n, Generator<A> g) {
         return Collections.generateNonEmptyVectorOfN(n, g);
     }
 
@@ -1220,6 +1220,78 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
                                                                                                      FrequencyEntry<G> g,
                                                                                                      FrequencyEntry<H> h) {
         return choiceBuilder(a).or(b).or(c).or(d).or(e).or(f).or(g).or(h).toGenerator();
+    }
+
+    public static <R> Generator<Fn0<R>> generateFn0(Generator<R> result) {
+        return Functions.generateFn0(result);
+    }
+
+    public static <A, R> Generator<Fn1<A, R>> generateFn1(Cogenerator<A> param1,
+                                                          Generator<R> result) {
+        return Functions.generateFn1(param1, result);
+    }
+
+    public static <A, B, R> Generator<Fn2<A, B, R>> generateFn2(Cogenerator<A> param1,
+                                                                Cogenerator<B> param2,
+                                                                Generator<R> result) {
+        return Functions.generateFn2(param1, param2, result);
+    }
+
+    public static <A, B, C, R> Generator<Fn3<A, B, C, R>> generateFn3(Cogenerator<A> param1,
+                                                                      Cogenerator<B> param2,
+                                                                      Cogenerator<C> param3,
+                                                                      Generator<R> result) {
+        return Functions.generateFn3(param1, param2, param3, result);
+    }
+
+    public static <A, B, C, D, R> Generator<Fn4<A, B, C, D, R>> generateFn4(Cogenerator<A> param1,
+                                                                            Cogenerator<B> param2,
+                                                                            Cogenerator<C> param3,
+                                                                            Cogenerator<D> param4,
+                                                                            Generator<R> result) {
+        return Functions.generateFn4(param1, param2, param3, param4, result);
+    }
+
+    public static <A, B, C, D, E, R> Generator<Fn5<A, B, C, D, E, R>> generateFn5(Cogenerator<A> param1,
+                                                                                  Cogenerator<B> param2,
+                                                                                  Cogenerator<C> param3,
+                                                                                  Cogenerator<D> param4,
+                                                                                  Cogenerator<E> param5,
+                                                                                  Generator<R> result) {
+        return Functions.generateFn5(param1, param2, param3, param4, param5, result);
+    }
+
+    public static <A, B, C, D, E, F, R> Generator<Fn6<A, B, C, D, E, F, R>> generateFn6(Cogenerator<A> param1,
+                                                                                        Cogenerator<B> param2,
+                                                                                        Cogenerator<C> param3,
+                                                                                        Cogenerator<D> param4,
+                                                                                        Cogenerator<E> param5,
+                                                                                        Cogenerator<F> param6,
+                                                                                        Generator<R> result) {
+        return Functions.generateFn6(param1, param2, param3, param4, param5, param6, result);
+    }
+
+    public static <A, B, C, D, E, F, G, R> Generator<Fn7<A, B, C, D, E, F, G, R>> generateFn7(Cogenerator<A> param1,
+                                                                                              Cogenerator<B> param2,
+                                                                                              Cogenerator<C> param3,
+                                                                                              Cogenerator<D> param4,
+                                                                                              Cogenerator<E> param5,
+                                                                                              Cogenerator<F> param6,
+                                                                                              Cogenerator<G> param7,
+                                                                                              Generator<R> result) {
+        return Functions.generateFn7(param1, param2, param3, param4, param5, param6, param7, result);
+    }
+
+    public static <A, B, C, D, E, F, G, H, R> Generator<Fn8<A, B, C, D, E, F, G, H, R>> generateFn8(Cogenerator<A> param1,
+                                                                                                    Cogenerator<B> param2,
+                                                                                                    Cogenerator<C> param3,
+                                                                                                    Cogenerator<D> param4,
+                                                                                                    Cogenerator<E> param5,
+                                                                                                    Cogenerator<F> param6,
+                                                                                                    Cogenerator<G> param7,
+                                                                                                    Cogenerator<H> param8,
+                                                                                                    Generator<R> result) {
+        return Functions.generateFn8(param1, param2, param3, param4, param5, param6, param7, param8, result);
     }
 
     public static Generator<BigInteger> generateBigInteger(BigInteger min, BigInteger max) {
