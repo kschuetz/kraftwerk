@@ -639,15 +639,14 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         }
     }
 
-
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class HigherOrder<A, B> extends Generator<B> {
-        private static Maybe<String> LABEL = Maybe.just("infinite");
+    public static class Tap<A, B> extends Generator<B> {
+        private static Maybe<String> LABEL = Maybe.just("tap");
 
         private final Generator<A> generator;
-        private final Fn2<CompiledGenerator<A>, RandomState, Result<? extends RandomState, B>> fn;
+        private final Fn2<CompiledGenerator<A>, RandomState, B> fn;
 
         @Override
         public Maybe<String> getLabel() {
@@ -663,9 +662,9 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         return new Custom<A>(fn::apply);
     }
 
-    public static <A, B> Generator<B> higherOrder(Generator<A> generator,
-                                                  Fn2<CompiledGenerator<A>, RandomState, Result<? extends RandomState, B>> f) {
-        return new HigherOrder<>(generator, f);
+    public static <A, B> Generator<B> tap(Generator<A> generator,
+                                          Fn2<CompiledGenerator<A>, RandomState, B> f) {
+        return new Tap<>(generator, f);
     }
 
     public static Generator<Boolean> generateBoolean() {
