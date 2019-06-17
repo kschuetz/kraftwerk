@@ -13,7 +13,9 @@ import dev.marksman.collectionviews.*;
 import dev.marksman.composablerandom.choice.ChoiceBuilder1;
 import dev.marksman.composablerandom.frequency.FrequencyMap;
 import dev.marksman.composablerandom.util.Labeling;
+import dev.marksman.enhancediterables.FiniteIterable;
 import dev.marksman.enhancediterables.ImmutableNonEmptyIterable;
+import dev.marksman.enhancediterables.NonEmptyFiniteIterable;
 import dev.marksman.enhancediterables.NonEmptyIterable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -1144,6 +1146,42 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
 
     public static <A> Generator<ImmutableNonEmptyIterable<A>> generateInfiniteIterable(Generator<A> generator) {
         return Infinite.generateInfiniteIterable(generator);
+    }
+
+    public static Generator<Vector<Integer>> generateShuffled(int count) {
+        return Shuffle.generateShuffled(count);
+    }
+
+    public static <A> Generator<Vector<A>> generateShuffled(int count, Fn1<Integer, A> fn) {
+        return Shuffle.generateShuffled(count, fn);
+    }
+
+    public static <A> Generator<NonEmptyVector<A>> generateNonEmptyShuffled(int count, Fn1<Integer, A> fn) {
+        return Shuffle.generateNonEmptyShuffled(count, fn);
+    }
+
+    public static <A> Generator<Vector<A>> generateShuffled(FiniteIterable<A> input) {
+        return Shuffle.generateShuffled(input);
+    }
+
+    public static <A> Generator<NonEmptyVector<A>> generateShuffled(NonEmptyFiniteIterable<A> input) {
+        return Shuffle.generateShuffled(input);
+    }
+
+    public static <A> Generator<Vector<A>> generateShuffled(Collection<A> input) {
+        return Shuffle.generateShuffled(input);
+    }
+
+    public static <A> Generator<Vector<A>> generateShuffled(A[] input) {
+        return Shuffle.generateShuffled(input);
+    }
+
+    public static <A> Generator<Vector<A>> generateShuffled(Vector<A> input) {
+        return generateShuffled(input.size(), input::unsafeGet);
+    }
+
+    public static <A> Generator<NonEmptyVector<A>> generateShuffled(NonEmptyVector<A> input) {
+        return Shuffle.generateShuffled(input);
     }
 
     public static <A> ChoiceBuilder1<A> choiceBuilder(int weight, Generator<A> firstChoice) {
