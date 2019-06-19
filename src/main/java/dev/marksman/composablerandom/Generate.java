@@ -811,57 +811,57 @@ public abstract class Generate<A> implements Monad<A, Generate<?>>, ToGenerate<A
                 replicate(size, gen));
     }
 
-    public static <A, B, C, D, E, F, G, H, Out> Generate<Out> product(Generate<A> a,
-                                                                      Generate<B> b,
-                                                                      Fn2<A, B, Out> combine) {
+    public static <A, B, Out> Generate<Out> product(Generate<A> a,
+                                                    Generate<B> b,
+                                                    Fn2<A, B, Out> combine) {
         return new Product2<>(a, b, combine);
     }
 
-    public static <A, B, C, D, E, F, G, H, Out> Generate<Out> product(Generate<A> a,
-                                                                      Generate<B> b,
-                                                                      Generate<C> c,
-                                                                      Fn3<A, B, C, Out> combine) {
+    public static <A, B, C, Out> Generate<Out> product(Generate<A> a,
+                                                       Generate<B> b,
+                                                       Generate<C> c,
+                                                       Fn3<A, B, C, Out> combine) {
         return new Product3<>(a, b, c, combine);
     }
 
 
-    public static <A, B, C, D, E, F, G, H, Out> Generate<Out> product(Generate<A> a,
-                                                                      Generate<B> b,
-                                                                      Generate<C> c,
-                                                                      Generate<D> d,
-                                                                      Fn4<A, B, C, D, Out> combine) {
+    public static <A, B, C, D, Out> Generate<Out> product(Generate<A> a,
+                                                          Generate<B> b,
+                                                          Generate<C> c,
+                                                          Generate<D> d,
+                                                          Fn4<A, B, C, D, Out> combine) {
         return new Product4<>(a, b, c, d, combine);
     }
 
 
-    public static <A, B, C, D, E, F, G, H, Out> Generate<Out> product(Generate<A> a,
-                                                                      Generate<B> b,
-                                                                      Generate<C> c,
-                                                                      Generate<D> d,
-                                                                      Generate<E> e,
-                                                                      Fn5<A, B, C, D, E, Out> combine) {
+    public static <A, B, C, D, E, Out> Generate<Out> product(Generate<A> a,
+                                                             Generate<B> b,
+                                                             Generate<C> c,
+                                                             Generate<D> d,
+                                                             Generate<E> e,
+                                                             Fn5<A, B, C, D, E, Out> combine) {
         return new Product5<>(a, b, c, d, e, combine);
     }
 
 
-    public static <A, B, C, D, E, F, G, H, Out> Generate<Out> product(Generate<A> a,
-                                                                      Generate<B> b,
-                                                                      Generate<C> c,
-                                                                      Generate<D> d,
-                                                                      Generate<E> e,
-                                                                      Generate<F> f,
-                                                                      Fn6<A, B, C, D, E, F, Out> combine) {
+    public static <A, B, C, D, E, F, Out> Generate<Out> product(Generate<A> a,
+                                                                Generate<B> b,
+                                                                Generate<C> c,
+                                                                Generate<D> d,
+                                                                Generate<E> e,
+                                                                Generate<F> f,
+                                                                Fn6<A, B, C, D, E, F, Out> combine) {
         return new Product6<>(a, b, c, d, e, f, combine);
     }
 
-    public static <A, B, C, D, E, F, G, H, Out> Generate<Out> product(Generate<A> a,
-                                                                      Generate<B> b,
-                                                                      Generate<C> c,
-                                                                      Generate<D> d,
-                                                                      Generate<E> e,
-                                                                      Generate<F> f,
-                                                                      Generate<G> g,
-                                                                      Fn7<A, B, C, D, E, F, G, Out> combine) {
+    public static <A, B, C, D, E, F, G, Out> Generate<Out> product(Generate<A> a,
+                                                                   Generate<B> b,
+                                                                   Generate<C> c,
+                                                                   Generate<D> d,
+                                                                   Generate<E> e,
+                                                                   Generate<F> f,
+                                                                   Generate<G> g,
+                                                                   Fn7<A, B, C, D, E, F, G, Out> combine) {
         return new Product7<>(a, b, c, d, e, f, g, combine);
     }
 
