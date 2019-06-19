@@ -2,16 +2,13 @@ package dev.marksman.composablerandom;
 
 import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.composablerandom.Generate.Product6;
-import dev.marksman.composablerandom.primitives.AggregateImpl;
-
-import java.util.ArrayList;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Map.map;
 import static dev.marksman.composablerandom.Generator.generator;
 import static dev.marksman.composablerandom.Result.result;
 import static dev.marksman.composablerandom.StandardParameters.defaultParameters;
 import static dev.marksman.composablerandom.Trace.trace;
-import static dev.marksman.composablerandom.primitives.AggregateImpl.aggregateImpl;
+import static dev.marksman.composablerandom.primitives.AggregateImpl.tracedAggregateImpl;
 import static dev.marksman.composablerandom.primitives.ConstantImpl.constantImpl;
 import static dev.marksman.composablerandom.primitives.CustomImpl.customImpl;
 import static dev.marksman.composablerandom.primitives.MappedImpl.mappedImpl;
@@ -191,8 +188,13 @@ public class TracingInterpreter {
         }
 
         if (gen instanceof Generate.Aggregate) {
+            Generate.Aggregate g1 = (Generate.Aggregate) gen;
             //noinspection unchecked
-            return handleAggregate((Generate.Aggregate) gen);
+            Iterable<Generate<A>> elements = g1.getElements();
+
+            //noinspection unchecked
+            return (Generator<Trace<A>>) tracedAggregateImpl(gen, g1.getInitialBuilderSupplier(), g1.getAddFn(),
+                    g1.getBuildFn(), map(this::compile, elements));
         }
 
         if (gen instanceof Generate.Product2) {
@@ -301,20 +303,6 @@ public class TracingInterpreter {
             return result(run.getNextState(),
                     trace(innerTrace.getResult(), gen, singletonList(innerTrace)));
         });
-    }
-
-    private <Elem, Builder, Out> Generator<Trace<Out>> handleAggregate(Generate.Aggregate<Elem, Builder, Out> gen) {
-        @SuppressWarnings("UnnecessaryLocalVariable")
-        AggregateImpl<Trace<Elem>, TraceCollector<Builder>, Trace<Out>> aggregator = aggregateImpl(
-                () -> new TraceCollector<>(gen.getInitialBuilderSupplier().apply()),
-                (tc, tracedElem) -> {
-                    tc.state = gen.getAddFn().apply(tc.state, tracedElem.getResult());
-                    tc.traces.add(tracedElem);
-                    return tc;
-                },
-                tc -> trace(gen.getBuildFn().apply(tc.state), gen, tc.traces),
-                map(this::compile, gen.getElements()));
-        return aggregator;
     }
 
     private <A, B, Out> Generator<Trace<Out>> handleProduct2(
@@ -539,16 +527,6 @@ public class TracingInterpreter {
                             gen,
                             asList(ta, tb, tc, td, te, tf, tg, th)));
         });
-    }
-
-    private static class TraceCollector<State> {
-        ArrayList<Trace<?>> traces;
-        State state;
-
-        TraceCollector(State state) {
-            this.traces = new ArrayList<>();
-            this.state = state;
-        }
     }
 
     public static TracingInterpreter tracingInterpreter(Parameters parameters) {
