@@ -1,13 +1,13 @@
 package dev.marksman.composablerandom.primitives;
 
 import com.jnape.palatable.lambda.functions.Fn6;
-import dev.marksman.composablerandom.Generator;
-import dev.marksman.composablerandom.RandomState;
-import dev.marksman.composablerandom.Result;
+import dev.marksman.composablerandom.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 import static dev.marksman.composablerandom.Result.result;
+import static dev.marksman.composablerandom.Trace.trace;
+import static java.util.Arrays.asList;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Product6Impl<A, B, C, D, E, F, Out> implements Generator<Out> {
@@ -40,6 +40,21 @@ public class Product6Impl<A, B, C, D, E, F, Out> implements Generator<Out> {
                                                                                            Generator<F> f,
                                                                                            Fn6<A, B, C, D, E, F, Out> combine) {
         return new Product6Impl<>(a, b, c, d, e, f, combine);
+    }
+
+    public static <A, B, C, D, E, F, Out> Generator<Trace<Out>> tracedProduct6Impl(Generate<Out> source,
+                                                                                   Generator<Trace<A>> a,
+                                                                                   Generator<Trace<B>> b,
+                                                                                   Generator<Trace<C>> c,
+                                                                                   Generator<Trace<D>> d,
+                                                                                   Generator<Trace<E>> e,
+                                                                                   Generator<Trace<F>> f,
+                                                                                   Fn6<A, B, C, D, E, F, Out> combine) {
+        return product6Impl(a, b, c, d, e, f,
+                (ta, tb, tc, td, te, tf) -> trace(
+                        combine.apply(ta.getResult(), tb.getResult(), tc.getResult(), td.getResult(),
+                                te.getResult(), tf.getResult()),
+                        source, asList(ta, tb, tc, td, te, tf)));
     }
 
 }

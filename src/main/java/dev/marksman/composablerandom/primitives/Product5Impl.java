@@ -1,13 +1,13 @@
 package dev.marksman.composablerandom.primitives;
 
 import com.jnape.palatable.lambda.functions.Fn5;
-import dev.marksman.composablerandom.Generator;
-import dev.marksman.composablerandom.RandomState;
-import dev.marksman.composablerandom.Result;
+import dev.marksman.composablerandom.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 import static dev.marksman.composablerandom.Result.result;
+import static dev.marksman.composablerandom.Trace.trace;
+import static java.util.Arrays.asList;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Product5Impl<A, B, C, D, E, Out> implements Generator<Out> {
@@ -37,6 +37,20 @@ public class Product5Impl<A, B, C, D, E, Out> implements Generator<Out> {
                                                                                      Generator<E> e,
                                                                                      Fn5<A, B, C, D, E, Out> combine) {
         return new Product5Impl<>(a, b, c, d, e, combine);
+    }
+
+    public static <A, B, C, D, E, Out> Generator<Trace<Out>> tracedProduct5Impl(Generate<Out> source,
+                                                                                Generator<Trace<A>> a,
+                                                                                Generator<Trace<B>> b,
+                                                                                Generator<Trace<C>> c,
+                                                                                Generator<Trace<D>> d,
+                                                                                Generator<Trace<E>> e,
+                                                                                Fn5<A, B, C, D, E, Out> combine) {
+        return product5Impl(a, b, c, d, e,
+                (ta, tb, tc, td, te) -> trace(
+                        combine.apply(ta.getResult(), tb.getResult(), tc.getResult(), td.getResult(),
+                                te.getResult()),
+                        source, asList(ta, tb, tc, td, te)));
     }
 
 }

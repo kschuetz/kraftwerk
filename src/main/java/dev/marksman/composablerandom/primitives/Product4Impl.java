@@ -1,13 +1,13 @@
 package dev.marksman.composablerandom.primitives;
 
 import com.jnape.palatable.lambda.functions.Fn4;
-import dev.marksman.composablerandom.Generator;
-import dev.marksman.composablerandom.RandomState;
-import dev.marksman.composablerandom.Result;
+import dev.marksman.composablerandom.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 import static dev.marksman.composablerandom.Result.result;
+import static dev.marksman.composablerandom.Trace.trace;
+import static java.util.Arrays.asList;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Product4Impl<A, B, C, D, Out> implements Generator<Out> {
@@ -33,6 +33,18 @@ public class Product4Impl<A, B, C, D, Out> implements Generator<Out> {
                                                                                Generator<D> d,
                                                                                Fn4<A, B, C, D, Out> combine) {
         return new Product4Impl<>(a, b, c, d, combine);
+    }
+
+    public static <A, B, C, D, Out> Generator<Trace<Out>> tracedProduct4Impl(Generate<Out> source,
+                                                                             Generator<Trace<A>> a,
+                                                                             Generator<Trace<B>> b,
+                                                                             Generator<Trace<C>> c,
+                                                                             Generator<Trace<D>> d,
+                                                                             Fn4<A, B, C, D, Out> combine) {
+        return product4Impl(a, b, c, d,
+                (ta, tb, tc, td) -> trace(
+                        combine.apply(ta.getResult(), tb.getResult(), tc.getResult(), td.getResult()),
+                        source, asList(ta, tb, tc, td)));
     }
 
 }

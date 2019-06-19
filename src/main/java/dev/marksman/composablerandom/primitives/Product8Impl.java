@@ -1,13 +1,13 @@
 package dev.marksman.composablerandom.primitives;
 
 import com.jnape.palatable.lambda.functions.Fn8;
-import dev.marksman.composablerandom.Generator;
-import dev.marksman.composablerandom.RandomState;
-import dev.marksman.composablerandom.Result;
+import dev.marksman.composablerandom.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 import static dev.marksman.composablerandom.Result.result;
+import static dev.marksman.composablerandom.Trace.trace;
+import static java.util.Arrays.asList;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Product8Impl<A, B, C, D, E, F, G, H, Out> implements Generator<Out> {
@@ -46,6 +46,23 @@ public class Product8Impl<A, B, C, D, E, F, G, H, Out> implements Generator<Out>
                                                                                                        Generator<H> h,
                                                                                                        Fn8<A, B, C, D, E, F, G, H, Out> fn) {
         return new Product8Impl<>(a, b, c, d, e, f, g, h, fn);
+    }
+
+    public static <A, B, C, D, E, F, G, H, Out> Generator<Trace<Out>> tracedProduct8Impl(Generate<Out> source,
+                                                                                         Generator<Trace<A>> a,
+                                                                                         Generator<Trace<B>> b,
+                                                                                         Generator<Trace<C>> c,
+                                                                                         Generator<Trace<D>> d,
+                                                                                         Generator<Trace<E>> e,
+                                                                                         Generator<Trace<F>> f,
+                                                                                         Generator<Trace<G>> g,
+                                                                                         Generator<Trace<H>> h,
+                                                                                         Fn8<A, B, C, D, E, F, G, H, Out> combine) {
+        return product8Impl(a, b, c, d, e, f, g, h,
+                (ta, tb, tc, td, te, tf, tg, th) -> trace(
+                        combine.apply(ta.getResult(), tb.getResult(), tc.getResult(), td.getResult(),
+                                te.getResult(), tf.getResult(), tg.getResult(), th.getResult()),
+                        source, asList(ta, tb, tc, td, te, tf, tg, th)));
     }
 
 }

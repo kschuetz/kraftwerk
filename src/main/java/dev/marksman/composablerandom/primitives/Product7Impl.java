@@ -1,13 +1,13 @@
 package dev.marksman.composablerandom.primitives;
 
 import com.jnape.palatable.lambda.functions.Fn7;
-import dev.marksman.composablerandom.Generator;
-import dev.marksman.composablerandom.RandomState;
-import dev.marksman.composablerandom.Result;
+import dev.marksman.composablerandom.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 import static dev.marksman.composablerandom.Result.result;
+import static dev.marksman.composablerandom.Trace.trace;
+import static java.util.Arrays.asList;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Product7Impl<A, B, C, D, E, F, G, Out> implements Generator<Out> {
@@ -43,6 +43,22 @@ public class Product7Impl<A, B, C, D, E, F, G, Out> implements Generator<Out> {
                                                                                                  Generator<G> g,
                                                                                                  Fn7<A, B, C, D, E, F, G, Out> combine) {
         return new Product7Impl<>(a, b, c, d, e, f, g, combine);
+    }
+
+    public static <A, B, C, D, E, F, G, Out> Generator<Trace<Out>> tracedProduct7Impl(Generate<Out> source,
+                                                                                      Generator<Trace<A>> a,
+                                                                                      Generator<Trace<B>> b,
+                                                                                      Generator<Trace<C>> c,
+                                                                                      Generator<Trace<D>> d,
+                                                                                      Generator<Trace<E>> e,
+                                                                                      Generator<Trace<F>> f,
+                                                                                      Generator<Trace<G>> g,
+                                                                                      Fn7<A, B, C, D, E, F, G, Out> combine) {
+        return product7Impl(a, b, c, d, e, f, g,
+                (ta, tb, tc, td, te, tf, tg) -> trace(
+                        combine.apply(ta.getResult(), tb.getResult(), tc.getResult(), td.getResult(),
+                                te.getResult(), tf.getResult(), tg.getResult()),
+                        source, asList(ta, tb, tc, td, te, tf, tg)));
     }
 
 }
