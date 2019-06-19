@@ -3,39 +3,39 @@ package dev.marksman.composablerandom.frequency;
 import com.jnape.palatable.lambda.functions.Fn1;
 import com.jnape.palatable.lambda.functions.builtin.fn2.Map;
 import dev.marksman.composablerandom.FrequencyEntry;
-import dev.marksman.composablerandom.Generator;
+import dev.marksman.composablerandom.Generate;
 
 import java.util.TreeMap;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Cons.cons;
 import static com.jnape.palatable.lambda.functions.builtin.fn3.FoldLeft.foldLeft;
 import static dev.marksman.composablerandom.FrequencyEntry.entry;
-import static dev.marksman.composablerandom.Generator.generateLongExclusive;
+import static dev.marksman.composablerandom.Generate.generateLongExclusive;
 import static dev.marksman.composablerandom.frequency.FrequencyMap1.checkMultiplier;
 
 class FrequencyMapN<A> implements FrequencyMap<A> {
     private final Iterable<FrequencyEntry<A>> entries;
 
-    private Generator<A> cachedGenerator;
+    private Generate<A> cachedGenerator;
 
     private FrequencyMapN(Iterable<FrequencyEntry<A>> entries) {
         this.entries = entries;
     }
 
     @Override
-    public Generator<A> toGenerator() {
+    public Generate<A> toGenerate() {
         synchronized (this) {
             if (cachedGenerator == null) cachedGenerator = buildGenerator();
         }
         return cachedGenerator;
     }
 
-    private Generator<A> buildGenerator() {
+    private Generate<A> buildGenerator() {
         long total = 0L;
-        TreeMap<Long, Generator<A>> tree = new TreeMap<>();
+        TreeMap<Long, Generate<A>> tree = new TreeMap<>();
         for (FrequencyEntry<A> entry : entries) {
             total += entry.getWeight();
-            tree.put(total, entry.getGenerator());
+            tree.put(total, entry.getGenerate());
         }
 
         return addLabel(generateLongExclusive(total)
@@ -43,11 +43,11 @@ class FrequencyMapN<A> implements FrequencyMap<A> {
     }
 
     @Override
-    public FrequencyMap<A> add(int weight, Generator<? extends A> generator) {
+    public FrequencyMap<A> add(int weight, Generate<? extends A> gen) {
         if (weight < 1) return this;
         else {
             @SuppressWarnings("unchecked")
-            Iterable<FrequencyEntry<A>> newEntries = cons(entry(weight, (Generator<A>) generator), entries);
+            Iterable<FrequencyEntry<A>> newEntries = cons(entry(weight, (Generate<A>) gen), entries);
             return new FrequencyMapN<>(newEntries);
         }
     }
@@ -73,7 +73,7 @@ class FrequencyMapN<A> implements FrequencyMap<A> {
         return new FrequencyMapN<>(cons(first, rest));
     }
 
-    static <A> Generator<A> addLabel(Generator<A> generator) {
-        return generator.labeled("frequency map");
+    static <A> Generate<A> addLabel(Generate<A> gen) {
+        return gen.labeled("frequency map");
     }
 }

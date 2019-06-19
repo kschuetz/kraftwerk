@@ -1,7 +1,7 @@
 package dev.marksman.composablerandom.primitives;
 
 import com.jnape.palatable.lambda.functions.Fn8;
-import dev.marksman.composablerandom.CompiledGenerator;
+import dev.marksman.composablerandom.Generator;
 import dev.marksman.composablerandom.RandomState;
 import dev.marksman.composablerandom.Result;
 import lombok.AccessLevel;
@@ -10,15 +10,15 @@ import lombok.AllArgsConstructor;
 import static dev.marksman.composablerandom.Result.result;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Product8Impl<A, B, C, D, E, F, G, H, Out> implements CompiledGenerator<Out> {
-    private final CompiledGenerator<A> a;
-    private final CompiledGenerator<B> b;
-    private final CompiledGenerator<C> c;
-    private final CompiledGenerator<D> d;
-    private final CompiledGenerator<E> e;
-    private final CompiledGenerator<F> f;
-    private final CompiledGenerator<G> g;
-    private final CompiledGenerator<H> h;
+public class Product8Impl<A, B, C, D, E, F, G, H, Out> implements Generator<Out> {
+    private final Generator<A> a;
+    private final Generator<B> b;
+    private final Generator<C> c;
+    private final Generator<D> d;
+    private final Generator<E> e;
+    private final Generator<F> f;
+    private final Generator<G> g;
+    private final Generator<H> h;
     private final Fn8<A, B, C, D, E, F, G, H, Out> combine;
 
     @Override
@@ -36,14 +36,14 @@ public class Product8Impl<A, B, C, D, E, F, G, H, Out> implements CompiledGenera
         return result(r8.getNextState(), result);
     }
 
-    public static <A, B, C, D, E, F, G, H, Out> Product8Impl<A, B, C, D, E, F, G, H, Out> product8Impl(CompiledGenerator<A> a,
-                                                                                                       CompiledGenerator<B> b,
-                                                                                                       CompiledGenerator<C> c,
-                                                                                                       CompiledGenerator<D> d,
-                                                                                                       CompiledGenerator<E> e,
-                                                                                                       CompiledGenerator<F> f,
-                                                                                                       CompiledGenerator<G> g,
-                                                                                                       CompiledGenerator<H> h,
+    public static <A, B, C, D, E, F, G, H, Out> Product8Impl<A, B, C, D, E, F, G, H, Out> product8Impl(Generator<A> a,
+                                                                                                       Generator<B> b,
+                                                                                                       Generator<C> c,
+                                                                                                       Generator<D> d,
+                                                                                                       Generator<E> e,
+                                                                                                       Generator<F> f,
+                                                                                                       Generator<G> g,
+                                                                                                       Generator<H> h,
                                                                                                        Fn8<A, B, C, D, E, F, G, H, Out> fn) {
         return new Product8Impl<>(a, b, c, d, e, f, g, h, fn);
     }

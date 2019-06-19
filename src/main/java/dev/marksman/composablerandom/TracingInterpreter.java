@@ -1,13 +1,13 @@
 package dev.marksman.composablerandom;
 
 import com.jnape.palatable.lambda.functions.Fn1;
-import dev.marksman.composablerandom.Generator.Product6;
+import dev.marksman.composablerandom.Generate.Product6;
 import dev.marksman.composablerandom.primitives.AggregateImpl;
 
 import java.util.ArrayList;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Map.map;
-import static dev.marksman.composablerandom.CompiledGenerator.compiledGenerator;
+import static dev.marksman.composablerandom.Generator.generator;
 import static dev.marksman.composablerandom.Result.result;
 import static dev.marksman.composablerandom.StandardParameters.defaultParameters;
 import static dev.marksman.composablerandom.Trace.trace;
@@ -38,228 +38,228 @@ import static java.util.Collections.singletonList;
 public class TracingInterpreter {
     public static final int INFINITE_ELISION_COUNT = 6;
 
-    private final CompiledGenerator<Trace<Integer>> sizeGenerator;
+    private final Generator<Trace<Integer>> sizeGenerator;
 
     private TracingInterpreter(Parameters parameters) {
         SizeSelector sizeSelector = parameters.getSizeSelector();
-        this.sizeGenerator = compile(Generator.<Integer>generator(sizeSelector::selectSize)
+        this.sizeGenerator = compile(Generate.<Integer>generate(sizeSelector::selectSize)
                 .labeled("sized"));
     }
 
-    private <A> Result<RandomState, Trace<A>> traceResult(Generator<A> generator, Result<? extends RandomState, A> resultValue) {
-        return result(resultValue.getNextState(), trace(resultValue.getValue(), generator));
+    private <A> Result<RandomState, Trace<A>> traceResult(Generate<A> gen, Result<? extends RandomState, A> resultValue) {
+        return result(resultValue.getNextState(), trace(resultValue.getValue(), gen));
     }
 
-    private <A> CompiledGenerator<Trace<A>> traced(Generator<A> generator, CompiledGenerator<A> g) {
-        return input -> traceResult(generator, g.run(input));
+    private <A> Generator<Trace<A>> traced(Generate<A> gen, Generator<A> g) {
+        return input -> traceResult(gen, g.run(input));
     }
 
-    public <A> CompiledGenerator<Trace<A>> compile(Generator<A> generator) {
+    public <A> Generator<Trace<A>> compile(Generate<A> gen) {
 
-        if (generator instanceof Generator.Constant) {
-            return traced(generator, constantImpl(((Generator.Constant<A>) generator).getValue()));
+        if (gen instanceof Generate.Constant) {
+            return traced(gen, constantImpl(((Generate.Constant<A>) gen).getValue()));
         }
 
-        if (generator instanceof Generator.Custom) {
-            return traced(generator, customImpl(((Generator.Custom<A>) generator).getFn()));
+        if (gen instanceof Generate.Custom) {
+            return traced(gen, customImpl(((Generate.Custom<A>) gen).getFn()));
         }
 
-        if (generator instanceof Generator.Mapped) {
-            return handleMapped((Generator.Mapped<?, A>) generator);
+        if (gen instanceof Generate.Mapped) {
+            return handleMapped((Generate.Mapped<?, A>) gen);
         }
 
-        if (generator instanceof Generator.FlatMapped) {
-            return handleFlatMapped((Generator.FlatMapped<?, A>) generator);
+        if (gen instanceof Generate.FlatMapped) {
+            return handleFlatMapped((Generate.FlatMapped<?, A>) gen);
         }
 
-        if (generator instanceof Generator.Tap) {
-            return handleTap((Generator.Tap<?, A>) generator);
+        if (gen instanceof Generate.Tap) {
+            return handleTap((Generate.Tap<?, A>) gen);
         }
 
-        if (generator instanceof Generator.NextInt) {
+        if (gen instanceof Generate.NextInt) {
             //noinspection unchecked
-            return traced(generator, (CompiledGenerator<A>) nextIntImpl());
+            return traced(gen, (Generator<A>) nextIntImpl());
         }
 
-        if (generator instanceof Generator.NextLong) {
+        if (gen instanceof Generate.NextLong) {
             //noinspection unchecked
-            return traced(generator, (CompiledGenerator<A>) nextLongImpl());
+            return traced(gen, (Generator<A>) nextLongImpl());
         }
 
-        if (generator instanceof Generator.NextBoolean) {
+        if (gen instanceof Generate.NextBoolean) {
             //noinspection unchecked
-            return traced(generator, (CompiledGenerator<A>) nextBooleanImpl());
+            return traced(gen, (Generator<A>) nextBooleanImpl());
         }
 
-        if (generator instanceof Generator.NextDouble) {
+        if (gen instanceof Generate.NextDouble) {
             //noinspection unchecked
-            return traced(generator, (CompiledGenerator<A>) nextDoubleImpl());
+            return traced(gen, (Generator<A>) nextDoubleImpl());
         }
 
-        if (generator instanceof Generator.NextFloat) {
+        if (gen instanceof Generate.NextFloat) {
             //noinspection unchecked
-            return traced(generator, (CompiledGenerator<A>) nextFloatImpl());
+            return traced(gen, (Generator<A>) nextFloatImpl());
         }
 
-        if (generator instanceof Generator.NextIntBounded) {
-            int bound = ((Generator.NextIntBounded) generator).getBound();
+        if (gen instanceof Generate.NextIntBounded) {
+            int bound = ((Generate.NextIntBounded) gen).getBound();
             //noinspection unchecked
-            return traced(generator, (CompiledGenerator<A>) nextIntBoundedImpl(bound));
+            return traced(gen, (Generator<A>) nextIntBoundedImpl(bound));
         }
 
-        if (generator instanceof Generator.NextIntExclusive) {
-            Generator.NextIntExclusive g1 = (Generator.NextIntExclusive) generator;
+        if (gen instanceof Generate.NextIntExclusive) {
+            Generate.NextIntExclusive g1 = (Generate.NextIntExclusive) gen;
             int origin = g1.getOrigin();
             int bound = g1.getBound();
             //noinspection unchecked
-            return traced(generator, (CompiledGenerator<A>) nextIntExclusiveImpl(origin, bound));
+            return traced(gen, (Generator<A>) nextIntExclusiveImpl(origin, bound));
         }
 
-        if (generator instanceof Generator.NextIntBetween) {
-            Generator.NextIntBetween g1 = (Generator.NextIntBetween) generator;
+        if (gen instanceof Generate.NextIntBetween) {
+            Generate.NextIntBetween g1 = (Generate.NextIntBetween) gen;
             int min = g1.getMin();
             int max = g1.getMax();
             //noinspection unchecked
-            return traced(generator, (CompiledGenerator<A>) nextIntBetweenImpl(min, max));
+            return traced(gen, (Generator<A>) nextIntBetweenImpl(min, max));
         }
 
-        if (generator instanceof Generator.NextIntIndex) {
-            Generator.NextIntIndex g1 = (Generator.NextIntIndex) generator;
+        if (gen instanceof Generate.NextIntIndex) {
+            Generate.NextIntIndex g1 = (Generate.NextIntIndex) gen;
             int bound = g1.getBound();
             //noinspection unchecked
-            return traced(generator, (CompiledGenerator<A>) nextIntIndexImpl(bound));
+            return traced(gen, (Generator<A>) nextIntIndexImpl(bound));
         }
 
-        if (generator instanceof Generator.NextLongBounded) {
-            long bound = ((Generator.NextLongBounded) generator).getBound();
+        if (gen instanceof Generate.NextLongBounded) {
+            long bound = ((Generate.NextLongBounded) gen).getBound();
             //noinspection unchecked
-            return traced(generator, (CompiledGenerator<A>) nextLongBoundedImpl(bound));
+            return traced(gen, (Generator<A>) nextLongBoundedImpl(bound));
         }
 
-        if (generator instanceof Generator.NextLongExclusive) {
-            Generator.NextLongExclusive g1 = (Generator.NextLongExclusive) generator;
+        if (gen instanceof Generate.NextLongExclusive) {
+            Generate.NextLongExclusive g1 = (Generate.NextLongExclusive) gen;
             long origin = g1.getOrigin();
             long bound = g1.getBound();
             //noinspection unchecked
-            return traced(generator, (CompiledGenerator<A>) nextLongExclusiveImpl(origin, bound));
+            return traced(gen, (Generator<A>) nextLongExclusiveImpl(origin, bound));
         }
 
-        if (generator instanceof Generator.NextLongBetween) {
-            Generator.NextLongBetween g1 = (Generator.NextLongBetween) generator;
+        if (gen instanceof Generate.NextLongBetween) {
+            Generate.NextLongBetween g1 = (Generate.NextLongBetween) gen;
             long min = g1.getMin();
             long max = g1.getMax();
             //noinspection unchecked
-            return traced(generator, (CompiledGenerator<A>) nextLongBetweenImpl(min, max));
+            return traced(gen, (Generator<A>) nextLongBetweenImpl(min, max));
         }
 
-        if (generator instanceof Generator.NextLongIndex) {
-            Generator.NextLongIndex g1 = (Generator.NextLongIndex) generator;
+        if (gen instanceof Generate.NextLongIndex) {
+            Generate.NextLongIndex g1 = (Generate.NextLongIndex) gen;
             long bound = g1.getBound();
             //noinspection unchecked
-            return traced(generator, (CompiledGenerator<A>) nextLongIndexImpl(bound));
+            return traced(gen, (Generator<A>) nextLongIndexImpl(bound));
         }
 
-        if (generator instanceof Generator.NextGaussian) {
+        if (gen instanceof Generate.NextGaussian) {
             //noinspection unchecked
-            return traced(generator, (CompiledGenerator<A>) nextGaussianImpl());
+            return traced(gen, (Generator<A>) nextGaussianImpl());
         }
 
-        if (generator instanceof Generator.NextByte) {
+        if (gen instanceof Generate.NextByte) {
             //noinspection unchecked
-            return traced(generator, (CompiledGenerator<A>) nextByteImpl());
+            return traced(gen, (Generator<A>) nextByteImpl());
         }
 
-        if (generator instanceof Generator.NextShort) {
+        if (gen instanceof Generate.NextShort) {
             //noinspection unchecked
-            return traced(generator, (CompiledGenerator<A>) nextShortImpl());
+            return traced(gen, (Generator<A>) nextShortImpl());
         }
 
-        if (generator instanceof Generator.NextBytes) {
-            Generator.NextBytes g1 = (Generator.NextBytes) generator;
+        if (gen instanceof Generate.NextBytes) {
+            Generate.NextBytes g1 = (Generate.NextBytes) gen;
             int count = g1.getCount();
             //noinspection unchecked
-            return traced(generator, (CompiledGenerator<A>) nextBytesImpl(count));
+            return traced(gen, (Generator<A>) nextBytesImpl(count));
         }
 
-        if (generator instanceof Generator.WithMetadata) {
+        if (gen instanceof Generate.WithMetadata) {
             //noinspection unchecked
-            return handleWithMetadata((Generator.WithMetadata) generator);
+            return handleWithMetadata((Generate.WithMetadata) gen);
         }
 
-        if (generator instanceof Generator.Sized) {
-            return handleSized((Generator.Sized<A>) generator);
+        if (gen instanceof Generate.Sized) {
+            return handleSized((Generate.Sized<A>) gen);
         }
 
-        if (generator instanceof Generator.Aggregate) {
+        if (gen instanceof Generate.Aggregate) {
             //noinspection unchecked
-            return handleAggregate((Generator.Aggregate) generator);
+            return handleAggregate((Generate.Aggregate) gen);
         }
 
-        if (generator instanceof Generator.Product2) {
+        if (gen instanceof Generate.Product2) {
             //noinspection unchecked
-            return handleProduct2((Generator.Product2) generator);
+            return handleProduct2((Generate.Product2) gen);
         }
 
-        if (generator instanceof Generator.Product3) {
+        if (gen instanceof Generate.Product3) {
             //noinspection unchecked
-            return handleProduct3((Generator.Product3) generator);
+            return handleProduct3((Generate.Product3) gen);
         }
 
-        if (generator instanceof Generator.Product4) {
+        if (gen instanceof Generate.Product4) {
             //noinspection unchecked
-            return handleProduct4((Generator.Product4) generator);
+            return handleProduct4((Generate.Product4) gen);
         }
 
-        if (generator instanceof Generator.Product5) {
+        if (gen instanceof Generate.Product5) {
             //noinspection unchecked
-            return handleProduct5((Generator.Product5) generator);
+            return handleProduct5((Generate.Product5) gen);
         }
 
-        if (generator instanceof Generator.Product6) {
+        if (gen instanceof Generate.Product6) {
             //noinspection unchecked
-            return handleProduct6((Generator.Product6) generator);
+            return handleProduct6((Generate.Product6) gen);
         }
 
-        if (generator instanceof Generator.Product7) {
+        if (gen instanceof Generate.Product7) {
             //noinspection unchecked
-            return handleProduct7((Generator.Product7) generator);
+            return handleProduct7((Generate.Product7) gen);
         }
 
-        if (generator instanceof Generator.Product8) {
+        if (gen instanceof Generate.Product8) {
             //noinspection unchecked
-            return handleProduct8((Generator.Product8) generator);
+            return handleProduct8((Generate.Product8) gen);
         }
 
         throw new IllegalStateException("Unimplemented generator");
     }
 
 
-    private <In, Out> CompiledGenerator<Trace<Out>> handleMapped(Generator.Mapped<In, Out> generator) {
-        return mappedImpl(t -> trace(generator.getFn().apply(t.getResult()),
-                generator, singletonList(t)),
-                compile(generator.getOperand()));
+    private <In, Out> Generator<Trace<Out>> handleMapped(Generate.Mapped<In, Out> gen) {
+        return mappedImpl(t -> trace(gen.getFn().apply(t.getResult()),
+                gen, singletonList(t)),
+                compile(gen.getOperand()));
     }
 
-    private <In, Out> CompiledGenerator<Trace<Out>> handleFlatMapped(Generator.FlatMapped<In, Out> generator) {
-        Fn1<? super In, ? extends Generator<Out>> fn = generator.getFn();
-        CompiledGenerator<Trace<In>> g1 = compile(generator.getOperand());
+    private <In, Out> Generator<Trace<Out>> handleFlatMapped(Generate.FlatMapped<In, Out> gen) {
+        Fn1<? super In, ? extends Generate<Out>> fn = gen.getFn();
+        Generator<Trace<In>> g1 = compile(gen.getOperand());
 
-        return compiledGenerator(rs -> {
+        return generator(rs -> {
             Result<? extends RandomState, Trace<In>> r1 = g1.run(rs);
             Trace<In> trace1 = r1.getValue();
             Result<? extends RandomState, Trace<Out>> r2 = compile(fn.apply(trace1.getResult()))
                     .run(r1.getNextState());
             Trace<Out> trace2 = r2.getValue();
             return result(r2.getNextState(),
-                    trace(trace2.getResult(), generator, asList(trace1, trace2)));
+                    trace(trace2.getResult(), gen, asList(trace1, trace2)));
         });
     }
 
 //
 //    @SuppressWarnings("unchecked")
-//    private <Elem, Out> CompiledGenerator<Trace<Out>> handleInfinite(Generator.Infinite<Elem> generator) {
-//        CompiledGenerator<Trace<Elem>> inner = compile(generator.getGenerator());
-//        CompiledGenerator<ImmutableNonEmptyIterable<Trace<Elem>>> traceInfinite = infiniteImpl(inner);
+//    private <Elem, Out> Generator<Trace<Out>> handleInfinite(Generate.Infinite<Elem> generator) {
+//        Generator<Trace<Elem>> inner = compile(generator.getGenerate());
+//        Generator<ImmutableNonEmptyIterable<Trace<Elem>>> traceInfinite = infiniteImpl(inner);
 //
 //        return compiledGenerator(rs -> {
 //            Result<? extends RandomState, ImmutableNonEmptyIterable<Trace<Elem>>> r1 = traceInfinite.run(rs);
@@ -273,17 +273,17 @@ public class TracingInterpreter {
 //    }
 
     // TODO: handleTap
-    private <Elem, Out> CompiledGenerator<Trace<Out>> handleTap(Generator.Tap<Elem, Out> generator) {
+    private <Elem, Out> Generator<Trace<Out>> handleTap(Generate.Tap<Elem, Out> gen) {
         throw new UnsupportedOperationException();
     }
 
-    private <A> CompiledGenerator<Trace<A>> handleSized(Generator.Sized<A> generator) {
-        Fn1<Integer, Generator<A>> fn = generator.getFn();
+    private <A> Generator<Trace<A>> handleSized(Generate.Sized<A> gen) {
+        Fn1<Integer, Generate<A>> fn = gen.getFn();
 
-        return compiledGenerator(rs -> {
+        return generator(rs -> {
             Result<? extends RandomState, Trace<Integer>> r1 = sizeGenerator.run(rs);
             Trace<Integer> sizeTrace = r1.getValue();
-            Generator<A> inner = fn.apply(sizeTrace.getResult());
+            Generate<A> inner = fn.apply(sizeTrace.getResult());
             Result<? extends RandomState, Trace<A>> r2 = compile(inner)
                     .run(r1.getNextState());
             Trace<A> innerTrace = r2.getValue();
@@ -293,36 +293,36 @@ public class TracingInterpreter {
 
     }
 
-    private <A> CompiledGenerator<Trace<A>> handleWithMetadata(Generator.WithMetadata<A> generator) {
-        CompiledGenerator<Trace<A>> inner = compile(generator.getOperand());
-        return compiledGenerator(rs -> {
+    private <A> Generator<Trace<A>> handleWithMetadata(Generate.WithMetadata<A> gen) {
+        Generator<Trace<A>> inner = compile(gen.getOperand());
+        return generator(rs -> {
             Result<? extends RandomState, Trace<A>> run = inner.run(rs);
             Trace<A> innerTrace = run.getValue();
             return result(run.getNextState(),
-                    trace(innerTrace.getResult(), generator, singletonList(innerTrace)));
+                    trace(innerTrace.getResult(), gen, singletonList(innerTrace)));
         });
     }
 
-    private <Elem, Builder, Out> CompiledGenerator<Trace<Out>> handleAggregate(Generator.Aggregate<Elem, Builder, Out> generator) {
+    private <Elem, Builder, Out> Generator<Trace<Out>> handleAggregate(Generate.Aggregate<Elem, Builder, Out> gen) {
         @SuppressWarnings("UnnecessaryLocalVariable")
         AggregateImpl<Trace<Elem>, TraceCollector<Builder>, Trace<Out>> aggregator = aggregateImpl(
-                () -> new TraceCollector<>(generator.getInitialBuilderSupplier().apply()),
+                () -> new TraceCollector<>(gen.getInitialBuilderSupplier().apply()),
                 (tc, tracedElem) -> {
-                    tc.state = generator.getAddFn().apply(tc.state, tracedElem.getResult());
+                    tc.state = gen.getAddFn().apply(tc.state, tracedElem.getResult());
                     tc.traces.add(tracedElem);
                     return tc;
                 },
-                tc -> trace(generator.getBuildFn().apply(tc.state), generator, tc.traces),
-                map(this::compile, generator.getElements()));
+                tc -> trace(gen.getBuildFn().apply(tc.state), gen, tc.traces),
+                map(this::compile, gen.getElements()));
         return aggregator;
     }
 
-    private <A, B, Out> CompiledGenerator<Trace<Out>> handleProduct2(
-            Generator.Product2<A, B, Out> generator) {
-        CompiledGenerator<Trace<A>> ca = compile(generator.getA());
-        CompiledGenerator<Trace<B>> cb = compile(generator.getB());
+    private <A, B, Out> Generator<Trace<Out>> handleProduct2(
+            Generate.Product2<A, B, Out> gen) {
+        Generator<Trace<A>> ca = compile(gen.getA());
+        Generator<Trace<B>> cb = compile(gen.getB());
 
-        return compiledGenerator(in -> {
+        return generator(in -> {
             Result<? extends RandomState, Trace<A>> ra = ca.run(in);
             Result<? extends RandomState, Trace<B>> rb = cb.run(ra.getNextState());
 
@@ -330,20 +330,20 @@ public class TracingInterpreter {
             Trace<B> tb = rb.getValue();
 
             return result(rb.getNextState(),
-                    trace(generator.getCombine().apply(ta.getResult(),
+                    trace(gen.getCombine().apply(ta.getResult(),
                             tb.getResult()),
-                            generator,
+                            gen,
                             asList(ta, tb)));
         });
     }
 
-    private <A, B, C, Out> CompiledGenerator<Trace<Out>> handleProduct3(
-            Generator.Product3<A, B, C, Out> generator) {
-        CompiledGenerator<Trace<A>> ca = compile(generator.getA());
-        CompiledGenerator<Trace<B>> cb = compile(generator.getB());
-        CompiledGenerator<Trace<C>> cc = compile(generator.getC());
+    private <A, B, C, Out> Generator<Trace<Out>> handleProduct3(
+            Generate.Product3<A, B, C, Out> gen) {
+        Generator<Trace<A>> ca = compile(gen.getA());
+        Generator<Trace<B>> cb = compile(gen.getB());
+        Generator<Trace<C>> cc = compile(gen.getC());
 
-        return compiledGenerator(in -> {
+        return generator(in -> {
             Result<? extends RandomState, Trace<A>> ra = ca.run(in);
             Result<? extends RandomState, Trace<B>> rb = cb.run(ra.getNextState());
             Result<? extends RandomState, Trace<C>> rc = cc.run(rb.getNextState());
@@ -353,22 +353,22 @@ public class TracingInterpreter {
             Trace<C> tc = rc.getValue();
 
             return result(rc.getNextState(),
-                    trace(generator.getCombine().apply(ta.getResult(),
+                    trace(gen.getCombine().apply(ta.getResult(),
                             tb.getResult(),
                             tc.getResult()),
-                            generator,
+                            gen,
                             asList(ta, tb, tc)));
         });
     }
 
-    private <A, B, C, D, Out> CompiledGenerator<Trace<Out>> handleProduct4(
-            Generator.Product4<A, B, C, D, Out> generator) {
-        CompiledGenerator<Trace<A>> ca = compile(generator.getA());
-        CompiledGenerator<Trace<B>> cb = compile(generator.getB());
-        CompiledGenerator<Trace<C>> cc = compile(generator.getC());
-        CompiledGenerator<Trace<D>> cd = compile(generator.getD());
+    private <A, B, C, D, Out> Generator<Trace<Out>> handleProduct4(
+            Generate.Product4<A, B, C, D, Out> gen) {
+        Generator<Trace<A>> ca = compile(gen.getA());
+        Generator<Trace<B>> cb = compile(gen.getB());
+        Generator<Trace<C>> cc = compile(gen.getC());
+        Generator<Trace<D>> cd = compile(gen.getD());
 
-        return compiledGenerator(in -> {
+        return generator(in -> {
             Result<? extends RandomState, Trace<A>> ra = ca.run(in);
             Result<? extends RandomState, Trace<B>> rb = cb.run(ra.getNextState());
             Result<? extends RandomState, Trace<C>> rc = cc.run(rb.getNextState());
@@ -380,24 +380,24 @@ public class TracingInterpreter {
             Trace<D> td = rd.getValue();
 
             return result(rd.getNextState(),
-                    trace(generator.getCombine().apply(ta.getResult(),
+                    trace(gen.getCombine().apply(ta.getResult(),
                             tb.getResult(),
                             tc.getResult(),
                             td.getResult()),
-                            generator,
+                            gen,
                             asList(ta, tb, tc, td)));
         });
     }
 
-    private <A, B, C, D, E, Out> CompiledGenerator<Trace<Out>> handleProduct5(
-            Generator.Product5<A, B, C, D, E, Out> generator) {
-        CompiledGenerator<Trace<A>> ca = compile(generator.getA());
-        CompiledGenerator<Trace<B>> cb = compile(generator.getB());
-        CompiledGenerator<Trace<C>> cc = compile(generator.getC());
-        CompiledGenerator<Trace<D>> cd = compile(generator.getD());
-        CompiledGenerator<Trace<E>> ce = compile(generator.getE());
+    private <A, B, C, D, E, Out> Generator<Trace<Out>> handleProduct5(
+            Generate.Product5<A, B, C, D, E, Out> gen) {
+        Generator<Trace<A>> ca = compile(gen.getA());
+        Generator<Trace<B>> cb = compile(gen.getB());
+        Generator<Trace<C>> cc = compile(gen.getC());
+        Generator<Trace<D>> cd = compile(gen.getD());
+        Generator<Trace<E>> ce = compile(gen.getE());
 
-        return compiledGenerator(in -> {
+        return generator(in -> {
             Result<? extends RandomState, Trace<A>> ra = ca.run(in);
             Result<? extends RandomState, Trace<B>> rb = cb.run(ra.getNextState());
             Result<? extends RandomState, Trace<C>> rc = cc.run(rb.getNextState());
@@ -411,26 +411,26 @@ public class TracingInterpreter {
             Trace<E> te = re.getValue();
 
             return result(re.getNextState(),
-                    trace(generator.getCombine().apply(ta.getResult(),
+                    trace(gen.getCombine().apply(ta.getResult(),
                             tb.getResult(),
                             tc.getResult(),
                             td.getResult(),
                             te.getResult()),
-                            generator,
+                            gen,
                             asList(ta, tb, tc, td, te)));
         });
     }
 
-    private <A, B, C, D, E, F, Out> CompiledGenerator<Trace<Out>> handleProduct6(
-            Product6<A, B, C, D, E, F, Out> generator) {
-        CompiledGenerator<Trace<A>> ca = compile(generator.getA());
-        CompiledGenerator<Trace<B>> cb = compile(generator.getB());
-        CompiledGenerator<Trace<C>> cc = compile(generator.getC());
-        CompiledGenerator<Trace<D>> cd = compile(generator.getD());
-        CompiledGenerator<Trace<E>> ce = compile(generator.getE());
-        CompiledGenerator<Trace<F>> cf = compile(generator.getF());
+    private <A, B, C, D, E, F, Out> Generator<Trace<Out>> handleProduct6(
+            Product6<A, B, C, D, E, F, Out> gen) {
+        Generator<Trace<A>> ca = compile(gen.getA());
+        Generator<Trace<B>> cb = compile(gen.getB());
+        Generator<Trace<C>> cc = compile(gen.getC());
+        Generator<Trace<D>> cd = compile(gen.getD());
+        Generator<Trace<E>> ce = compile(gen.getE());
+        Generator<Trace<F>> cf = compile(gen.getF());
 
-        return compiledGenerator(in -> {
+        return generator(in -> {
             Result<? extends RandomState, Trace<A>> ra = ca.run(in);
             Result<? extends RandomState, Trace<B>> rb = cb.run(ra.getNextState());
             Result<? extends RandomState, Trace<C>> rc = cc.run(rb.getNextState());
@@ -446,28 +446,28 @@ public class TracingInterpreter {
             Trace<F> tf = rf.getValue();
 
             return result(rf.getNextState(),
-                    trace(generator.getCombine().apply(ta.getResult(),
+                    trace(gen.getCombine().apply(ta.getResult(),
                             tb.getResult(),
                             tc.getResult(),
                             td.getResult(),
                             te.getResult(),
                             tf.getResult()),
-                            generator,
+                            gen,
                             asList(ta, tb, tc, td, te, tf)));
         });
     }
 
-    private <A, B, C, D, E, F, G, Out> CompiledGenerator<Trace<Out>> handleProduct7(
-            Generator.Product7<A, B, C, D, E, F, G, Out> generator) {
-        CompiledGenerator<Trace<A>> ca = compile(generator.getA());
-        CompiledGenerator<Trace<B>> cb = compile(generator.getB());
-        CompiledGenerator<Trace<C>> cc = compile(generator.getC());
-        CompiledGenerator<Trace<D>> cd = compile(generator.getD());
-        CompiledGenerator<Trace<E>> ce = compile(generator.getE());
-        CompiledGenerator<Trace<F>> cf = compile(generator.getF());
-        CompiledGenerator<Trace<G>> cg = compile(generator.getG());
+    private <A, B, C, D, E, F, G, Out> Generator<Trace<Out>> handleProduct7(
+            Generate.Product7<A, B, C, D, E, F, G, Out> gen) {
+        Generator<Trace<A>> ca = compile(gen.getA());
+        Generator<Trace<B>> cb = compile(gen.getB());
+        Generator<Trace<C>> cc = compile(gen.getC());
+        Generator<Trace<D>> cd = compile(gen.getD());
+        Generator<Trace<E>> ce = compile(gen.getE());
+        Generator<Trace<F>> cf = compile(gen.getF());
+        Generator<Trace<G>> cg = compile(gen.getG());
 
-        return compiledGenerator(in -> {
+        return generator(in -> {
             Result<? extends RandomState, Trace<A>> ra = ca.run(in);
             Result<? extends RandomState, Trace<B>> rb = cb.run(ra.getNextState());
             Result<? extends RandomState, Trace<C>> rc = cc.run(rb.getNextState());
@@ -485,30 +485,30 @@ public class TracingInterpreter {
             Trace<G> tg = rg.getValue();
 
             return result(rg.getNextState(),
-                    trace(generator.getCombine().apply(ta.getResult(),
+                    trace(gen.getCombine().apply(ta.getResult(),
                             tb.getResult(),
                             tc.getResult(),
                             td.getResult(),
                             te.getResult(),
                             tf.getResult(),
                             tg.getResult()),
-                            generator,
+                            gen,
                             asList(ta, tb, tc, td, te, tf, tg)));
         });
     }
 
-    private <A, B, C, D, E, F, G, H, Out> CompiledGenerator<Trace<Out>> handleProduct8(
-            Generator.Product8<A, B, C, D, E, F, G, H, Out> generator) {
-        CompiledGenerator<Trace<A>> ca = compile(generator.getA());
-        CompiledGenerator<Trace<B>> cb = compile(generator.getB());
-        CompiledGenerator<Trace<C>> cc = compile(generator.getC());
-        CompiledGenerator<Trace<D>> cd = compile(generator.getD());
-        CompiledGenerator<Trace<E>> ce = compile(generator.getE());
-        CompiledGenerator<Trace<F>> cf = compile(generator.getF());
-        CompiledGenerator<Trace<G>> cg = compile(generator.getG());
-        CompiledGenerator<Trace<H>> ch = compile(generator.getH());
+    private <A, B, C, D, E, F, G, H, Out> Generator<Trace<Out>> handleProduct8(
+            Generate.Product8<A, B, C, D, E, F, G, H, Out> gen) {
+        Generator<Trace<A>> ca = compile(gen.getA());
+        Generator<Trace<B>> cb = compile(gen.getB());
+        Generator<Trace<C>> cc = compile(gen.getC());
+        Generator<Trace<D>> cd = compile(gen.getD());
+        Generator<Trace<E>> ce = compile(gen.getE());
+        Generator<Trace<F>> cf = compile(gen.getF());
+        Generator<Trace<G>> cg = compile(gen.getG());
+        Generator<Trace<H>> ch = compile(gen.getH());
 
-        return compiledGenerator(in -> {
+        return generator(in -> {
             Result<? extends RandomState, Trace<A>> ra = ca.run(in);
             Result<? extends RandomState, Trace<B>> rb = cb.run(ra.getNextState());
             Result<? extends RandomState, Trace<C>> rc = cc.run(rb.getNextState());
@@ -528,7 +528,7 @@ public class TracingInterpreter {
             Trace<H> th = rh.getValue();
 
             return result(rh.getNextState(),
-                    trace(generator.getCombine().apply(ta.getResult(),
+                    trace(gen.getCombine().apply(ta.getResult(),
                             tb.getResult(),
                             tc.getResult(),
                             td.getResult(),
@@ -536,7 +536,7 @@ public class TracingInterpreter {
                             tf.getResult(),
                             tg.getResult(),
                             th.getResult()),
-                            generator,
+                            gen,
                             asList(ta, tb, tc, td, te, tf, tg, th)));
         });
     }

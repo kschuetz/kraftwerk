@@ -9,7 +9,7 @@ public class CompositeInterpreter implements Interpreter {
     private final Interpreter second;
 
     @Override
-    public <A> CompiledGenerator<A> handle(InterpreterContext context, Generator<A> generator) {
+    public <A> Generator<A> handle(InterpreterContext context, Generate<A> gen) {
         InterpreterContext ctx1 = new InterpreterContext() {
             @Override
             public Parameters getParameters() {
@@ -17,16 +17,16 @@ public class CompositeInterpreter implements Interpreter {
             }
 
             @Override
-            public <B> CompiledGenerator<B> callNextHandler(Generator<B> generator) {
-                return second.handle(context, generator);
+            public <B> Generator<B> callNextHandler(Generate<B> gen) {
+                return second.handle(context, gen);
             }
 
             @Override
-            public <B> CompiledGenerator<B> recurse(Generator<B> generator) {
-                return context.recurse(generator);
+            public <B> Generator<B> recurse(Generate<B> gen) {
+                return context.recurse(gen);
             }
         };
-        return first.handle(ctx1, generator);
+        return first.handle(ctx1, gen);
     }
 
     public static CompositeInterpreter compositeInterpreter(Interpreter first, Interpreter second) {

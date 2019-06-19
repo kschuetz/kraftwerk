@@ -6,7 +6,7 @@ import static dev.marksman.composablerandom.CompositeInterpreter.compositeInterp
 
 public interface Interpreter {
 
-    <A> CompiledGenerator<A> handle(InterpreterContext context, Generator<A> generator);
+    <A> Generator<A> handle(InterpreterContext context, Generate<A> gen);
 
     default Interpreter andThen(Interpreter other) {
         return compositeInterpreter(this, other);
@@ -16,15 +16,15 @@ public interface Interpreter {
         return other.andThen(this);
     }
 
-    default <A> Interpreter andThen(Fn2<InterpreterContext, Generator<A>, CompiledGenerator<A>> other) {
+    default <A> Interpreter andThen(Fn2<InterpreterContext, Generate<A>, Generator<A>> other) {
         return andThen(interpreter(other));
     }
 
-    default <A> Interpreter overrideWith(Fn2<InterpreterContext, Generator<A>, CompiledGenerator<A>> other) {
+    default <A> Interpreter overrideWith(Fn2<InterpreterContext, Generate<A>, Generator<A>> other) {
         return overrideWith(interpreter(other));
     }
 
-    default <A> CompiledGenerator<A> compile(Parameters parameters, Generator<A> generator) {
+    default <A> Generator<A> compile(Parameters parameters, Generate<A> gen) {
         InterpreterContext context = new InterpreterContext() {
             @Override
             public Parameters getParameters() {
@@ -32,23 +32,23 @@ public interface Interpreter {
             }
 
             @Override
-            public <B> CompiledGenerator<B> recurse(Generator<B> generator) {
-                return compile(parameters, generator);
+            public <B> Generator<B> recurse(Generate<B> gen) {
+                return compile(parameters, gen);
             }
 
             @Override
-            public <B> CompiledGenerator<B> callNextHandler(Generator<B> generator) {
-                throw new IllegalStateException("No handler for generator: " + generator);
+            public <B> Generator<B> callNextHandler(Generate<B> gen) {
+                throw new IllegalStateException("No handler for generator: " + gen);
             }
         };
-        return handle(context, generator);
+        return handle(context, gen);
     }
 
-    static <A> Interpreter interpreter(Fn2<InterpreterContext, Generator<A>, CompiledGenerator<A>> handler) {
+    static <A> Interpreter interpreter(Fn2<InterpreterContext, Generate<A>, Generator<A>> handler) {
         return new Interpreter() {
-            public <B> CompiledGenerator<B> handle(InterpreterContext context, Generator<B> generator) {
+            public <B> Generator<B> handle(InterpreterContext context, Generate<B> gen) {
                 //noinspection unchecked
-                return (CompiledGenerator<B>) handler.apply(context, (Generator<A>) generator);
+                return (Generator<B>) handler.apply(context, (Generate<A>) gen);
             }
         };
     }

@@ -5,13 +5,13 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
-import static dev.marksman.composablerandom.Generator.constant;
+import static dev.marksman.composablerandom.Generate.constant;
 
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class FrequencyEntry<A> implements Product2<Integer, Generator<A>> {
+public class FrequencyEntry<A> implements Product2<Integer, Generate<A>> {
     private final int weight;
-    private final Generator<A> generator;
+    private final Generate<A> generate;
 
     @Override
     public Integer _1() {
@@ -19,16 +19,16 @@ public class FrequencyEntry<A> implements Product2<Integer, Generator<A>> {
     }
 
     @Override
-    public Generator<A> _2() {
-        return generator;
+    public Generate<A> _2() {
+        return generate;
     }
 
-    public static <A> FrequencyEntry<A> entry(int weight, Generator<A> generator) {
-        return new FrequencyEntry<>(weight, generator);
+    public static <A> FrequencyEntry<A> entry(int weight, Generate<A> gen) {
+        return new FrequencyEntry<>(weight, gen);
     }
 
-    public static <A> FrequencyEntry<A> entry(Generator<A> generator) {
-        return entry(1, generator);
+    public static <A> FrequencyEntry<A> entry(Generate<A> gen) {
+        return entry(1, gen);
     }
 
     public static <A> FrequencyEntry<A> entryForValue(int weight, A value) {
@@ -39,7 +39,7 @@ public class FrequencyEntry<A> implements Product2<Integer, Generator<A>> {
         return new FrequencyEntry<>(1, constant(value));
     }
 
-    public static <A> FrequencyEntry<A> fromProduct(Product2<Integer, Generator<? extends A>> entry) {
+    public static <A> FrequencyEntry<A> fromProduct(Product2<Integer, Generate<? extends A>> entry) {
         //noinspection unchecked
         return new FrequencyEntry(entry._1(), entry._2());
     }

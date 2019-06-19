@@ -1,7 +1,7 @@
 package dev.marksman.composablerandom.primitives;
 
 import com.jnape.palatable.lambda.functions.Fn5;
-import dev.marksman.composablerandom.CompiledGenerator;
+import dev.marksman.composablerandom.Generator;
 import dev.marksman.composablerandom.RandomState;
 import dev.marksman.composablerandom.Result;
 import lombok.AccessLevel;
@@ -10,12 +10,12 @@ import lombok.AllArgsConstructor;
 import static dev.marksman.composablerandom.Result.result;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Product5Impl<A, B, C, D, E, Out> implements CompiledGenerator<Out> {
-    private final CompiledGenerator<A> a;
-    private final CompiledGenerator<B> b;
-    private final CompiledGenerator<C> c;
-    private final CompiledGenerator<D> d;
-    private final CompiledGenerator<E> e;
+public class Product5Impl<A, B, C, D, E, Out> implements Generator<Out> {
+    private final Generator<A> a;
+    private final Generator<B> b;
+    private final Generator<C> c;
+    private final Generator<D> d;
+    private final Generator<E> e;
     private final Fn5<A, B, C, D, E, Out> combine;
 
     @Override
@@ -30,11 +30,11 @@ public class Product5Impl<A, B, C, D, E, Out> implements CompiledGenerator<Out> 
         return result(r5.getNextState(), result);
     }
 
-    public static <A, B, C, D, E, Out> Product5Impl<A, B, C, D, E, Out> product5Impl(CompiledGenerator<A> a,
-                                                                                     CompiledGenerator<B> b,
-                                                                                     CompiledGenerator<C> c,
-                                                                                     CompiledGenerator<D> d,
-                                                                                     CompiledGenerator<E> e,
+    public static <A, B, C, D, E, Out> Product5Impl<A, B, C, D, E, Out> product5Impl(Generator<A> a,
+                                                                                     Generator<B> b,
+                                                                                     Generator<C> c,
+                                                                                     Generator<D> d,
+                                                                                     Generator<E> e,
                                                                                      Fn5<A, B, C, D, E, Out> combine) {
         return new Product5Impl<>(a, b, c, d, e, combine);
     }

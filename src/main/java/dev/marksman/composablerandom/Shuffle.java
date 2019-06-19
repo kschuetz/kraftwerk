@@ -16,32 +16,32 @@ import static dev.marksman.composablerandom.Result.result;
 
 class Shuffle {
 
-    static Generator<Vector<Integer>> generateShuffled(int count) {
+    static Generate<Vector<Integer>> generateShuffled(int count) {
         return generateShuffled(count, id());
     }
 
-    static <A> Generator<Vector<A>> generateShuffled(int count, Fn1<Integer, A> fn) {
+    static <A> Generate<Vector<A>> generateShuffled(int count, Fn1<Integer, A> fn) {
         if (count <= 0) {
-            return Generator.constant(Vector.empty());
+            return Generate.constant(Vector.empty());
         } else {
             return generateNonEmptyShuffled(count + 1, fn)
                     .fmap(upcast());
         }
     }
 
-    static <A> Generator<NonEmptyVector<A>> generateNonEmptyShuffled(int count, Fn1<Integer, A> fn) {
+    static <A> Generate<NonEmptyVector<A>> generateNonEmptyShuffled(int count, Fn1<Integer, A> fn) {
         if (count < 1) {
             throw new IllegalArgumentException("count must be >= 1");
         } else if (count == 1) {
-            return Generator.constant(Vector.of(fn.apply(0)));
-        } else return Generator.generator(stateIn -> {
+            return Generate.constant(Vector.of(fn.apply(0)));
+        } else return Generate.generate(stateIn -> {
             ArrayList<A> target = newInputInstance(count, fn);
             RandomState stateOut = shuffleInPlace(stateIn, target);
             return result(stateOut, NonEmptyVector.wrapOrThrow(target));
         });
     }
 
-    static <A> Generator<Vector<A>> generateShuffled(FiniteIterable<A> input) {
+    static <A> Generate<Vector<A>> generateShuffled(FiniteIterable<A> input) {
         ArrayList<A> inputList = new ArrayList<>();
         for (A a : input) {
             inputList.add(a);
@@ -49,7 +49,7 @@ class Shuffle {
         return generateShuffled(inputList.size(), inputList::get);
     }
 
-    static <A> Generator<NonEmptyVector<A>> generateShuffled(NonEmptyFiniteIterable<A> input) {
+    static <A> Generate<NonEmptyVector<A>> generateShuffled(NonEmptyFiniteIterable<A> input) {
         ArrayList<A> inputList = new ArrayList<>();
         for (A a : input) {
             inputList.add(a);
@@ -57,24 +57,24 @@ class Shuffle {
         return generateNonEmptyShuffled(inputList.size(), inputList::get);
     }
 
-    static <A> Generator<Vector<A>> generateShuffled(Collection<A> input) {
+    static <A> Generate<Vector<A>> generateShuffled(Collection<A> input) {
         ArrayList<A> inputList = new ArrayList<A>(input.size());
         inputList.addAll(input);
         return generateShuffled(inputList.size(), inputList::get);
     }
 
-    static <A> Generator<Vector<A>> generateShuffled(A[] input) {
+    static <A> Generate<Vector<A>> generateShuffled(A[] input) {
         int size = input.length;
         ArrayList<A> inputList = new ArrayList<>(size);
         inputList.addAll(Arrays.asList(input));
         return generateShuffled(inputList.size(), inputList::get);
     }
 
-    static <A> Generator<Vector<A>> generateShuffled(Vector<A> input) {
+    static <A> Generate<Vector<A>> generateShuffled(Vector<A> input) {
         return generateShuffled(input.size(), input::unsafeGet);
     }
 
-    static <A> Generator<NonEmptyVector<A>> generateShuffled(NonEmptyVector<A> input) {
+    static <A> Generate<NonEmptyVector<A>> generateShuffled(NonEmptyVector<A> input) {
         return generateNonEmptyShuffled(input.size(), input::unsafeGet);
     }
 

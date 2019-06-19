@@ -2,7 +2,7 @@ package examples;
 
 import dev.marksman.collectionviews.NonEmptyVector;
 import dev.marksman.collectionviews.Vector;
-import dev.marksman.composablerandom.Generator;
+import dev.marksman.composablerandom.Generate;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
@@ -69,7 +69,7 @@ public class ShuffleExample {
 
     private static NonEmptyVector<Card> cards = suits.cross(ranks).fmap(into(Card::card));
 
-    private static Generator<NonEmptyVector<Card>> generateDeck = Generator.generateShuffled(cards);
+    private static Generate<NonEmptyVector<Card>> generateDeck = Generate.generateShuffled(cards);
 
     public static void main(String[] args) {
         streamFrom(generateDeck).next(10).forEach(System.out::println);

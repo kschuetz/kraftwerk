@@ -7,7 +7,7 @@ import static com.jnape.palatable.lambda.functions.builtin.fn2.Eq.eq;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.GTE.gte;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.LT.lt;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.LTE.lte;
-import static dev.marksman.composablerandom.Generator.*;
+import static dev.marksman.composablerandom.Generate.*;
 import static dev.marksman.composablerandom.Initialize.randomInitialRandomState;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static testsupport.Assert.assertForAll;
@@ -37,7 +37,7 @@ class PrimitivesTest {
     @Test
     void testIntExclusiveInBounds() {
         assertForAll(generateIntExclusive(Integer.MAX_VALUE), gte(0));
-        assertForAll(generateIntExclusive(Integer.MAX_VALUE).flatMap(Generator::generateIntExclusive), gte(0));
+        assertForAll(generateIntExclusive(Integer.MAX_VALUE).flatMap(Generate::generateIntExclusive), gte(0));
         assertForAll(generateInt(Integer.MIN_VALUE, Integer.MAX_VALUE - 1)
                         .flatMap(lowerBound -> generateInt(lowerBound + 1, Integer.MAX_VALUE)
                                 .flatMap(upperBound -> generateIntExclusive(lowerBound, upperBound)
@@ -74,7 +74,7 @@ class PrimitivesTest {
     @Test
     void testLongExclusiveInBounds() {
         assertForAll(generateLongExclusive(Long.MAX_VALUE), gte(0L));
-        assertForAll(generateLongExclusive(Long.MAX_VALUE).flatMap(Generator::generateLongExclusive), gte(0L));
+        assertForAll(generateLongExclusive(Long.MAX_VALUE).flatMap(Generate::generateLongExclusive), gte(0L));
         assertForAll(generateLong(Long.MIN_VALUE, Long.MAX_VALUE - 1)
                         .flatMap(lowerBound -> generateLong(lowerBound + 1, Long.MAX_VALUE)
                                 .flatMap(upperBound -> generateLongExclusive(lowerBound, upperBound)

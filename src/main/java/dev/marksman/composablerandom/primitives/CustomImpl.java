@@ -1,14 +1,14 @@
 package dev.marksman.composablerandom.primitives;
 
 import com.jnape.palatable.lambda.functions.Fn1;
-import dev.marksman.composablerandom.CompiledGenerator;
+import dev.marksman.composablerandom.Generator;
 import dev.marksman.composablerandom.RandomState;
 import dev.marksman.composablerandom.Result;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class CustomImpl<A> implements CompiledGenerator<A> {
+public class CustomImpl<A> implements Generator<A> {
     private final Fn1<? super RandomState, Result<RandomState, A>> fn;
 
     @Override

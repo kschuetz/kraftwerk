@@ -1,16 +1,16 @@
 package dev.marksman.composablerandom.primitives;
 
 import com.jnape.palatable.lambda.functions.Fn1;
-import dev.marksman.composablerandom.CompiledGenerator;
+import dev.marksman.composablerandom.Generator;
 import dev.marksman.composablerandom.RandomState;
 import dev.marksman.composablerandom.Result;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class FlatMappedImpl<In, Out> implements CompiledGenerator<Out> {
-    private final Fn1<? super In, ? extends CompiledGenerator<Out>> fn;
-    private final CompiledGenerator<In> operand;
+public class FlatMappedImpl<In, Out> implements Generator<Out> {
+    private final Fn1<? super In, ? extends Generator<Out>> fn;
+    private final Generator<In> operand;
 
     @Override
     public Result<? extends RandomState, Out> run(RandomState input) {
@@ -19,8 +19,8 @@ public class FlatMappedImpl<In, Out> implements CompiledGenerator<Out> {
                 .run(result1.getNextState());
     }
 
-    public static <In, Out> FlatMappedImpl<In, Out> flatMappedImpl(Fn1<? super In, ? extends CompiledGenerator<Out>> fn,
-                                                                   CompiledGenerator<In> operand) {
+    public static <In, Out> FlatMappedImpl<In, Out> flatMappedImpl(Fn1<? super In, ? extends Generator<Out>> fn,
+                                                                   Generator<In> operand) {
         return new FlatMappedImpl<>(fn, operand);
     }
 

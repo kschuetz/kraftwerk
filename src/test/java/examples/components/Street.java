@@ -1,7 +1,7 @@
 package examples.components;
 
 import com.jnape.palatable.lambda.adt.Maybe;
-import dev.marksman.composablerandom.Generator;
+import dev.marksman.composablerandom.Generate;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
@@ -9,8 +9,8 @@ import lombok.Value;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into3.into3;
 import static dev.marksman.composablerandom.FrequencyEntry.entry;
 import static dev.marksman.composablerandom.FrequencyEntry.entryForValue;
+import static dev.marksman.composablerandom.Generate.*;
 import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
-import static dev.marksman.composablerandom.Generator.*;
 import static dev.marksman.composablerandom.MaybeWeights.nothingWeight;
 import static examples.components.City.generateCityRootName;
 
@@ -32,11 +32,11 @@ public class Street {
     }
 
     private static class generators {
-        static final Generator<String> compass =
+        static final Generate<String> compass =
                 frequency(entry(8, chooseOneOfValues("N.", "S.", "W.", "E.")),
                         entry(1, chooseOneOfValues("NW", "NE", "SW", "SE")));
 
-        static final Generator<String> ordinal =
+        static final Generate<String> ordinal =
                 generateInt(1, 99).fmap(n -> {
                     if (n == 11) return "11th";
                     else if (n % 10 == 1) return n + "st";
@@ -45,13 +45,13 @@ public class Street {
                     else return n + "th";
                 });
 
-        static final Generator<String> president =
+        static final Generate<String> president =
                 chooseOneOfValues("Washington", "Adams", "Jefferson", "Madison", "Monroe", "Lincoln");
 
-        static final Generator<String> tree =
+        static final Generate<String> tree =
                 chooseOneOfValues("Oak", "Maple", "Elm", "Pine", "Spruce", "Sycamore", "Birch", "Apple", "Peach");
 
-        static final Generator<String> suffix =
+        static final Generate<String> suffix =
                 frequency(entryForValue(10, "St."),
                         entryForValue(7, "Ave."),
                         entryForValue(5, "Rd."),
@@ -60,20 +60,20 @@ public class Street {
                         entryForValue(2, "Blvd."),
                         entryForValue(1, "Ct."));
 
-        static final Generator<String> name =
+        static final Generate<String> name =
                 frequency(entry(3, ordinal),
                         entry(2, tree),
                         entry(2, president),
                         entry(2, generateCityRootName()));
 
-        static final Generator<Street> street = tupled(
+        static final Generate<Street> street = tupled(
                 compass.maybe(nothingWeight(3).toJust(1)),
                 name,
                 suffix)
                 .fmap(into3(Street::street));
     }
 
-    public static Generator<Street> generateStreet() {
+    public static Generate<Street> generateStreet() {
         return generators.street;
     }
 

@@ -2,12 +2,12 @@ package dev.marksman.composablerandom.frequency;
 
 import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.composablerandom.FrequencyEntry;
-import dev.marksman.composablerandom.Generator;
+import dev.marksman.composablerandom.Generate;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 import static dev.marksman.composablerandom.FrequencyEntry.entry;
-import static dev.marksman.composablerandom.Generator.generateLongExclusive;
+import static dev.marksman.composablerandom.Generate.generateLongExclusive;
 import static dev.marksman.composablerandom.frequency.FrequencyMap1.checkMultiplier;
 import static dev.marksman.composablerandom.frequency.FrequencyMapN.addLabel;
 import static dev.marksman.composablerandom.frequency.FrequencyMapN.frequencyMapN;
@@ -16,14 +16,14 @@ import static java.util.Arrays.asList;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 class FrequencyMap3<A> implements FrequencyMap<A> {
     private final int weightA;
-    private final Generator<A> generatorA;
+    private final Generate<A> generatorA;
     private final int weightB;
-    private final Generator<A> generatorB;
+    private final Generate<A> generatorB;
     private final int weightC;
-    private final Generator<A> generatorC;
+    private final Generate<A> generatorC;
 
     @Override
-    public Generator<A> toGenerator() {
+    public Generate<A> toGenerate() {
         long thresholdB = weightA + weightB;
         return addLabel(generateLongExclusive(weightA + weightB + weightC)
                 .flatMap(n -> n < weightA
@@ -41,12 +41,12 @@ class FrequencyMap3<A> implements FrequencyMap<A> {
     }
 
     @Override
-    public FrequencyMap<A> add(int weight, Generator<? extends A> generator) {
+    public FrequencyMap<A> add(int weight, Generate<? extends A> gen) {
         if (weight < 1) {
             return this;
         } else {
             //noinspection unchecked
-            return frequencyMapN((FrequencyEntry<A>) entry(weight, generator),
+            return frequencyMapN((FrequencyEntry<A>) entry(weight, gen),
                     asList(entry(weightA, generatorA), entry(weightB, generatorB), entry(weightC, generatorC)));
         }
     }
@@ -67,9 +67,9 @@ class FrequencyMap3<A> implements FrequencyMap<A> {
                 weightC, generatorC.fmap(fn));
     }
 
-    static <A> FrequencyMap3<A> frequencyMap3(int weightA, Generator<A> generatorA,
-                                              int weightB, Generator<A> generatorB,
-                                              int weightC, Generator<A> generatorC) {
+    static <A> FrequencyMap3<A> frequencyMap3(int weightA, Generate<A> generatorA,
+                                              int weightB, Generate<A> generatorB,
+                                              int weightC, Generate<A> generatorC) {
         return new FrequencyMap3<>(weightA, generatorA, weightB, generatorB, weightC, generatorC);
     }
 }

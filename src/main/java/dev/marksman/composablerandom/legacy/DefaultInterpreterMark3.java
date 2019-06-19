@@ -1,6 +1,6 @@
 package dev.marksman.composablerandom.legacy;
 
-import dev.marksman.composablerandom.CompiledGenerator;
+import dev.marksman.composablerandom.Generate;
 import dev.marksman.composablerandom.Generator;
 import dev.marksman.composablerandom.Parameters;
 import dev.marksman.composablerandom.SizeSelector;
@@ -44,171 +44,171 @@ public class DefaultInterpreterMark3 {
         this.sizeSelector = parameters.getSizeSelector();
     }
 
-    public <A> CompiledGenerator<A> compile(Generator<A> generator) {
-        if (generator instanceof Generator.Constant) {
-            return constantImpl(((Generator.Constant<A>) generator).getValue());
+    public <A> Generator<A> compile(Generate<A> gen) {
+        if (gen instanceof Generate.Constant) {
+            return constantImpl(((Generate.Constant<A>) gen).getValue());
         }
 
-        if (generator instanceof Generator.Custom) {
-            return customImpl(((Generator.Custom<A>) generator).getFn());
+        if (gen instanceof Generate.Custom) {
+            return customImpl(((Generate.Custom<A>) gen).getFn());
         }
 
-        if (generator instanceof Generator.Mapped) {
-            return handleMapped((Generator.Mapped<?, A>) generator);
+        if (gen instanceof Generate.Mapped) {
+            return handleMapped((Generate.Mapped<?, A>) gen);
         }
 
-        if (generator instanceof Generator.FlatMapped) {
-            return handleFlatMapped((Generator.FlatMapped<?, A>) generator);
+        if (gen instanceof Generate.FlatMapped) {
+            return handleFlatMapped((Generate.FlatMapped<?, A>) gen);
         }
 
-        if (generator instanceof Generator.NextInt) {
+        if (gen instanceof Generate.NextInt) {
             //noinspection unchecked
-            return (CompiledGenerator<A>) nextIntImpl();
+            return (Generator<A>) nextIntImpl();
         }
 
-        if (generator instanceof Generator.NextLong) {
+        if (gen instanceof Generate.NextLong) {
             //noinspection unchecked
-            return (CompiledGenerator<A>) nextLongImpl();
+            return (Generator<A>) nextLongImpl();
         }
 
-        if (generator instanceof Generator.NextBoolean) {
+        if (gen instanceof Generate.NextBoolean) {
             //noinspection unchecked
-            return (CompiledGenerator<A>) nextBooleanImpl();
+            return (Generator<A>) nextBooleanImpl();
         }
 
-        if (generator instanceof Generator.NextDouble) {
+        if (gen instanceof Generate.NextDouble) {
             //noinspection unchecked
-            return (CompiledGenerator<A>) nextDoubleImpl();
+            return (Generator<A>) nextDoubleImpl();
         }
 
-        if (generator instanceof Generator.NextFloat) {
+        if (gen instanceof Generate.NextFloat) {
             //noinspection unchecked
-            return (CompiledGenerator<A>) nextFloatImpl();
+            return (Generator<A>) nextFloatImpl();
         }
 
-        if (generator instanceof Generator.NextIntBounded) {
-            int bound = ((Generator.NextIntBounded) generator).getBound();
+        if (gen instanceof Generate.NextIntBounded) {
+            int bound = ((Generate.NextIntBounded) gen).getBound();
             //noinspection unchecked
-            return (CompiledGenerator<A>) nextIntBoundedImpl(bound);
+            return (Generator<A>) nextIntBoundedImpl(bound);
         }
 
-        if (generator instanceof Generator.NextIntExclusive) {
-            Generator.NextIntExclusive g1 = (Generator.NextIntExclusive) generator;
+        if (gen instanceof Generate.NextIntExclusive) {
+            Generate.NextIntExclusive g1 = (Generate.NextIntExclusive) gen;
             //noinspection unchecked
-            return (CompiledGenerator<A>) nextIntExclusiveImpl(g1.getOrigin(), g1.getBound());
+            return (Generator<A>) nextIntExclusiveImpl(g1.getOrigin(), g1.getBound());
         }
 
-        if (generator instanceof Generator.NextIntBetween) {
-            Generator.NextIntBetween g1 = (Generator.NextIntBetween) generator;
+        if (gen instanceof Generate.NextIntBetween) {
+            Generate.NextIntBetween g1 = (Generate.NextIntBetween) gen;
             //noinspection unchecked
-            return (CompiledGenerator<A>) nextIntBetweenImpl(g1.getMin(), g1.getMax());
+            return (Generator<A>) nextIntBetweenImpl(g1.getMin(), g1.getMax());
         }
 
-        if (generator instanceof Generator.NextIntIndex) {
-            Generator.NextIntIndex g1 = (Generator.NextIntIndex) generator;
+        if (gen instanceof Generate.NextIntIndex) {
+            Generate.NextIntIndex g1 = (Generate.NextIntIndex) gen;
             //noinspection unchecked
-            return (CompiledGenerator<A>) nextIntIndexImpl(g1.getBound());
+            return (Generator<A>) nextIntIndexImpl(g1.getBound());
         }
 
-        if (generator instanceof Generator.NextLongBounded) {
-            Generator.NextLongBounded g1 = (Generator.NextLongBounded) generator;
+        if (gen instanceof Generate.NextLongBounded) {
+            Generate.NextLongBounded g1 = (Generate.NextLongBounded) gen;
             //noinspection unchecked
-            return (CompiledGenerator<A>) nextLongBoundedImpl(g1.getBound());
+            return (Generator<A>) nextLongBoundedImpl(g1.getBound());
         }
 
-        if (generator instanceof Generator.NextLongExclusive) {
-            Generator.NextLongExclusive g1 = (Generator.NextLongExclusive) generator;
+        if (gen instanceof Generate.NextLongExclusive) {
+            Generate.NextLongExclusive g1 = (Generate.NextLongExclusive) gen;
             //noinspection unchecked
-            return (CompiledGenerator<A>) nextLongExclusiveImpl(g1.getOrigin(), g1.getBound());
+            return (Generator<A>) nextLongExclusiveImpl(g1.getOrigin(), g1.getBound());
         }
 
-        if (generator instanceof Generator.NextLongBetween) {
-            Generator.NextLongBetween g1 = (Generator.NextLongBetween) generator;
+        if (gen instanceof Generate.NextLongBetween) {
+            Generate.NextLongBetween g1 = (Generate.NextLongBetween) gen;
             //noinspection unchecked
-            return (CompiledGenerator<A>) nextLongBetweenImpl(g1.getMin(), g1.getMax());
+            return (Generator<A>) nextLongBetweenImpl(g1.getMin(), g1.getMax());
         }
 
-        if (generator instanceof Generator.NextLongIndex) {
-            Generator.NextLongIndex g1 = (Generator.NextLongIndex) generator;
+        if (gen instanceof Generate.NextLongIndex) {
+            Generate.NextLongIndex g1 = (Generate.NextLongIndex) gen;
             //noinspection unchecked
-            return (CompiledGenerator<A>) nextLongIndexImpl(g1.getBound());
+            return (Generator<A>) nextLongIndexImpl(g1.getBound());
         }
 
-        if (generator instanceof Generator.NextGaussian) {
+        if (gen instanceof Generate.NextGaussian) {
             //noinspection unchecked
-            return (CompiledGenerator<A>) nextGaussianImpl();
+            return (Generator<A>) nextGaussianImpl();
         }
 
-        if (generator instanceof Generator.NextByte) {
+        if (gen instanceof Generate.NextByte) {
             //noinspection unchecked
-            return (CompiledGenerator<A>) nextByteImpl();
+            return (Generator<A>) nextByteImpl();
         }
 
-        if (generator instanceof Generator.NextShort) {
+        if (gen instanceof Generate.NextShort) {
             //noinspection unchecked
-            return (CompiledGenerator<A>) nextShortImpl();
+            return (Generator<A>) nextShortImpl();
         }
 
-        if (generator instanceof Generator.NextBytes) {
-            Generator.NextBytes g1 = (Generator.NextBytes) generator;
+        if (gen instanceof Generate.NextBytes) {
+            Generate.NextBytes g1 = (Generate.NextBytes) gen;
             //noinspection unchecked
-            return (CompiledGenerator<A>) nextBytesImpl(g1.getCount());
+            return (Generator<A>) nextBytesImpl(g1.getCount());
         }
 
-        if (generator instanceof Generator.WithMetadata) {
-            Generator.WithMetadata g1 = (Generator.WithMetadata) generator;
+        if (gen instanceof Generate.WithMetadata) {
+            Generate.WithMetadata g1 = (Generate.WithMetadata) gen;
             //noinspection unchecked
             return compile(g1.getOperand());
         }
 
-        if (generator instanceof Generator.Sized) {
-            Generator.Sized g1 = (Generator.Sized) generator;
+        if (gen instanceof Generate.Sized) {
+            Generate.Sized g1 = (Generate.Sized) gen;
 
             //noinspection unchecked
-            return sizedImpl(sizeSelector, rs -> compile((Generator<A>) g1.getFn().apply(rs)));
+            return sizedImpl(sizeSelector, rs -> compile((Generate<A>) g1.getFn().apply(rs)));
         }
 
-        if (generator instanceof Generator.Aggregate) {
-            Generator.Aggregate g1 = (Generator.Aggregate) generator;
+        if (gen instanceof Generate.Aggregate) {
+            Generate.Aggregate g1 = (Generate.Aggregate) gen;
             //noinspection unchecked
-            Iterable<Generator<A>> elements = g1.getElements();
+            Iterable<Generate<A>> elements = g1.getElements();
 
             //noinspection unchecked
-            return (CompiledGenerator<A>) aggregateImpl(g1.getInitialBuilderSupplier(), g1.getAddFn(),
+            return (Generator<A>) aggregateImpl(g1.getInitialBuilderSupplier(), g1.getAddFn(),
                     g1.getBuildFn(), map(this::compile, elements));
         }
 
-        if (generator instanceof Generator.Product2) {
-            Generator.Product2 g1 = (Generator.Product2) generator;
+        if (gen instanceof Generate.Product2) {
+            Generate.Product2 g1 = (Generate.Product2) gen;
             //noinspection unchecked
-            return (CompiledGenerator<A>) product2Impl(compile(g1.getA()),
+            return (Generator<A>) product2Impl(compile(g1.getA()),
                     compile(g1.getB()),
                     g1.getCombine());
         }
 
-        if (generator instanceof Generator.Product3) {
-            Generator.Product3 g1 = (Generator.Product3) generator;
+        if (gen instanceof Generate.Product3) {
+            Generate.Product3 g1 = (Generate.Product3) gen;
             //noinspection unchecked
-            return (CompiledGenerator<A>) product3Impl(compile(g1.getA()),
+            return (Generator<A>) product3Impl(compile(g1.getA()),
                     compile(g1.getB()),
                     compile(g1.getC()),
                     g1.getCombine());
         }
 
-        if (generator instanceof Generator.Product4) {
-            Generator.Product4 g1 = (Generator.Product4) generator;
+        if (gen instanceof Generate.Product4) {
+            Generate.Product4 g1 = (Generate.Product4) gen;
             //noinspection unchecked
-            return (CompiledGenerator<A>) product4Impl(compile(g1.getA()),
+            return (Generator<A>) product4Impl(compile(g1.getA()),
                     compile(g1.getB()),
                     compile(g1.getC()),
                     compile(g1.getD()),
                     g1.getCombine());
         }
 
-        if (generator instanceof Generator.Product5) {
-            Generator.Product5 g1 = (Generator.Product5) generator;
+        if (gen instanceof Generate.Product5) {
+            Generate.Product5 g1 = (Generate.Product5) gen;
             //noinspection unchecked
-            return (CompiledGenerator<A>) product5Impl(compile(g1.getA()),
+            return (Generator<A>) product5Impl(compile(g1.getA()),
                     compile(g1.getB()),
                     compile(g1.getC()),
                     compile(g1.getD()),
@@ -216,10 +216,10 @@ public class DefaultInterpreterMark3 {
                     g1.getCombine());
         }
 
-        if (generator instanceof Generator.Product6) {
-            Generator.Product6 g1 = (Generator.Product6) generator;
+        if (gen instanceof Generate.Product6) {
+            Generate.Product6 g1 = (Generate.Product6) gen;
             //noinspection unchecked
-            return (CompiledGenerator<A>) product6Impl(compile(g1.getA()),
+            return (Generator<A>) product6Impl(compile(g1.getA()),
                     compile(g1.getB()),
                     compile(g1.getC()),
                     compile(g1.getD()),
@@ -228,10 +228,10 @@ public class DefaultInterpreterMark3 {
                     g1.getCombine());
         }
 
-        if (generator instanceof Generator.Product7) {
-            Generator.Product7 g1 = (Generator.Product7) generator;
+        if (gen instanceof Generate.Product7) {
+            Generate.Product7 g1 = (Generate.Product7) gen;
             //noinspection unchecked
-            return (CompiledGenerator<A>) product7Impl(compile(g1.getA()),
+            return (Generator<A>) product7Impl(compile(g1.getA()),
                     compile(g1.getB()),
                     compile(g1.getC()),
                     compile(g1.getD()),
@@ -241,10 +241,10 @@ public class DefaultInterpreterMark3 {
                     g1.getCombine());
         }
 
-        if (generator instanceof Generator.Product8) {
-            Generator.Product8 g1 = (Generator.Product8) generator;
+        if (gen instanceof Generate.Product8) {
+            Generate.Product8 g1 = (Generate.Product8) gen;
             //noinspection unchecked
-            return (CompiledGenerator<A>) product8Impl(compile(g1.getA()),
+            return (Generator<A>) product8Impl(compile(g1.getA()),
                     compile(g1.getB()),
                     compile(g1.getC()),
                     compile(g1.getD()),
@@ -255,14 +255,14 @@ public class DefaultInterpreterMark3 {
                     g1.getCombine());
         }
 
-        throw new IllegalStateException("Unimplemented generator");
+        throw new IllegalStateException("Unimplemented gen");
     }
 
-    private <In, Out> CompiledGenerator<Out> handleMapped(Generator.Mapped<In, Out> mapped) {
+    private <In, Out> Generator<Out> handleMapped(Generate.Mapped<In, Out> mapped) {
         return mappedImpl(mapped.getFn(), compile(mapped.getOperand()));
     }
 
-    private <In, Out> CompiledGenerator<Out> handleFlatMapped(Generator.FlatMapped<In, Out> flatMapped) {
+    private <In, Out> Generator<Out> handleFlatMapped(Generate.FlatMapped<In, Out> flatMapped) {
         return flatMappedImpl(in -> compile(flatMapped.getFn().apply(in)),
                 compile(flatMapped.getOperand()));
     }

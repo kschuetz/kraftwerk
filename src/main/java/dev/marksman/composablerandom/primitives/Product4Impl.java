@@ -1,7 +1,7 @@
 package dev.marksman.composablerandom.primitives;
 
 import com.jnape.palatable.lambda.functions.Fn4;
-import dev.marksman.composablerandom.CompiledGenerator;
+import dev.marksman.composablerandom.Generator;
 import dev.marksman.composablerandom.RandomState;
 import dev.marksman.composablerandom.Result;
 import lombok.AccessLevel;
@@ -10,11 +10,11 @@ import lombok.AllArgsConstructor;
 import static dev.marksman.composablerandom.Result.result;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Product4Impl<A, B, C, D, Out> implements CompiledGenerator<Out> {
-    private final CompiledGenerator<A> a;
-    private final CompiledGenerator<B> b;
-    private final CompiledGenerator<C> c;
-    private final CompiledGenerator<D> d;
+public class Product4Impl<A, B, C, D, Out> implements Generator<Out> {
+    private final Generator<A> a;
+    private final Generator<B> b;
+    private final Generator<C> c;
+    private final Generator<D> d;
     private final Fn4<A, B, C, D, Out> combine;
 
     @Override
@@ -27,10 +27,10 @@ public class Product4Impl<A, B, C, D, Out> implements CompiledGenerator<Out> {
         return result(r4.getNextState(), result);
     }
 
-    public static <A, B, C, D, Out> Product4Impl<A, B, C, D, Out> product4Impl(CompiledGenerator<A> a,
-                                                                               CompiledGenerator<B> b,
-                                                                               CompiledGenerator<C> c,
-                                                                               CompiledGenerator<D> d,
+    public static <A, B, C, D, Out> Product4Impl<A, B, C, D, Out> product4Impl(Generator<A> a,
+                                                                               Generator<B> b,
+                                                                               Generator<C> c,
+                                                                               Generator<D> d,
                                                                                Fn4<A, B, C, D, Out> combine) {
         return new Product4Impl<>(a, b, c, d, combine);
     }

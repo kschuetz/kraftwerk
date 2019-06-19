@@ -1,7 +1,7 @@
 package dev.marksman.composablerandom.frequency;
 
 import com.jnape.palatable.lambda.functions.Fn1;
-import dev.marksman.composablerandom.Generator;
+import dev.marksman.composablerandom.Generate;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
@@ -10,9 +10,9 @@ class FrequencyMapBuilderN<A> implements FrequencyMapBuilder<A> {
     private final FrequencyMap<A> result;
 
     @Override
-    public FrequencyMapBuilder<A> add(int weight, Generator<? extends A> generator) {
+    public FrequencyMapBuilder<A> add(int weight, Generate<? extends A> gen) {
         if (weight > 0) {
-            return frequencyMapBuilderN(result.add(weight, generator));
+            return frequencyMapBuilderN(result.add(weight, gen));
         } else {
             return this;
         }

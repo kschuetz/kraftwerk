@@ -1,7 +1,7 @@
 package dev.marksman.composablerandom.primitives;
 
 import com.jnape.palatable.lambda.functions.Fn2;
-import dev.marksman.composablerandom.CompiledGenerator;
+import dev.marksman.composablerandom.Generator;
 import dev.marksman.composablerandom.RandomState;
 import dev.marksman.composablerandom.Result;
 import lombok.AccessLevel;
@@ -10,9 +10,9 @@ import lombok.AllArgsConstructor;
 import static dev.marksman.composablerandom.Result.result;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Product2Impl<A, B, Out> implements CompiledGenerator<Out> {
-    private final CompiledGenerator<A> a;
-    private final CompiledGenerator<B> b;
+public class Product2Impl<A, B, Out> implements Generator<Out> {
+    private final Generator<A> a;
+    private final Generator<B> b;
     private final Fn2<A, B, Out> combine;
 
     @Override
@@ -23,8 +23,8 @@ public class Product2Impl<A, B, Out> implements CompiledGenerator<Out> {
         return result(r2.getNextState(), result);
     }
 
-    public static <A, B, Out> Product2Impl<A, B, Out> product2Impl(CompiledGenerator<A> a,
-                                                                   CompiledGenerator<B> b,
+    public static <A, B, Out> Product2Impl<A, B, Out> product2Impl(Generator<A> a,
+                                                                   Generator<B> b,
                                                                    Fn2<A, B, Out> combine) {
         return new Product2Impl<>(a, b, combine);
     }

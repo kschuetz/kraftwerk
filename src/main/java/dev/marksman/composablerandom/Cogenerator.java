@@ -43,31 +43,31 @@ public abstract class Cogenerator<A> implements Contravariant<A, Cogenerator<?>>
         };
     }
 
-    public static Cogenerator<Integer> cogenerateInt() {
+    public static Cogenerator<Integer> cogeneratorInt() {
         return cogenerator(n -> (long) n);
     }
 
-    public static Cogenerator<Long> cogenerateLong() {
+    public static Cogenerator<Long> cogeneratorLong() {
         return cogenerator(id());
     }
 
-    public static Cogenerator<Short> cogenerateShort() {
+    public static Cogenerator<Short> cogeneratorShort() {
         return cogenerator(n -> (long) n);
     }
 
-    public static Cogenerator<Byte> cogenerateByte() {
+    public static Cogenerator<Byte> cogeneratorByte() {
         return cogenerator(n -> (long) n);
     }
 
-    public static Cogenerator<Boolean> cogenerateBoolean() {
+    public static Cogenerator<Boolean> cogeneratorBoolean() {
         return cogenerator(b -> b ? ~0L : 0L);
     }
 
-    public static Cogenerator<Object> cogenerateObject() {
+    public static Cogenerator<Object> cogeneratorObject() {
         return cogenerator(obj -> obj == null ? 0L : obj.hashCode());
     }
 
-    public static <A> Cogenerator<Maybe<A>> cogenerateMaybe(Cogenerator<A> a) {
+    public static <A> Cogenerator<Maybe<A>> maybe(Cogenerator<A> a) {
         return cogenerator((randomState, value) ->
                 value.match(__ -> randomState,
                         x -> a.apply(randomState, x)));

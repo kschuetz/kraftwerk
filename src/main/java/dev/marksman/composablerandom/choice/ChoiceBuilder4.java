@@ -3,38 +3,38 @@ package dev.marksman.composablerandom.choice;
 import com.jnape.palatable.lambda.adt.choice.Choice4;
 import com.jnape.palatable.lambda.adt.choice.Choice5;
 import dev.marksman.composablerandom.FrequencyEntry;
-import dev.marksman.composablerandom.Generator;
-import dev.marksman.composablerandom.ToGenerator;
+import dev.marksman.composablerandom.Generate;
+import dev.marksman.composablerandom.ToGenerate;
 import dev.marksman.composablerandom.frequency.FrequencyMap;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
-import static dev.marksman.composablerandom.Generator.constant;
+import static dev.marksman.composablerandom.Generate.constant;
 import static dev.marksman.composablerandom.choice.ChoiceBuilder5.choiceBuilder5;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class ChoiceBuilder4<A, B, C, D> implements ToGenerator<Choice4<A, B, C, D>> {
+public class ChoiceBuilder4<A, B, C, D> implements ToGenerate<Choice4<A, B, C, D>> {
     private final FrequencyMap<Choice4<A, B, C, D>> frequencyMap;
 
     @Override
-    public Generator<Choice4<A, B, C, D>> toGenerator() {
-        return frequencyMap.toGenerator();
+    public Generate<Choice4<A, B, C, D>> toGenerate() {
+        return frequencyMap.toGenerate();
     }
 
-    public <E> ChoiceBuilder5<A, B, C, D, E> or(int weight, Generator<E> generator) {
+    public <E> ChoiceBuilder5<A, B, C, D, E> or(int weight, Generate<E> gen) {
         FrequencyMap<Choice5<A, B, C, D, E>> newFrequencyMap = frequencyMap
                 .<Choice5<A, B, C, D, E>>fmap(c4 ->
                         c4.match(Choice5::a, Choice5::b, Choice5::c, Choice5::d))
-                .add(weight, generator.fmap(Choice5::e));
+                .add(weight, gen.fmap(Choice5::e));
         return choiceBuilder5(newFrequencyMap);
     }
 
-    public <E> ChoiceBuilder5<A, B, C, D, E> or(Generator<E> generator) {
-        return or(1, generator);
+    public <E> ChoiceBuilder5<A, B, C, D, E> or(Generate<E> gen) {
+        return or(1, gen);
     }
 
     public <E> ChoiceBuilder5<A, B, C, D, E> or(FrequencyEntry<E> frequencyEntry) {
-        return or(frequencyEntry.getWeight(), frequencyEntry.getGenerator());
+        return or(frequencyEntry.getWeight(), frequencyEntry.getGenerate());
     }
 
     public <E> ChoiceBuilder5<A, B, C, D, E> orValue(int weight, E value) {

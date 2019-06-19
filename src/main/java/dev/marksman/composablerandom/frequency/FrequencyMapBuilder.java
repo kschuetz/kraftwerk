@@ -2,13 +2,13 @@ package dev.marksman.composablerandom.frequency;
 
 import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.composablerandom.FrequencyEntry;
-import dev.marksman.composablerandom.Generator;
+import dev.marksman.composablerandom.Generate;
 
-import static dev.marksman.composablerandom.Generator.constant;
+import static dev.marksman.composablerandom.Generate.constant;
 import static dev.marksman.composablerandom.frequency.FrequencyMapBuilder0.frequencyMapBuilder0;
 
 public interface FrequencyMapBuilder<A> {
-    FrequencyMapBuilder<A> add(int weight, Generator<? extends A> generator);
+    FrequencyMapBuilder<A> add(int weight, Generate<? extends A> gen);
 
     FrequencyMapBuilder<A> combine(FrequencyMap<A> other);
 
@@ -18,8 +18,8 @@ public interface FrequencyMapBuilder<A> {
 
     FrequencyMapBuilder<A> multiply(int positiveFactor);
 
-    default FrequencyMapBuilder<A> add(Generator<? extends A> generator) {
-        return add(1, generator);
+    default FrequencyMapBuilder<A> add(Generate<? extends A> gen) {
+        return add(1, gen);
     }
 
     default FrequencyMapBuilder<A> addValue(int weight, A value) {
@@ -31,7 +31,7 @@ public interface FrequencyMapBuilder<A> {
     }
 
     default FrequencyMapBuilder<A> add(FrequencyEntry<A> entry) {
-        return add(entry.getWeight(), entry.getGenerator());
+        return add(entry.getWeight(), entry.getGenerate());
     }
 
     static <A> FrequencyMapBuilder<A> frequencyMapBuilder() {

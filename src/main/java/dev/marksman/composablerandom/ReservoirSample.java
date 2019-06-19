@@ -8,11 +8,11 @@ import static com.jnape.palatable.lambda.functions.builtin.fn1.Upcast.upcast;
 
 class ReservoirSample {
 
-    static Generator<FiniteIterable<Integer>> reservoirSample(int n, int k) {
+    static Generate<FiniteIterable<Integer>> reservoirSample(int n, int k) {
         if (k < 1 || n < 1) {
-            return Generator.constant(Vector.empty());
+            return Generate.constant(Vector.empty());
         } else if (k >= n) {
-            return Generator.constant(Vector.range(n));
+            return Generate.constant(Vector.range(n));
         } else if (k > n / 2) {
             return reservoirSampleImpl(n, n - k)
                     .fmap(exclude -> Vector.range(n).filter(i -> !exclude.contains(i)));
@@ -21,8 +21,8 @@ class ReservoirSample {
         }
     }
 
-    private static Generator<Set<Integer>> reservoirSampleImpl(int n, int k) {
-        return Generator.generator(rs -> {
+    private static Generate<Set<Integer>> reservoirSampleImpl(int n, int k) {
+        return Generate.generate(rs -> {
             RandomState current = rs;
             Integer[] result = new Integer[k];
             for (int i = 0; i < k; i++) {

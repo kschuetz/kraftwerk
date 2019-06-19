@@ -11,8 +11,8 @@ import static dev.marksman.composablerandom.random.StandardGen.initStandardGen;
 
 public class Runner {
 
-    public static <A> void runMark3(String label, int iterations, Generator<A> generator) {
-        CompiledGenerator<A> compiled = defaultInterpreter(defaultParameters()).compile(generator);
+    public static <A> void runMark3(String label, int iterations, Generate<A> gen) {
+        Generator<A> compiled = defaultInterpreter(defaultParameters()).compile(gen);
 
         RandomState current = initStandardGen();
         long t0 = System.currentTimeMillis();
@@ -25,19 +25,19 @@ public class Runner {
         System.out.println("mark 3 " + label + ": " + t + " ms");
     }
 
-    public static <A> void run(String label, int iterations, Generator<A> generator) {
+    public static <A> void run(String label, int iterations, Generate<A> gen) {
 
-        Interpreter overrides = Interpreter.<A>interpreter((InterpreterContext ctx, Generator<A> gen) -> {
-            if (gen instanceof Generator.NextInt) {
+        Interpreter overrides = Interpreter.<A>interpreter((InterpreterContext ctx, Generate<A> g) -> {
+            if (g instanceof Generate.NextInt) {
                 //noinspection unchecked
-                return (CompiledGenerator<A>) constantImpl(1);
+                return (Generator<A>) constantImpl(1);
             }
-            return ctx.callNextHandler(gen);
+            return ctx.callNextHandler(g);
         });
 
         Interpreter interpreter = DefaultInterpreter.defaultInterpreter()
                 .overrideWith(overrides);
-        CompiledGenerator<A> compiled = interpreter.compile(defaultParameters(), generator);
+        Generator<A> compiled = interpreter.compile(defaultParameters(), gen);
         RandomState current = initStandardGen();
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < iterations; i++) {
@@ -49,8 +49,8 @@ public class Runner {
         System.out.println(label + ": " + t + " ms");
     }
 
-    public static <A> void runTraced(String label, int iterations, Generator<A> generator) {
-        CompiledGenerator<Trace<A>> compile = tracingInterpreter().compile(generator);
+    public static <A> void runTraced(String label, int iterations, Generate<A> gen) {
+        Generator<Trace<A>> compile = tracingInterpreter().compile(gen);
         GeneratedStream<Trace<A>> stream = GeneratedStream.streamFrom(compile, initStandardGen());
 
         long t0 = System.currentTimeMillis();

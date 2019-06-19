@@ -1,6 +1,6 @@
 package examples;
 
-import dev.marksman.composablerandom.Generator;
+import dev.marksman.composablerandom.Generate;
 import dev.marksman.composablerandom.TracePrinter;
 import dev.marksman.composablerandom.random.StandardGen;
 import examples.components.Street;
@@ -17,7 +17,7 @@ public class TraceExample {
         StandardGen standardGen = initStandardGen();
 
         TracePrinter tracePrinter = tracePrinter();
-        Generator<Street> street = generateStreet().labeled("street");
+        Generate<Street> street = generateStreet().labeled("street");
 
         streamFrom(tracingInterpreter().compile(street), standardGen).next(1).forEach(value -> {
             tracePrinter.render(value).forEach(System.out::println);
