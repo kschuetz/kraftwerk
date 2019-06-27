@@ -23,7 +23,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 
 import java.math.BigInteger;
-import java.time.LocalDate;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -1352,23 +1352,51 @@ public abstract class Generate<A> implements Monad<A, Generate<?>>, ToGenerate<A
         return Temporal.generateLocalDateExclusive(origin, bound);
     }
 
-    public static Generate<LocalDate> generateLocalDateForYear(int year) {
+    public static Generate<LocalDate> generateLocalDateForYear(Year year) {
         return Temporal.generateLocalDateForYear(year);
     }
 
-    static <A> Generate<A> generateFromSemigroup(Semigroup<A> semigroup, Generate<A> gen) {
+    public static Generate<LocalDate> generateLocalDateForMonth(YearMonth yearMonth) {
+        return Temporal.generateLocalDateForMonth(yearMonth);
+    }
+
+    public static Generate<LocalTime> generateLocalTime() {
+        return Temporal.generateLocalTime();
+    }
+
+    public static Generate<LocalTime> generateLocalTime(LocalTime min, LocalTime max) {
+        return Temporal.generateLocalTime(min, max);
+    }
+
+    public static Generate<LocalDateTime> generateLocalDateTime(LocalDate min, LocalDate max) {
+        return Temporal.generateLocalDateTime(min, max);
+    }
+
+    public static Generate<LocalDateTime> generateLocalDateTime(LocalDateTime min, LocalDateTime max) {
+        return Temporal.generateLocalDateTime(min, max);
+    }
+
+    public static Generate<Duration> generateDuration(Duration max) {
+        return Temporal.generateDuration(max);
+    }
+
+    public static Generate<Duration> generateDuration(Duration min, Duration max) {
+        return Temporal.generateDuration(min, max);
+    }
+
+    public static <A> Generate<A> generateFromSemigroup(Semigroup<A> semigroup, Generate<A> gen) {
         return Lambda.generateFromSemigroup(semigroup, gen);
     }
 
-    static <A> Generate<A> generateNFromSemigroup(Semigroup<A> semigroup, Generate<A> gen, int count) {
+    public static <A> Generate<A> generateNFromSemigroup(Semigroup<A> semigroup, Generate<A> gen, int count) {
         return Lambda.generateNFromSemigroup(semigroup, gen, count);
     }
 
-    static <A> Generate<A> generateFromMonoid(Monoid<A> monoid, Generate<A> gen) {
+    public static <A> Generate<A> generateFromMonoid(Monoid<A> monoid, Generate<A> gen) {
         return Lambda.generateFromMonoid(monoid, gen);
     }
 
-    static <A> Generate<A> generateNFromMonoid(Monoid<A> monoid, Generate<A> gen, int count) {
+    public static <A> Generate<A> generateNFromMonoid(Monoid<A> monoid, Generate<A> gen, int count) {
         return Lambda.generateNFromMonoid(monoid, gen, count);
     }
 

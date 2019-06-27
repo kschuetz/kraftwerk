@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 
 import java.time.LocalDate;
+import java.time.Year;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into3.into3;
 import static dev.marksman.composablerandom.Generate.*;
@@ -50,7 +51,7 @@ public class Person {
                         .toGenerate();
 
         private static Generate<LocalDate> dateOfBirth =
-                age.flatMap(n -> generateLocalDateForYear(currentYear - n));
+                age.flatMap(n -> generateLocalDateForYear(Year.of(currentYear - n)));
 
         static Generate<Person> person = tupled(generateName(),
                 generateAddress(),
