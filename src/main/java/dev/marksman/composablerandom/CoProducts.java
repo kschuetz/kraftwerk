@@ -46,7 +46,6 @@ class CoProducts {
     }
 
     static <A> Generate<Maybe<A>> generateMaybe(MaybeWeights weights, Generate<A> g) {
-
         return FrequencyMapBuilder.<Maybe<A>>frequencyMapBuilder()
                 .add(weights.getJustWeight(), generateJust(g))
                 .add(weights.getNothingWeight(), generateNothing())

@@ -106,6 +106,14 @@ public abstract class Generate<A> implements Monad<A, Generate<?>>, ToGenerate<A
         return CoProducts.generateRight(this);
     }
 
+    public final Generate<A> withNulls() {
+        return generateWithNulls(this);
+    }
+
+    public final Generate<A> withNulls(NullWeights weights) {
+        return generateWithNulls(weights, this);
+    }
+
     public final Generate<ArrayList<A>> arrayList() {
         return generateArrayList(this);
     }
@@ -963,6 +971,18 @@ public abstract class Generate<A> implements Monad<A, Generate<?>>, ToGenerate<A
     @SafeVarargs
     public static Generate<String> generateString(Generate<String> first, Generate<String>... more) {
         return Strings.generateString(first, more);
+    }
+
+    public static <A> Generate<A> generateNull() {
+        return Nulls.generateNull();
+    }
+
+    public static <A> Generate<A> generateWithNulls(NullWeights weights, Generate<A> g) {
+        return Nulls.generateWithNulls(weights, g);
+    }
+
+    public static <A> Generate<A> generateWithNulls(Generate<A> g) {
+        return Nulls.generateWithNulls(g);
     }
 
     public static Generate<Unit> generateUnit() {
