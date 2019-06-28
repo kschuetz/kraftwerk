@@ -1,0 +1,40 @@
+version: 2
+shared: &shared
+  working_directory: ~/composable-random
+
+  steps:
+
+    - checkout
+
+    - restore_cache:
+        key: composable-random-{{ checksum "pom.xml" }}
+
+    - run: mvn dependency:go-offline
+
+    - save_cache:
+        paths:
+          - ~/.m2
+        key: composable-random-{{ checksum "pom.xml" }}
+
+    - run: mvn package -Dmaven.javadoc.skip=true
+
+    - store_test_results:
+        path: target/surefire-reports
+
+jobs:
+  java-8:
+    docker:
+      - image: circleci/openjdk:8u171-jdk
+    <<: *shared
+
+  java-11:
+    docker:
+      - image: circleci/openjdk:11.0.3-jdk-stretch
+    <<: *shared
+
+workflows:
+  version: 2
+  workflow:
+    jobs:
+      - java-8
+      - java-11
