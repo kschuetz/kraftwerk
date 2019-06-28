@@ -973,6 +973,30 @@ public abstract class Generate<A> implements Monad<A, Generate<?>>, ToGenerate<A
         return Strings.generateString(first, more);
     }
 
+    public static Generate<String> concatStrings(Generate<String> separator, Iterable<Generate<String>> components) {
+        return Strings.concatStrings(separator, components);
+    }
+
+    public static Generate<String> concatStrings(String separator, Iterable<Generate<String>> components) {
+        return Strings.concatStrings(separator, components);
+    }
+
+    public static Generate<String> concatStrings(Iterable<Generate<String>> components) {
+        return Strings.concatStrings(components);
+    }
+
+    public static Generate<String> concatMaybeStrings(Generate<String> separator, Iterable<Generate<Maybe<String>>> components) {
+        return Strings.concatMaybeStrings(separator, components);
+    }
+
+    public static Generate<String> concatMaybeStrings(String separator, Iterable<Generate<Maybe<String>>> components) {
+        return Strings.concatMaybeStrings(separator, components);
+    }
+
+    public static Generate<String> concatMaybeStrings(Iterable<Generate<Maybe<String>>> components) {
+        return Strings.concatMaybeStrings(components);
+    }
+
     public static <A> Generate<A> generateNull() {
         return Nulls.generateNull();
     }
