@@ -77,7 +77,12 @@ class Strings {
     }
 
     static Generate<String> concatStrings(Iterable<Generate<String>> components) {
-        return concatStrings(constant(""), components);
+        if (!components.iterator().hasNext()) {
+            return constant("");
+        } else {
+            return aggregate(StringBuilder::new, StringBuilder::append, StringBuilder::toString,
+                    components);
+        }
     }
 
     static Generate<String> concatMaybeStrings(Generate<String> separator, Iterable<Generate<Maybe<String>>> components) {
@@ -96,12 +101,20 @@ class Strings {
         }
     }
 
-    public static Generate<String> concatMaybeStrings(String separator, Iterable<Generate<Maybe<String>>> components) {
+    static Generate<String> concatMaybeStrings(String separator, Iterable<Generate<Maybe<String>>> components) {
         return concatMaybeStrings(constant(separator), components);
     }
 
-    public static Generate<String> concatMaybeStrings(Iterable<Generate<Maybe<String>>> components) {
-        return concatMaybeStrings(constant(""), components);
+    static Generate<String> concatMaybeStrings(Iterable<Generate<Maybe<String>>> components) {
+        if (!components.iterator().hasNext()) {
+            return constant("");
+        } else {
+            return aggregate(StringBuilder::new,
+                    (builder, maybeString) -> builder.append(maybeString.orElse("")),
+                    StringBuilder::toString,
+                    components);
+
+        }
     }
 
 }
