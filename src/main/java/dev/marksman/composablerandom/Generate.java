@@ -997,6 +997,10 @@ public abstract class Generate<A> implements Monad<A, Generate<?>>, ToGenerate<A
         return Strings.concatMaybeStrings(components);
     }
 
+    public static CompoundStringBuilder compoundStringBuilder() {
+        return ConcreteCompoundStringBuilder.builder();
+    }
+
     public static <A> Generate<A> generateNull() {
         return Nulls.generateNull();
     }
