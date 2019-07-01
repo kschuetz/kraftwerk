@@ -12,9 +12,25 @@ public interface CompoundStringBuilder {
 
     CompoundStringBuilder addMaybe(Maybe<String> s);
 
+    CompoundStringBuilder addMany(Iterable<Generate<String>> gs);
+
+    CompoundStringBuilder addManyValues(Iterable<String> gs);
+
+    CompoundStringBuilder addManyMaybe(Iterable<Generate<Maybe<String>>> g);
+
+    CompoundStringBuilder addManyMaybeValues(Iterable<Maybe<String>> g);
+
     CompoundStringBuilder withSeparator(Generate<String> newSeparator);
 
     CompoundStringBuilder withSeparator(String newSeparator);
+
+    CompoundStringBuilder withStartDelimiter(Generate<String> newDelimiter);
+
+    CompoundStringBuilder withStartDelimiter(String newDelimiter);
+
+    CompoundStringBuilder withEndDelimiter(Generate<String> newDelimiter);
+
+    CompoundStringBuilder withEndDelimiter(String newDelimiter);
 
     Generate<String> build();
 
