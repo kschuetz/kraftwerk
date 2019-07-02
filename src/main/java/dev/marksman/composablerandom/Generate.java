@@ -764,6 +764,14 @@ public abstract class Generate<A> implements Monad<A, Generate<?>>, ToGenerate<A
         return new Sized<>(fn::apply);
     }
 
+    public static <A> Generate<A> sizedMinimum(int minimum, Fn1<Integer, Generate<A>> fn) {
+        if (minimum < 1) {
+            return sized(fn);
+        } else {
+            return sized(n -> fn.apply(Math.min(n, minimum)));
+        }
+    }
+
     public static <A, Builder, Out> Aggregate<A, Builder, Out> aggregate(Fn0<Builder> initialBuilderSupplier,
                                                                          Fn2<Builder, A, Builder> addFn,
                                                                          Fn1<Builder, Out> buildFn,
@@ -969,6 +977,14 @@ public abstract class Generate<A> implements Monad<A, Generate<?>>, ToGenerate<A
     @SafeVarargs
     public static Generate<String> generateString(Generate<String> first, Generate<String>... more) {
         return Strings.generateString(first, more);
+    }
+
+    public static Generate<String> generateIdentifier() {
+        return Strings.generateIdentifier();
+    }
+
+    public static Generate<String> generateIdentifier(int length) {
+        return Strings.generateIdentifier(length);
     }
 
     public static Generate<String> concatStrings(Generate<String> separator, Iterable<Generate<String>> components) {

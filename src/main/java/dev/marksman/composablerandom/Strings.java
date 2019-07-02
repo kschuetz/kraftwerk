@@ -63,6 +63,23 @@ class Strings {
         }
     }
 
+    static Generate<String> generateIdentifier() {
+        return Generate.sizedMinimum(1, Strings::generateIdentifier);
+    }
+
+    static Generate<String> generateIdentifier(int length) {
+        if (length < 1) {
+            return constant("");
+        } else {
+            Generate<String> firstChar = generateStringFromCharacters(1, Characters.alphaLower());
+            if (length == 1) {
+                return firstChar;
+            } else {
+                return generateString(firstChar, generateStringFromCharacters(length - 1, Characters.alphaNumeric()));
+            }
+        }
+    }
+
     static Generate<String> concatStrings(Generate<String> separator, Iterable<Generate<String>> components) {
         if (!components.iterator().hasNext()) {
             return constant("");
