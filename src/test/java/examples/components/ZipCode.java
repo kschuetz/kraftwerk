@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 
 import static dev.marksman.composablerandom.Generate.*;
-import static dev.marksman.composablerandom.domain.Characters.digits;
+import static dev.marksman.composablerandom.domain.Characters.numeric;
 import static dev.marksman.composablerandom.frequency.FrequencyMap.frequencyMap;
 
 @Value
@@ -23,8 +23,8 @@ public class ZipCode {
     }
 
     private static class generators {
-        static Generate<String> fiveDigits = generateStringFromCharacters(5, digits());
-        static Generate<String> fourDigits = generateStringFromCharacters(4, digits());
+        static Generate<String> fiveDigits = generateStringFromCharacters(5, numeric());
+        static Generate<String> fourDigits = generateStringFromCharacters(4, numeric());
 
         static Generate<ZipCode> zipCode =
                 frequencyMap(7, fiveDigits)
