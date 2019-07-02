@@ -1,8 +1,10 @@
 package dev.marksman.composablerandom;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Random;
 
+import static dev.marksman.composablerandom.Generate.constant;
 import static dev.marksman.composablerandom.Generate.generate;
 import static dev.marksman.composablerandom.Result.result;
 
@@ -33,5 +35,49 @@ class BigNumbers {
         if (range.signum() < 0) throw new IllegalArgumentException("max must be >= min");
         return generateBigIntegerExclusive(range.add(BigInteger.ONE));
     }
+
+    static Generate<BigDecimal> generateBigDecimalExclusive(int decimalPlaces, BigDecimal bound) {
+        BigInteger integerBound = bound.movePointRight(decimalPlaces).toBigInteger();
+        if (integerBound.signum() < 0) {
+            throw new IllegalArgumentException("bound must be > 0");
+        }
+        return generateBigIntegerExclusive(integerBound)
+                .fmap(n -> new BigDecimal(n).movePointLeft(decimalPlaces));
+    }
+
+    static Generate<BigDecimal> generateBigDecimalExclusive(int decimalPlaces, BigDecimal origin, BigDecimal bound) {
+        BigInteger integerOrigin = origin.movePointRight(decimalPlaces).toBigInteger();
+        BigInteger integerBound = bound.movePointRight(decimalPlaces).toBigInteger();
+        BigInteger range = integerBound.subtract(integerOrigin);
+        if (range.signum() < 1) {
+            throw new IllegalArgumentException("bound must be > origin");
+        }
+        return generateBigIntegerExclusive(range)
+                .fmap(n -> new BigDecimal(integerOrigin.add(n)).movePointLeft(decimalPlaces));
+    }
+
+
+    static Generate<BigDecimal> generateBigDecimal(int decimalPlaces, BigDecimal min, BigDecimal max) {
+        BigInteger integerOrigin = min.movePointRight(decimalPlaces).toBigInteger();
+        BigInteger integerBound = max.movePointRight(decimalPlaces).toBigInteger();
+        BigInteger range = integerBound.subtract(integerOrigin);
+        int signum = range.signum();
+        if (signum < 0) {
+            throw new IllegalArgumentException("max must be >= min");
+        } else if (signum == 0) {
+            return constant(new BigDecimal(integerOrigin).movePointLeft(decimalPlaces));
+        } else {
+            return generateBigInteger(BigInteger.ZERO, range)
+                    .fmap(n -> new BigDecimal(integerOrigin.add(n)).movePointLeft(decimalPlaces));
+        }
+    }
+
+
+    /*
+    public static BigDecimal generateRandomBigDecimalFromRange(BigDecimal min, BigDecimal max) {
+    BigDecimal randomBigDecimal = min.add(new BigDecimal(Math.random()).multiply(max.subtract(min)));
+    return randomBigDecimal.setScale(2,BigDecimal.ROUND_HALF_UP);
+}
+     */
 
 }

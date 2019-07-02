@@ -23,6 +23,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.*;
 import java.util.*;
@@ -1408,6 +1409,18 @@ public abstract class Generate<A> implements Monad<A, Generate<?>>, ToGenerate<A
 
     public static Generate<BigInteger> generateBigIntegerExclusive(BigInteger origin, BigInteger bound) {
         return BigNumbers.generateBigIntegerExclusive(origin, bound);
+    }
+
+    public static Generate<BigDecimal> generateBigDecimalExclusive(int decimalPlaces, BigDecimal bound) {
+        return BigNumbers.generateBigDecimalExclusive(decimalPlaces, bound);
+    }
+
+    public static Generate<BigDecimal> generateBigDecimalExclusive(int decimalPlaces, BigDecimal origin, BigDecimal bound) {
+        return BigNumbers.generateBigDecimalExclusive(decimalPlaces, origin, bound);
+    }
+
+    public static Generate<BigDecimal> generateBigDecimal(int decimalPlaces, BigDecimal min, BigDecimal max) {
+        return BigNumbers.generateBigDecimal(decimalPlaces, min, max);
     }
 
     public static Generate<LocalDate> generateLocalDate(LocalDate min, LocalDate max) {
