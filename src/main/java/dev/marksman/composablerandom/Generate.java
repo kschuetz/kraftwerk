@@ -9,6 +9,7 @@ import com.jnape.palatable.lambda.functions.*;
 import com.jnape.palatable.lambda.monad.Monad;
 import com.jnape.palatable.lambda.monoid.Monoid;
 import com.jnape.palatable.lambda.semigroup.Semigroup;
+import dev.marksman.collectionviews.Vector;
 import dev.marksman.collectionviews.*;
 import dev.marksman.composablerandom.choice.ChoiceBuilder1;
 import dev.marksman.composablerandom.frequency.FrequencyMap;
@@ -24,10 +25,7 @@ import lombok.Value;
 
 import java.math.BigInteger;
 import java.time.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
@@ -1378,6 +1376,10 @@ public abstract class Generate<A> implements Monad<A, Generate<?>>, ToGenerate<A
                                                                                                    Cogenerator<H> param8,
                                                                                                    Generate<R> result) {
         return Functions.generateFn8(param1, param2, param3, param4, param5, param6, param7, param8, result);
+    }
+
+    public static Generate<UUID> generateUUID() {
+        return UUIDs.generateUUID();
     }
 
     public static Generate<BigInteger> generateBigInteger(BigInteger min, BigInteger max) {
