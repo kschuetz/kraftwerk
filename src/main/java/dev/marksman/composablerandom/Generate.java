@@ -14,10 +14,7 @@ import dev.marksman.collectionviews.*;
 import dev.marksman.composablerandom.choice.ChoiceBuilder1;
 import dev.marksman.composablerandom.frequency.FrequencyMap;
 import dev.marksman.composablerandom.util.Labeling;
-import dev.marksman.enhancediterables.FiniteIterable;
-import dev.marksman.enhancediterables.ImmutableNonEmptyIterable;
-import dev.marksman.enhancediterables.NonEmptyFiniteIterable;
-import dev.marksman.enhancediterables.NonEmptyIterable;
+import dev.marksman.enhancediterables.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -948,6 +945,10 @@ public abstract class Generate<A> implements Monad<A, Generate<?>>, ToGenerate<A
         return new Product8<>(a, b, c, d, e, f, g, h, Tuple8::tuple);
     }
 
+    public static <A> Generate<ImmutableIterable<A>> sequence(Iterable<Generate<A>> gs) {
+        return Sequence.sequence(gs);
+    }
+
     // TODO:  organize these
 
 
@@ -1477,6 +1478,17 @@ public abstract class Generate<A> implements Monad<A, Generate<?>>, ToGenerate<A
 
     public static <A> Generate<A> generateNFromMonoid(Monoid<A> monoid, Generate<A> gen, int count) {
         return Lambda.generateNFromMonoid(monoid, gen, count);
+    }
+
+    public static <A> Generate<ImmutableVector<A>> generateOrderedSequence(Generate<Integer> countForEachElement,
+                                                                           ImmutableVector<A> orderedElems) {
+        return Sequences.generateOrderedSequence(countForEachElement, orderedElems);
+    }
+
+    public static <A> Generate<ImmutableVector<A>> generateOrderedSequence(int minCountEachElement,
+                                                                           int maxCountEachElement,
+                                                                           ImmutableVector<A> orderedElems) {
+        return Sequences.generateOrderedSequence(minCountEachElement, maxCountEachElement, orderedElems);
     }
 
     private static <A, B> Generate<B> mapped(Fn1<? super A, ? extends B> fn, Generate<A> operand) {
