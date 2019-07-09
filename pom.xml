@@ -6,7 +6,7 @@
 
     <groupId>dev.marksman</groupId>
     <artifactId>composable-random</artifactId>
-    <version>0.2.2-SNAPSHOT</version>
+    <version>0.3.0</version>
 
     <name>composable-random</name>
     <description>
