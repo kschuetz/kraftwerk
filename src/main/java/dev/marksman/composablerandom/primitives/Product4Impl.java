@@ -10,11 +10,11 @@ import static dev.marksman.composablerandom.Trace.trace;
 import static java.util.Arrays.asList;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Product4Impl<A, B, C, D, Out> implements Generator<Out> {
-    private final Generator<A> a;
-    private final Generator<B> b;
-    private final Generator<C> c;
-    private final Generator<D> d;
+public class Product4Impl<A, B, C, D, Out> implements GeneratorState<Out> {
+    private final GeneratorState<A> a;
+    private final GeneratorState<B> b;
+    private final GeneratorState<C> c;
+    private final GeneratorState<D> d;
     private final Fn4<A, B, C, D, Out> combine;
 
     @Override
@@ -27,20 +27,20 @@ public class Product4Impl<A, B, C, D, Out> implements Generator<Out> {
         return result(r4.getNextState(), result);
     }
 
-    public static <A, B, C, D, Out> Product4Impl<A, B, C, D, Out> product4Impl(Generator<A> a,
-                                                                               Generator<B> b,
-                                                                               Generator<C> c,
-                                                                               Generator<D> d,
+    public static <A, B, C, D, Out> Product4Impl<A, B, C, D, Out> product4Impl(GeneratorState<A> a,
+                                                                               GeneratorState<B> b,
+                                                                               GeneratorState<C> c,
+                                                                               GeneratorState<D> d,
                                                                                Fn4<A, B, C, D, Out> combine) {
         return new Product4Impl<>(a, b, c, d, combine);
     }
 
-    public static <A, B, C, D, Out> Generator<Trace<Out>> tracedProduct4Impl(Generate<Out> source,
-                                                                             Generator<Trace<A>> a,
-                                                                             Generator<Trace<B>> b,
-                                                                             Generator<Trace<C>> c,
-                                                                             Generator<Trace<D>> d,
-                                                                             Fn4<A, B, C, D, Out> combine) {
+    public static <A, B, C, D, Out> GeneratorState<Trace<Out>> tracedProduct4Impl(Generator<Out> source,
+                                                                                  GeneratorState<Trace<A>> a,
+                                                                                  GeneratorState<Trace<B>> b,
+                                                                                  GeneratorState<Trace<C>> c,
+                                                                                  GeneratorState<Trace<D>> d,
+                                                                                  Fn4<A, B, C, D, Out> combine) {
         return product4Impl(a, b, c, d,
                 (ta, tb, tc, td) -> trace(
                         combine.apply(ta.getResult(), tb.getResult(), tc.getResult(), td.getResult()),

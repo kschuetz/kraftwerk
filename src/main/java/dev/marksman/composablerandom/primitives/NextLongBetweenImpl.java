@@ -1,13 +1,13 @@
 package dev.marksman.composablerandom.primitives;
 
-import dev.marksman.composablerandom.Generator;
+import dev.marksman.composablerandom.GeneratorState;
 import dev.marksman.composablerandom.RandomState;
 import dev.marksman.composablerandom.Result;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class NextLongBetweenImpl implements Generator<Long> {
+public class NextLongBetweenImpl implements GeneratorState<Long> {
     private final long min;
     private final long max;
 

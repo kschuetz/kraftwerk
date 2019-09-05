@@ -2,11 +2,11 @@ package benchmarks;
 
 import com.jnape.palatable.lambda.adt.hlist.Tuple2;
 import com.jnape.palatable.lambda.adt.hlist.Tuple8;
-import dev.marksman.composablerandom.Generate;
+import dev.marksman.composablerandom.Generator;
 import dev.marksman.composablerandom.RandomState;
 import dev.marksman.composablerandom.domain.Characters;
 
-import static dev.marksman.composablerandom.Generate.*;
+import static dev.marksman.composablerandom.Generator.*;
 import static java.util.Arrays.asList;
 
 public class BenchmarkSandbox {
@@ -14,7 +14,7 @@ public class BenchmarkSandbox {
 
     private static void runTuples() {
         int iterations = 500_000;
-        Generate<Tuple8<Integer, Float, Double, Long, Boolean, Byte, Short, Tuple2<String, Integer>>> g = tupled(generateInt(),
+        Generator<Tuple8<Integer, Float, Double, Long, Boolean, Byte, Short, Tuple2<String, Integer>>> g = tupled(generateInt(),
                 generateFloat(),
                 generateDouble(),
                 generateLong(),
@@ -56,7 +56,7 @@ public class BenchmarkSandbox {
     }
 
     private static void sandbox3() {
-        Generate<String> g = generateInt(1, 65537)
+        Generator<String> g = generateInt(1, 65537)
                 .flatMap(i -> generateLong(i, i + 1000))
                 .flatMap(l -> generateString(l.intValue() & 31,
                         generateStringFromCharacters(Characters.alphaLower())));

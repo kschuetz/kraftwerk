@@ -10,18 +10,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Intersperse.intersperse;
-import static dev.marksman.composablerandom.Generate.aggregate;
-import static dev.marksman.composablerandom.Generate.constant;
+import static dev.marksman.composablerandom.Generator.aggregate;
+import static dev.marksman.composablerandom.Generator.constant;
 import static dev.marksman.composablerandom.Sequence.sequence;
 import static dev.marksman.enhancediterables.EnhancedIterable.enhance;
 
 class Strings {
 
-    static Generate<String> generateString() {
+    static Generator<String> generateString() {
         return generateStringFromCharacters(Characters.asciiPrintable());
     }
 
-    static Generate<String> generateString(int length, Generate<String> g) {
+    static Generator<String> generateString(int length, Generator<String> g) {
         if (length <= 0) return constant("");
         else if (length == 1) return g;
         else {
@@ -30,15 +30,15 @@ class Strings {
         }
     }
 
-    static Generate<String> generateStringFromCharacters(Generate<Character> g) {
-        return Generate.sized(size -> generateStringFromCharacters(size, g));
+    static Generator<String> generateStringFromCharacters(Generator<Character> g) {
+        return Generator.sized(size -> generateStringFromCharacters(size, g));
     }
 
-    static Generate<String> generateStringFromCharacters(NonEmptyVector<Character> characters) {
-        return Generate.sized(size -> generateStringFromCharacters(size, Choose.chooseOneFromDomain(characters)));
+    static Generator<String> generateStringFromCharacters(NonEmptyVector<Character> characters) {
+        return Generator.sized(size -> generateStringFromCharacters(size, Choose.chooseOneFromDomain(characters)));
     }
 
-    static Generate<String> generateStringFromCharacters(int length, Generate<Character> g) {
+    static Generator<String> generateStringFromCharacters(int length, Generator<Character> g) {
         if (length <= 0) return constant("");
         else if (length == 1) return g.fmap(Object::toString);
         else {
@@ -47,15 +47,15 @@ class Strings {
         }
     }
 
-    static Generate<String> generateStringFromCharacters(int length, NonEmptyVector<Character> characters) {
+    static Generator<String> generateStringFromCharacters(int length, NonEmptyVector<Character> characters) {
         return generateStringFromCharacters(length, Choose.chooseOneFromDomain(characters));
     }
 
     @SafeVarargs
-    static Generate<String> generateString(Generate<String> first, Generate<String>... more) {
+    static Generator<String> generateString(Generator<String> first, Generator<String>... more) {
         if (more.length == 0) return first;
         else {
-            ArrayList<Generate<String>> generators = new ArrayList<>();
+            ArrayList<Generator<String>> generators = new ArrayList<>();
             generators.add(first);
             generators.addAll(Arrays.asList(more));
             return aggregate(StringBuilder::new, StringBuilder::append, StringBuilder::toString,
@@ -63,15 +63,15 @@ class Strings {
         }
     }
 
-    static Generate<String> generateIdentifier() {
-        return Generate.sizedMinimum(1, Strings::generateIdentifier);
+    static Generator<String> generateIdentifier() {
+        return Generator.sizedMinimum(1, Strings::generateIdentifier);
     }
 
-    static Generate<String> generateIdentifier(int length) {
+    static Generator<String> generateIdentifier(int length) {
         if (length < 1) {
             return constant("");
         } else {
-            Generate<String> firstChar = generateStringFromCharacters(1, Characters.alphaLower());
+            Generator<String> firstChar = generateStringFromCharacters(1, Characters.alphaLower());
             if (length == 1) {
                 return firstChar;
             } else {
@@ -80,7 +80,7 @@ class Strings {
         }
     }
 
-    static Generate<String> concatStrings(Generate<String> separator, Iterable<Generate<String>> components) {
+    static Generator<String> concatStrings(Generator<String> separator, Iterable<Generator<String>> components) {
         if (!components.iterator().hasNext()) {
             return constant("");
         } else {
@@ -89,11 +89,11 @@ class Strings {
         }
     }
 
-    static Generate<String> concatStrings(String separator, Iterable<Generate<String>> components) {
+    static Generator<String> concatStrings(String separator, Iterable<Generator<String>> components) {
         return concatStrings(constant(separator), components);
     }
 
-    static Generate<String> concatStrings(Iterable<Generate<String>> components) {
+    static Generator<String> concatStrings(Iterable<Generator<String>> components) {
         if (!components.iterator().hasNext()) {
             return constant("");
         } else {
@@ -102,14 +102,14 @@ class Strings {
         }
     }
 
-    static Generate<String> concatMaybeStrings(Generate<String> separator, Iterable<Generate<Maybe<String>>> components) {
+    static Generator<String> concatMaybeStrings(Generator<String> separator, Iterable<Generator<Maybe<String>>> components) {
         if (!components.iterator().hasNext()) {
             return constant("");
         } else {
-            Generate<EnhancedIterable<Generate<String>>> step1 = sequence(components)
+            Generator<EnhancedIterable<Generator<String>>> step1 = sequence(components)
                     .fmap(cs ->
                             enhance(CatMaybes.catMaybes(cs))
-                                    .fmap(Generate::constant)
+                                    .fmap(Generator::constant)
                                     .intersperse(separator));
 
             return step1.flatMap(ss ->
@@ -118,11 +118,11 @@ class Strings {
         }
     }
 
-    static Generate<String> concatMaybeStrings(String separator, Iterable<Generate<Maybe<String>>> components) {
+    static Generator<String> concatMaybeStrings(String separator, Iterable<Generator<Maybe<String>>> components) {
         return concatMaybeStrings(constant(separator), components);
     }
 
-    static Generate<String> concatMaybeStrings(Iterable<Generate<Maybe<String>>> components) {
+    static Generator<String> concatMaybeStrings(Iterable<Generator<Maybe<String>>> components) {
         if (!components.iterator().hasNext()) {
             return constant("");
         } else {

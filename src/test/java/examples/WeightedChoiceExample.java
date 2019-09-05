@@ -1,16 +1,16 @@
 package examples;
 
 import com.jnape.palatable.lambda.adt.choice.Choice8;
-import dev.marksman.composablerandom.Generate;
+import dev.marksman.composablerandom.Generator;
 import dev.marksman.composablerandom.domain.Characters;
 
-import static dev.marksman.composablerandom.Generate.*;
 import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
+import static dev.marksman.composablerandom.Generator.*;
 
 public class WeightedChoiceExample {
 
     private static void example1() {
-        Generate<Choice8<Integer, Double, Float, Boolean, Long, Byte, Short, Character>> primitiveGenerator =
+        Generator<Choice8<Integer, Double, Float, Boolean, Long, Byte, Short, Character>> primitiveGenerator =
                 choiceBuilder(generateInt())
                         .or(generateDouble())
                         .or(generateFloat())
@@ -19,7 +19,7 @@ public class WeightedChoiceExample {
                         .or(generateByte())
                         .or(generateShort())
                         .or(chooseOneFromDomain(Characters.asciiPrintable()))
-                        .toGenerate();
+                        .toGenerator();
 
         streamFrom(primitiveGenerator).next(100).forEach(System.out::println);
     }

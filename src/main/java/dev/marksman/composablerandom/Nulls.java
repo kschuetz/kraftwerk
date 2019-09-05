@@ -8,19 +8,19 @@ class Nulls {
 
     private static final NullWeights DEFAULT_NULL_WEIGHTS = nonNullWeight(9).toNull(1);
 
-    static <A> Generate<A> generateNull() {
-        return Generate.constant(null);
+    static <A> Generator<A> generateNull() {
+        return Generator.constant(null);
     }
 
-    static <A> Generate<A> generateWithNulls(NullWeights weights, Generate<A> g) {
+    static <A> Generator<A> generateWithNulls(NullWeights weights, Generator<A> g) {
         return FrequencyMapBuilder.<A>frequencyMapBuilder()
                 .add(weights.getNonNullWeight(), g)
                 .add(weights.getNullWeight(), generateNull())
                 .build()
-                .toGenerate();
+                .toGenerator();
     }
 
-    static <A> Generate<A> generateWithNulls(Generate<A> g) {
+    static <A> Generator<A> generateWithNulls(Generator<A> g) {
         return generateWithNulls(DEFAULT_NULL_WEIGHTS, g);
 
     }

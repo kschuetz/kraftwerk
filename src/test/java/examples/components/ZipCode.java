@@ -1,11 +1,11 @@
 package examples.components;
 
-import dev.marksman.composablerandom.Generate;
+import dev.marksman.composablerandom.Generator;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
-import static dev.marksman.composablerandom.Generate.*;
+import static dev.marksman.composablerandom.Generator.*;
 import static dev.marksman.composablerandom.domain.Characters.numeric;
 import static dev.marksman.composablerandom.frequency.FrequencyMap.frequencyMap;
 
@@ -23,17 +23,17 @@ public class ZipCode {
     }
 
     private static class generators {
-        static Generate<String> fiveDigits = generateStringFromCharacters(5, numeric());
-        static Generate<String> fourDigits = generateStringFromCharacters(4, numeric());
+        static Generator<String> fiveDigits = generateStringFromCharacters(5, numeric());
+        static Generator<String> fourDigits = generateStringFromCharacters(4, numeric());
 
-        static Generate<ZipCode> zipCode =
+        static Generator<ZipCode> zipCode =
                 frequencyMap(7, fiveDigits)
                         .add(1, generateString(fiveDigits, constant("-"), fourDigits))
-                        .toGenerate()
+                        .toGenerator()
                         .fmap(ZipCode::zipCode);
     }
 
-    public static Generate<ZipCode> generateZipCode() {
+    public static Generator<ZipCode> generateZipCode() {
         return generators.zipCode;
     }
 }

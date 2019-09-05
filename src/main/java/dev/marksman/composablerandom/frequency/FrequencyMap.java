@@ -2,17 +2,17 @@ package dev.marksman.composablerandom.frequency;
 
 import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.composablerandom.FrequencyEntry;
-import dev.marksman.composablerandom.Generate;
-import dev.marksman.composablerandom.ToGenerate;
+import dev.marksman.composablerandom.Generator;
+import dev.marksman.composablerandom.ToGenerator;
 
-import static dev.marksman.composablerandom.Generate.constant;
+import static dev.marksman.composablerandom.Generator.constant;
 import static dev.marksman.composablerandom.frequency.FrequencyMap1.frequencyMap1;
 
-public interface FrequencyMap<A> extends ToGenerate<A> {
+public interface FrequencyMap<A> extends ToGenerator<A> {
 
-    Generate<A> toGenerate();
+    Generator<A> toGenerator();
 
-    FrequencyMap<A> add(int weight, Generate<? extends A> gen);
+    FrequencyMap<A> add(int weight, Generator<? extends A> gen);
 
     FrequencyMap<A> combine(FrequencyMap<A> other);
 
@@ -28,7 +28,7 @@ public interface FrequencyMap<A> extends ToGenerate<A> {
      */
     FrequencyMap<A> multiply(int positiveFactor);
 
-    default FrequencyMap<A> add(Generate<? extends A> gen) {
+    default FrequencyMap<A> add(Generator<? extends A> gen) {
         return add(1, gen);
     }
 
@@ -44,7 +44,7 @@ public interface FrequencyMap<A> extends ToGenerate<A> {
         return add(weight, constant(value));
     }
 
-    static <A> FrequencyMap<A> frequencyMap(int weight1, Generate<A> gen1) {
+    static <A> FrequencyMap<A> frequencyMap(int weight1, Generator<A> gen1) {
         return frequencyMap1(weight1, gen1);
     }
 
@@ -52,7 +52,7 @@ public interface FrequencyMap<A> extends ToGenerate<A> {
         return frequencyMap1(weight1, constant(value1));
     }
 
-    static <A> FrequencyMap<A> frequencyMap(Generate<A> gen1) {
+    static <A> FrequencyMap<A> frequencyMap(Generator<A> gen1) {
         return frequencyMap1(1, gen1);
     }
 

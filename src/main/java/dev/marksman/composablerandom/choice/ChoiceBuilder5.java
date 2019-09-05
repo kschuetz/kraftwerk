@@ -3,24 +3,24 @@ package dev.marksman.composablerandom.choice;
 import com.jnape.palatable.lambda.adt.choice.Choice5;
 import com.jnape.palatable.lambda.adt.choice.Choice6;
 import dev.marksman.composablerandom.FrequencyEntry;
-import dev.marksman.composablerandom.Generate;
-import dev.marksman.composablerandom.ToGenerate;
+import dev.marksman.composablerandom.Generator;
+import dev.marksman.composablerandom.ToGenerator;
 import dev.marksman.composablerandom.frequency.FrequencyMap;
 import lombok.AllArgsConstructor;
 
-import static dev.marksman.composablerandom.Generate.constant;
+import static dev.marksman.composablerandom.Generator.constant;
 import static dev.marksman.composablerandom.choice.ChoiceBuilder6.choiceBuilder6;
 
 @AllArgsConstructor
-public class ChoiceBuilder5<A, B, C, D, E> implements ToGenerate<Choice5<A, B, C, D, E>> {
+public class ChoiceBuilder5<A, B, C, D, E> implements ToGenerator<Choice5<A, B, C, D, E>> {
     private final FrequencyMap<Choice5<A, B, C, D, E>> frequencyMap;
 
     @Override
-    public Generate<Choice5<A, B, C, D, E>> toGenerate() {
-        return frequencyMap.toGenerate();
+    public Generator<Choice5<A, B, C, D, E>> toGenerator() {
+        return frequencyMap.toGenerator();
     }
 
-    public <F> ChoiceBuilder6<A, B, C, D, E, F> or(int weight, Generate<F> gen) {
+    public <F> ChoiceBuilder6<A, B, C, D, E, F> or(int weight, Generator<F> gen) {
         FrequencyMap<Choice6<A, B, C, D, E, F>> newFrequencyMap = frequencyMap
                 .<Choice6<A, B, C, D, E, F>>fmap(c5 ->
                         c5.match(Choice6::a, Choice6::b, Choice6::c, Choice6::d, Choice6::e))
@@ -28,7 +28,7 @@ public class ChoiceBuilder5<A, B, C, D, E> implements ToGenerate<Choice5<A, B, C
         return choiceBuilder6(newFrequencyMap);
     }
 
-    public <F> ChoiceBuilder6<A, B, C, D, E, F> or(Generate<F> gen) {
+    public <F> ChoiceBuilder6<A, B, C, D, E, F> or(Generator<F> gen) {
         return or(1, gen);
     }
 

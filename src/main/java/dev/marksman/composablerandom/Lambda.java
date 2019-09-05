@@ -4,16 +4,16 @@ import com.jnape.palatable.lambda.monoid.Monoid;
 import com.jnape.palatable.lambda.semigroup.Semigroup;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
-import static dev.marksman.composablerandom.Generate.*;
+import static dev.marksman.composablerandom.Generator.*;
 
 class Lambda {
 
-    static <A> Generate<A> generateFromSemigroup(Semigroup<A> semigroup, Generate<A> gen) {
+    static <A> Generator<A> generateFromSemigroup(Semigroup<A> semigroup, Generator<A> gen) {
         return sized(size -> generateNFromSemigroup(semigroup, gen, Math.max(0, size)));
 
     }
 
-    static <A> Generate<A> generateNFromSemigroup(Semigroup<A> semigroup, Generate<A> gen, int count) {
+    static <A> Generator<A> generateNFromSemigroup(Semigroup<A> semigroup, Generator<A> gen, int count) {
         if (count <= 0) {
             throw new IllegalArgumentException("count must be >= 1");
         } else if (count == 1) {
@@ -30,11 +30,11 @@ class Lambda {
 
     }
 
-    static <A> Generate<A> generateFromMonoid(Monoid<A> monoid, Generate<A> gen) {
+    static <A> Generator<A> generateFromMonoid(Monoid<A> monoid, Generator<A> gen) {
         return sized(size -> generateNFromMonoid(monoid, gen, size));
     }
 
-    static <A> Generate<A> generateNFromMonoid(Monoid<A> monoid, Generate<A> gen, int count) {
+    static <A> Generator<A> generateNFromMonoid(Monoid<A> monoid, Generator<A> gen, int count) {
         if (count < 0) {
             throw new IllegalArgumentException("count must be >= 0");
         } else if (count == 1) {

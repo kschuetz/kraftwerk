@@ -6,8 +6,8 @@ import dev.marksman.enhancediterables.ImmutableIterable;
 
 class Sequence {
 
-    static <A> Generate<ImmutableIterable<A>> sequence(Iterable<Generate<A>> gs) {
-        return Generate.<A, VectorBuilder<A>, ImmutableIterable<A>>aggregate(Vector::builder,
+    static <A> Generator<ImmutableIterable<A>> sequence(Iterable<Generator<A>> gs) {
+        return Generator.<A, VectorBuilder<A>, ImmutableIterable<A>>aggregate(Vector::builder,
                 VectorBuilder::add, VectorBuilder::build, gs);
     }
 

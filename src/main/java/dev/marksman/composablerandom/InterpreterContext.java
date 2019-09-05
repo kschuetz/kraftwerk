@@ -3,7 +3,7 @@ package dev.marksman.composablerandom;
 public interface InterpreterContext {
     Parameters getParameters();
 
-    <A> Generator<A> recurse(Generate<A> gen);
+    <A> GeneratorState<A> recurse(Generator<A> gen);
 
-    <A> Generator<A> callNextHandler(Generate<A> gen);
+    <A> GeneratorState<A> callNextHandler(Generator<A> gen);
 }

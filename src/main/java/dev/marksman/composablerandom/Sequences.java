@@ -6,13 +6,13 @@ import dev.marksman.collectionviews.Vector;
 import dev.marksman.collectionviews.VectorBuilder;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Replicate.replicate;
-import static dev.marksman.composablerandom.Generate.constant;
-import static dev.marksman.composablerandom.Generate.generateInt;
+import static dev.marksman.composablerandom.Generator.constant;
+import static dev.marksman.composablerandom.Generator.generateInt;
 
 class Sequences {
 
-    static <A> Generate<ImmutableVector<A>> generateOrderedSequence(Generate<Integer> countForEachElement,
-                                                                    ImmutableVector<A> orderedElems) {
+    static <A> Generator<ImmutableVector<A>> generateOrderedSequence(Generator<Integer> countForEachElement,
+                                                                     ImmutableVector<A> orderedElems) {
         int size = orderedElems.size();
         if (orderedElems.isEmpty()) {
             return constant(Vector.empty());
@@ -33,9 +33,9 @@ class Sequences {
         }
     }
 
-    static <A> Generate<ImmutableVector<A>> generateOrderedSequence(int minCountEachElement,
-                                                                    int maxCountEachElement,
-                                                                    ImmutableVector<A> orderedElems) {
+    static <A> Generator<ImmutableVector<A>> generateOrderedSequence(int minCountEachElement,
+                                                                     int maxCountEachElement,
+                                                                     ImmutableVector<A> orderedElems) {
         if (orderedElems.isEmpty() || maxCountEachElement < 1) {
             return constant(Vector.empty());
         } else {

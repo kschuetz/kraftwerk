@@ -2,11 +2,11 @@ package dev.marksman.composablerandom;
 
 import java.util.UUID;
 
-import static dev.marksman.composablerandom.Generate.*;
+import static dev.marksman.composablerandom.Generator.*;
 
 class UUIDs {
 
-    static Generate<UUID> generateUUID() {
+    static Generator<UUID> generateUUID() {
         return product(
                 generateLong(),
                 generateLong(),

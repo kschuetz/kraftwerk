@@ -1,13 +1,13 @@
 package examples.components;
 
 import com.jnape.palatable.lambda.adt.Maybe;
-import dev.marksman.composablerandom.Generate;
+import dev.marksman.composablerandom.Generator;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into.into;
-import static dev.marksman.composablerandom.Generate.*;
+import static dev.marksman.composablerandom.Generator.*;
 import static dev.marksman.composablerandom.MaybeWeights.nothingWeight;
 import static dev.marksman.composablerandom.frequency.FrequencyMap.frequencyMap;
 import static examples.components.City.generateCity;
@@ -47,20 +47,20 @@ public class Address {
     }
 
     private static class generators {
-        static Generate<String> number =
+        static Generator<String> number =
                 frequencyMap(3, generateInt(0, 990).fmap(n -> 100 + 10 * n))
                         .add(3, generateInt(0, 990).fmap(n -> 101 + 10 * n))
                         .add(4, generateInt(10, 999))
-                        .toGenerate()
+                        .toGenerator()
                         .fmap(Object::toString);
 
 
-        static Generate<String> unit =
+        static Generator<String> unit =
                 tupled(chooseOneOfValues(" #", ", Apt. ", ", Suite "),
                         chooseOneOf(generateInt(100, 3000), generateInt(1, 99)))
                         .fmap(into((unitName, number) -> unitName + number));
 
-        static Generate<Address> address =
+        static Generator<Address> address =
                 product(number,
                         generateStreet(),
                         unit.maybe(nothingWeight(4).toJust(1)),
@@ -70,7 +70,7 @@ public class Address {
                         Address::address);
     }
 
-    public static Generate<Address> generateAddress() {
+    public static Generator<Address> generateAddress() {
         return generators.address;
     }
 

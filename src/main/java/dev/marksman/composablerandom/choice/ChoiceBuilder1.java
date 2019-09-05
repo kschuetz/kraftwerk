@@ -2,32 +2,32 @@ package dev.marksman.composablerandom.choice;
 
 import com.jnape.palatable.lambda.adt.choice.Choice2;
 import dev.marksman.composablerandom.FrequencyEntry;
-import dev.marksman.composablerandom.Generate;
-import dev.marksman.composablerandom.ToGenerate;
+import dev.marksman.composablerandom.Generator;
+import dev.marksman.composablerandom.ToGenerator;
 import dev.marksman.composablerandom.frequency.FrequencyMap;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
-import static dev.marksman.composablerandom.Generate.constant;
+import static dev.marksman.composablerandom.Generator.constant;
 import static dev.marksman.composablerandom.choice.ChoiceBuilder2.choiceBuilder2;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class ChoiceBuilder1<A> implements ToGenerate<A> {
+public class ChoiceBuilder1<A> implements ToGenerator<A> {
     private final FrequencyMap<A> frequencyMap;
 
     @Override
-    public Generate<A> toGenerate() {
-        return frequencyMap.toGenerate();
+    public Generator<A> toGenerator() {
+        return frequencyMap.toGenerator();
     }
 
-    public <B> ChoiceBuilder2<A, B> or(int weight, Generate<B> gen) {
+    public <B> ChoiceBuilder2<A, B> or(int weight, Generator<B> gen) {
         FrequencyMap<Choice2<A, B>> newFrequencyMap = frequencyMap
                 .<Choice2<A, B>>fmap(Choice2::a)
                 .add(weight, gen.fmap(Choice2::b));
         return choiceBuilder2(newFrequencyMap);
     }
 
-    public <B> ChoiceBuilder2<A, B> or(Generate<B> gen) {
+    public <B> ChoiceBuilder2<A, B> or(Generator<B> gen) {
         return or(1, gen);
     }
 
@@ -43,11 +43,11 @@ public class ChoiceBuilder1<A> implements ToGenerate<A> {
         return or(1, constant(value));
     }
 
-    public static <A> ChoiceBuilder1<A> choiceBuilder(int weight, Generate<A> firstChoice) {
+    public static <A> ChoiceBuilder1<A> choiceBuilder(int weight, Generator<A> firstChoice) {
         return new ChoiceBuilder1<A>(FrequencyMap.frequencyMap(weight, firstChoice));
     }
 
-    public static <A> ChoiceBuilder1<A> choiceBuilder(Generate<A> firstChoice) {
+    public static <A> ChoiceBuilder1<A> choiceBuilder(Generator<A> firstChoice) {
         return choiceBuilder(1, firstChoice);
     }
 

@@ -3,25 +3,25 @@ package dev.marksman.composablerandom.choice;
 import com.jnape.palatable.lambda.adt.choice.Choice2;
 import com.jnape.palatable.lambda.adt.choice.Choice3;
 import dev.marksman.composablerandom.FrequencyEntry;
-import dev.marksman.composablerandom.Generate;
-import dev.marksman.composablerandom.ToGenerate;
+import dev.marksman.composablerandom.Generator;
+import dev.marksman.composablerandom.ToGenerator;
 import dev.marksman.composablerandom.frequency.FrequencyMap;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
-import static dev.marksman.composablerandom.Generate.constant;
+import static dev.marksman.composablerandom.Generator.constant;
 import static dev.marksman.composablerandom.choice.ChoiceBuilder3.choiceBuilder3;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class ChoiceBuilder2<A, B> implements ToGenerate<Choice2<A, B>> {
+public class ChoiceBuilder2<A, B> implements ToGenerator<Choice2<A, B>> {
     private final FrequencyMap<Choice2<A, B>> frequencyMap;
 
     @Override
-    public Generate<Choice2<A, B>> toGenerate() {
-        return frequencyMap.toGenerate();
+    public Generator<Choice2<A, B>> toGenerator() {
+        return frequencyMap.toGenerator();
     }
 
-    public <C> ChoiceBuilder3<A, B, C> or(int weight, Generate<C> gen) {
+    public <C> ChoiceBuilder3<A, B, C> or(int weight, Generator<C> gen) {
         FrequencyMap<Choice3<A, B, C>> newFrequencyMap = frequencyMap
                 .<Choice3<A, B, C>>fmap(c2 ->
                         c2.match(Choice3::a, Choice3::b))
@@ -29,7 +29,7 @@ public class ChoiceBuilder2<A, B> implements ToGenerate<Choice2<A, B>> {
         return choiceBuilder3(newFrequencyMap);
     }
 
-    public <C> ChoiceBuilder3<A, B, C> or(Generate<C> gen) {
+    public <C> ChoiceBuilder3<A, B, C> or(Generator<C> gen) {
         return or(1, gen);
     }
 

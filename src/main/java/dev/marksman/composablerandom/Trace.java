@@ -10,14 +10,14 @@ import static java.util.Collections.emptyList;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Trace<A> {
     private final A result;
-    private final Generate<A> source;
+    private final Generator<A> source;
     private final Iterable<Trace<?>> children;
 
-    public static <A> Trace<A> trace(A result, Generate<A> gen, Iterable<Trace<?>> children) {
+    public static <A> Trace<A> trace(A result, Generator<A> gen, Iterable<Trace<?>> children) {
         return new Trace<>(result, gen, children);
     }
 
-    public static <A> Trace<A> trace(A result, Generate<A> gen) {
+    public static <A> Trace<A> trace(A result, Generator<A> gen) {
         return new Trace<>(result, gen, emptyList());
     }
 }

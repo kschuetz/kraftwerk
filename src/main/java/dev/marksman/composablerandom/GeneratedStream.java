@@ -9,10 +9,10 @@ import static dev.marksman.composablerandom.Initialize.randomInitialRandomState;
 import static dev.marksman.composablerandom.StandardParameters.defaultParameters;
 
 public class GeneratedStream<A> implements Iterator<A> {
-    private final Generator<A> generate;
+    private final GeneratorState<A> generate;
     private RandomState currentState;
 
-    private GeneratedStream(Generator<A> generate, RandomState initialState) {
+    private GeneratedStream(GeneratorState<A> generate, RandomState initialState) {
         this.generate = generate;
         this.currentState = initialState;
     }
@@ -66,31 +66,31 @@ public class GeneratedStream<A> implements Iterator<A> {
         }
     }
 
-    public static <A> GeneratedStream<A> streamFrom(Generator<A> gen, RandomState initialState) {
+    public static <A> GeneratedStream<A> streamFrom(GeneratorState<A> gen, RandomState initialState) {
         return new GeneratedStream<>(gen, initialState);
     }
 
-    public static <A> GeneratedStream<A> streamFrom(Generate<A> gen, RandomState initialState) {
+    public static <A> GeneratedStream<A> streamFrom(Generator<A> gen, RandomState initialState) {
         return new GeneratedStream<>(compile(gen), initialState);
     }
 
-    public static <A> GeneratedStream<A> streamFrom(Generate<A> gen, long initialSeedValue) {
+    public static <A> GeneratedStream<A> streamFrom(Generator<A> gen, long initialSeedValue) {
         return streamFrom(compile(gen), createInitialRandomState(initialSeedValue));
     }
 
-    public static <A> GeneratedStream<A> streamFrom(Generate<A> gen, Parameters parameters) {
+    public static <A> GeneratedStream<A> streamFrom(Generator<A> gen, Parameters parameters) {
         return streamFrom(compile(gen), randomInitialRandomState());
     }
 
-    public static <A> GeneratedStream<A> streamFrom(Generate<A> gen, Parameters parameters, long initialSeedValue) {
+    public static <A> GeneratedStream<A> streamFrom(Generator<A> gen, Parameters parameters, long initialSeedValue) {
         return streamFrom(compile(gen), createInitialRandomState(initialSeedValue));
     }
 
-    public static <A> GeneratedStream<A> streamFrom(Generate<A> gen) {
+    public static <A> GeneratedStream<A> streamFrom(Generator<A> gen) {
         return streamFrom(compile(gen), randomInitialRandomState());
     }
 
-    private static <A> Generator<A> compile(Generate<A> gen) {
+    private static <A> GeneratorState<A> compile(Generator<A> gen) {
         Parameters parameters = defaultParameters();
         return defaultInterpreter().compile(parameters, gen);
     }

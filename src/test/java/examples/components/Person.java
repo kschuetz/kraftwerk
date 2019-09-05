@@ -1,6 +1,6 @@
 package examples.components;
 
-import dev.marksman.composablerandom.Generate;
+import dev.marksman.composablerandom.Generator;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
@@ -9,8 +9,8 @@ import java.time.LocalDate;
 import java.time.Year;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into3.into3;
-import static dev.marksman.composablerandom.Generate.*;
 import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
+import static dev.marksman.composablerandom.Generator.*;
 import static dev.marksman.composablerandom.frequency.FrequencyMap.frequencyMap;
 import static examples.components.Address.generateAddress;
 import static examples.components.Name.generateName;
@@ -38,7 +38,7 @@ public class Person {
 
         private static int currentYear = LocalDate.now().getYear();
 
-        private static Generate<Integer> age =
+        private static Generator<Integer> age =
                 frequencyMap(1, generateInt(2, 9))
                         .add(2, generateInt(10, 19))
                         .add(3, generateInt(20, 29))
@@ -48,18 +48,18 @@ public class Person {
                         .add(2, generateInt(60, 69))
                         .add(2, generateInt(70, 79))
                         .add(2, generateInt(80, 99))
-                        .toGenerate();
+                        .toGenerator();
 
-        private static Generate<LocalDate> dateOfBirth =
+        private static Generator<LocalDate> dateOfBirth =
                 age.flatMap(n -> generateLocalDateForYear(Year.of(currentYear - n)));
 
-        static Generate<Person> person = tupled(generateName(),
+        static Generator<Person> person = tupled(generateName(),
                 generateAddress(),
                 dateOfBirth)
                 .fmap(into3(Person::person));
     }
 
-    public static Generate<Person> generatePerson() {
+    public static Generator<Person> generatePerson() {
         return generators.person;
     }
 

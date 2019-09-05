@@ -1,6 +1,6 @@
 package dev.marksman.composablerandom.primitives;
 
-import dev.marksman.composablerandom.Generator;
+import dev.marksman.composablerandom.GeneratorState;
 import dev.marksman.composablerandom.RandomState;
 import dev.marksman.composablerandom.Result;
 import lombok.AccessLevel;
@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 import static dev.marksman.composablerandom.Result.result;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class ConstantImpl<A> implements Generator<A> {
+public class ConstantImpl<A> implements GeneratorState<A> {
     private final A value;
 
     @Override

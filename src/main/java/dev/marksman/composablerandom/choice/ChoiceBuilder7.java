@@ -3,25 +3,25 @@ package dev.marksman.composablerandom.choice;
 import com.jnape.palatable.lambda.adt.choice.Choice7;
 import com.jnape.palatable.lambda.adt.choice.Choice8;
 import dev.marksman.composablerandom.FrequencyEntry;
-import dev.marksman.composablerandom.Generate;
-import dev.marksman.composablerandom.ToGenerate;
+import dev.marksman.composablerandom.Generator;
+import dev.marksman.composablerandom.ToGenerator;
 import dev.marksman.composablerandom.frequency.FrequencyMap;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
-import static dev.marksman.composablerandom.Generate.constant;
+import static dev.marksman.composablerandom.Generator.constant;
 import static dev.marksman.composablerandom.choice.ChoiceBuilder8.choiceBuilder8;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class ChoiceBuilder7<A, B, C, D, E, F, G> implements ToGenerate<Choice7<A, B, C, D, E, F, G>> {
+public class ChoiceBuilder7<A, B, C, D, E, F, G> implements ToGenerator<Choice7<A, B, C, D, E, F, G>> {
     private final FrequencyMap<Choice7<A, B, C, D, E, F, G>> frequencyMap;
 
     @Override
-    public Generate<Choice7<A, B, C, D, E, F, G>> toGenerate() {
-        return frequencyMap.toGenerate();
+    public Generator<Choice7<A, B, C, D, E, F, G>> toGenerator() {
+        return frequencyMap.toGenerator();
     }
 
-    public <H> ChoiceBuilder8<A, B, C, D, E, F, G, H> or(int weight, Generate<H> gen) {
+    public <H> ChoiceBuilder8<A, B, C, D, E, F, G, H> or(int weight, Generator<H> gen) {
         FrequencyMap<Choice8<A, B, C, D, E, F, G, H>> newFrequencyMap = frequencyMap
                 .<Choice8<A, B, C, D, E, F, G, H>>fmap(c7 ->
                         c7.match(Choice8::a, Choice8::b, Choice8::c, Choice8::d,
@@ -30,7 +30,7 @@ public class ChoiceBuilder7<A, B, C, D, E, F, G> implements ToGenerate<Choice7<A
         return choiceBuilder8(newFrequencyMap);
     }
 
-    public <H> ChoiceBuilder8<A, B, C, D, E, F, G, H> or(Generate<H> gen) {
+    public <H> ChoiceBuilder8<A, B, C, D, E, F, G, H> or(Generator<H> gen) {
         return or(1, gen);
     }
 
