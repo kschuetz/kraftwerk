@@ -6,6 +6,8 @@ import com.jnape.palatable.lambda.functions.Fn1;
 import com.jnape.palatable.lambda.functions.Fn2;
 import com.jnape.palatable.lambda.functor.Contravariant;
 
+import java.util.Objects;
+
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
 
 public abstract class Cogenerator<A> implements Contravariant<A, Cogenerator<?>> {
@@ -64,7 +66,11 @@ public abstract class Cogenerator<A> implements Contravariant<A, Cogenerator<?>>
     }
 
     public static Cogenerator<Object> cogeneratorObject() {
-        return cogenerator(obj -> obj == null ? 0L : obj.hashCode());
+        return cogenerator(obj -> (long) Objects.hashCode(obj));
+    }
+
+    public static Cogenerator<String> cogeneratorString() {
+        return cogenerator(s -> (long) Objects.hashCode(s));
     }
 
     public static <A> Cogenerator<Maybe<A>> maybe(Cogenerator<A> a) {
