@@ -11,7 +11,7 @@ import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
 import static dev.marksman.composablerandom.Generator.generateFn2;
 import static dev.marksman.composablerandom.Generator.generateIntExclusive;
 
-public class GenerateFunctionExample {
+public class FunctionExample {
 
     private static final ImmutableNonEmptyVector<Tuple2<Integer, String>> testParams =
             Vector.of(1, 2, 3)
@@ -23,7 +23,7 @@ public class GenerateFunctionExample {
                 cogeneratorString(),
                 generateIntExclusive(0, 99)))
                 .next(10)
-                .forEach(GenerateFunctionExample::runFunction);
+                .forEach(FunctionExample::runFunction);
     }
 
     private static void runFunction(Fn2<Integer, String, Integer> f) {
