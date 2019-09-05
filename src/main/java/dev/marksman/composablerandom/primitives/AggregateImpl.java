@@ -18,12 +18,12 @@ public class AggregateImpl<Elem, Builder, Out> implements GeneratorState<Out> {
     private final Iterable<GeneratorState<Elem>> elements;
 
     @Override
-    public Result<? extends RandomState, Out> run(RandomState input) {
-        RandomState current = input;
+    public Result<? extends Seed, Out> run(Seed input) {
+        Seed current = input;
         Builder builder = initialBuilderSupplier.apply();
 
         for (GeneratorState<Elem> element : elements) {
-            Result<? extends RandomState, Elem> next = element.run(current);
+            Result<? extends Seed, Elem> next = element.run(current);
             builder = addFn.apply(builder, next.getValue());
             current = next.getNextState();
         }

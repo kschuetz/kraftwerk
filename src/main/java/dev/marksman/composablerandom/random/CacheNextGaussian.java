@@ -1,8 +1,8 @@
 package dev.marksman.composablerandom.random;
 
 import com.jnape.palatable.lambda.adt.Unit;
-import dev.marksman.composablerandom.RandomState;
 import dev.marksman.composablerandom.Result;
+import dev.marksman.composablerandom.Seed;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
@@ -11,7 +11,7 @@ import static dev.marksman.composablerandom.Result.result;
 
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-final class CacheNextGaussian implements RandomState {
+final class CacheNextGaussian implements Seed {
     private final StandardGen inner;
     private final double nextGaussian;
 
@@ -81,7 +81,7 @@ final class CacheNextGaussian implements RandomState {
     }
 
     @Override
-    public RandomState perturb(long value) {
+    public Seed perturb(long value) {
         return inner.perturb(value);
     }
 

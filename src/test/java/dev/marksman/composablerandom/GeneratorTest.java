@@ -93,10 +93,10 @@ class GeneratorTest {
     }
 
     private static <A> void testEquivalent(Generator<A> gen1, Generator<A> gen2) {
-        RandomState initial = initStandardGen();
+        Seed initial = initStandardGen();
 
-        Result<RandomState, ArrayList<A>> result1 = run(generateArrayListOfN(SEQUENCE_LENGTH, gen1), initial);
-        Result<RandomState, ArrayList<A>> result2 = run(generateArrayListOfN(SEQUENCE_LENGTH, gen2), initial);
+        Result<Seed, ArrayList<A>> result1 = run(generateArrayListOfN(SEQUENCE_LENGTH, gen1), initial);
+        Result<Seed, ArrayList<A>> result2 = run(generateArrayListOfN(SEQUENCE_LENGTH, gen2), initial);
 
         assertEquals(result1.getNextState(),
                 result2.getNextState(), "outbound RandomGens don't match");
@@ -104,9 +104,9 @@ class GeneratorTest {
     }
 
     @SuppressWarnings("unchecked")
-    private static <A> Result<RandomState, A> run(Generator<A> gen, RandomState input) {
+    private static <A> Result<Seed, A> run(Generator<A> gen, Seed input) {
         GeneratorState<A> compiled = defaultInterpreter().compile(defaultParameters(), gen);
-        return (Result<RandomState, A>) compiled.run(input);
+        return (Result<Seed, A>) compiled.run(input);
     }
 
 }

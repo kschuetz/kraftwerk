@@ -1,8 +1,8 @@
 package dev.marksman.composablerandom.primitives;
 
 import dev.marksman.composablerandom.GeneratorState;
-import dev.marksman.composablerandom.RandomState;
 import dev.marksman.composablerandom.Result;
+import dev.marksman.composablerandom.Seed;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
@@ -13,7 +13,7 @@ public class ConstantImpl<A> implements GeneratorState<A> {
     private final A value;
 
     @Override
-    public Result<RandomState, A> run(RandomState input) {
+    public Result<Seed, A> run(Seed input) {
         return result(input, value);
     }
 

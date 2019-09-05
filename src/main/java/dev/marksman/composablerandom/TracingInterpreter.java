@@ -49,7 +49,7 @@ public class TracingInterpreter {
                 .labeled("sized"));
     }
 
-    private <A> Result<RandomState, Trace<A>> traceResult(Generator<A> gen, Result<? extends RandomState, A> resultValue) {
+    private <A> Result<Seed, Trace<A>> traceResult(Generator<A> gen, Result<? extends Seed, A> resultValue) {
         return result(resultValue.getNextState(), trace(resultValue.getValue(), gen));
     }
 
@@ -302,9 +302,9 @@ public class TracingInterpreter {
         GeneratorState<Trace<In>> g1 = compile(gen.getOperand());
 
         return generator(rs -> {
-            Result<? extends RandomState, Trace<In>> r1 = g1.run(rs);
+            Result<? extends Seed, Trace<In>> r1 = g1.run(rs);
             Trace<In> trace1 = r1.getValue();
-            Result<? extends RandomState, Trace<Out>> r2 = compile(fn.apply(trace1.getResult()))
+            Result<? extends Seed, Trace<Out>> r2 = compile(fn.apply(trace1.getResult()))
                     .run(r1.getNextState());
             Trace<Out> trace2 = r2.getValue();
             return result(r2.getNextState(),
@@ -319,7 +319,7 @@ public class TracingInterpreter {
 //        Generator<ImmutableNonEmptyIterable<Trace<Elem>>> traceInfinite = infiniteImpl(inner);
 //
 //        return compiledGenerator(rs -> {
-//            Result<? extends RandomState, ImmutableNonEmptyIterable<Trace<Elem>>> r1 = traceInfinite.run(rs);
+//            Result<? extends Seed, ImmutableNonEmptyIterable<Trace<Elem>>> r1 = traceInfinite.run(rs);
 //            ImmutableNonEmptyIterable<Trace<Elem>> tracedValues = r1.getValue();
 //            return result(r1.getNextState(),
 //                    (Trace<Out>) trace(tracedValues.fmap(Trace::getResult),
@@ -338,10 +338,10 @@ public class TracingInterpreter {
         Fn1<Integer, Generator<A>> fn = gen.getFn();
 
         return generator(rs -> {
-            Result<? extends RandomState, Trace<Integer>> r1 = sizeGenerator.run(rs);
+            Result<? extends Seed, Trace<Integer>> r1 = sizeGenerator.run(rs);
             Trace<Integer> sizeTrace = r1.getValue();
             Generator<A> inner = fn.apply(sizeTrace.getResult());
-            Result<? extends RandomState, Trace<A>> r2 = compile(inner)
+            Result<? extends Seed, Trace<A>> r2 = compile(inner)
                     .run(r1.getNextState());
             Trace<A> innerTrace = r2.getValue();
             return result(r2.getNextState(),
@@ -353,7 +353,7 @@ public class TracingInterpreter {
     private <A> GeneratorState<Trace<A>> handleWithMetadata(Generator.WithMetadata<A> gen) {
         GeneratorState<Trace<A>> inner = compile(gen.getOperand());
         return generator(rs -> {
-            Result<? extends RandomState, Trace<A>> run = inner.run(rs);
+            Result<? extends Seed, Trace<A>> run = inner.run(rs);
             Trace<A> innerTrace = run.getValue();
             return result(run.getNextState(),
                     trace(innerTrace.getResult(), gen, singletonList(innerTrace)));

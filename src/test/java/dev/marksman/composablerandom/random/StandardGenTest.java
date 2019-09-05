@@ -2,7 +2,7 @@ package dev.marksman.composablerandom.random;
 
 import com.jnape.palatable.lambda.adt.product.Product2;
 import com.jnape.palatable.lambda.functions.Fn1;
-import dev.marksman.composablerandom.RandomState;
+import dev.marksman.composablerandom.Seed;
 import org.junit.jupiter.api.Test;
 import testsupport.GeneratorPair;
 
@@ -17,7 +17,7 @@ class StandardGenTest {
 
     @Test
     void nextInt() {
-        testAgainstUtilRandom(Random::nextInt, RandomState::nextInt);
+        testAgainstUtilRandom(Random::nextInt, Seed::nextInt);
     }
 
     @Test
@@ -31,33 +31,33 @@ class StandardGenTest {
     @Test
     void nextIntWithInvalidBound() {
         GeneratorPair gp = newRandomGeneratorPair();
-        assertThrows(IllegalArgumentException.class, () -> gp.getRandomState().nextIntBounded(0));
-        assertThrows(IllegalArgumentException.class, () -> gp.getRandomState().nextIntBounded(-1));
+        assertThrows(IllegalArgumentException.class, () -> gp.getSeed().nextIntBounded(0));
+        assertThrows(IllegalArgumentException.class, () -> gp.getSeed().nextIntBounded(-1));
     }
 
     @Test
     void nextDouble() {
-        testAgainstUtilRandom(Random::nextDouble, RandomState::nextDouble);
+        testAgainstUtilRandom(Random::nextDouble, Seed::nextDouble);
     }
 
     @Test
     void nextFloat() {
-        testAgainstUtilRandom(Random::nextFloat, RandomState::nextFloat);
+        testAgainstUtilRandom(Random::nextFloat, Seed::nextFloat);
     }
 
     @Test
     void nextLong() {
-        testAgainstUtilRandom(Random::nextLong, RandomState::nextLong);
+        testAgainstUtilRandom(Random::nextLong, Seed::nextLong);
     }
 
     @Test
     void nextBoolean() {
-        testAgainstUtilRandom(Random::nextBoolean, RandomState::nextBoolean);
+        testAgainstUtilRandom(Random::nextBoolean, Seed::nextBoolean);
     }
 
     @Test
     void nextGaussian() {
-        testAgainstUtilRandom(Random::nextGaussian, RandomState::nextGaussian);
+        testAgainstUtilRandom(Random::nextGaussian, Seed::nextGaussian);
     }
 
     @Test
@@ -72,34 +72,34 @@ class StandardGenTest {
     @Test
     void mixed() {
         GeneratorPair gp = newRandomGeneratorPair();
-        gp = testAgainstUtilRandom(gp, 1, Random::nextInt, RandomState::nextInt);
+        gp = testAgainstUtilRandom(gp, 1, Random::nextInt, Seed::nextInt);
         gp = testAgainstUtilRandom(gp, 1, r -> r.nextInt(10), r -> r.nextIntBounded(10));
-        gp = testAgainstUtilRandom(gp, 1, Random::nextDouble, RandomState::nextDouble);
-        gp = testAgainstUtilRandom(gp, 1, Random::nextFloat, RandomState::nextFloat);
-        gp = testAgainstUtilRandom(gp, 1, Random::nextLong, RandomState::nextLong);
-        gp = testAgainstUtilRandom(gp, 1, Random::nextBoolean, RandomState::nextBoolean);
-        testAgainstUtilRandom(gp, 1, Random::nextGaussian, RandomState::nextGaussian);
+        gp = testAgainstUtilRandom(gp, 1, Random::nextDouble, Seed::nextDouble);
+        gp = testAgainstUtilRandom(gp, 1, Random::nextFloat, Seed::nextFloat);
+        gp = testAgainstUtilRandom(gp, 1, Random::nextLong, Seed::nextLong);
+        gp = testAgainstUtilRandom(gp, 1, Random::nextBoolean, Seed::nextBoolean);
+        testAgainstUtilRandom(gp, 1, Random::nextGaussian, Seed::nextGaussian);
     }
 
     @Test
     void withCachedGaussian() {
         GeneratorPair gp = newRandomGeneratorPair();
-        gp = testAgainstUtilRandom(gp, 1, Random::nextGaussian, RandomState::nextGaussian);
-        gp = testAgainstUtilRandom(gp, 1, Random::nextInt, RandomState::nextInt);
+        gp = testAgainstUtilRandom(gp, 1, Random::nextGaussian, Seed::nextGaussian);
+        gp = testAgainstUtilRandom(gp, 1, Random::nextInt, Seed::nextInt);
         gp = testAgainstUtilRandom(gp, 1, r -> r.nextInt(10), r -> r.nextIntBounded(10));
-        gp = testAgainstUtilRandom(gp, 1, Random::nextDouble, RandomState::nextDouble);
-        gp = testAgainstUtilRandom(gp, 1, Random::nextFloat, RandomState::nextFloat);
-        gp = testAgainstUtilRandom(gp, 1, Random::nextLong, RandomState::nextLong);
-        gp = testAgainstUtilRandom(gp, 1, Random::nextBoolean, RandomState::nextBoolean);
-        gp = testAgainstUtilRandom(gp, 1, Random::nextGaussian, RandomState::nextGaussian);
-        testAgainstUtilRandom(gp, 1, Random::nextInt, RandomState::nextInt);
+        gp = testAgainstUtilRandom(gp, 1, Random::nextDouble, Seed::nextDouble);
+        gp = testAgainstUtilRandom(gp, 1, Random::nextFloat, Seed::nextFloat);
+        gp = testAgainstUtilRandom(gp, 1, Random::nextLong, Seed::nextLong);
+        gp = testAgainstUtilRandom(gp, 1, Random::nextBoolean, Seed::nextBoolean);
+        gp = testAgainstUtilRandom(gp, 1, Random::nextGaussian, Seed::nextGaussian);
+        testAgainstUtilRandom(gp, 1, Random::nextInt, Seed::nextInt);
     }
 
     @Test
     void nextBytesWithCachedGaussian() {
         GeneratorPair gp = newRandomGeneratorPair();
         gp.getRandom().nextGaussian();
-        testNextBytes(gp.updateRandomState(r -> r.nextGaussian()._1()), 4);
+        testNextBytes(gp.updateSeed(r -> r.nextGaussian()._1()), 4);
     }
 
     @Test
@@ -133,7 +133,7 @@ class StandardGenTest {
     }
 
     private <A> void testAgainstUtilRandom(Fn1<Random, A> getNextExpected,
-                                           Fn1<RandomState, Product2<? extends RandomState, A>> getNextResult) {
+                                           Fn1<Seed, Product2<? extends Seed, A>> getNextResult) {
         GeneratorPair gp = newRandomGeneratorPair();
         testAgainstUtilRandom(gp, SEQUENCE_LENGTH, getNextExpected, getNextResult);
     }
@@ -141,18 +141,18 @@ class StandardGenTest {
     private <A> GeneratorPair testAgainstUtilRandom(GeneratorPair gp,
                                                     int times,
                                                     Fn1<Random, A> getNextExpected,
-                                                    Fn1<RandomState, Product2<? extends RandomState, A>> getNextResult) {
-        RandomState current = gp.getRandomState();
+                                                    Fn1<Seed, Product2<? extends Seed, A>> getNextResult) {
+        Seed current = gp.getSeed();
         Random random = gp.getRandom();
         for (int i = 0; i < times; i++) {
             A expected = getNextExpected.apply(random);
-            Product2<? extends RandomState, A> next = getNextResult.apply(current);
+            Product2<? extends Seed, A> next = getNextResult.apply(current);
             current = next._1();
             A actual = next._2();
 
             assertEquals(expected, actual, "index " + i + ", " + gp.info());
         }
-        return gp.withRandomState(current);
+        return gp.withSeed(current);
     }
 
     private static void testNextBytes(GeneratorPair gp, int count) {
@@ -160,7 +160,7 @@ class StandardGenTest {
         byte[] actual = new byte[count];
 
         gp.getRandom().nextBytes(expected);
-        gp.getRandomState().nextBytes(actual);
+        gp.getSeed().nextBytes(actual);
 
         assertArrayEquals(expected, actual, gp.info());
     }

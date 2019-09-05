@@ -1,8 +1,8 @@
 package dev.marksman.composablerandom.primitives;
 
 import dev.marksman.composablerandom.GeneratorState;
-import dev.marksman.composablerandom.RandomState;
 import dev.marksman.composablerandom.Result;
+import dev.marksman.composablerandom.Seed;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
@@ -11,7 +11,7 @@ public class NextLongBoundedImpl implements GeneratorState<Long> {
     private final long bound;
 
     @Override
-    public Result<? extends RandomState, Long> run(RandomState input) {
+    public Result<? extends Seed, Long> run(Seed input) {
         return input.nextLongBounded(bound);
     }
 

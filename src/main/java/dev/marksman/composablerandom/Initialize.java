@@ -5,11 +5,11 @@ import java.util.Random;
 import static dev.marksman.composablerandom.random.StandardGen.initStandardGen;
 
 public class Initialize {
-    public static RandomState createInitialRandomState(long initialSeedValue) {
+    public static Seed createInitialSeed(long initialSeedValue) {
         return initStandardGen(initialSeedValue);
     }
 
-    public static RandomState randomInitialRandomState() {
-        return createInitialRandomState(new Random().nextLong());
+    public static Seed randomInitialSeed() {
+        return createInitialSeed(new Random().nextLong());
     }
 }

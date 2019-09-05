@@ -6,9 +6,9 @@ import com.jnape.palatable.lambda.monad.Monad;
 import static dev.marksman.composablerandom.Result.result;
 
 public interface GeneratorState<A> extends Monad<A, GeneratorState<?>> {
-    Result<? extends RandomState, A> run(RandomState input);
+    Result<? extends Seed, A> run(Seed input);
 
-    default Fn1<RandomState, Result<? extends RandomState, A>> getRun() {
+    default Fn1<Seed, Result<? extends Seed, A>> getRun() {
         return this::run;
     }
 
@@ -20,7 +20,7 @@ public interface GeneratorState<A> extends Monad<A, GeneratorState<?>> {
     @Override
     default <B> GeneratorState<B> flatMap(Fn1<? super A, ? extends Monad<B, GeneratorState<?>>> fn) {
         return generator(rs -> {
-            Result<? extends RandomState, A> x = run(rs);
+            Result<? extends Seed, A> x = run(rs);
             return ((GeneratorState<B>) fn.apply(x._2())).run(x._1());
         });
     }
@@ -30,15 +30,15 @@ public interface GeneratorState<A> extends Monad<A, GeneratorState<?>> {
         return generator(rs -> result(rs, b));
     }
 
-    static <A> GeneratorState<A> generator(Fn1<RandomState, Result<? extends RandomState, A>> fn) {
+    static <A> GeneratorState<A> generator(Fn1<Seed, Result<? extends Seed, A>> fn) {
         return new GeneratorState<A>() {
             @Override
-            public Result<? extends RandomState, A> run(RandomState input) {
+            public Result<? extends Seed, A> run(Seed input) {
                 return fn.apply(input);
             }
 
             @Override
-            public Fn1<RandomState, Result<? extends RandomState, A>> getRun() {
+            public Fn1<Seed, Result<? extends Seed, A>> getRun() {
                 return fn;
             }
         };

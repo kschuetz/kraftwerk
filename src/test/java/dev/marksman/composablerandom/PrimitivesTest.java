@@ -8,7 +8,7 @@ import static com.jnape.palatable.lambda.functions.builtin.fn2.GTE.gte;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.LT.lt;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.LTE.lte;
 import static dev.marksman.composablerandom.Generator.*;
-import static dev.marksman.composablerandom.Initialize.randomInitialRandomState;
+import static dev.marksman.composablerandom.Initialize.randomInitialSeed;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static testsupport.Assert.assertForAll;
 import static testsupport.Sample.sample;
@@ -47,7 +47,7 @@ class PrimitivesTest {
 
     @Test
     void testIntFullRange() {
-        RandomState initial = randomInitialRandomState();
+        Seed initial = randomInitialSeed();
         assertEquals(sample(generateInt(Integer.MIN_VALUE, Integer.MAX_VALUE), initial),
                 sample(generateInt(), initial));
     }
@@ -84,7 +84,7 @@ class PrimitivesTest {
 
     @Test
     void testLongFullRange() {
-        RandomState initial = randomInitialRandomState();
+        Seed initial = randomInitialSeed();
         assertEquals(sample(generateLong(Long.MIN_VALUE, Long.MAX_VALUE), initial),
                 sample(generateLong(), initial));
     }

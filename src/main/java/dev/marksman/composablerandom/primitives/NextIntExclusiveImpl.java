@@ -1,8 +1,8 @@
 package dev.marksman.composablerandom.primitives;
 
 import dev.marksman.composablerandom.GeneratorState;
-import dev.marksman.composablerandom.RandomState;
 import dev.marksman.composablerandom.Result;
+import dev.marksman.composablerandom.Seed;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
@@ -12,7 +12,7 @@ public class NextIntExclusiveImpl implements GeneratorState<Integer> {
     private final int bound;
 
     @Override
-    public Result<? extends RandomState, Integer> run(RandomState input) {
+    public Result<? extends Seed, Integer> run(Seed input) {
         return input.nextIntExclusive(origin, bound);
     }
 

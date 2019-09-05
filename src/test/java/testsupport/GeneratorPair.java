@@ -1,7 +1,7 @@
 package testsupport;
 
 import com.jnape.palatable.lambda.functions.Fn1;
-import dev.marksman.composablerandom.RandomState;
+import dev.marksman.composablerandom.Seed;
 import dev.marksman.composablerandom.random.StandardGen;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import java.util.Random;
 public class GeneratorPair {
     private final long initialSeedValue;
     private final Random random;
-    private final RandomState randomState;
+    private final Seed seed;
 
     public long getInitialSeedValue() {
         return initialSeedValue;
@@ -22,16 +22,16 @@ public class GeneratorPair {
         return random;
     }
 
-    public RandomState getRandomState() {
-        return randomState;
+    public Seed getSeed() {
+        return seed;
     }
 
-    public GeneratorPair withRandomState(RandomState rs) {
+    public GeneratorPair withSeed(Seed rs) {
         return new GeneratorPair(initialSeedValue, random, rs);
     }
 
-    public GeneratorPair updateRandomState(Fn1<RandomState, RandomState> f) {
-        return withRandomState(f.apply(randomState));
+    public GeneratorPair updateSeed(Fn1<Seed, Seed> f) {
+        return withSeed(f.apply(seed));
     }
 
     public String info() {

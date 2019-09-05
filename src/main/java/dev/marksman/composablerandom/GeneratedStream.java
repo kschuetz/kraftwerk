@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import static dev.marksman.composablerandom.DefaultInterpreter.defaultInterpreter;
-import static dev.marksman.composablerandom.Initialize.createInitialRandomState;
-import static dev.marksman.composablerandom.Initialize.randomInitialRandomState;
+import static dev.marksman.composablerandom.Initialize.createInitialSeed;
+import static dev.marksman.composablerandom.Initialize.randomInitialSeed;
 import static dev.marksman.composablerandom.StandardParameters.defaultParameters;
 
 public class GeneratedStream<A> implements Iterator<A> {
-    private final GeneratorState<A> generate;
-    private RandomState currentState;
+    private final GeneratorState<A> gen;
+    private Seed currentState;
 
-    private GeneratedStream(GeneratorState<A> generate, RandomState initialState) {
-        this.generate = generate;
-        this.currentState = initialState;
+    private GeneratedStream(GeneratorState<A> gen, Seed initialSeed) {
+        this.gen = gen;
+        this.currentState = initialSeed;
     }
 
     @Override
@@ -24,9 +24,9 @@ public class GeneratedStream<A> implements Iterator<A> {
 
     @Override
     public A next() {
-        Result<? extends RandomState, A> run;
+        Result<? extends Seed, A> run;
         synchronized (this) {
-            run = this.generate.run(currentState);
+            run = this.gen.run(currentState);
             currentState = run.getNextState();
         }
 
@@ -66,28 +66,28 @@ public class GeneratedStream<A> implements Iterator<A> {
         }
     }
 
-    public static <A> GeneratedStream<A> streamFrom(GeneratorState<A> gen, RandomState initialState) {
-        return new GeneratedStream<>(gen, initialState);
+    public static <A> GeneratedStream<A> streamFrom(GeneratorState<A> gen, Seed initialSeed) {
+        return new GeneratedStream<>(gen, initialSeed);
     }
 
-    public static <A> GeneratedStream<A> streamFrom(Generator<A> gen, RandomState initialState) {
-        return new GeneratedStream<>(compile(gen), initialState);
+    public static <A> GeneratedStream<A> streamFrom(Generator<A> gen, Seed initialSeed) {
+        return new GeneratedStream<>(compile(gen), initialSeed);
     }
 
     public static <A> GeneratedStream<A> streamFrom(Generator<A> gen, long initialSeedValue) {
-        return streamFrom(compile(gen), createInitialRandomState(initialSeedValue));
+        return streamFrom(compile(gen), createInitialSeed(initialSeedValue));
     }
 
     public static <A> GeneratedStream<A> streamFrom(Generator<A> gen, Parameters parameters) {
-        return streamFrom(compile(gen), randomInitialRandomState());
+        return streamFrom(compile(gen), randomInitialSeed());
     }
 
     public static <A> GeneratedStream<A> streamFrom(Generator<A> gen, Parameters parameters, long initialSeedValue) {
-        return streamFrom(compile(gen), createInitialRandomState(initialSeedValue));
+        return streamFrom(compile(gen), createInitialSeed(initialSeedValue));
     }
 
     public static <A> GeneratedStream<A> streamFrom(Generator<A> gen) {
-        return streamFrom(compile(gen), randomInitialRandomState());
+        return streamFrom(compile(gen), randomInitialSeed());
     }
 
     private static <A> GeneratorState<A> compile(Generator<A> gen) {

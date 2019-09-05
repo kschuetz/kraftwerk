@@ -16,9 +16,9 @@ public class Product2Impl<A, B, Out> implements GeneratorState<Out> {
     private final Fn2<A, B, Out> combine;
 
     @Override
-    public Result<? extends RandomState, Out> run(RandomState input) {
-        Result<? extends RandomState, A> r1 = a.run(input);
-        Result<? extends RandomState, B> r2 = b.run(r1.getNextState());
+    public Result<? extends Seed, Out> run(Seed input) {
+        Result<? extends Seed, A> r1 = a.run(input);
+        Result<? extends Seed, B> r2 = b.run(r1.getNextState());
         Out result = combine.apply(r1.getValue(), r2.getValue());
         return result(r2.getNextState(), result);
     }

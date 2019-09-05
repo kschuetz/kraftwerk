@@ -14,13 +14,13 @@ public abstract class Cogenerator<A> implements Contravariant<A, Cogenerator<?>>
 
     }
 
-    public abstract RandomState apply(RandomState randomState, A value);
+    public abstract Seed apply(Seed seed, A value);
 
     public final <B> Cogenerator<B> contraMap(Fn1<? super B, ? extends A> fn) {
         return new Cogenerator<B>() {
             @Override
-            public RandomState apply(RandomState randomState, B value) {
-                return Cogenerator.this.apply(randomState, fn.apply(value));
+            public Seed apply(Seed seed, B value) {
+                return Cogenerator.this.apply(seed, fn.apply(value));
             }
         };
     }
@@ -28,17 +28,17 @@ public abstract class Cogenerator<A> implements Contravariant<A, Cogenerator<?>>
     public static <A> Cogenerator<A> cogenerator(Fn1<A, Long> f) {
         return new Cogenerator<A>() {
             @Override
-            public RandomState apply(RandomState randomState, A value) {
-                return randomState.perturb(f.apply(value));
+            public Seed apply(Seed seed, A value) {
+                return seed.perturb(f.apply(value));
             }
         };
     }
 
-    public static <A> Cogenerator<A> cogenerator(Fn2<RandomState, A, RandomState> f) {
+    public static <A> Cogenerator<A> cogenerator(Fn2<Seed, A, Seed> f) {
         return new Cogenerator<A>() {
             @Override
-            public RandomState apply(RandomState randomState, A value) {
-                return f.apply(randomState, value);
+            public Seed apply(Seed seed, A value) {
+                return f.apply(seed, value);
             }
         };
     }
@@ -68,24 +68,24 @@ public abstract class Cogenerator<A> implements Contravariant<A, Cogenerator<?>>
     }
 
     public static <A> Cogenerator<Maybe<A>> maybe(Cogenerator<A> a) {
-        return cogenerator((randomState, value) ->
-                value.match(__ -> randomState,
-                        x -> a.apply(randomState, x)));
+        return cogenerator((seed, value) ->
+                value.match(__ -> seed,
+                        x -> a.apply(seed, x)));
     }
 
     public static <A, B> Cogenerator<Product2<A, B>> product(Cogenerator<A> a,
                                                              Cogenerator<B> b) {
-        return cogenerator((randomState, value) -> b.apply(
-                a.apply(randomState, value._1()),
+        return cogenerator((seed, value) -> b.apply(
+                a.apply(seed, value._1()),
                 value._2()));
     }
 
     public static <A, B, C> Cogenerator<Product3<A, B, C>> product(Cogenerator<A> a,
                                                                    Cogenerator<B> b,
                                                                    Cogenerator<C> c) {
-        return cogenerator((randomState, value) -> c.apply(
+        return cogenerator((seed, value) -> c.apply(
                 b.apply(
-                        a.apply(randomState, value._1()),
+                        a.apply(seed, value._1()),
                         value._2()),
                 value._3()));
     }
@@ -94,10 +94,10 @@ public abstract class Cogenerator<A> implements Contravariant<A, Cogenerator<?>>
                                                                          Cogenerator<B> b,
                                                                          Cogenerator<C> c,
                                                                          Cogenerator<D> d) {
-        return cogenerator((randomState, value) -> d.apply(
+        return cogenerator((seed, value) -> d.apply(
                 c.apply(
                         b.apply(
-                                a.apply(randomState, value._1()),
+                                a.apply(seed, value._1()),
                                 value._2()),
                         value._3()),
                 value._4()));
@@ -108,11 +108,11 @@ public abstract class Cogenerator<A> implements Contravariant<A, Cogenerator<?>>
                                                                                Cogenerator<C> c,
                                                                                Cogenerator<D> d,
                                                                                Cogenerator<E> e) {
-        return cogenerator((randomState, value) -> e.apply(
+        return cogenerator((seed, value) -> e.apply(
                 d.apply(
                         c.apply(
                                 b.apply(
-                                        a.apply(randomState, value._1()),
+                                        a.apply(seed, value._1()),
                                         value._2()),
                                 value._3()),
                         value._4()),
@@ -125,12 +125,12 @@ public abstract class Cogenerator<A> implements Contravariant<A, Cogenerator<?>>
                                                                                      Cogenerator<D> d,
                                                                                      Cogenerator<E> e,
                                                                                      Cogenerator<F> f) {
-        return cogenerator((randomState, value) -> f.apply(
+        return cogenerator((seed, value) -> f.apply(
                 e.apply(
                         d.apply(
                                 c.apply(
                                         b.apply(
-                                                a.apply(randomState, value._1()),
+                                                a.apply(seed, value._1()),
                                                 value._2()),
                                         value._3()),
                                 value._4()),
@@ -145,13 +145,13 @@ public abstract class Cogenerator<A> implements Contravariant<A, Cogenerator<?>>
                                                                                            Cogenerator<E> e,
                                                                                            Cogenerator<F> f,
                                                                                            Cogenerator<G> g) {
-        return cogenerator((randomState, value) -> g.apply(
+        return cogenerator((seed, value) -> g.apply(
                 f.apply(
                         e.apply(
                                 d.apply(
                                         c.apply(
                                                 b.apply(
-                                                        a.apply(randomState, value._1()),
+                                                        a.apply(seed, value._1()),
                                                         value._2()),
                                                 value._3()),
                                         value._4()),
@@ -168,14 +168,14 @@ public abstract class Cogenerator<A> implements Contravariant<A, Cogenerator<?>>
                                                                                                  Cogenerator<F> f,
                                                                                                  Cogenerator<G> g,
                                                                                                  Cogenerator<H> h) {
-        return cogenerator((randomState, value) -> h.apply(
+        return cogenerator((seed, value) -> h.apply(
                 g.apply(
                         f.apply(
                                 e.apply(
                                         d.apply(
                                                 c.apply(
                                                         b.apply(
-                                                                a.apply(randomState, value._1()),
+                                                                a.apply(seed, value._1()),
                                                                 value._2()),
                                                         value._3()),
                                                 value._4()),

@@ -14,10 +14,10 @@ public class Runner {
     public static <A> void runMark3(String label, int iterations, Generator<A> gen) {
         GeneratorState<A> compiled = defaultInterpreter(defaultParameters()).compile(gen);
 
-        RandomState current = initStandardGen();
+        Seed current = initStandardGen();
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < iterations; i++) {
-            Result<? extends RandomState, A> result = compiled.run(current);
+            Result<? extends Seed, A> result = compiled.run(current);
             current = result.getNextState();
         }
         long t = System.currentTimeMillis() - t0;
@@ -38,10 +38,10 @@ public class Runner {
         Interpreter interpreter = DefaultInterpreter.defaultInterpreter()
                 .overrideWith(overrides);
         GeneratorState<A> compiled = interpreter.compile(defaultParameters(), gen);
-        RandomState current = initStandardGen();
+        Seed current = initStandardGen();
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < iterations; i++) {
-            Result<? extends RandomState, A> result = compiled.run(current);
+            Result<? extends Seed, A> result = compiled.run(current);
             current = result.getNextState();
         }
         long t = System.currentTimeMillis() - t0;
@@ -62,15 +62,15 @@ public class Runner {
         System.out.println("traced " + label + ": " + t + " ms");
     }
 
-    public static <A> void runRandomState(String label, int iterations, Fn1<RandomState, Result<? extends RandomState, A>> fn) {
-        RandomState currentState = initStandardGen();
+    public static <A> void runSeed(String label, int iterations, Fn1<Seed, Result<? extends Seed, A>> fn) {
+        Seed currentState = initStandardGen();
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < iterations; i++) {
-            Result<? extends RandomState, A> result = fn.apply(currentState);
+            Result<? extends Seed, A> result = fn.apply(currentState);
             currentState = result.getNextState();
         }
         long t = System.currentTimeMillis() - t0;
 
-        System.out.println("RandomState " + label + ": " + t + " ms");
+        System.out.println("Seed " + label + ": " + t + " ms");
     }
 }

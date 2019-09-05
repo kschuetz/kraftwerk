@@ -1,8 +1,8 @@
 package dev.marksman.composablerandom.primitives;
 
 import dev.marksman.composablerandom.GeneratorState;
-import dev.marksman.composablerandom.RandomState;
 import dev.marksman.composablerandom.Result;
+import dev.marksman.composablerandom.Seed;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
@@ -11,7 +11,7 @@ public class NextByteImpl implements GeneratorState<Byte> {
     private static NextByteImpl INSTANCE = new NextByteImpl();
 
     @Override
-    public Result<? extends RandomState, Byte> run(RandomState input) {
+    public Result<? extends Seed, Byte> run(Seed input) {
         return input.nextInt().fmap(Integer::byteValue);
     }
 

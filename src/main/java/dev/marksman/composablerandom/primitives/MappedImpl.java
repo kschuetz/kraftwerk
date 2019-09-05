@@ -2,8 +2,8 @@ package dev.marksman.composablerandom.primitives;
 
 import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.composablerandom.GeneratorState;
-import dev.marksman.composablerandom.RandomState;
 import dev.marksman.composablerandom.Result;
+import dev.marksman.composablerandom.Seed;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
@@ -13,7 +13,7 @@ public class MappedImpl<In, Out> implements GeneratorState<Out> {
     private final GeneratorState<In> operand;
 
     @Override
-    public Result<? extends RandomState, Out> run(RandomState input) {
+    public Result<? extends Seed, Out> run(Seed input) {
         return operand.run(input).fmap(fn);
     }
 

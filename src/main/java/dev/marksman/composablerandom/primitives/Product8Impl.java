@@ -22,15 +22,15 @@ public class Product8Impl<A, B, C, D, E, F, G, H, Out> implements GeneratorState
     private final Fn8<A, B, C, D, E, F, G, H, Out> combine;
 
     @Override
-    public Result<? extends RandomState, Out> run(RandomState input) {
-        Result<? extends RandomState, A> r1 = a.run(input);
-        Result<? extends RandomState, B> r2 = b.run(r1.getNextState());
-        Result<? extends RandomState, C> r3 = c.run(r2.getNextState());
-        Result<? extends RandomState, D> r4 = d.run(r3.getNextState());
-        Result<? extends RandomState, E> r5 = e.run(r4.getNextState());
-        Result<? extends RandomState, F> r6 = f.run(r5.getNextState());
-        Result<? extends RandomState, G> r7 = g.run(r6.getNextState());
-        Result<? extends RandomState, H> r8 = h.run(r7.getNextState());
+    public Result<? extends Seed, Out> run(Seed input) {
+        Result<? extends Seed, A> r1 = a.run(input);
+        Result<? extends Seed, B> r2 = b.run(r1.getNextState());
+        Result<? extends Seed, C> r3 = c.run(r2.getNextState());
+        Result<? extends Seed, D> r4 = d.run(r3.getNextState());
+        Result<? extends Seed, E> r5 = e.run(r4.getNextState());
+        Result<? extends Seed, F> r6 = f.run(r5.getNextState());
+        Result<? extends Seed, G> r7 = g.run(r6.getNextState());
+        Result<? extends Seed, H> r8 = h.run(r7.getNextState());
         Out result = combine.apply(r1.getValue(), r2.getValue(), r3.getValue(), r4.getValue(),
                 r5.getValue(), r6.getValue(), r7.getValue(), r8.getValue());
         return result(r8.getNextState(), result);
