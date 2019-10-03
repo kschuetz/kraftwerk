@@ -244,6 +244,7 @@ public final class StandardGen implements Seed {
         return nextStandardGen(newSeed);
     }
 
+
     private Result<StandardGen, Integer> next(int bits) {
         long newSeedValue = (seedValue * 0x5DEECE66DL + 0xBL) & ((1L << 48) - 1);
         int result = (int) (newSeedValue >>> (48 - bits));

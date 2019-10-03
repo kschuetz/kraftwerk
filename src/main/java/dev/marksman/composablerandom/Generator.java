@@ -138,6 +138,17 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         return generateNonEmptyVectorOfN(count, this);
     }
 
+    // **********
+    // mixing in edge cases
+
+    public final Generator<A> specialValues(A first, A... rest) {
+        return null;
+    }
+
+    public final Generator<A> mixWith(Generator<A> other) {
+        return null;
+    }
+
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)

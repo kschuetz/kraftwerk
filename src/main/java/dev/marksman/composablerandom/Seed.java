@@ -32,4 +32,6 @@ public interface Seed {
 
     Seed perturb(long value);
 
+    long getSeedValue();
+
 }

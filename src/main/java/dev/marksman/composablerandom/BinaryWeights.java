@@ -6,7 +6,7 @@ import lombok.Value;
 
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-class BinaryWeights {
+public class BinaryWeights {
     private final int weightA;
     private final int weightB;
 
@@ -18,6 +18,10 @@ class BinaryWeights {
         return binaryWeights(weightA, weight);
     }
 
+    public int getTotalWeight() {
+        return weightA + weightB;
+    }
+
     public static BinaryWeights weightA(int weight) {
         return new BinaryWeights(weight, 1);
     }
@@ -26,7 +30,7 @@ class BinaryWeights {
         return new BinaryWeights(1, weight);
     }
 
-    static BinaryWeights binaryWeights(int weightA, int weightB) {
+    public static BinaryWeights binaryWeights(int weightA, int weightB) {
         requireNonNegative(weightA);
         requireNonNegative(weightB);
         if (weightA + weightB < 1) {

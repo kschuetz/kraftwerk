@@ -85,6 +85,11 @@ final class CacheNextGaussian implements Seed {
         return inner.perturb(value);
     }
 
+    @Override
+    public long getSeedValue() {
+        return inner.getSeedValue();
+    }
+
     private <A> Result<CacheNextGaussian, A> wrap(Result<StandardGen, A> result) {
         return result(cacheNextGaussian(result._1(), nextGaussian), result._2());
     }
