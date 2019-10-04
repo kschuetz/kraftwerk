@@ -16,7 +16,7 @@
     <url>https://github.com/kschuetz/composable-random</url>
 
     <properties>
-        <lambda.version>4.0.0</lambda.version>
+        <lambda.version>5.0.0</lambda.version>
         <collection-views.version>1.0.3</collection-views.version>
         <junit.version>5.4.0</junit.version>
         <commons-math.version>3.6.1</commons-math.version>
