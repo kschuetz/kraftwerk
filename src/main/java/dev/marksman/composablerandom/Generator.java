@@ -141,12 +141,8 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     // **********
     // mixing in edge cases
 
-    public final Generator<A> specialValues(A first, A... rest) {
-        return null;
-    }
-
-    public final Generator<A> mixWith(Generator<A> other) {
-        return null;
+    public final Generator<A> injectSpecialValues(NonEmptyFiniteIterable<A> values) {
+        return injectSpecialValues(values, this);
     }
 
     @EqualsAndHashCode(callSuper = true)
@@ -650,6 +646,21 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
 
         private final Generator<A> inner;
         private final Fn2<GeneratorState<A>, Seed, B> fn;
+
+        @Override
+        public Maybe<String> getLabel() {
+            return LABEL;
+        }
+    }
+
+    @EqualsAndHashCode(callSuper = true)
+    @Value
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class InjectSpecialValues<A> extends Generator<A> {
+        private static Maybe<String> LABEL = Maybe.just("injectSpecialValues");
+
+        private final NonEmptyFiniteIterable<A> specialValues;
+        private final Generator<A> inner;
 
         @Override
         public Maybe<String> getLabel() {
@@ -1508,6 +1519,10 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
 
     private static <A, B> Generator<B> flatMapped(Fn1<? super A, ? extends Generator<B>> fn, Generator<A> operand) {
         return new FlatMapped<>(fn::apply, operand);
+    }
+
+    private static <A> Generator<A> injectSpecialValues(NonEmptyFiniteIterable<A> specialValues, Generator<A> inner) {
+        return new InjectSpecialValues<>(specialValues, inner);
     }
 
     private static <A> Generator<A> withMetadata(Maybe<String> label, Maybe<Object> applicationData, Generator<A> operand) {

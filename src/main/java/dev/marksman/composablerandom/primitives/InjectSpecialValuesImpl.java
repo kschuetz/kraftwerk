@@ -7,23 +7,24 @@ import dev.marksman.composablerandom.Seed;
 
 import static dev.marksman.composablerandom.Result.result;
 
-public class BiasImpl<Elem> implements GeneratorState<Elem> {
+public class InjectSpecialValuesImpl<Elem> implements GeneratorState<Elem> {
     private final ImmutableNonEmptyVector<Elem> elements;
-    private final int biasWeight;
+    private final int specialWeight;
     private final long totalWeight;
     private final GeneratorState<Elem> inner;
 
-    private BiasImpl(ImmutableNonEmptyVector<Elem> elements, long innerWeight, GeneratorState<Elem> inner) {
+    private InjectSpecialValuesImpl(ImmutableNonEmptyVector<Elem> elements, long nonSpecialWeight, GeneratorState<Elem> inner) {
         this.elements = elements;
-        this.biasWeight = elements.size();
-        this.totalWeight = Math.max(0, innerWeight) + biasWeight;
+        this.specialWeight = elements.size();
+        this.totalWeight = Math.max(0, nonSpecialWeight) + specialWeight;
         this.inner = inner;
     }
 
     @Override
     public Result<? extends Seed, Elem> run(Seed input) {
+        // TODO: InjectSpecialValuesImpl
         long n = input.getSeedValue() % totalWeight;
-        if (n < biasWeight) {
+        if (n < specialWeight) {
             Result<? extends Seed, Integer> nextSeed = input.nextInt();
             return result(nextSeed.getNextState(), elements.unsafeGet((int) n));
         } else {
@@ -31,8 +32,8 @@ public class BiasImpl<Elem> implements GeneratorState<Elem> {
         }
     }
 
-    public static <Elem> BiasImpl<Elem> biasImpl(ImmutableNonEmptyVector<Elem> elements, long innerWeight, GeneratorState<Elem> inner) {
-        return new BiasImpl<>(elements, innerWeight, inner);
+    public static <Elem> InjectSpecialValuesImpl<Elem> mixInSpecialValuesImpl(ImmutableNonEmptyVector<Elem> elements, long nonSpecialWeight, GeneratorState<Elem> inner) {
+        return new InjectSpecialValuesImpl<>(elements, nonSpecialWeight, inner);
     }
 
 }

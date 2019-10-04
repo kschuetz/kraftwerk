@@ -1,10 +1,15 @@
 package dev.marksman.composablerandom;
 
+import dev.marksman.collectionviews.ImmutableNonEmptyVector;
+import dev.marksman.collectionviews.NonEmptyVector;
+import dev.marksman.enhancediterables.NonEmptyFiniteIterable;
+
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Map.map;
 import static dev.marksman.composablerandom.primitives.AggregateImpl.aggregateImpl;
 import static dev.marksman.composablerandom.primitives.ConstantImpl.constantImpl;
 import static dev.marksman.composablerandom.primitives.CustomImpl.customImpl;
 import static dev.marksman.composablerandom.primitives.FlatMappedImpl.flatMappedImpl;
+import static dev.marksman.composablerandom.primitives.InjectSpecialValuesImpl.mixInSpecialValuesImpl;
 import static dev.marksman.composablerandom.primitives.MappedImpl.mappedImpl;
 import static dev.marksman.composablerandom.primitives.NextBooleanImpl.nextBooleanImpl;
 import static dev.marksman.composablerandom.primitives.NextByteImpl.nextByteImpl;
@@ -249,6 +254,18 @@ public class DefaultInterpreter implements Interpreter {
                     context.recurse(g1.getG()),
                     context.recurse(g1.getH()),
                     g1.getCombine());
+        }
+
+        if (gen instanceof Generator.InjectSpecialValues) {
+            Generator.InjectSpecialValues<A> g1 = (Generator.InjectSpecialValues<A>) gen;
+            NonEmptyFiniteIterable<A> acc = g1.getSpecialValues();
+            while (g1.getInner() instanceof Generator.InjectSpecialValues) {
+                g1 = (Generator.InjectSpecialValues<A>) g1.getInner();
+                acc = acc.concat(g1.getSpecialValues());
+            }
+            ImmutableNonEmptyVector<A> specialValues = NonEmptyVector.copyFromOrThrow(acc);
+            return mixInSpecialValuesImpl(specialValues, 20 + 3 * specialValues.size(),
+                    context.recurse(g1.getInner()));
         }
 
         return context.callNextHandler(gen);
