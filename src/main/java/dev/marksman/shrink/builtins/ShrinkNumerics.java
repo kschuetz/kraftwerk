@@ -28,4 +28,54 @@ public class ShrinkNumerics {
         }
 
     };
+
+    private static Shrink<Long> LONG = new Shrink<Long>() {
+        @Override
+        public ImmutableIterable<Long> apply(Long input) {
+            if (input == 0) return emptyImmutableIterable();
+            else return halves(input);
+        }
+
+        private ImmutableIterable<Long> halves(Long x) {
+            long q = x / 2;
+            if (q == 0) {
+                return ImmutableIterable.of(0L);
+            } else {
+                return lazyCons(q, () -> lazyCons(-q, () -> halves(q)));
+            }
+        }
+    };
+
+    public static Shrink<Integer> shrinkInt() {
+        return INT;
+    }
+
+    public static Shrink<Integer> shrinkIntBetween(int min, int max) {
+        return Shrink.none();
+    }
+
+    public static Shrink<Integer> shrinkIntBounded(int bound) {
+        return Shrink.none();
+    }
+
+    public static Shrink<Integer> shrinkIntExclusive(int origin, int bound) {
+        return Shrink.none();
+    }
+
+    public static Shrink<Long> shrinkLong() {
+        return LONG;
+    }
+
+    public static Shrink<Long> shrinkLongBetween(long min, long max) {
+        return Shrink.none();
+    }
+
+    public static Shrink<Long> shrinkLongBounded(long bound) {
+        return Shrink.none();
+    }
+
+    public static Shrink<Long> shrinkLongExclusive(long origin, long bound) {
+        return Shrink.none();
+    }
+
 }
