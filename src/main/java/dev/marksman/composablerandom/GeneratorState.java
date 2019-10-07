@@ -1,36 +1,24 @@
 package dev.marksman.composablerandom;
 
 import com.jnape.palatable.lambda.functions.Fn1;
-import com.jnape.palatable.lambda.monad.Monad;
 
-import static dev.marksman.composablerandom.Result.result;
-
-public interface GeneratorState<A> extends Monad<A, GeneratorState<?>> {
+public interface GeneratorState<A> {
     Result<? extends Seed, A> run(Seed input);
+
+    default Result<? extends Seed, ShrinkResult<A>> runShrink(Seed input) {
+        return this.getRun().apply(input).fmap(ShrinkResult::shrinkResult);
+    }
 
     default Fn1<Seed, Result<? extends Seed, A>> getRun() {
         return this::run;
     }
 
-    @Override
-    default <B> GeneratorState<B> fmap(Fn1<? super A, ? extends B> fn) {
-        return generator(getRun().fmap(a -> a.fmap(fn)));
-    }
-
-    @Override
-    default <B> GeneratorState<B> flatMap(Fn1<? super A, ? extends Monad<B, GeneratorState<?>>> fn) {
-        return generator(rs -> {
-            Result<? extends Seed, A> x = run(rs);
-            return ((GeneratorState<B>) fn.apply(x._2())).run(x._1());
-        });
-    }
-
-    @Override
-    default <B> GeneratorState<B> pure(B b) {
-        return generator(rs -> result(rs, b));
+    default Fn1<Seed, Result<? extends Seed, ShrinkResult<A>>> getRunShrink() {
+        return this::runShrink;
     }
 
     static <A> GeneratorState<A> generator(Fn1<Seed, Result<? extends Seed, A>> fn) {
+        Fn1<Seed, Result<? extends Seed, ShrinkResult<A>>> shrinkFn = fn.fmap(x -> x.fmap(ShrinkResult::shrinkResult));
         return new GeneratorState<A>() {
             @Override
             public Result<? extends Seed, A> run(Seed input) {
@@ -38,8 +26,18 @@ public interface GeneratorState<A> extends Monad<A, GeneratorState<?>> {
             }
 
             @Override
+            public Result<? extends Seed, ShrinkResult<A>> runShrink(Seed input) {
+                return null;
+            }
+
+            @Override
             public Fn1<Seed, Result<? extends Seed, A>> getRun() {
                 return fn;
+            }
+
+            @Override
+            public Fn1<Seed, Result<? extends Seed, ShrinkResult<A>>> getRunShrink() {
+                return shrinkFn;
             }
         };
     }
