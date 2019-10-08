@@ -3,7 +3,6 @@ package dev.marksman.composablerandom;
 import com.jnape.palatable.lambda.functions.Fn1;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Map.map;
-import static dev.marksman.composablerandom.GeneratorImpl.generator;
 import static dev.marksman.composablerandom.Result.result;
 import static dev.marksman.composablerandom.StandardParameters.defaultParameters;
 import static dev.marksman.composablerandom.Trace.trace;
@@ -301,15 +300,19 @@ public class TracingInterpreter {
         Fn1<? super In, ? extends Generator<Out>> fn = gen.getFn();
         GeneratorImpl<Trace<In>> g1 = compile(gen.getOperand());
 
-        return generator(rs -> {
-            Result<? extends Seed, Trace<In>> r1 = g1.run(rs);
-            Trace<In> trace1 = r1.getValue();
-            Result<? extends Seed, Trace<Out>> r2 = compile(fn.apply(trace1.getResult()))
-                    .run(r1.getNextState());
-            Trace<Out> trace2 = r2.getValue();
-            return result(r2.getNextState(),
-                    trace(trace2.getResult(), gen, asList(trace1, trace2)));
-        });
+        return new GeneratorImpl<Trace<Out>>() {
+            @Override
+            public Result<? extends Seed, Trace<Out>> run(Seed input) {
+                Result<? extends Seed, Trace<In>> r1 = g1.run(input);
+                Trace<In> trace1 = r1.getValue();
+                Result<? extends Seed, Trace<Out>> r2 = compile(fn.apply(trace1.getResult()))
+                        .run(r1.getNextState());
+                Trace<Out> trace2 = r2.getValue();
+                return result(r2.getNextState(),
+                        trace(trace2.getResult(), gen, asList(trace1, trace2)));
+            }
+        };
+
     }
 
 //
@@ -337,27 +340,34 @@ public class TracingInterpreter {
     private <A> GeneratorImpl<Trace<A>> handleSized(Generator.Sized<A> gen) {
         Fn1<Integer, Generator<A>> fn = gen.getFn();
 
-        return generator(rs -> {
-            Result<? extends Seed, Trace<Integer>> r1 = sizeGenerator.run(rs);
-            Trace<Integer> sizeTrace = r1.getValue();
-            Generator<A> inner = fn.apply(sizeTrace.getResult());
-            Result<? extends Seed, Trace<A>> r2 = compile(inner)
-                    .run(r1.getNextState());
-            Trace<A> innerTrace = r2.getValue();
-            return result(r2.getNextState(),
-                    trace(innerTrace.getResult(), inner, asList(sizeTrace, innerTrace)));
-        });
+        return new GeneratorImpl<Trace<A>>() {
+            @Override
+            public Result<? extends Seed, Trace<A>> run(Seed input) {
+                Result<? extends Seed, Trace<Integer>> r1 = sizeGenerator.run(input);
+                Trace<Integer> sizeTrace = r1.getValue();
+                Generator<A> inner = fn.apply(sizeTrace.getResult());
+                Result<? extends Seed, Trace<A>> r2 = compile(inner)
+                        .run(r1.getNextState());
+                Trace<A> innerTrace = r2.getValue();
+                return result(r2.getNextState(),
+                        trace(innerTrace.getResult(), inner, asList(sizeTrace, innerTrace)));
+            }
+        };
 
     }
 
     private <A> GeneratorImpl<Trace<A>> handleWithMetadata(Generator.WithMetadata<A> gen) {
         GeneratorImpl<Trace<A>> inner = compile(gen.getOperand());
-        return generator(rs -> {
-            Result<? extends Seed, Trace<A>> run = inner.run(rs);
-            Trace<A> innerTrace = run.getValue();
-            return result(run.getNextState(),
-                    trace(innerTrace.getResult(), gen, singletonList(innerTrace)));
-        });
+
+        return new GeneratorImpl<Trace<A>>() {
+            @Override
+            public Result<? extends Seed, Trace<A>> run(Seed input) {
+                Result<? extends Seed, Trace<A>> run = inner.run(input);
+                Trace<A> innerTrace = run.getValue();
+                return result(run.getNextState(),
+                        trace(innerTrace.getResult(), gen, singletonList(innerTrace)));
+            }
+        };
     }
 
     public static TracingInterpreter tracingInterpreter(Parameters parameters) {
