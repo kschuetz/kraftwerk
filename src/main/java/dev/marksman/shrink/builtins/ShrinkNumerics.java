@@ -1,5 +1,6 @@
 package dev.marksman.shrink.builtins;
 
+import dev.marksman.enhancediterables.ImmutableFiniteIterable;
 import dev.marksman.enhancediterables.ImmutableIterable;
 import dev.marksman.shrink.Shrink;
 
@@ -10,7 +11,7 @@ public class ShrinkNumerics {
 
     private static Shrink<Integer> INT = new Shrink<Integer>() {
         @Override
-        public ImmutableIterable<Integer> apply(Integer input) {
+        public ImmutableFiniteIterable<Integer> apply(Integer input) {
             if (input == 0) {
                 return emptyImmutableIterable();
             } else {
@@ -18,7 +19,7 @@ public class ShrinkNumerics {
             }
         }
 
-        private ImmutableIterable<Integer> halves(Integer x) {
+        private ImmutableFiniteIterable<Integer> halves(Integer x) {
             int q = x / 2;
             if (q == 0) {
                 return ImmutableIterable.of(0);
@@ -31,12 +32,12 @@ public class ShrinkNumerics {
 
     private static Shrink<Long> LONG = new Shrink<Long>() {
         @Override
-        public ImmutableIterable<Long> apply(Long input) {
+        public ImmutableFiniteIterable<Long> apply(Long input) {
             if (input == 0) return emptyImmutableIterable();
             else return halves(input);
         }
 
-        private ImmutableIterable<Long> halves(Long x) {
+        private ImmutableFiniteIterable<Long> halves(Long x) {
             long q = x / 2;
             if (q == 0) {
                 return ImmutableIterable.of(0L);

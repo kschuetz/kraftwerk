@@ -3,7 +3,7 @@ package dev.marksman.composablerandom.primitives;
 import dev.marksman.composablerandom.GeneratorImpl;
 import dev.marksman.composablerandom.Result;
 import dev.marksman.composablerandom.Seed;
-import dev.marksman.enhancediterables.ImmutableNonEmptyIterable;
+import dev.marksman.enhancediterables.ImmutableNonEmptyFiniteIterable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
@@ -20,7 +20,7 @@ public class NextIntImpl implements GeneratorImpl<Integer> {
     }
 
     @Override
-    public Result<? extends Seed, ImmutableNonEmptyIterable<Integer>> runShrinking(Seed input) {
+    public Result<? extends Seed, ImmutableNonEmptyFiniteIterable<Integer>> runShrinking(Seed input) {
         return run(input).fmap(n -> lazyCons(n, () -> shrinkInt().apply(n)));
     }
 

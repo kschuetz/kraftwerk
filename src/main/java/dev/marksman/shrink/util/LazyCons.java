@@ -1,14 +1,14 @@
 package dev.marksman.shrink.util;
 
 import com.jnape.palatable.lambda.functions.Fn0;
-import dev.marksman.enhancediterables.ImmutableIterable;
-import dev.marksman.enhancediterables.ImmutableNonEmptyIterable;
+import dev.marksman.enhancediterables.ImmutableFiniteIterable;
+import dev.marksman.enhancediterables.ImmutableNonEmptyFiniteIterable;
 
 public class LazyCons {
-    public static <A> ImmutableNonEmptyIterable<A> lazyCons(A head, Fn0<ImmutableIterable<A>> tailSupplier) {
-        return new ImmutableNonEmptyIterable<A>() {
+    public static <A> ImmutableNonEmptyFiniteIterable<A> lazyCons(A head, Fn0<ImmutableFiniteIterable<A>> tailSupplier) {
+        return new ImmutableNonEmptyFiniteIterable<A>() {
             @Override
-            public ImmutableIterable<A> tail() {
+            public ImmutableFiniteIterable<A> tail() {
                 return tailSupplier.apply();
             }
 
