@@ -10,9 +10,9 @@ import static dev.marksman.composablerandom.Trace.trace;
 import static java.util.Arrays.asList;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Product2Impl<A, B, Out> implements GeneratorState<Out> {
-    private final GeneratorState<A> a;
-    private final GeneratorState<B> b;
+public class Product2Impl<A, B, Out> implements GeneratorImpl<Out> {
+    private final GeneratorImpl<A> a;
+    private final GeneratorImpl<B> b;
     private final Fn2<A, B, Out> combine;
 
     @Override
@@ -23,16 +23,16 @@ public class Product2Impl<A, B, Out> implements GeneratorState<Out> {
         return result(r2.getNextState(), result);
     }
 
-    public static <A, B, Out> Product2Impl<A, B, Out> product2Impl(GeneratorState<A> a,
-                                                                   GeneratorState<B> b,
+    public static <A, B, Out> Product2Impl<A, B, Out> product2Impl(GeneratorImpl<A> a,
+                                                                   GeneratorImpl<B> b,
                                                                    Fn2<A, B, Out> combine) {
         return new Product2Impl<>(a, b, combine);
     }
 
-    public static <A, B, Out> GeneratorState<Trace<Out>> tracedProduct2Impl(Generator<Out> source,
-                                                                            GeneratorState<Trace<A>> a,
-                                                                            GeneratorState<Trace<B>> b,
-                                                                            Fn2<A, B, Out> combine) {
+    public static <A, B, Out> GeneratorImpl<Trace<Out>> tracedProduct2Impl(Generator<Out> source,
+                                                                           GeneratorImpl<Trace<A>> a,
+                                                                           GeneratorImpl<Trace<B>> b,
+                                                                           Fn2<A, B, Out> combine) {
         return product2Impl(a, b,
                 (ta, tb) -> trace(combine.apply(ta.getResult(), tb.getResult()),
                         source, asList(ta, tb)));

@@ -10,13 +10,13 @@ import static dev.marksman.composablerandom.Trace.trace;
 import static java.util.Arrays.asList;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Product6Impl<A, B, C, D, E, F, Out> implements GeneratorState<Out> {
-    private final GeneratorState<A> a;
-    private final GeneratorState<B> b;
-    private final GeneratorState<C> c;
-    private final GeneratorState<D> d;
-    private final GeneratorState<E> e;
-    private final GeneratorState<F> f;
+public class Product6Impl<A, B, C, D, E, F, Out> implements GeneratorImpl<Out> {
+    private final GeneratorImpl<A> a;
+    private final GeneratorImpl<B> b;
+    private final GeneratorImpl<C> c;
+    private final GeneratorImpl<D> d;
+    private final GeneratorImpl<E> e;
+    private final GeneratorImpl<F> f;
     private final Fn6<A, B, C, D, E, F, Out> combine;
 
     @Override
@@ -32,24 +32,24 @@ public class Product6Impl<A, B, C, D, E, F, Out> implements GeneratorState<Out> 
         return result(r6.getNextState(), result);
     }
 
-    public static <A, B, C, D, E, F, Out> Product6Impl<A, B, C, D, E, F, Out> product6Impl(GeneratorState<A> a,
-                                                                                           GeneratorState<B> b,
-                                                                                           GeneratorState<C> c,
-                                                                                           GeneratorState<D> d,
-                                                                                           GeneratorState<E> e,
-                                                                                           GeneratorState<F> f,
+    public static <A, B, C, D, E, F, Out> Product6Impl<A, B, C, D, E, F, Out> product6Impl(GeneratorImpl<A> a,
+                                                                                           GeneratorImpl<B> b,
+                                                                                           GeneratorImpl<C> c,
+                                                                                           GeneratorImpl<D> d,
+                                                                                           GeneratorImpl<E> e,
+                                                                                           GeneratorImpl<F> f,
                                                                                            Fn6<A, B, C, D, E, F, Out> combine) {
         return new Product6Impl<>(a, b, c, d, e, f, combine);
     }
 
-    public static <A, B, C, D, E, F, Out> GeneratorState<Trace<Out>> tracedProduct6Impl(Generator<Out> source,
-                                                                                        GeneratorState<Trace<A>> a,
-                                                                                        GeneratorState<Trace<B>> b,
-                                                                                        GeneratorState<Trace<C>> c,
-                                                                                        GeneratorState<Trace<D>> d,
-                                                                                        GeneratorState<Trace<E>> e,
-                                                                                        GeneratorState<Trace<F>> f,
-                                                                                        Fn6<A, B, C, D, E, F, Out> combine) {
+    public static <A, B, C, D, E, F, Out> GeneratorImpl<Trace<Out>> tracedProduct6Impl(Generator<Out> source,
+                                                                                       GeneratorImpl<Trace<A>> a,
+                                                                                       GeneratorImpl<Trace<B>> b,
+                                                                                       GeneratorImpl<Trace<C>> c,
+                                                                                       GeneratorImpl<Trace<D>> d,
+                                                                                       GeneratorImpl<Trace<E>> e,
+                                                                                       GeneratorImpl<Trace<F>> f,
+                                                                                       Fn6<A, B, C, D, E, F, Out> combine) {
         return product6Impl(a, b, c, d, e, f,
                 (ta, tb, tc, td, te, tf) -> trace(
                         combine.apply(ta.getResult(), tb.getResult(), tc.getResult(), td.getResult(),

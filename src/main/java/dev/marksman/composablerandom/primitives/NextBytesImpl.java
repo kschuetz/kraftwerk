@@ -1,14 +1,14 @@
 package dev.marksman.composablerandom.primitives;
 
 import com.jnape.palatable.lambda.adt.Unit;
-import dev.marksman.composablerandom.GeneratorState;
+import dev.marksman.composablerandom.GeneratorImpl;
 import dev.marksman.composablerandom.Result;
 import dev.marksman.composablerandom.Seed;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class NextBytesImpl implements GeneratorState<Byte[]> {
+public class NextBytesImpl implements GeneratorImpl<Byte[]> {
     private final int count;
 
     @Override

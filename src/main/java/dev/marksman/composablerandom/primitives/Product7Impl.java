@@ -10,14 +10,14 @@ import static dev.marksman.composablerandom.Trace.trace;
 import static java.util.Arrays.asList;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Product7Impl<A, B, C, D, E, F, G, Out> implements GeneratorState<Out> {
-    private final GeneratorState<A> a;
-    private final GeneratorState<B> b;
-    private final GeneratorState<C> c;
-    private final GeneratorState<D> d;
-    private final GeneratorState<E> e;
-    private final GeneratorState<F> f;
-    private final GeneratorState<G> g;
+public class Product7Impl<A, B, C, D, E, F, G, Out> implements GeneratorImpl<Out> {
+    private final GeneratorImpl<A> a;
+    private final GeneratorImpl<B> b;
+    private final GeneratorImpl<C> c;
+    private final GeneratorImpl<D> d;
+    private final GeneratorImpl<E> e;
+    private final GeneratorImpl<F> f;
+    private final GeneratorImpl<G> g;
     private final Fn7<A, B, C, D, E, F, G, Out> combine;
 
     @Override
@@ -34,26 +34,26 @@ public class Product7Impl<A, B, C, D, E, F, G, Out> implements GeneratorState<Ou
         return result(r7.getNextState(), result);
     }
 
-    public static <A, B, C, D, E, F, G, Out> Product7Impl<A, B, C, D, E, F, G, Out> product7Impl(GeneratorState<A> a,
-                                                                                                 GeneratorState<B> b,
-                                                                                                 GeneratorState<C> c,
-                                                                                                 GeneratorState<D> d,
-                                                                                                 GeneratorState<E> e,
-                                                                                                 GeneratorState<F> f,
-                                                                                                 GeneratorState<G> g,
+    public static <A, B, C, D, E, F, G, Out> Product7Impl<A, B, C, D, E, F, G, Out> product7Impl(GeneratorImpl<A> a,
+                                                                                                 GeneratorImpl<B> b,
+                                                                                                 GeneratorImpl<C> c,
+                                                                                                 GeneratorImpl<D> d,
+                                                                                                 GeneratorImpl<E> e,
+                                                                                                 GeneratorImpl<F> f,
+                                                                                                 GeneratorImpl<G> g,
                                                                                                  Fn7<A, B, C, D, E, F, G, Out> combine) {
         return new Product7Impl<>(a, b, c, d, e, f, g, combine);
     }
 
-    public static <A, B, C, D, E, F, G, Out> GeneratorState<Trace<Out>> tracedProduct7Impl(Generator<Out> source,
-                                                                                           GeneratorState<Trace<A>> a,
-                                                                                           GeneratorState<Trace<B>> b,
-                                                                                           GeneratorState<Trace<C>> c,
-                                                                                           GeneratorState<Trace<D>> d,
-                                                                                           GeneratorState<Trace<E>> e,
-                                                                                           GeneratorState<Trace<F>> f,
-                                                                                           GeneratorState<Trace<G>> g,
-                                                                                           Fn7<A, B, C, D, E, F, G, Out> combine) {
+    public static <A, B, C, D, E, F, G, Out> GeneratorImpl<Trace<Out>> tracedProduct7Impl(Generator<Out> source,
+                                                                                          GeneratorImpl<Trace<A>> a,
+                                                                                          GeneratorImpl<Trace<B>> b,
+                                                                                          GeneratorImpl<Trace<C>> c,
+                                                                                          GeneratorImpl<Trace<D>> d,
+                                                                                          GeneratorImpl<Trace<E>> e,
+                                                                                          GeneratorImpl<Trace<F>> f,
+                                                                                          GeneratorImpl<Trace<G>> g,
+                                                                                          Fn7<A, B, C, D, E, F, G, Out> combine) {
         return product7Impl(a, b, c, d, e, f, g,
                 (ta, tb, tc, td, te, tf, tg) -> trace(
                         combine.apply(ta.getResult(), tb.getResult(), tc.getResult(), td.getResult(),

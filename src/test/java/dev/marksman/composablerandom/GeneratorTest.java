@@ -105,7 +105,7 @@ class GeneratorTest {
 
     @SuppressWarnings("unchecked")
     private static <A> Result<Seed, A> run(Generator<A> gen, Seed input) {
-        GeneratorState<A> compiled = defaultInterpreter().compile(defaultParameters(), gen);
+        GeneratorImpl<A> compiled = defaultInterpreter().compile(defaultParameters(), gen);
         return (Result<Seed, A>) compiled.run(input);
     }
 

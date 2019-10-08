@@ -645,7 +645,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         private static Maybe<String> LABEL = Maybe.just("tap");
 
         private final Generator<A> inner;
-        private final Fn2<GeneratorState<A>, Seed, B> fn;
+        private final Fn2<GeneratorImpl<A>, Seed, B> fn;
 
         @Override
         public Maybe<String> getLabel() {
@@ -677,7 +677,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     }
 
     public static <A, B> Generator<B> tap(Generator<A> inner,
-                                          Fn2<GeneratorState<A>, Seed, B> f) {
+                                          Fn2<GeneratorImpl<A>, Seed, B> f) {
         return new Tap<>(inner, f);
     }
 

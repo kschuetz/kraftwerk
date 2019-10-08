@@ -40,7 +40,7 @@ import static dev.marksman.composablerandom.primitives.TapImpl.tapImpl;
 
 public class DefaultInterpreter implements Interpreter {
     @Override
-    public <A> GeneratorState<A> handle(InterpreterContext context, Generator<A> gen) {
+    public <A> GeneratorImpl<A> handle(InterpreterContext context, Generator<A> gen) {
         if (gen instanceof Generator.Constant) {
             return constantImpl(((Generator.Constant<A>) gen).getValue());
         }
@@ -63,96 +63,96 @@ public class DefaultInterpreter implements Interpreter {
 
         if (gen instanceof Generator.NextInt) {
             //noinspection unchecked
-            return (GeneratorState<A>) nextIntImpl();
+            return (GeneratorImpl<A>) nextIntImpl();
         }
 
         if (gen instanceof Generator.NextLong) {
             //noinspection unchecked
-            return (GeneratorState<A>) nextLongImpl();
+            return (GeneratorImpl<A>) nextLongImpl();
         }
 
         if (gen instanceof Generator.NextBoolean) {
             //noinspection unchecked
-            return (GeneratorState<A>) nextBooleanImpl();
+            return (GeneratorImpl<A>) nextBooleanImpl();
         }
 
         if (gen instanceof Generator.NextDouble) {
             //noinspection unchecked
-            return (GeneratorState<A>) nextDoubleImpl();
+            return (GeneratorImpl<A>) nextDoubleImpl();
         }
 
         if (gen instanceof Generator.NextFloat) {
             //noinspection unchecked
-            return (GeneratorState<A>) nextFloatImpl();
+            return (GeneratorImpl<A>) nextFloatImpl();
         }
 
         if (gen instanceof Generator.NextIntBounded) {
             int bound = ((Generator.NextIntBounded) gen).getBound();
             //noinspection unchecked
-            return (GeneratorState<A>) nextIntBoundedImpl(bound);
+            return (GeneratorImpl<A>) nextIntBoundedImpl(bound);
         }
 
         if (gen instanceof Generator.NextIntExclusive) {
             Generator.NextIntExclusive g1 = (Generator.NextIntExclusive) gen;
             //noinspection unchecked
-            return (GeneratorState<A>) nextIntExclusiveImpl(g1.getOrigin(), g1.getBound());
+            return (GeneratorImpl<A>) nextIntExclusiveImpl(g1.getOrigin(), g1.getBound());
         }
 
         if (gen instanceof Generator.NextIntBetween) {
             Generator.NextIntBetween g1 = (Generator.NextIntBetween) gen;
             //noinspection unchecked
-            return (GeneratorState<A>) nextIntBetweenImpl(g1.getMin(), g1.getMax());
+            return (GeneratorImpl<A>) nextIntBetweenImpl(g1.getMin(), g1.getMax());
         }
 
         if (gen instanceof Generator.NextIntIndex) {
             Generator.NextIntIndex g1 = (Generator.NextIntIndex) gen;
             //noinspection unchecked
-            return (GeneratorState<A>) nextIntIndexImpl(g1.getBound());
+            return (GeneratorImpl<A>) nextIntIndexImpl(g1.getBound());
         }
 
         if (gen instanceof Generator.NextLongBounded) {
             Generator.NextLongBounded g1 = (Generator.NextLongBounded) gen;
             //noinspection unchecked
-            return (GeneratorState<A>) nextLongBoundedImpl(g1.getBound());
+            return (GeneratorImpl<A>) nextLongBoundedImpl(g1.getBound());
         }
 
         if (gen instanceof Generator.NextLongExclusive) {
             Generator.NextLongExclusive g1 = (Generator.NextLongExclusive) gen;
             //noinspection unchecked
-            return (GeneratorState<A>) nextLongExclusiveImpl(g1.getOrigin(), g1.getBound());
+            return (GeneratorImpl<A>) nextLongExclusiveImpl(g1.getOrigin(), g1.getBound());
         }
 
         if (gen instanceof Generator.NextLongBetween) {
             Generator.NextLongBetween g1 = (Generator.NextLongBetween) gen;
             //noinspection unchecked
-            return (GeneratorState<A>) nextLongBetweenImpl(g1.getMin(), g1.getMax());
+            return (GeneratorImpl<A>) nextLongBetweenImpl(g1.getMin(), g1.getMax());
         }
 
         if (gen instanceof Generator.NextLongIndex) {
             Generator.NextLongIndex g1 = (Generator.NextLongIndex) gen;
             //noinspection unchecked
-            return (GeneratorState<A>) nextLongIndexImpl(g1.getBound());
+            return (GeneratorImpl<A>) nextLongIndexImpl(g1.getBound());
         }
 
         if (gen instanceof Generator.NextGaussian) {
             //noinspection unchecked
-            return (GeneratorState<A>) nextGaussianImpl();
+            return (GeneratorImpl<A>) nextGaussianImpl();
         }
 
         if (gen instanceof Generator.NextByte) {
             //noinspection unchecked
-            return (GeneratorState<A>) nextByteImpl();
+            return (GeneratorImpl<A>) nextByteImpl();
         }
 
         if (gen instanceof Generator.NextShort) {
             //noinspection unchecked
-            return (GeneratorState<A>) nextShortImpl();
+            return (GeneratorImpl<A>) nextShortImpl();
         }
 
         if (gen instanceof Generator.NextBytes) {
             Generator.NextBytes g1 = (Generator.NextBytes) gen;
             //noinspection unchecked
-            return (GeneratorState<A>) nextBytesImpl(g1.getCount());
+            return (GeneratorImpl<A>) nextBytesImpl(g1.getCount());
         }
 
         if (gen instanceof Generator.WithMetadata) {
@@ -175,14 +175,14 @@ public class DefaultInterpreter implements Interpreter {
             Iterable<Generator<A>> elements = g1.getElements();
 
             //noinspection unchecked
-            return (GeneratorState<A>) aggregateImpl(g1.getInitialBuilderSupplier(), g1.getAddFn(),
+            return (GeneratorImpl<A>) aggregateImpl(g1.getInitialBuilderSupplier(), g1.getAddFn(),
                     g1.getBuildFn(), map(context::recurse, elements));
         }
 
         if (gen instanceof Generator.Product2) {
             Generator.Product2 g1 = (Generator.Product2) gen;
             //noinspection unchecked
-            return (GeneratorState<A>) product2Impl(context.recurse(g1.getA()),
+            return (GeneratorImpl<A>) product2Impl(context.recurse(g1.getA()),
                     context.recurse(g1.getB()),
                     g1.getCombine());
         }
@@ -190,7 +190,7 @@ public class DefaultInterpreter implements Interpreter {
         if (gen instanceof Generator.Product3) {
             Generator.Product3 g1 = (Generator.Product3) gen;
             //noinspection unchecked
-            return (GeneratorState<A>) product3Impl(context.recurse(g1.getA()),
+            return (GeneratorImpl<A>) product3Impl(context.recurse(g1.getA()),
                     context.recurse(g1.getB()),
                     context.recurse(g1.getC()),
                     g1.getCombine());
@@ -199,7 +199,7 @@ public class DefaultInterpreter implements Interpreter {
         if (gen instanceof Generator.Product4) {
             Generator.Product4 g1 = (Generator.Product4) gen;
             //noinspection unchecked
-            return (GeneratorState<A>) product4Impl(context.recurse(g1.getA()),
+            return (GeneratorImpl<A>) product4Impl(context.recurse(g1.getA()),
                     context.recurse(g1.getB()),
                     context.recurse(g1.getC()),
                     context.recurse(g1.getD()),
@@ -209,7 +209,7 @@ public class DefaultInterpreter implements Interpreter {
         if (gen instanceof Generator.Product5) {
             Generator.Product5 g1 = (Generator.Product5) gen;
             //noinspection unchecked
-            return (GeneratorState<A>) product5Impl(context.recurse(g1.getA()),
+            return (GeneratorImpl<A>) product5Impl(context.recurse(g1.getA()),
                     context.recurse(g1.getB()),
                     context.recurse(g1.getC()),
                     context.recurse(g1.getD()),
@@ -220,7 +220,7 @@ public class DefaultInterpreter implements Interpreter {
         if (gen instanceof Generator.Product6) {
             Generator.Product6 g1 = (Generator.Product6) gen;
             //noinspection unchecked
-            return (GeneratorState<A>) product6Impl(context.recurse(g1.getA()),
+            return (GeneratorImpl<A>) product6Impl(context.recurse(g1.getA()),
                     context.recurse(g1.getB()),
                     context.recurse(g1.getC()),
                     context.recurse(g1.getD()),
@@ -232,7 +232,7 @@ public class DefaultInterpreter implements Interpreter {
         if (gen instanceof Generator.Product7) {
             Generator.Product7 g1 = (Generator.Product7) gen;
             //noinspection unchecked
-            return (GeneratorState<A>) product7Impl(context.recurse(g1.getA()),
+            return (GeneratorImpl<A>) product7Impl(context.recurse(g1.getA()),
                     context.recurse(g1.getB()),
                     context.recurse(g1.getC()),
                     context.recurse(g1.getD()),
@@ -245,7 +245,7 @@ public class DefaultInterpreter implements Interpreter {
         if (gen instanceof Generator.Product8) {
             Generator.Product8 g1 = (Generator.Product8) gen;
             //noinspection unchecked
-            return (GeneratorState<A>) product8Impl(context.recurse(g1.getA()),
+            return (GeneratorImpl<A>) product8Impl(context.recurse(g1.getA()),
                     context.recurse(g1.getB()),
                     context.recurse(g1.getC()),
                     context.recurse(g1.getD()),
@@ -271,18 +271,18 @@ public class DefaultInterpreter implements Interpreter {
         return context.callNextHandler(gen);
     }
 
-    private <In, Out> GeneratorState<Out> handleMapped(InterpreterContext context,
-                                                       Generator.Mapped<In, Out> mapped) {
+    private <In, Out> GeneratorImpl<Out> handleMapped(InterpreterContext context,
+                                                      Generator.Mapped<In, Out> mapped) {
         return mappedImpl(mapped.getFn(), context.recurse(mapped.getOperand()));
     }
 
-    private <In, Out> GeneratorState<Out> handleFlatMapped(InterpreterContext context,
-                                                           Generator.FlatMapped<In, Out> flatMapped) {
+    private <In, Out> GeneratorImpl<Out> handleFlatMapped(InterpreterContext context,
+                                                          Generator.FlatMapped<In, Out> flatMapped) {
         return flatMappedImpl(in -> context.recurse(flatMapped.getFn().apply(in)),
                 context.recurse(flatMapped.getOperand()));
     }
 
-    private <In, Out> GeneratorState<Out> handleTap(InterpreterContext context, Generator.Tap<In, Out> gen) {
+    private <In, Out> GeneratorImpl<Out> handleTap(InterpreterContext context, Generator.Tap<In, Out> gen) {
         return tapImpl(context.recurse(gen.getInner()), gen.getFn());
     }
 

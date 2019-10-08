@@ -1,19 +1,19 @@
 package dev.marksman.composablerandom.primitives;
 
 import dev.marksman.collectionviews.ImmutableNonEmptyVector;
-import dev.marksman.composablerandom.GeneratorState;
+import dev.marksman.composablerandom.GeneratorImpl;
 import dev.marksman.composablerandom.Result;
 import dev.marksman.composablerandom.Seed;
 
 import static dev.marksman.composablerandom.Result.result;
 
-public class InjectSpecialValuesImpl<Elem> implements GeneratorState<Elem> {
+public class InjectSpecialValuesImpl<Elem> implements GeneratorImpl<Elem> {
     private final ImmutableNonEmptyVector<Elem> elements;
     private final int specialWeight;
     private final long totalWeight;
-    private final GeneratorState<Elem> inner;
+    private final GeneratorImpl<Elem> inner;
 
-    private InjectSpecialValuesImpl(ImmutableNonEmptyVector<Elem> elements, long nonSpecialWeight, GeneratorState<Elem> inner) {
+    private InjectSpecialValuesImpl(ImmutableNonEmptyVector<Elem> elements, long nonSpecialWeight, GeneratorImpl<Elem> inner) {
         this.elements = elements;
         this.specialWeight = elements.size();
         this.totalWeight = Math.max(0, nonSpecialWeight) + specialWeight;
@@ -32,7 +32,7 @@ public class InjectSpecialValuesImpl<Elem> implements GeneratorState<Elem> {
         }
     }
 
-    public static <Elem> InjectSpecialValuesImpl<Elem> mixInSpecialValuesImpl(ImmutableNonEmptyVector<Elem> elements, long nonSpecialWeight, GeneratorState<Elem> inner) {
+    public static <Elem> InjectSpecialValuesImpl<Elem> mixInSpecialValuesImpl(ImmutableNonEmptyVector<Elem> elements, long nonSpecialWeight, GeneratorImpl<Elem> inner) {
         return new InjectSpecialValuesImpl<>(elements, nonSpecialWeight, inner);
     }
 

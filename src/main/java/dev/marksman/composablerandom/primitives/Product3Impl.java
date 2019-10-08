@@ -10,10 +10,10 @@ import static dev.marksman.composablerandom.Trace.trace;
 import static java.util.Arrays.asList;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Product3Impl<A, B, C, Out> implements GeneratorState<Out> {
-    private final GeneratorState<A> a;
-    private final GeneratorState<B> b;
-    private final GeneratorState<C> c;
+public class Product3Impl<A, B, C, Out> implements GeneratorImpl<Out> {
+    private final GeneratorImpl<A> a;
+    private final GeneratorImpl<B> b;
+    private final GeneratorImpl<C> c;
     private final Fn3<A, B, C, Out> combine;
 
     @Override
@@ -25,18 +25,18 @@ public class Product3Impl<A, B, C, Out> implements GeneratorState<Out> {
         return result(r3.getNextState(), result);
     }
 
-    public static <A, B, C, Out> Product3Impl<A, B, C, Out> product3Impl(GeneratorState<A> a,
-                                                                         GeneratorState<B> b,
-                                                                         GeneratorState<C> c,
+    public static <A, B, C, Out> Product3Impl<A, B, C, Out> product3Impl(GeneratorImpl<A> a,
+                                                                         GeneratorImpl<B> b,
+                                                                         GeneratorImpl<C> c,
                                                                          Fn3<A, B, C, Out> combine) {
         return new Product3Impl<>(a, b, c, combine);
     }
 
-    public static <A, B, C, Out> GeneratorState<Trace<Out>> tracedProduct3Impl(Generator<Out> source,
-                                                                               GeneratorState<Trace<A>> a,
-                                                                               GeneratorState<Trace<B>> b,
-                                                                               GeneratorState<Trace<C>> c,
-                                                                               Fn3<A, B, C, Out> combine) {
+    public static <A, B, C, Out> GeneratorImpl<Trace<Out>> tracedProduct3Impl(Generator<Out> source,
+                                                                              GeneratorImpl<Trace<A>> a,
+                                                                              GeneratorImpl<Trace<B>> b,
+                                                                              GeneratorImpl<Trace<C>> c,
+                                                                              Fn3<A, B, C, Out> combine) {
         return product3Impl(a, b, c,
                 (ta, tb, tc) -> trace(combine.apply(ta.getResult(), tb.getResult(), tc.getResult()),
                         source, asList(ta, tb, tc)));

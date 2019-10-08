@@ -10,15 +10,15 @@ import static dev.marksman.composablerandom.Trace.trace;
 import static java.util.Arrays.asList;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Product8Impl<A, B, C, D, E, F, G, H, Out> implements GeneratorState<Out> {
-    private final GeneratorState<A> a;
-    private final GeneratorState<B> b;
-    private final GeneratorState<C> c;
-    private final GeneratorState<D> d;
-    private final GeneratorState<E> e;
-    private final GeneratorState<F> f;
-    private final GeneratorState<G> g;
-    private final GeneratorState<H> h;
+public class Product8Impl<A, B, C, D, E, F, G, H, Out> implements GeneratorImpl<Out> {
+    private final GeneratorImpl<A> a;
+    private final GeneratorImpl<B> b;
+    private final GeneratorImpl<C> c;
+    private final GeneratorImpl<D> d;
+    private final GeneratorImpl<E> e;
+    private final GeneratorImpl<F> f;
+    private final GeneratorImpl<G> g;
+    private final GeneratorImpl<H> h;
     private final Fn8<A, B, C, D, E, F, G, H, Out> combine;
 
     @Override
@@ -36,28 +36,28 @@ public class Product8Impl<A, B, C, D, E, F, G, H, Out> implements GeneratorState
         return result(r8.getNextState(), result);
     }
 
-    public static <A, B, C, D, E, F, G, H, Out> Product8Impl<A, B, C, D, E, F, G, H, Out> product8Impl(GeneratorState<A> a,
-                                                                                                       GeneratorState<B> b,
-                                                                                                       GeneratorState<C> c,
-                                                                                                       GeneratorState<D> d,
-                                                                                                       GeneratorState<E> e,
-                                                                                                       GeneratorState<F> f,
-                                                                                                       GeneratorState<G> g,
-                                                                                                       GeneratorState<H> h,
+    public static <A, B, C, D, E, F, G, H, Out> Product8Impl<A, B, C, D, E, F, G, H, Out> product8Impl(GeneratorImpl<A> a,
+                                                                                                       GeneratorImpl<B> b,
+                                                                                                       GeneratorImpl<C> c,
+                                                                                                       GeneratorImpl<D> d,
+                                                                                                       GeneratorImpl<E> e,
+                                                                                                       GeneratorImpl<F> f,
+                                                                                                       GeneratorImpl<G> g,
+                                                                                                       GeneratorImpl<H> h,
                                                                                                        Fn8<A, B, C, D, E, F, G, H, Out> fn) {
         return new Product8Impl<>(a, b, c, d, e, f, g, h, fn);
     }
 
-    public static <A, B, C, D, E, F, G, H, Out> GeneratorState<Trace<Out>> tracedProduct8Impl(Generator<Out> source,
-                                                                                              GeneratorState<Trace<A>> a,
-                                                                                              GeneratorState<Trace<B>> b,
-                                                                                              GeneratorState<Trace<C>> c,
-                                                                                              GeneratorState<Trace<D>> d,
-                                                                                              GeneratorState<Trace<E>> e,
-                                                                                              GeneratorState<Trace<F>> f,
-                                                                                              GeneratorState<Trace<G>> g,
-                                                                                              GeneratorState<Trace<H>> h,
-                                                                                              Fn8<A, B, C, D, E, F, G, H, Out> combine) {
+    public static <A, B, C, D, E, F, G, H, Out> GeneratorImpl<Trace<Out>> tracedProduct8Impl(Generator<Out> source,
+                                                                                             GeneratorImpl<Trace<A>> a,
+                                                                                             GeneratorImpl<Trace<B>> b,
+                                                                                             GeneratorImpl<Trace<C>> c,
+                                                                                             GeneratorImpl<Trace<D>> d,
+                                                                                             GeneratorImpl<Trace<E>> e,
+                                                                                             GeneratorImpl<Trace<F>> f,
+                                                                                             GeneratorImpl<Trace<G>> g,
+                                                                                             GeneratorImpl<Trace<H>> h,
+                                                                                             Fn8<A, B, C, D, E, F, G, H, Out> combine) {
         return product8Impl(a, b, c, d, e, f, g, h,
                 (ta, tb, tc, td, te, tf, tg, th) -> trace(
                         combine.apply(ta.getResult(), tb.getResult(), tc.getResult(), td.getResult(),

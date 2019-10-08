@@ -1,7 +1,7 @@
 package dev.marksman.composablerandom.primitives;
 
 import com.jnape.palatable.lambda.functions.Fn1;
-import dev.marksman.composablerandom.GeneratorState;
+import dev.marksman.composablerandom.GeneratorImpl;
 import dev.marksman.composablerandom.Result;
 import dev.marksman.composablerandom.Seed;
 import dev.marksman.composablerandom.SizeSelector;
@@ -9,9 +9,9 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class SizedImpl<A> implements GeneratorState<A> {
+public class SizedImpl<A> implements GeneratorImpl<A> {
     private final SizeSelector sizeSelector;
-    private final Fn1<Integer, GeneratorState<A>> fn;
+    private final Fn1<Integer, GeneratorImpl<A>> fn;
 
     @Override
     public Result<? extends Seed, A> run(Seed input) {
@@ -20,7 +20,7 @@ public class SizedImpl<A> implements GeneratorState<A> {
                 .run(sizeResult.getNextState());
     }
 
-    public static <A> SizedImpl<A> sizedImpl(SizeSelector sizeSelector, Fn1<Integer, GeneratorState<A>> fn) {
+    public static <A> SizedImpl<A> sizedImpl(SizeSelector sizeSelector, Fn1<Integer, GeneratorImpl<A>> fn) {
         return new SizedImpl<>(sizeSelector, fn);
     }
 }

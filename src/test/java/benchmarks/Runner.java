@@ -12,7 +12,7 @@ import static dev.marksman.composablerandom.random.StandardGen.initStandardGen;
 public class Runner {
 
     public static <A> void runMark3(String label, int iterations, Generator<A> gen) {
-        GeneratorState<A> compiled = defaultInterpreter(defaultParameters()).compile(gen);
+        GeneratorImpl<A> compiled = defaultInterpreter(defaultParameters()).compile(gen);
 
         Seed current = initStandardGen();
         long t0 = System.currentTimeMillis();
@@ -30,14 +30,14 @@ public class Runner {
         Interpreter overrides = Interpreter.<A>interpreter((InterpreterContext ctx, Generator<A> g) -> {
             if (g instanceof Generator.NextInt) {
                 //noinspection unchecked
-                return (GeneratorState<A>) constantImpl(1);
+                return (GeneratorImpl<A>) constantImpl(1);
             }
             return ctx.callNextHandler(g);
         });
 
         Interpreter interpreter = DefaultInterpreter.defaultInterpreter()
                 .overrideWith(overrides);
-        GeneratorState<A> compiled = interpreter.compile(defaultParameters(), gen);
+        GeneratorImpl<A> compiled = interpreter.compile(defaultParameters(), gen);
         Seed current = initStandardGen();
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < iterations; i++) {
@@ -50,7 +50,7 @@ public class Runner {
     }
 
     public static <A> void runTraced(String label, int iterations, Generator<A> gen) {
-        GeneratorState<Trace<A>> compile = tracingInterpreter().compile(gen);
+        GeneratorImpl<Trace<A>> compile = tracingInterpreter().compile(gen);
         GeneratedStream<Trace<A>> stream = GeneratedStream.streamFrom(compile, initStandardGen());
 
         long t0 = System.currentTimeMillis();
