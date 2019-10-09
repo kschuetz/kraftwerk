@@ -1,6 +1,7 @@
 package dev.marksman.composablerandom;
 
 import dev.marksman.composablerandom.spike.ShrinkNode;
+import dev.marksman.composablerandom.spike.ShrinkTree;
 import dev.marksman.enhancediterables.ImmutableNonEmptyFiniteIterable;
 import dev.marksman.shrink.util.SingletonIterable;
 
@@ -16,6 +17,10 @@ public interface GeneratorImpl<A> {
 
     default Result<? extends Seed, ImmutableNonEmptyFiniteIterable<ShrinkNode<A>>> runShrinking2(Seed input) {
         return run(input).fmap(r -> singletonIterable(shrinkNode(r)));
+    }
+
+    default Result<? extends Seed, ShrinkTree<A>> runShrinking3(Seed input) {
+        return run(input).fmap(r -> () -> r);
     }
 
 }
