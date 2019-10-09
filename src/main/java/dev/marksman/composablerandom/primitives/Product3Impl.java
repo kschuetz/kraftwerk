@@ -2,12 +2,14 @@ package dev.marksman.composablerandom.primitives;
 
 import com.jnape.palatable.lambda.functions.Fn3;
 import dev.marksman.composablerandom.*;
+import dev.marksman.composablerandom.spike.ShrinkNode;
 import dev.marksman.enhancediterables.ImmutableNonEmptyFiniteIterable;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 import static dev.marksman.composablerandom.Result.result;
 import static dev.marksman.composablerandom.Trace.trace;
+import static dev.marksman.composablerandom.spike.ShrinkNode.shrinkNode;
 import static java.util.Arrays.asList;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -34,6 +36,20 @@ public class Product3Impl<A, B, C, Out> implements GeneratorImpl<Out> {
         return result(r3.getNextState(),
                 r1.getValue().cross(r2.getValue().cross(r3.getValue()))
                         .fmap(t -> combine.apply(t._1(), t._2()._1(), t._2()._2())));
+    }
+
+    @Override
+    public Result<? extends Seed, ImmutableNonEmptyFiniteIterable<ShrinkNode<Out>>> runShrinking2(Seed input) {
+        Result<? extends Seed, ImmutableNonEmptyFiniteIterable<ShrinkNode<A>>> r1 = a.runShrinking2(input);
+        Result<? extends Seed, ImmutableNonEmptyFiniteIterable<ShrinkNode<B>>> r2 = b.runShrinking2(r1.getNextState());
+        Result<? extends Seed, ImmutableNonEmptyFiniteIterable<ShrinkNode<C>>> r3 = c.runShrinking2(r2.getNextState());
+        return result(r3.getNextState(),
+                r1.getValue().cross(r2.getValue().cross(r3.getValue()))
+                        .fmap(t -> {
+                            Out apply = combine.apply(t._1().getValue(), t._2()._1().getValue(), t._2()._2().getValue());
+                            return shrinkNode(apply);
+                        }));
+
     }
 
     public static <A, B, C, Out> Product3Impl<A, B, C, Out> product3Impl(GeneratorImpl<A> a,
