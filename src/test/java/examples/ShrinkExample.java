@@ -21,7 +21,7 @@ public class ShrinkExample {
 
         Seed seed = randomInitialSeed();
 
-        ShrinkTree<Tuple3<Integer, Integer, Integer>> tree = defaultInterpreter.compile(parameters, g.triple())
+        ShrinkTree<Tuple3<Integer, Integer, Integer>> tree = defaultInterpreter.compile(parameters, g.fmap(n -> n % 10).triple())
                 .runShrinking3(seed).getValue();
 
         System.out.println("value: " + tree.getValue());

@@ -20,7 +20,7 @@ public interface GeneratorImpl<A> {
     }
 
     default Result<? extends Seed, ShrinkTree<A>> runShrinking3(Seed input) {
-        return run(input).fmap(r -> () -> r);
+        return run(input).fmap(ShrinkTree::noShrink);
     }
 
 }
