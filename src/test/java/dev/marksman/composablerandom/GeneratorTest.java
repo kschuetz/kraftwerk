@@ -80,6 +80,18 @@ class GeneratorTest {
         streamFrom(g).next();
     }
 
+    @Test
+    @Disabled
+    void stackSafeFmap() {
+        int LARGE_NUMBER = 10_000;
+        int max = 2 * LARGE_NUMBER;
+        Generator<Integer> g = generateInt(0, max);
+        for (int i = 0; i < LARGE_NUMBER; i++) {
+            g = g.fmap(n -> n + 1);
+        }
+        streamFrom(g).next();
+    }
+
     private static <A> void testFunctorIdentity(Generator<A> gen) {
         Generator<A> generator2 = gen.fmap(id());
         testEquivalent(gen, generator2);
