@@ -4,6 +4,7 @@ import com.jnape.palatable.lambda.adt.hlist.Tuple2;
 import com.jnape.palatable.lambda.adt.hlist.Tuple3;
 import com.jnape.palatable.lambda.functions.Fn1;
 import com.jnape.palatable.lambda.functions.builtin.fn1.Id;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -65,6 +66,18 @@ class GeneratorTest {
     @Test
     void generateConstant() {
         assertTrue(all(eq(1), streamFrom(Generator.constant(1)).next(1000)));
+    }
+
+    @Test
+    @Disabled
+    void stackSafeFlatMap() {
+        int LARGE_NUMBER = 10_000;
+        int max = 2 * LARGE_NUMBER;
+        Generator<Integer> g = generateInt(0, max);
+        for (int i = 0; i < LARGE_NUMBER; i++) {
+            g = g.flatMap(n -> generateInt(n, max));
+        }
+        streamFrom(g).next();
     }
 
     private static <A> void testFunctorIdentity(Generator<A> gen) {
