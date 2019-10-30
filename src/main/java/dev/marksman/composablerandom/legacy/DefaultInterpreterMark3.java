@@ -263,8 +263,8 @@ public class DefaultInterpreterMark3 {
     }
 
     private <In, Out> GeneratorImpl<Out> handleFlatMapped(Generator.FlatMapped<In, Out> flatMapped) {
-        return flatMappedImpl(in -> compile(flatMapped.getFn().apply(in)),
-                compile(flatMapped.getOperand()));
+        return flatMappedImpl(compile(flatMapped.getOperand()), in -> compile(flatMapped.getFn().apply(in))
+        );
     }
 
     public static DefaultInterpreterMark3 defaultInterpreter(Parameters parameters) {

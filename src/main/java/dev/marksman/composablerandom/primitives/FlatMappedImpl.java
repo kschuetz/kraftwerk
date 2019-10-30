@@ -9,8 +9,8 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class FlatMappedImpl<In, Out> implements GeneratorImpl<Out> {
-    private final Fn1<? super In, ? extends GeneratorImpl<Out>> fn;
     private final GeneratorImpl<In> operand;
+    private final Fn1<? super In, ? extends GeneratorImpl<Out>> fn;
 
     @Override
     public Result<? extends Seed, Out> run(Seed input) {
@@ -19,9 +19,9 @@ public class FlatMappedImpl<In, Out> implements GeneratorImpl<Out> {
                 .run(result1.getNextState());
     }
 
-    public static <In, Out> FlatMappedImpl<In, Out> flatMappedImpl(Fn1<? super In, ? extends GeneratorImpl<Out>> fn,
-                                                                   GeneratorImpl<In> operand) {
-        return new FlatMappedImpl<>(fn, operand);
+    public static <In, Out> FlatMappedImpl<In, Out> flatMappedImpl(GeneratorImpl<In> operand,
+                                                                   Fn1<? super In, ? extends GeneratorImpl<Out>> fn) {
+        return new FlatMappedImpl<>(operand, fn);
     }
 
 }

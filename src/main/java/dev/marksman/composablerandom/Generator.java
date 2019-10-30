@@ -200,8 +200,8 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     public static class FlatMapped<In, A> extends Generator<A> {
         private static Maybe<String> LABEL = Maybe.just("flatMap");
 
-        private final Fn1<? super In, ? extends Generator<A>> fn;
         private final Generator<In> operand;
+        private final Fn1<? super In, ? extends Generator<A>> fn;
 
         @Override
         public Maybe<String> getLabel() {
@@ -1518,7 +1518,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     }
 
     private static <A, B> Generator<B> flatMapped(Fn1<? super A, ? extends Generator<B>> fn, Generator<A> operand) {
-        return new FlatMapped<>(fn::apply, operand);
+        return new FlatMapped<>(operand, fn::apply);
     }
 
     private static <A> Generator<A> injectSpecialValues(NonEmptyFiniteIterable<A> specialValues, Generator<A> inner) {

@@ -278,8 +278,9 @@ public class DefaultInterpreter implements Interpreter {
 
     private <In, Out> GeneratorImpl<Out> handleFlatMapped(InterpreterContext context,
                                                           Generator.FlatMapped<In, Out> flatMapped) {
-        return flatMappedImpl(in -> context.recurse(flatMapped.getFn().apply(in)),
-                context.recurse(flatMapped.getOperand()));
+        return flatMappedImpl(context.recurse(flatMapped.getOperand()),
+                in -> context.recurse(flatMapped.getFn().apply(in))
+        );
     }
 
     private <In, Out> GeneratorImpl<Out> handleTap(InterpreterContext context, Generator.Tap<In, Out> gen) {
