@@ -10,9 +10,9 @@ import static dev.marksman.composablerandom.StandardParameters.defaultParameters
 
 public class GeneratedStream<A> implements Iterator<A> {
     private final GeneratorImpl<A> gen;
-    private Seed currentState;
+    private LegacySeed currentState;
 
-    private GeneratedStream(GeneratorImpl<A> gen, Seed initialSeed) {
+    private GeneratedStream(GeneratorImpl<A> gen, LegacySeed initialSeed) {
         this.gen = gen;
         this.currentState = initialSeed;
     }
@@ -24,7 +24,7 @@ public class GeneratedStream<A> implements Iterator<A> {
 
     @Override
     public A next() {
-        Result<? extends Seed, A> run;
+        Result<? extends LegacySeed, A> run;
         synchronized (this) {
             run = this.gen.run(currentState);
             currentState = run.getNextState();
@@ -66,11 +66,11 @@ public class GeneratedStream<A> implements Iterator<A> {
         }
     }
 
-    public static <A> GeneratedStream<A> streamFrom(GeneratorImpl<A> gen, Seed initialSeed) {
+    public static <A> GeneratedStream<A> streamFrom(GeneratorImpl<A> gen, LegacySeed initialSeed) {
         return new GeneratedStream<>(gen, initialSeed);
     }
 
-    public static <A> GeneratedStream<A> streamFrom(Generator<A> gen, Seed initialSeed) {
+    public static <A> GeneratedStream<A> streamFrom(Generator<A> gen, LegacySeed initialSeed) {
         return new GeneratedStream<>(compile(gen), initialSeed);
     }
 

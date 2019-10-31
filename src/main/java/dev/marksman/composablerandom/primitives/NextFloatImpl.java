@@ -1,8 +1,8 @@
 package dev.marksman.composablerandom.primitives;
 
 import dev.marksman.composablerandom.GeneratorImpl;
+import dev.marksman.composablerandom.LegacySeed;
 import dev.marksman.composablerandom.Result;
-import dev.marksman.composablerandom.Seed;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
@@ -11,7 +11,7 @@ public class NextFloatImpl implements GeneratorImpl<Float> {
     private static NextFloatImpl INSTANCE = new NextFloatImpl();
 
     @Override
-    public Result<? extends Seed, Float> run(Seed input) {
+    public Result<? extends LegacySeed, Float> run(LegacySeed input) {
         return input.nextFloat();
     }
 

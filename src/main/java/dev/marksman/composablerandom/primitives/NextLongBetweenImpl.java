@@ -1,8 +1,8 @@
 package dev.marksman.composablerandom.primitives;
 
 import dev.marksman.composablerandom.GeneratorImpl;
+import dev.marksman.composablerandom.LegacySeed;
 import dev.marksman.composablerandom.Result;
-import dev.marksman.composablerandom.Seed;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
@@ -12,7 +12,7 @@ public class NextLongBetweenImpl implements GeneratorImpl<Long> {
     private final long max;
 
     @Override
-    public Result<? extends Seed, Long> run(Seed input) {
+    public Result<? extends LegacySeed, Long> run(LegacySeed input) {
         return input.nextLongBetween(min, max);
     }
 

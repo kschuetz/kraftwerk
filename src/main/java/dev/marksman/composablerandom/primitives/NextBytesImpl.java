@@ -2,8 +2,8 @@ package dev.marksman.composablerandom.primitives;
 
 import com.jnape.palatable.lambda.adt.Unit;
 import dev.marksman.composablerandom.GeneratorImpl;
+import dev.marksman.composablerandom.LegacySeed;
 import dev.marksman.composablerandom.Result;
-import dev.marksman.composablerandom.Seed;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
@@ -12,9 +12,9 @@ public class NextBytesImpl implements GeneratorImpl<Byte[]> {
     private final int count;
 
     @Override
-    public Result<? extends Seed, Byte[]> run(Seed input) {
+    public Result<? extends LegacySeed, Byte[]> run(LegacySeed input) {
         byte[] buffer = new byte[count];
-        Result<? extends Seed, Unit> next = input.nextBytes(buffer);
+        Result<? extends LegacySeed, Unit> next = input.nextBytes(buffer);
         Byte[] result = new Byte[count];
         int i = 0;
         for (byte b : buffer) {

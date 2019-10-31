@@ -2,8 +2,8 @@ package dev.marksman.composablerandom.primitives;
 
 import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.composablerandom.GeneratorImpl;
+import dev.marksman.composablerandom.LegacySeed;
 import dev.marksman.composablerandom.Result;
-import dev.marksman.composablerandom.Seed;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
@@ -13,8 +13,8 @@ public class FlatMappedImpl<In, Out> implements GeneratorImpl<Out> {
     private final Fn1<? super In, ? extends GeneratorImpl<Out>> fn;
 
     @Override
-    public Result<? extends Seed, Out> run(Seed input) {
-        Result<? extends Seed, In> result1 = operand.run(input);
+    public Result<? extends LegacySeed, Out> run(LegacySeed input) {
+        Result<? extends LegacySeed, In> result1 = operand.run(input);
         return fn.apply(result1.getValue())
                 .run(result1.getNextState());
     }

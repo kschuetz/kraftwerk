@@ -18,12 +18,12 @@ public class AggregateImpl<Elem, Builder, Out> implements GeneratorImpl<Out> {
     private final Iterable<GeneratorImpl<Elem>> elements;
 
     @Override
-    public Result<? extends Seed, Out> run(Seed input) {
-        Seed current = input;
+    public Result<? extends LegacySeed, Out> run(LegacySeed input) {
+        LegacySeed current = input;
         Builder builder = initialBuilderSupplier.apply();
 
         for (GeneratorImpl<Elem> element : elements) {
-            Result<? extends Seed, Elem> next = element.run(current);
+            Result<? extends LegacySeed, Elem> next = element.run(current);
             builder = addFn.apply(builder, next.getValue());
             current = next.getNextState();
         }

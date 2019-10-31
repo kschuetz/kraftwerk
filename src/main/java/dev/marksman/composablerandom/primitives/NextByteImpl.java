@@ -1,8 +1,8 @@
 package dev.marksman.composablerandom.primitives;
 
 import dev.marksman.composablerandom.GeneratorImpl;
+import dev.marksman.composablerandom.LegacySeed;
 import dev.marksman.composablerandom.Result;
-import dev.marksman.composablerandom.Seed;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
@@ -11,7 +11,7 @@ public class NextByteImpl implements GeneratorImpl<Byte> {
     private static NextByteImpl INSTANCE = new NextByteImpl();
 
     @Override
-    public Result<? extends Seed, Byte> run(Seed input) {
+    public Result<? extends LegacySeed, Byte> run(LegacySeed input) {
         return input.nextInt().fmap(Integer::byteValue);
     }
 

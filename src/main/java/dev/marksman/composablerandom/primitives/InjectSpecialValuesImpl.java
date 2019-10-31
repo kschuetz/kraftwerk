@@ -2,8 +2,8 @@ package dev.marksman.composablerandom.primitives;
 
 import dev.marksman.collectionviews.ImmutableNonEmptyVector;
 import dev.marksman.composablerandom.GeneratorImpl;
+import dev.marksman.composablerandom.LegacySeed;
 import dev.marksman.composablerandom.Result;
-import dev.marksman.composablerandom.Seed;
 
 import static dev.marksman.composablerandom.Result.result;
 
@@ -21,11 +21,11 @@ public class InjectSpecialValuesImpl<Elem> implements GeneratorImpl<Elem> {
     }
 
     @Override
-    public Result<? extends Seed, Elem> run(Seed input) {
+    public Result<? extends LegacySeed, Elem> run(LegacySeed input) {
         // TODO: InjectSpecialValuesImpl
         long n = input.getSeedValue() % totalWeight;
         if (n < specialWeight) {
-            Result<? extends Seed, Integer> nextSeed = input.nextInt();
+            Result<? extends LegacySeed, Integer> nextSeed = input.nextInt();
             return result(nextSeed.getNextState(), elements.unsafeGet((int) n));
         } else {
             return inner.run(input);

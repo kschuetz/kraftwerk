@@ -17,8 +17,8 @@ public class SizeSelectors {
         private final int preferred;
 
         @Override
-        public Result<? extends Seed, Integer> selectSize(Seed input) {
-            Result<Seed, Boolean> s1 = shouldUsePreferred(input);
+        public Result<? extends LegacySeed, Integer> selectSize(LegacySeed input) {
+            Result<LegacySeed, Boolean> s1 = shouldUsePreferred(input);
             if (s1.getValue()) {
                 return result(s1.getNextState(), preferred);
             } else {
@@ -35,7 +35,7 @@ public class SizeSelectors {
         private final int max;
 
         @Override
-        public Result<? extends Seed, Integer> selectSize(Seed input) {
+        public Result<? extends LegacySeed, Integer> selectSize(LegacySeed input) {
             return input.nextIntBetween(min, max);
         }
 
@@ -48,8 +48,8 @@ public class SizeSelectors {
         private final int preferred;
 
         @Override
-        public Result<? extends Seed, Integer> selectSize(Seed input) {
-            Result<Seed, Boolean> s1 = shouldUsePreferred(input);
+        public Result<? extends LegacySeed, Integer> selectSize(LegacySeed input) {
+            Result<LegacySeed, Boolean> s1 = shouldUsePreferred(input);
             if (s1.getValue()) {
                 return result(s1.getNextState(), preferred);
             } else {
@@ -65,7 +65,7 @@ public class SizeSelectors {
         private final int min;
 
         @Override
-        public Result<? extends Seed, Integer> selectSize(Seed input) {
+        public Result<? extends LegacySeed, Integer> selectSize(LegacySeed input) {
             return input.nextIntBetween(min, min + DEFAULT_RANGE);
         }
 
@@ -78,8 +78,8 @@ public class SizeSelectors {
         private final int preferred;
 
         @Override
-        public Result<? extends Seed, Integer> selectSize(Seed input) {
-            Result<Seed, Boolean> s1 = shouldUsePreferred(input);
+        public Result<? extends LegacySeed, Integer> selectSize(LegacySeed input) {
+            Result<LegacySeed, Boolean> s1 = shouldUsePreferred(input);
             if (s1.getValue()) {
                 return result(s1.getNextState(), preferred);
             } else {
@@ -95,7 +95,7 @@ public class SizeSelectors {
         private final int max;
 
         @Override
-        public Result<? extends Seed, Integer> selectSize(Seed input) {
+        public Result<? extends LegacySeed, Integer> selectSize(LegacySeed input) {
             return input.nextIntBetween(0, max);
         }
 
@@ -107,7 +107,7 @@ public class SizeSelectors {
         private final int preferred;
 
         @Override
-        public Result<? extends Seed, Integer> selectSize(Seed input) {
+        public Result<? extends LegacySeed, Integer> selectSize(LegacySeed input) {
             return result(input, preferred);
         }
 
@@ -119,14 +119,14 @@ public class SizeSelectors {
         private static final NoSizeParameters INSTANCE = new NoSizeParameters();
 
         @Override
-        public Result<? extends Seed, Integer> selectSize(Seed input) {
+        public Result<? extends LegacySeed, Integer> selectSize(LegacySeed input) {
             return input.nextIntBounded(DEFAULT_RANGE);
         }
 
     }
 
-    private static Result<Seed, Boolean> shouldUsePreferred(Seed input) {
-        Result<? extends Seed, Integer> s1 = input.nextIntBounded(7);
+    private static Result<LegacySeed, Boolean> shouldUsePreferred(LegacySeed input) {
+        Result<? extends LegacySeed, Integer> s1 = input.nextIntBounded(7);
         return result(s1.getNextState(), s1.getValue() < 2);
     }
 

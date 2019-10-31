@@ -17,10 +17,10 @@ public class Product3Impl<A, B, C, Out> implements GeneratorImpl<Out> {
     private final Fn3<A, B, C, Out> combine;
 
     @Override
-    public Result<? extends Seed, Out> run(Seed input) {
-        Result<? extends Seed, A> r1 = a.run(input);
-        Result<? extends Seed, B> r2 = b.run(r1.getNextState());
-        Result<? extends Seed, C> r3 = c.run(r2.getNextState());
+    public Result<? extends LegacySeed, Out> run(LegacySeed input) {
+        Result<? extends LegacySeed, A> r1 = a.run(input);
+        Result<? extends LegacySeed, B> r2 = b.run(r1.getNextState());
+        Result<? extends LegacySeed, C> r3 = c.run(r2.getNextState());
         Out result = combine.apply(r1.getValue(), r2.getValue(), r3.getValue());
         return result(r3.getNextState(), result);
     }

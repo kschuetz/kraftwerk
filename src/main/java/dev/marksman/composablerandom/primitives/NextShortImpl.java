@@ -1,8 +1,8 @@
 package dev.marksman.composablerandom.primitives;
 
 import dev.marksman.composablerandom.GeneratorImpl;
+import dev.marksman.composablerandom.LegacySeed;
 import dev.marksman.composablerandom.Result;
-import dev.marksman.composablerandom.Seed;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
@@ -11,7 +11,7 @@ public class NextShortImpl implements GeneratorImpl<Short> {
     private static NextShortImpl INSTANCE = new NextShortImpl();
 
     @Override
-    public Result<? extends Seed, Short> run(Seed input) {
+    public Result<? extends LegacySeed, Short> run(LegacySeed input) {
         return input.nextInt().fmap(Integer::shortValue);
     }
 

@@ -21,14 +21,14 @@ public class Product7Impl<A, B, C, D, E, F, G, Out> implements GeneratorImpl<Out
     private final Fn7<A, B, C, D, E, F, G, Out> combine;
 
     @Override
-    public Result<? extends Seed, Out> run(Seed input) {
-        Result<? extends Seed, A> r1 = a.run(input);
-        Result<? extends Seed, B> r2 = b.run(r1.getNextState());
-        Result<? extends Seed, C> r3 = c.run(r2.getNextState());
-        Result<? extends Seed, D> r4 = d.run(r3.getNextState());
-        Result<? extends Seed, E> r5 = e.run(r4.getNextState());
-        Result<? extends Seed, F> r6 = f.run(r5.getNextState());
-        Result<? extends Seed, G> r7 = g.run(r6.getNextState());
+    public Result<? extends LegacySeed, Out> run(LegacySeed input) {
+        Result<? extends LegacySeed, A> r1 = a.run(input);
+        Result<? extends LegacySeed, B> r2 = b.run(r1.getNextState());
+        Result<? extends LegacySeed, C> r3 = c.run(r2.getNextState());
+        Result<? extends LegacySeed, D> r4 = d.run(r3.getNextState());
+        Result<? extends LegacySeed, E> r5 = e.run(r4.getNextState());
+        Result<? extends LegacySeed, F> r6 = f.run(r5.getNextState());
+        Result<? extends LegacySeed, G> r7 = g.run(r6.getNextState());
         Out result = combine.apply(r1.getValue(), r2.getValue(), r3.getValue(), r4.getValue(),
                 r5.getValue(), r6.getValue(), r7.getValue());
         return result(r7.getNextState(), result);
