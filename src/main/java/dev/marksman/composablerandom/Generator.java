@@ -13,7 +13,6 @@ import dev.marksman.collectionviews.Vector;
 import dev.marksman.collectionviews.*;
 import dev.marksman.composablerandom.choice.ChoiceBuilder1;
 import dev.marksman.composablerandom.frequency.FrequencyMap;
-import dev.marksman.composablerandom.util.Labeling;
 import dev.marksman.enhancediterables.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -28,10 +27,9 @@ import java.util.*;
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Replicate.replicate;
-import static dev.marksman.composablerandom.Result.result;
 
 public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerator<A> {
-    private Generator() {
+    public Generator() {
     }
 
     public abstract Result<? extends Seed, A> run(GeneratorContext context, Seed input);
@@ -151,25 +149,6 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Constant<A> extends Generator<A> {
-        private static Maybe<String> LABEL = Maybe.just("constant");
-
-        private final A value;
-
-        @Override
-        public Result<? extends Seed, A> run(GeneratorContext context, Seed input) {
-            return result(input, value);
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return LABEL;
-        }
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class Custom<A> extends Generator<A> {
         private static Maybe<String> LABEL = Maybe.just("custom");
 
@@ -184,633 +163,6 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         @Override
         public boolean isPrimitive() {
             return false;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return LABEL;
-        }
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Mapped<In, A> extends Generator<A> {
-        private static Maybe<String> LABEL = Maybe.just("fmap");
-
-        private final Fn1<In, A> fn;
-        private final Generator<In> operand;
-
-        @Override
-        public Result<? extends Seed, A> run(GeneratorContext context, Seed input) {
-            // TODO: mapped
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return LABEL;
-        }
-
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class FlatMapped<In, A> extends Generator<A> {
-        private static Maybe<String> LABEL = Maybe.just("flatMap");
-
-        private final Generator<In> operand;
-        private final Fn1<? super In, ? extends Generator<A>> fn;
-
-        @Override
-        public Result<? extends Seed, A> run(GeneratorContext context, Seed input) {
-            // TODO: flatMapped
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return LABEL;
-        }
-
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextBoolean extends Generator<Boolean> {
-        private static Maybe<String> LABEL = Maybe.just("boolean");
-
-        private static final NextBoolean INSTANCE = new NextBoolean();
-
-        @Override
-        public Result<? extends Seed, Boolean> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return LABEL;
-        }
-
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextDouble extends Generator<Double> {
-        private static Maybe<String> LABEL = Maybe.just("double");
-
-        private static final NextDouble INSTANCE = new NextDouble();
-
-        @Override
-        public Result<? extends Seed, Double> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return LABEL;
-        }
-
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextFloat extends Generator<Float> {
-        private static Maybe<String> LABEL = Maybe.just("float");
-
-        private static final NextFloat INSTANCE = new NextFloat();
-
-        @Override
-        public Result<? extends Seed, Float> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return LABEL;
-        }
-
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextInt extends Generator<Integer> {
-        private static Maybe<String> LABEL = Maybe.just("int");
-
-        private static final NextInt INSTANCE = new NextInt();
-
-        @Override
-        public Result<? extends Seed, Integer> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return LABEL;
-        }
-
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextIntBounded extends Generator<Integer> {
-        private final int bound;
-
-        @Override
-        public Result<? extends Seed, Integer> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return Maybe.just(Labeling.intInterval(0, bound, true));
-        }
-
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextIntExclusive extends Generator<Integer> {
-        private final int origin;
-        private final int bound;
-
-        @Override
-        public Result<? extends Seed, Integer> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return Maybe.just(Labeling.intInterval(origin, bound, true));
-        }
-
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextIntBetween extends Generator<Integer> {
-        private final int min;
-        private final int max;
-
-        @Override
-        public Result<? extends Seed, Integer> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return Maybe.just(Labeling.intInterval(min, max, false));
-        }
-
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextIntIndex extends Generator<Integer> {
-        private final int bound;
-
-        @Override
-        public Result<? extends Seed, Integer> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return Maybe.just(Labeling.interval("index", 0, bound, true));
-        }
-
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextLong extends Generator<Long> {
-        private static Maybe<String> LABEL = Maybe.just("long");
-
-        private static final NextLong INSTANCE = new NextLong();
-
-        @Override
-        public Result<? extends Seed, Long> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return LABEL;
-        }
-
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextLongBounded extends Generator<Long> {
-        private final long bound;
-
-        @Override
-        public Result<? extends Seed, Long> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return Maybe.just(Labeling.longInterval(0, bound, true));
-        }
-
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextLongExclusive extends Generator<Long> {
-        private final long origin;
-        private final long bound;
-
-        @Override
-        public Result<? extends Seed, Long> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return Maybe.just(Labeling.longInterval(origin, bound, true));
-        }
-
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextLongBetween extends Generator<Long> {
-        private final long min;
-        private final long max;
-
-        @Override
-        public Result<? extends Seed, Long> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return Maybe.just(Labeling.longInterval(min, max, false));
-        }
-
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextLongIndex extends Generator<Long> {
-        private final long bound;
-
-        @Override
-        public Result<? extends Seed, Long> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return Maybe.just(Labeling.longInterval(0, bound, true));
-        }
-
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextGaussian extends Generator<Double> {
-        private static Maybe<String> LABEL = Maybe.just("gaussian");
-
-        private static final NextGaussian INSTANCE = new NextGaussian();
-
-        @Override
-        public Result<? extends Seed, Double> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return LABEL;
-        }
-
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextByte extends Generator<Byte> {
-        private static Maybe<String> LABEL = Maybe.just("byte");
-
-        private static final NextByte INSTANCE = new NextByte();
-
-        @Override
-        public Result<? extends Seed, Byte> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return LABEL;
-        }
-
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextShort extends Generator<Short> {
-        private static Maybe<String> LABEL = Maybe.just("short");
-
-        private static final NextShort INSTANCE = new NextShort();
-
-        @Override
-        public Result<? extends Seed, Short> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return LABEL;
-        }
-
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class NextBytes extends Generator<Byte[]> {
-        private final int count;
-
-        @Override
-        public Result<? extends Seed, Byte[]> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return Maybe.just("bytes[" + count + "]");
-        }
-
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Sized<A> extends Generator<A> {
-        private static Maybe<String> LABEL = Maybe.just("sized");
-
-        private final Fn1<Integer, Generator<A>> fn;
-
-        @Override
-        public Result<? extends Seed, A> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return LABEL;
-        }
-
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class WithMetadata<A> extends Generator<A> {
-        private final Maybe<String> label;
-        private final Maybe<Object> applicationData;
-        private final Generator<A> operand;
-
-        @Override
-        public Result<? extends Seed, A> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public boolean isPrimitive() {
-            return false;
-        }
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Aggregate<Elem, Builder, Out> extends Generator<Out> {
-        private static Maybe<String> LABEL = Maybe.just("aggregate");
-
-        private final Fn0<Builder> initialBuilderSupplier;
-        private final Fn2<Builder, Elem, Builder> addFn;
-        private final Fn1<Builder, Out> buildFn;
-        private final Iterable<Generator<Elem>> elements;
-
-        @Override
-        public Result<? extends Seed, Out> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return LABEL;
-        }
-
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Product2<A, B, Out> extends Generator<Out> {
-        private static Maybe<String> LABEL = Maybe.just("product2");
-
-        private final Generator<A> a;
-        private final Generator<B> b;
-        private final Fn2<A, B, Out> combine;
-
-        @Override
-        public Result<? extends Seed, Out> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return LABEL;
-        }
-
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Product3<A, B, C, Out> extends Generator<Out> {
-        private static Maybe<String> LABEL = Maybe.just("product3");
-
-        private final Generator<A> a;
-        private final Generator<B> b;
-        private final Generator<C> c;
-        private final Fn3<A, B, C, Out> combine;
-
-        @Override
-        public Result<? extends Seed, Out> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return LABEL;
-        }
-
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Product4<A, B, C, D, Out> extends Generator<Out> {
-        private static Maybe<String> LABEL = Maybe.just("product4");
-
-        private final Generator<A> a;
-        private final Generator<B> b;
-        private final Generator<C> c;
-        private final Generator<D> d;
-        private final Fn4<A, B, C, D, Out> combine;
-
-        @Override
-        public Result<? extends Seed, Out> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return LABEL;
-        }
-
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Product5<A, B, C, D, E, Out> extends Generator<Out> {
-        private static Maybe<String> LABEL = Maybe.just("product5");
-
-        private final Generator<A> a;
-        private final Generator<B> b;
-        private final Generator<C> c;
-        private final Generator<D> d;
-        private final Generator<E> e;
-        private final Fn5<A, B, C, D, E, Out> combine;
-
-        @Override
-        public Result<? extends Seed, Out> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return LABEL;
-        }
-
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Product6<A, B, C, D, E, F, Out> extends Generator<Out> {
-        private static Maybe<String> LABEL = Maybe.just("product6");
-
-        private final Generator<A> a;
-        private final Generator<B> b;
-        private final Generator<C> c;
-        private final Generator<D> d;
-        private final Generator<E> e;
-        private final Generator<F> f;
-        private final Fn6<A, B, C, D, E, F, Out> combine;
-
-        @Override
-        public Result<? extends Seed, Out> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return LABEL;
-        }
-
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Product7<A, B, C, D, E, F, G, Out> extends Generator<Out> {
-        private static Maybe<String> LABEL = Maybe.just("product7");
-
-        private final Generator<A> a;
-        private final Generator<B> b;
-        private final Generator<C> c;
-        private final Generator<D> d;
-        private final Generator<E> e;
-        private final Generator<F> f;
-        private final Generator<G> g;
-        private final Fn7<A, B, C, D, E, F, G, Out> combine;
-
-        @Override
-        public Result<? extends Seed, Out> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return LABEL;
-        }
-
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Product8<A, B, C, D, E, F, G, H, Out> extends Generator<Out> {
-        private static Maybe<String> LABEL = Maybe.just("product8");
-
-        private final Generator<A> a;
-        private final Generator<B> b;
-        private final Generator<C> c;
-        private final Generator<D> d;
-        private final Generator<E> e;
-        private final Generator<F> f;
-        private final Generator<G> g;
-        private final Generator<H> h;
-        private final Fn8<A, B, C, D, E, F, G, H, Out> combine;
-
-        @Override
-        public Result<? extends Seed, Out> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return LABEL;
-        }
-
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Tap<A, B> extends Generator<B> {
-        private static Maybe<String> LABEL = Maybe.just("tap");
-
-        private final Generator<A> inner;
-        private final Fn2<GeneratorImpl<A>, LegacySeed, B> fn;
-
-        @Override
-        public Result<? extends Seed, B> run(GeneratorContext context, Seed input) {
-            return null;
         }
 
         @Override
@@ -840,7 +192,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     }
 
     public static <A> Generator<A> constant(A a) {
-        return new Constant<>(a);
+        return Primitives.constant(a);
     }
 
     public static <A> Generator<A> generate(Fn1<? super LegacySeed, Result> fn) {
@@ -849,11 +201,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
 
     public static <A, B> Generator<B> tap(Generator<A> inner,
                                           Fn2<GeneratorImpl<A>, LegacySeed, B> f) {
-        return new Tap<>(inner, f);
+        return new Primitives.Tap<>(inner, f);
     }
 
     public static Generator<Boolean> generateBoolean() {
-        return NextBoolean.INSTANCE;
+        return Primitives.nextBoolean();
     }
 
     public static Generator<Boolean> generateBoolean(BooleanWeights weights) {
@@ -861,7 +213,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     }
 
     public static Generator<Double> generateDouble() {
-        return NextDouble.INSTANCE;
+        return Primitives.nextDouble();
     }
 
     public static Generator<Double> generateDouble(double scale) {
@@ -874,7 +226,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     }
 
     public static Generator<Float> generateFloat() {
-        return NextFloat.INSTANCE;
+        return Primitives.nextFloat();
     }
 
     public static Generator<Float> generateFloat(float scale) {
@@ -887,72 +239,72 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     }
 
     public static Generator<Integer> generateInt() {
-        return NextInt.INSTANCE;
+        return Primitives.nextInt();
     }
 
     public static Generator<Integer> generateInt(int min, int max) {
         checkMinMax(min, max);
-        return new NextIntBetween(min, max);
+        return new Primitives.NextIntBetween(min, max);
     }
 
     public static Generator<Integer> generateIntExclusive(int bound) {
         checkBound(bound);
-        return new NextIntBounded(bound);
+        return new Primitives.NextIntBounded(bound);
     }
 
     public static Generator<Integer> generateIntExclusive(int origin, int bound) {
         checkOriginBound(origin, bound);
-        return new NextIntExclusive(origin, bound);
+        return new Primitives.NextIntExclusive(origin, bound);
     }
 
     public static Generator<Integer> generateIntIndex(int bound) {
         checkBound(bound);
-        return new NextIntIndex(bound);
+        return new Primitives.NextIntIndex(bound);
     }
 
     public static Generator<Long> generateLong() {
-        return NextLong.INSTANCE;
+        return Primitives.nextLong();
     }
 
     public static Generator<Long> generateLong(long min, long max) {
         checkMinMax(min, max);
-        return new NextLongBetween(min, max);
+        return new Primitives.NextLongBetween(min, max);
     }
 
     public static Generator<Long> generateLongExclusive(long bound) {
         checkBound(bound);
-        return new NextLongBounded(bound);
+        return new Primitives.NextLongBounded(bound);
     }
 
     public static Generator<Long> generateLongExclusive(long origin, long bound) {
         checkOriginBound(origin, bound);
-        return new NextLongExclusive(origin, bound);
+        return new Primitives.NextLongExclusive(origin, bound);
     }
 
     public static Generator<Long> generateLongIndex(long bound) {
         checkBound(bound);
-        return new NextLongIndex(bound);
+        return new Primitives.NextLongIndex(bound);
     }
 
     public static Generator<Byte> generateByte() {
-        return NextByte.INSTANCE;
+        return Primitives.nextByte();
     }
 
     public static Generator<Short> generateShort() {
-        return NextShort.INSTANCE;
+        return Primitives.nextShort();
     }
 
     public static Generator<Double> generateGaussian() {
-        return NextGaussian.INSTANCE;
+        return Primitives.nextGaussian();
     }
 
     public static Generator<Byte[]> generateBytes(int count) {
         checkCount(count);
-        return new NextBytes(count);
+        return new Primitives.NextBytes(count);
     }
 
     public static <A> Generator<A> sized(Fn1<Integer, Generator<A>> fn) {
-        return new Sized<>(fn::apply);
+        return new Primitives.Sized<>(fn::apply);
     }
 
     public static <A> Generator<A> sizedMinimum(int minimum, Fn1<Integer, Generator<A>> fn) {
@@ -963,11 +315,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         }
     }
 
-    public static <A, Builder, Out> Aggregate<A, Builder, Out> aggregate(Fn0<Builder> initialBuilderSupplier,
-                                                                         Fn2<Builder, A, Builder> addFn,
-                                                                         Fn1<Builder, Out> buildFn,
-                                                                         Iterable<Generator<A>> elements) {
-        return new Aggregate<>(initialBuilderSupplier, addFn, buildFn, elements);
+    public static <A, Builder, Out> Primitives.Aggregate<A, Builder, Out> aggregate(Fn0<Builder> initialBuilderSupplier,
+                                                                                    Fn2<Builder, A, Builder> addFn,
+                                                                                    Fn1<Builder, Out> buildFn,
+                                                                                    Iterable<Generator<A>> elements) {
+        return new Primitives.Aggregate<>(initialBuilderSupplier, addFn, buildFn, elements);
     }
 
     public static <Elem, Builder, Out> Generator<Out> aggregate(Fn0<Builder> initialBuilderSupplier,
@@ -975,12 +327,12 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
                                                                 Fn1<Builder, Out> buildFn,
                                                                 int size,
                                                                 Generator<Elem> gen) {
-        return new Aggregate<>(initialBuilderSupplier, addFn, buildFn, replicate(size, gen));
+        return new Primitives.Aggregate<>(initialBuilderSupplier, addFn, buildFn, replicate(size, gen));
     }
 
     public static <A, C extends Collection<A>> Generator<C> buildCollection(Fn0<C> initialCollectionSupplier,
                                                                             Iterable<Generator<A>> elements) {
-        return new Aggregate<>(initialCollectionSupplier,
+        return new Primitives.Aggregate<>(initialCollectionSupplier,
                 (collection, item) -> {
                     collection.add(item);
                     return collection;
@@ -994,16 +346,16 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     }
 
     public static <A> Generator<ImmutableVector<A>> buildVector(Iterable<Generator<A>> elements) {
-        return new Aggregate<>(Vector::<A>builder, VectorBuilder::add, VectorBuilder::build, elements);
+        return new Primitives.Aggregate<>(Vector::<A>builder, VectorBuilder::add, VectorBuilder::build, elements);
     }
 
     public static <A> Generator<ImmutableVector<A>> buildVector(int size, Generator<A> gen) {
-        return new Aggregate<A, VectorBuilder<A>, ImmutableVector<A>>(() -> Vector.builder(size), VectorBuilder::add,
+        return new Primitives.Aggregate<A, VectorBuilder<A>, ImmutableVector<A>>(() -> Vector.builder(size), VectorBuilder::add,
                 VectorBuilder::build, replicate(size, gen));
     }
 
     public static <A> Generator<ImmutableNonEmptyVector<A>> buildNonEmptyVector(NonEmptyIterable<Generator<A>> elements) {
-        return new Aggregate<>(Vector::<A>builder, VectorBuilder::add, b -> b.build().toNonEmptyOrThrow(), elements);
+        return new Primitives.Aggregate<>(Vector::<A>builder, VectorBuilder::add, b -> b.build().toNonEmptyOrThrow(), elements);
     }
 
     public static <A> Generator<ImmutableNonEmptyVector<A>> buildNonEmptyVector(int size, Generator<A> gen) {
@@ -1011,7 +363,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
             throw new IllegalArgumentException("size must be >= 1");
 
         }
-        return new Aggregate<A, VectorBuilder<A>, ImmutableNonEmptyVector<A>>(() -> Vector.builder(size), VectorBuilder::add,
+        return new Primitives.Aggregate<A, VectorBuilder<A>, ImmutableNonEmptyVector<A>>(() -> Vector.builder(size), VectorBuilder::add,
                 aVectorBuilder -> aVectorBuilder.build().toNonEmptyOrThrow(),
                 replicate(size, gen));
     }
@@ -1019,14 +371,14 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     public static <A, B, Out> Generator<Out> product(Generator<A> a,
                                                      Generator<B> b,
                                                      Fn2<A, B, Out> combine) {
-        return new Product2<>(a, b, combine);
+        return new Primitives.Product2<>(a, b, combine);
     }
 
     public static <A, B, C, Out> Generator<Out> product(Generator<A> a,
                                                         Generator<B> b,
                                                         Generator<C> c,
                                                         Fn3<A, B, C, Out> combine) {
-        return new Product3<>(a, b, c, combine);
+        return new Primitives.Product3<>(a, b, c, combine);
     }
 
 
@@ -1035,7 +387,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
                                                            Generator<C> c,
                                                            Generator<D> d,
                                                            Fn4<A, B, C, D, Out> combine) {
-        return new Product4<>(a, b, c, d, combine);
+        return new Primitives.Product4<>(a, b, c, d, combine);
     }
 
 
@@ -1045,7 +397,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
                                                               Generator<D> d,
                                                               Generator<E> e,
                                                               Fn5<A, B, C, D, E, Out> combine) {
-        return new Product5<>(a, b, c, d, e, combine);
+        return new Primitives.Product5<>(a, b, c, d, e, combine);
     }
 
 
@@ -1056,7 +408,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
                                                                  Generator<E> e,
                                                                  Generator<F> f,
                                                                  Fn6<A, B, C, D, E, F, Out> combine) {
-        return new Product6<>(a, b, c, d, e, f, combine);
+        return new Primitives.Product6<>(a, b, c, d, e, f, combine);
     }
 
     public static <A, B, C, D, E, F, G, Out> Generator<Out> product(Generator<A> a,
@@ -1067,7 +419,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
                                                                     Generator<F> f,
                                                                     Generator<G> g,
                                                                     Fn7<A, B, C, D, E, F, G, Out> combine) {
-        return new Product7<>(a, b, c, d, e, f, g, combine);
+        return new Primitives.Product7<>(a, b, c, d, e, f, g, combine);
     }
 
     public static <A, B, C, D, E, F, G, H, Out> Generator<Out> product(Generator<A> a,
@@ -1079,25 +431,25 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
                                                                        Generator<G> g,
                                                                        Generator<H> h,
                                                                        Fn8<A, B, C, D, E, F, G, H, Out> combine) {
-        return new Product8<>(a, b, c, d, e, f, g, h, combine);
+        return new Primitives.Product8<>(a, b, c, d, e, f, g, h, combine);
     }
 
     public static <A, B> Generator<Tuple2<A, B>> tupled(Generator<A> a,
                                                         Generator<B> b) {
-        return new Product2<>(a, b, Tuple2::tuple);
+        return new Primitives.Product2<>(a, b, Tuple2::tuple);
     }
 
     public static <A, B, C> Generator<Tuple3<A, B, C>> tupled(Generator<A> a,
                                                               Generator<B> b,
                                                               Generator<C> c) {
-        return new Product3<>(a, b, c, Tuple3::tuple);
+        return new Primitives.Product3<>(a, b, c, Tuple3::tuple);
     }
 
     public static <A, B, C, D> Generator<Tuple4<A, B, C, D>> tupled(Generator<A> a,
                                                                     Generator<B> b,
                                                                     Generator<C> c,
                                                                     Generator<D> d) {
-        return new Product4<>(a, b, c, d, Tuple4::tuple);
+        return new Primitives.Product4<>(a, b, c, d, Tuple4::tuple);
     }
 
     public static <A, B, C, D, E> Generator<Tuple5<A, B, C, D, E>> tupled(Generator<A> a,
@@ -1105,7 +457,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
                                                                           Generator<C> c,
                                                                           Generator<D> d,
                                                                           Generator<E> e) {
-        return new Product5<>(a, b, c, d, e, Tuple5::tuple);
+        return new Primitives.Product5<>(a, b, c, d, e, Tuple5::tuple);
     }
 
     public static <A, B, C, D, E, F> Generator<Tuple6<A, B, C, D, E, F>> tupled(Generator<A> a,
@@ -1114,7 +466,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
                                                                                 Generator<D> d,
                                                                                 Generator<E> e,
                                                                                 Generator<F> f) {
-        return new Product6<>(a, b, c, d, e, f, Tuple6::tuple);
+        return new Primitives.Product6<>(a, b, c, d, e, f, Tuple6::tuple);
     }
 
     public static <A, B, C, D, E, F, G> Generator<Tuple7<A, B, C, D, E, F, G>> tupled(Generator<A> a,
@@ -1124,7 +476,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
                                                                                       Generator<E> e,
                                                                                       Generator<F> f,
                                                                                       Generator<G> g) {
-        return new Product7<>(a, b, c, d, e, f, g, Tuple7::tuple);
+        return new Primitives.Product7<>(a, b, c, d, e, f, g, Tuple7::tuple);
     }
 
     public static <A, B, C, D, E, F, G, H> Generator<Tuple8<A, B, C, D, E, F, G, H>> tupled(Generator<A> a,
@@ -1135,7 +487,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
                                                                                             Generator<F> f,
                                                                                             Generator<G> g,
                                                                                             Generator<H> h) {
-        return new Product8<>(a, b, c, d, e, f, g, h, Tuple8::tuple);
+        return new Primitives.Product8<>(a, b, c, d, e, f, g, h, Tuple8::tuple);
     }
 
     public static <A> Generator<ImmutableIterable<A>> sequence(Iterable<Generator<A>> gs) {
@@ -1685,11 +1037,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     }
 
     private static <A, B> Generator<B> mapped(Fn1<? super A, ? extends B> fn, Generator<A> operand) {
-        return new Mapped<>(fn::apply, operand);
+        return new Primitives.Mapped<>(fn::apply, operand);
     }
 
     private static <A, B> Generator<B> flatMapped(Fn1<? super A, ? extends Generator<B>> fn, Generator<A> operand) {
-        return new FlatMapped<>(operand, fn::apply);
+        return new Primitives.FlatMapped<>(operand, fn::apply);
     }
 
     private static <A> Generator<A> injectSpecialValues(NonEmptyFiniteIterable<A> specialValues, Generator<A> inner) {
@@ -1697,11 +1049,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     }
 
     private static <A> Generator<A> withMetadata(Maybe<String> label, Maybe<Object> applicationData, Generator<A> operand) {
-        if (operand instanceof WithMetadata) {
-            WithMetadata<A> target1 = (WithMetadata<A>) operand;
-            return new WithMetadata<>(label, applicationData, target1.getOperand());
+        if (operand instanceof Primitives.WithMetadata) {
+            Primitives.WithMetadata<A> target1 = (Primitives.WithMetadata<A>) operand;
+            return new Primitives.WithMetadata<>(label, applicationData, target1.getOperand());
         } else {
-            return new WithMetadata<>(label, applicationData, operand);
+            return new Primitives.WithMetadata<>(label, applicationData, operand);
         }
     }
 
