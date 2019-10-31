@@ -6,7 +6,7 @@ import dev.marksman.composablerandom.*;
 import static dev.marksman.composablerandom.StandardParameters.defaultParameters;
 import static dev.marksman.composablerandom.TracingInterpreter.tracingInterpreter;
 import static dev.marksman.composablerandom.legacy.DefaultInterpreterMark3.defaultInterpreter;
-import static dev.marksman.composablerandom.primitives.ConstantImpl.constantImpl;
+import static dev.marksman.composablerandom.legacy.primitives.ConstantImpl.constantImpl;
 import static dev.marksman.composablerandom.random.StandardGen.initStandardGen;
 
 public class Runner {
@@ -28,7 +28,7 @@ public class Runner {
     public static <A> void run(String label, int iterations, Generator<A> gen) {
 
         Interpreter overrides = Interpreter.<A>interpreter((InterpreterContext ctx, Generator<A> g) -> {
-            if (g instanceof Generator.NextInt) {
+            if (g instanceof Primitives.NextInt) {
                 //noinspection unchecked
                 return (GeneratorImpl<A>) constantImpl(1);
             }
