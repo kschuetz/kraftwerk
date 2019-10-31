@@ -28,10 +28,13 @@ import java.util.*;
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Replicate.replicate;
+import static dev.marksman.composablerandom.Result.result;
 
 public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerator<A> {
     private Generator() {
     }
+
+    public abstract Result<? extends Seed, A> run(GeneratorContext context, Seed input);
 
     @Override
     public final <B> Generator<B> fmap(Fn1<? super A, ? extends B> fn) {
@@ -154,6 +157,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         private final A value;
 
         @Override
+        public Result<? extends Seed, A> run(GeneratorContext context, Seed input) {
+            return result(input, value);
+        }
+
+        @Override
         public Maybe<String> getLabel() {
             return LABEL;
         }
@@ -166,6 +174,12 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         private static Maybe<String> LABEL = Maybe.just("custom");
 
         private final Fn1<? super LegacySeed, Result<LegacySeed, A>> fn;
+
+        @Override
+        public Result<? extends Seed, A> run(GeneratorContext context, Seed input) {
+            // TODO: Custom
+            return null;
+        }
 
         @Override
         public boolean isPrimitive() {
@@ -188,6 +202,12 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         private final Generator<In> operand;
 
         @Override
+        public Result<? extends Seed, A> run(GeneratorContext context, Seed input) {
+            // TODO: mapped
+            return null;
+        }
+
+        @Override
         public Maybe<String> getLabel() {
             return LABEL;
         }
@@ -202,6 +222,12 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
 
         private final Generator<In> operand;
         private final Fn1<? super In, ? extends Generator<A>> fn;
+
+        @Override
+        public Result<? extends Seed, A> run(GeneratorContext context, Seed input) {
+            // TODO: flatMapped
+            return null;
+        }
 
         @Override
         public Maybe<String> getLabel() {
@@ -219,6 +245,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         private static final NextBoolean INSTANCE = new NextBoolean();
 
         @Override
+        public Result<? extends Seed, Boolean> run(GeneratorContext context, Seed input) {
+            return null;
+        }
+
+        @Override
         public Maybe<String> getLabel() {
             return LABEL;
         }
@@ -232,6 +263,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         private static Maybe<String> LABEL = Maybe.just("double");
 
         private static final NextDouble INSTANCE = new NextDouble();
+
+        @Override
+        public Result<? extends Seed, Double> run(GeneratorContext context, Seed input) {
+            return null;
+        }
 
         @Override
         public Maybe<String> getLabel() {
@@ -249,6 +285,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         private static final NextFloat INSTANCE = new NextFloat();
 
         @Override
+        public Result<? extends Seed, Float> run(GeneratorContext context, Seed input) {
+            return null;
+        }
+
+        @Override
         public Maybe<String> getLabel() {
             return LABEL;
         }
@@ -264,6 +305,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         private static final NextInt INSTANCE = new NextInt();
 
         @Override
+        public Result<? extends Seed, Integer> run(GeneratorContext context, Seed input) {
+            return null;
+        }
+
+        @Override
         public Maybe<String> getLabel() {
             return LABEL;
         }
@@ -275,6 +321,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class NextIntBounded extends Generator<Integer> {
         private final int bound;
+
+        @Override
+        public Result<? extends Seed, Integer> run(GeneratorContext context, Seed input) {
+            return null;
+        }
 
         @Override
         public Maybe<String> getLabel() {
@@ -291,6 +342,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         private final int bound;
 
         @Override
+        public Result<? extends Seed, Integer> run(GeneratorContext context, Seed input) {
+            return null;
+        }
+
+        @Override
         public Maybe<String> getLabel() {
             return Maybe.just(Labeling.intInterval(origin, bound, true));
         }
@@ -305,6 +361,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         private final int max;
 
         @Override
+        public Result<? extends Seed, Integer> run(GeneratorContext context, Seed input) {
+            return null;
+        }
+
+        @Override
         public Maybe<String> getLabel() {
             return Maybe.just(Labeling.intInterval(min, max, false));
         }
@@ -316,6 +377,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class NextIntIndex extends Generator<Integer> {
         private final int bound;
+
+        @Override
+        public Result<? extends Seed, Integer> run(GeneratorContext context, Seed input) {
+            return null;
+        }
 
         @Override
         public Maybe<String> getLabel() {
@@ -333,6 +399,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         private static final NextLong INSTANCE = new NextLong();
 
         @Override
+        public Result<? extends Seed, Long> run(GeneratorContext context, Seed input) {
+            return null;
+        }
+
+        @Override
         public Maybe<String> getLabel() {
             return LABEL;
         }
@@ -344,6 +415,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class NextLongBounded extends Generator<Long> {
         private final long bound;
+
+        @Override
+        public Result<? extends Seed, Long> run(GeneratorContext context, Seed input) {
+            return null;
+        }
 
         @Override
         public Maybe<String> getLabel() {
@@ -360,6 +436,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         private final long bound;
 
         @Override
+        public Result<? extends Seed, Long> run(GeneratorContext context, Seed input) {
+            return null;
+        }
+
+        @Override
         public Maybe<String> getLabel() {
             return Maybe.just(Labeling.longInterval(origin, bound, true));
         }
@@ -374,6 +455,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         private final long max;
 
         @Override
+        public Result<? extends Seed, Long> run(GeneratorContext context, Seed input) {
+            return null;
+        }
+
+        @Override
         public Maybe<String> getLabel() {
             return Maybe.just(Labeling.longInterval(min, max, false));
         }
@@ -385,6 +471,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class NextLongIndex extends Generator<Long> {
         private final long bound;
+
+        @Override
+        public Result<? extends Seed, Long> run(GeneratorContext context, Seed input) {
+            return null;
+        }
 
         @Override
         public Maybe<String> getLabel() {
@@ -402,6 +493,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         private static final NextGaussian INSTANCE = new NextGaussian();
 
         @Override
+        public Result<? extends Seed, Double> run(GeneratorContext context, Seed input) {
+            return null;
+        }
+
+        @Override
         public Maybe<String> getLabel() {
             return LABEL;
         }
@@ -415,6 +511,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         private static Maybe<String> LABEL = Maybe.just("byte");
 
         private static final NextByte INSTANCE = new NextByte();
+
+        @Override
+        public Result<? extends Seed, Byte> run(GeneratorContext context, Seed input) {
+            return null;
+        }
 
         @Override
         public Maybe<String> getLabel() {
@@ -432,6 +533,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         private static final NextShort INSTANCE = new NextShort();
 
         @Override
+        public Result<? extends Seed, Short> run(GeneratorContext context, Seed input) {
+            return null;
+        }
+
+        @Override
         public Maybe<String> getLabel() {
             return LABEL;
         }
@@ -443,6 +549,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class NextBytes extends Generator<Byte[]> {
         private final int count;
+
+        @Override
+        public Result<? extends Seed, Byte[]> run(GeneratorContext context, Seed input) {
+            return null;
+        }
 
         @Override
         public Maybe<String> getLabel() {
@@ -460,6 +571,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         private final Fn1<Integer, Generator<A>> fn;
 
         @Override
+        public Result<? extends Seed, A> run(GeneratorContext context, Seed input) {
+            return null;
+        }
+
+        @Override
         public Maybe<String> getLabel() {
             return LABEL;
         }
@@ -473,6 +589,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         private final Maybe<String> label;
         private final Maybe<Object> applicationData;
         private final Generator<A> operand;
+
+        @Override
+        public Result<? extends Seed, A> run(GeneratorContext context, Seed input) {
+            return null;
+        }
 
         @Override
         public boolean isPrimitive() {
@@ -492,6 +613,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         private final Iterable<Generator<Elem>> elements;
 
         @Override
+        public Result<? extends Seed, Out> run(GeneratorContext context, Seed input) {
+            return null;
+        }
+
+        @Override
         public Maybe<String> getLabel() {
             return LABEL;
         }
@@ -507,6 +633,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         private final Generator<A> a;
         private final Generator<B> b;
         private final Fn2<A, B, Out> combine;
+
+        @Override
+        public Result<? extends Seed, Out> run(GeneratorContext context, Seed input) {
+            return null;
+        }
 
         @Override
         public Maybe<String> getLabel() {
@@ -525,6 +656,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         private final Generator<B> b;
         private final Generator<C> c;
         private final Fn3<A, B, C, Out> combine;
+
+        @Override
+        public Result<? extends Seed, Out> run(GeneratorContext context, Seed input) {
+            return null;
+        }
 
         @Override
         public Maybe<String> getLabel() {
@@ -546,6 +682,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         private final Fn4<A, B, C, D, Out> combine;
 
         @Override
+        public Result<? extends Seed, Out> run(GeneratorContext context, Seed input) {
+            return null;
+        }
+
+        @Override
         public Maybe<String> getLabel() {
             return LABEL;
         }
@@ -564,6 +705,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         private final Generator<D> d;
         private final Generator<E> e;
         private final Fn5<A, B, C, D, E, Out> combine;
+
+        @Override
+        public Result<? extends Seed, Out> run(GeneratorContext context, Seed input) {
+            return null;
+        }
 
         @Override
         public Maybe<String> getLabel() {
@@ -587,6 +733,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         private final Fn6<A, B, C, D, E, F, Out> combine;
 
         @Override
+        public Result<? extends Seed, Out> run(GeneratorContext context, Seed input) {
+            return null;
+        }
+
+        @Override
         public Maybe<String> getLabel() {
             return LABEL;
         }
@@ -607,6 +758,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         private final Generator<F> f;
         private final Generator<G> g;
         private final Fn7<A, B, C, D, E, F, G, Out> combine;
+
+        @Override
+        public Result<? extends Seed, Out> run(GeneratorContext context, Seed input) {
+            return null;
+        }
 
         @Override
         public Maybe<String> getLabel() {
@@ -632,6 +788,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         private final Fn8<A, B, C, D, E, F, G, H, Out> combine;
 
         @Override
+        public Result<? extends Seed, Out> run(GeneratorContext context, Seed input) {
+            return null;
+        }
+
+        @Override
         public Maybe<String> getLabel() {
             return LABEL;
         }
@@ -648,6 +809,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         private final Fn2<GeneratorImpl<A>, LegacySeed, B> fn;
 
         @Override
+        public Result<? extends Seed, B> run(GeneratorContext context, Seed input) {
+            return null;
+        }
+
+        @Override
         public Maybe<String> getLabel() {
             return LABEL;
         }
@@ -661,6 +827,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
 
         private final NonEmptyFiniteIterable<A> specialValues;
         private final Generator<A> inner;
+
+        @Override
+        public Result<? extends Seed, A> run(GeneratorContext context, Seed input) {
+            return null;
+        }
 
         @Override
         public Maybe<String> getLabel() {
