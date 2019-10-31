@@ -58,8 +58,8 @@ public class TracingInterpreter {
 
     public <A> GeneratorImpl<Trace<A>> compile(Generator<A> gen) {
 
-        if (gen instanceof Primitives.Constant) {
-            return traced(gen, constantImpl(((Primitives.Constant<A>) gen).getValue()));
+        if (gen instanceof Primitives.ConstantGenerator) {
+            return traced(gen, constantImpl(((Primitives.ConstantGenerator<A>) gen).getValue()));
         }
 
         if (gen instanceof Generator.Custom) {
@@ -78,106 +78,106 @@ public class TracingInterpreter {
             return handleTap((Primitives.Tap<?, A>) gen);
         }
 
-        if (gen instanceof Primitives.NextInt) {
+        if (gen instanceof Primitives.IntGenerator) {
             //noinspection unchecked
             return traced(gen, (GeneratorImpl<A>) nextIntImpl());
         }
 
-        if (gen instanceof Primitives.NextLong) {
+        if (gen instanceof Primitives.LongGenerator) {
             //noinspection unchecked
             return traced(gen, (GeneratorImpl<A>) nextLongImpl());
         }
 
-        if (gen instanceof Primitives.NextBoolean) {
+        if (gen instanceof Primitives.BooleanGenerator) {
             //noinspection unchecked
             return traced(gen, (GeneratorImpl<A>) nextBooleanImpl());
         }
 
-        if (gen instanceof Primitives.NextDouble) {
+        if (gen instanceof Primitives.DoubleGenerator) {
             //noinspection unchecked
             return traced(gen, (GeneratorImpl<A>) nextDoubleImpl());
         }
 
-        if (gen instanceof Primitives.NextFloat) {
+        if (gen instanceof Primitives.FloatGenerator) {
             //noinspection unchecked
             return traced(gen, (GeneratorImpl<A>) nextFloatImpl());
         }
 
-        if (gen instanceof Primitives.NextIntBounded) {
-            int bound = ((Primitives.NextIntBounded) gen).getBound();
+        if (gen instanceof Primitives.IntBoundedGenerator) {
+            int bound = ((Primitives.IntBoundedGenerator) gen).getBound();
             //noinspection unchecked
             return traced(gen, (GeneratorImpl<A>) nextIntBoundedImpl(bound));
         }
 
-        if (gen instanceof Primitives.NextIntExclusive) {
-            Primitives.NextIntExclusive g1 = (Primitives.NextIntExclusive) gen;
+        if (gen instanceof Primitives.IntExclusiveGenerator) {
+            Primitives.IntExclusiveGenerator g1 = (Primitives.IntExclusiveGenerator) gen;
             int origin = g1.getOrigin();
             int bound = g1.getBound();
             //noinspection unchecked
             return traced(gen, (GeneratorImpl<A>) nextIntExclusiveImpl(origin, bound));
         }
 
-        if (gen instanceof Primitives.NextIntBetween) {
-            Primitives.NextIntBetween g1 = (Primitives.NextIntBetween) gen;
+        if (gen instanceof Primitives.IntBetweenGenerator) {
+            Primitives.IntBetweenGenerator g1 = (Primitives.IntBetweenGenerator) gen;
             int min = g1.getMin();
             int max = g1.getMax();
             //noinspection unchecked
             return traced(gen, (GeneratorImpl<A>) nextIntBetweenImpl(min, max));
         }
 
-        if (gen instanceof Primitives.NextIntIndex) {
-            Primitives.NextIntIndex g1 = (Primitives.NextIntIndex) gen;
+        if (gen instanceof Primitives.IntIndexGenerator) {
+            Primitives.IntIndexGenerator g1 = (Primitives.IntIndexGenerator) gen;
             int bound = g1.getBound();
             //noinspection unchecked
             return traced(gen, (GeneratorImpl<A>) nextIntIndexImpl(bound));
         }
 
-        if (gen instanceof Primitives.NextLongBounded) {
-            long bound = ((Primitives.NextLongBounded) gen).getBound();
+        if (gen instanceof Primitives.LongBoundedGenerator) {
+            long bound = ((Primitives.LongBoundedGenerator) gen).getBound();
             //noinspection unchecked
             return traced(gen, (GeneratorImpl<A>) nextLongBoundedImpl(bound));
         }
 
-        if (gen instanceof Primitives.NextLongExclusive) {
-            Primitives.NextLongExclusive g1 = (Primitives.NextLongExclusive) gen;
+        if (gen instanceof Primitives.LongExclusiveGenerator) {
+            Primitives.LongExclusiveGenerator g1 = (Primitives.LongExclusiveGenerator) gen;
             long origin = g1.getOrigin();
             long bound = g1.getBound();
             //noinspection unchecked
             return traced(gen, (GeneratorImpl<A>) nextLongExclusiveImpl(origin, bound));
         }
 
-        if (gen instanceof Primitives.NextLongBetween) {
-            Primitives.NextLongBetween g1 = (Primitives.NextLongBetween) gen;
+        if (gen instanceof Primitives.LongBetweenGenerator) {
+            Primitives.LongBetweenGenerator g1 = (Primitives.LongBetweenGenerator) gen;
             long min = g1.getMin();
             long max = g1.getMax();
             //noinspection unchecked
             return traced(gen, (GeneratorImpl<A>) nextLongBetweenImpl(min, max));
         }
 
-        if (gen instanceof Primitives.NextLongIndex) {
-            Primitives.NextLongIndex g1 = (Primitives.NextLongIndex) gen;
+        if (gen instanceof Primitives.LongIndexGenerator) {
+            Primitives.LongIndexGenerator g1 = (Primitives.LongIndexGenerator) gen;
             long bound = g1.getBound();
             //noinspection unchecked
             return traced(gen, (GeneratorImpl<A>) nextLongIndexImpl(bound));
         }
 
-        if (gen instanceof Primitives.NextGaussian) {
+        if (gen instanceof Primitives.GaussianGenerator) {
             //noinspection unchecked
             return traced(gen, (GeneratorImpl<A>) nextGaussianImpl());
         }
 
-        if (gen instanceof Primitives.NextByte) {
+        if (gen instanceof Primitives.ByteGenerator) {
             //noinspection unchecked
             return traced(gen, (GeneratorImpl<A>) nextByteImpl());
         }
 
-        if (gen instanceof Primitives.NextShort) {
+        if (gen instanceof Primitives.ShortGenerator) {
             //noinspection unchecked
             return traced(gen, (GeneratorImpl<A>) nextShortImpl());
         }
 
-        if (gen instanceof Primitives.NextBytes) {
-            Primitives.NextBytes g1 = (Primitives.NextBytes) gen;
+        if (gen instanceof Primitives.BytesGenerator) {
+            Primitives.BytesGenerator g1 = (Primitives.BytesGenerator) gen;
             int count = g1.getCount();
             //noinspection unchecked
             return traced(gen, (GeneratorImpl<A>) nextBytesImpl(count));
@@ -188,8 +188,8 @@ public class TracingInterpreter {
             return handleWithMetadata((Primitives.WithMetadata) gen);
         }
 
-        if (gen instanceof Primitives.Sized) {
-            return handleSized((Primitives.Sized<A>) gen);
+        if (gen instanceof Primitives.SizedGenerator) {
+            return handleSized((Primitives.SizedGenerator<A>) gen);
         }
 
         if (gen instanceof Primitives.Aggregate) {
@@ -337,7 +337,7 @@ public class TracingInterpreter {
         throw new UnsupportedOperationException();
     }
 
-    private <A> GeneratorImpl<Trace<A>> handleSized(Primitives.Sized<A> gen) {
+    private <A> GeneratorImpl<Trace<A>> handleSized(Primitives.SizedGenerator<A> gen) {
         Fn1<Integer, Generator<A>> fn = gen.getFn();
 
         return new GeneratorImpl<Trace<A>>() {

@@ -244,22 +244,22 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
 
     public static Generator<Integer> generateInt(int min, int max) {
         checkMinMax(min, max);
-        return new Primitives.NextIntBetween(min, max);
+        return new Primitives.IntBetweenGenerator(min, max);
     }
 
     public static Generator<Integer> generateIntExclusive(int bound) {
         checkBound(bound);
-        return new Primitives.NextIntBounded(bound);
+        return new Primitives.IntBoundedGenerator(bound);
     }
 
     public static Generator<Integer> generateIntExclusive(int origin, int bound) {
         checkOriginBound(origin, bound);
-        return new Primitives.NextIntExclusive(origin, bound);
+        return new Primitives.IntExclusiveGenerator(origin, bound);
     }
 
     public static Generator<Integer> generateIntIndex(int bound) {
         checkBound(bound);
-        return new Primitives.NextIntIndex(bound);
+        return new Primitives.IntIndexGenerator(bound);
     }
 
     public static Generator<Long> generateLong() {
@@ -268,22 +268,22 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
 
     public static Generator<Long> generateLong(long min, long max) {
         checkMinMax(min, max);
-        return new Primitives.NextLongBetween(min, max);
+        return new Primitives.LongBetweenGenerator(min, max);
     }
 
     public static Generator<Long> generateLongExclusive(long bound) {
         checkBound(bound);
-        return new Primitives.NextLongBounded(bound);
+        return new Primitives.LongBoundedGenerator(bound);
     }
 
     public static Generator<Long> generateLongExclusive(long origin, long bound) {
         checkOriginBound(origin, bound);
-        return new Primitives.NextLongExclusive(origin, bound);
+        return new Primitives.LongExclusiveGenerator(origin, bound);
     }
 
     public static Generator<Long> generateLongIndex(long bound) {
         checkBound(bound);
-        return new Primitives.NextLongIndex(bound);
+        return new Primitives.LongIndexGenerator(bound);
     }
 
     public static Generator<Byte> generateByte() {
@@ -300,11 +300,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
 
     public static Generator<Byte[]> generateBytes(int count) {
         checkCount(count);
-        return new Primitives.NextBytes(count);
+        return new Primitives.BytesGenerator(count);
     }
 
     public static <A> Generator<A> sized(Fn1<Integer, Generator<A>> fn) {
-        return new Primitives.Sized<>(fn::apply);
+        return new Primitives.SizedGenerator<>(fn::apply);
     }
 
     public static <A> Generator<A> sizedMinimum(int minimum, Fn1<Integer, Generator<A>> fn) {
