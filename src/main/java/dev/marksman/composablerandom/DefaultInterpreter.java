@@ -41,8 +41,8 @@ import static dev.marksman.composablerandom.legacy.primitives.TapImpl.tapImpl;
 public class DefaultInterpreter implements Interpreter {
     @Override
     public <A> GeneratorImpl<A> handle(InterpreterContext context, Generator<A> gen) {
-        if (gen instanceof Primitives.Constant) {
-            return constantImpl(((Primitives.Constant<A>) gen).getValue());
+        if (gen instanceof Primitives.ConstantGenerator) {
+            return constantImpl(((Primitives.ConstantGenerator<A>) gen).getValue());
         }
 
         if (gen instanceof Generator.Custom) {
@@ -61,96 +61,96 @@ public class DefaultInterpreter implements Interpreter {
             return handleTap(context, (Primitives.Tap<?, A>) gen);
         }
 
-        if (gen instanceof Primitives.NextInt) {
+        if (gen instanceof Primitives.IntGenerator) {
             //noinspection unchecked
             return (GeneratorImpl<A>) nextIntImpl();
         }
 
-        if (gen instanceof Primitives.NextLong) {
+        if (gen instanceof Primitives.LongGenerator) {
             //noinspection unchecked
             return (GeneratorImpl<A>) nextLongImpl();
         }
 
-        if (gen instanceof Primitives.NextBoolean) {
+        if (gen instanceof Primitives.BooleanGenerator) {
             //noinspection unchecked
             return (GeneratorImpl<A>) nextBooleanImpl();
         }
 
-        if (gen instanceof Primitives.NextDouble) {
+        if (gen instanceof Primitives.DoubleGenerator) {
             //noinspection unchecked
             return (GeneratorImpl<A>) nextDoubleImpl();
         }
 
-        if (gen instanceof Primitives.NextFloat) {
+        if (gen instanceof Primitives.FloatGenerator) {
             //noinspection unchecked
             return (GeneratorImpl<A>) nextFloatImpl();
         }
 
-        if (gen instanceof Primitives.NextIntBounded) {
-            int bound = ((Primitives.NextIntBounded) gen).getBound();
+        if (gen instanceof Primitives.IntBoundedGenerator) {
+            int bound = ((Primitives.IntBoundedGenerator) gen).getBound();
             //noinspection unchecked
             return (GeneratorImpl<A>) nextIntBoundedImpl(bound);
         }
 
-        if (gen instanceof Primitives.NextIntExclusive) {
-            Primitives.NextIntExclusive g1 = (Primitives.NextIntExclusive) gen;
+        if (gen instanceof Primitives.IntExclusiveGenerator) {
+            Primitives.IntExclusiveGenerator g1 = (Primitives.IntExclusiveGenerator) gen;
             //noinspection unchecked
             return (GeneratorImpl<A>) nextIntExclusiveImpl(g1.getOrigin(), g1.getBound());
         }
 
-        if (gen instanceof Primitives.NextIntBetween) {
-            Primitives.NextIntBetween g1 = (Primitives.NextIntBetween) gen;
+        if (gen instanceof Primitives.IntBetweenGenerator) {
+            Primitives.IntBetweenGenerator g1 = (Primitives.IntBetweenGenerator) gen;
             //noinspection unchecked
             return (GeneratorImpl<A>) nextIntBetweenImpl(g1.getMin(), g1.getMax());
         }
 
-        if (gen instanceof Primitives.NextIntIndex) {
-            Primitives.NextIntIndex g1 = (Primitives.NextIntIndex) gen;
+        if (gen instanceof Primitives.IntIndexGenerator) {
+            Primitives.IntIndexGenerator g1 = (Primitives.IntIndexGenerator) gen;
             //noinspection unchecked
             return (GeneratorImpl<A>) nextIntIndexImpl(g1.getBound());
         }
 
-        if (gen instanceof Primitives.NextLongBounded) {
-            Primitives.NextLongBounded g1 = (Primitives.NextLongBounded) gen;
+        if (gen instanceof Primitives.LongBoundedGenerator) {
+            Primitives.LongBoundedGenerator g1 = (Primitives.LongBoundedGenerator) gen;
             //noinspection unchecked
             return (GeneratorImpl<A>) nextLongBoundedImpl(g1.getBound());
         }
 
-        if (gen instanceof Primitives.NextLongExclusive) {
-            Primitives.NextLongExclusive g1 = (Primitives.NextLongExclusive) gen;
+        if (gen instanceof Primitives.LongExclusiveGenerator) {
+            Primitives.LongExclusiveGenerator g1 = (Primitives.LongExclusiveGenerator) gen;
             //noinspection unchecked
             return (GeneratorImpl<A>) nextLongExclusiveImpl(g1.getOrigin(), g1.getBound());
         }
 
-        if (gen instanceof Primitives.NextLongBetween) {
-            Primitives.NextLongBetween g1 = (Primitives.NextLongBetween) gen;
+        if (gen instanceof Primitives.LongBetweenGenerator) {
+            Primitives.LongBetweenGenerator g1 = (Primitives.LongBetweenGenerator) gen;
             //noinspection unchecked
             return (GeneratorImpl<A>) nextLongBetweenImpl(g1.getMin(), g1.getMax());
         }
 
-        if (gen instanceof Primitives.NextLongIndex) {
-            Primitives.NextLongIndex g1 = (Primitives.NextLongIndex) gen;
+        if (gen instanceof Primitives.LongIndexGenerator) {
+            Primitives.LongIndexGenerator g1 = (Primitives.LongIndexGenerator) gen;
             //noinspection unchecked
             return (GeneratorImpl<A>) nextLongIndexImpl(g1.getBound());
         }
 
-        if (gen instanceof Primitives.NextGaussian) {
+        if (gen instanceof Primitives.GaussianGenerator) {
             //noinspection unchecked
             return (GeneratorImpl<A>) nextGaussianImpl();
         }
 
-        if (gen instanceof Primitives.NextByte) {
+        if (gen instanceof Primitives.ByteGenerator) {
             //noinspection unchecked
             return (GeneratorImpl<A>) nextByteImpl();
         }
 
-        if (gen instanceof Primitives.NextShort) {
+        if (gen instanceof Primitives.ShortGenerator) {
             //noinspection unchecked
             return (GeneratorImpl<A>) nextShortImpl();
         }
 
-        if (gen instanceof Primitives.NextBytes) {
-            Primitives.NextBytes g1 = (Primitives.NextBytes) gen;
+        if (gen instanceof Primitives.BytesGenerator) {
+            Primitives.BytesGenerator g1 = (Primitives.BytesGenerator) gen;
             //noinspection unchecked
             return (GeneratorImpl<A>) nextBytesImpl(g1.getCount());
         }
@@ -161,8 +161,8 @@ public class DefaultInterpreter implements Interpreter {
             return context.recurse(g1.getOperand());
         }
 
-        if (gen instanceof Primitives.Sized) {
-            Primitives.Sized g1 = (Primitives.Sized) gen;
+        if (gen instanceof Primitives.SizedGenerator) {
+            Primitives.SizedGenerator g1 = (Primitives.SizedGenerator) gen;
 
             //noinspection unchecked
             return sizedImpl(context.getParameters().getSizeSelector(),

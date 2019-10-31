@@ -28,7 +28,7 @@ public class Runner {
     public static <A> void run(String label, int iterations, Generator<A> gen) {
 
         Interpreter overrides = Interpreter.<A>interpreter((InterpreterContext ctx, Generator<A> g) -> {
-            if (g instanceof Primitives.NextInt) {
+            if (g instanceof Primitives.IntGenerator) {
                 //noinspection unchecked
                 return (GeneratorImpl<A>) constantImpl(1);
             }

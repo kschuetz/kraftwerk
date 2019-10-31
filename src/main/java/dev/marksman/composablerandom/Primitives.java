@@ -15,7 +15,7 @@ public class Primitives {
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Constant<A> extends Generator<A> {
+    public static class ConstantGenerator<A> extends Generator<A> {
         private static Maybe<String> LABEL = Maybe.just("constant");
 
         private final A value;
@@ -31,8 +31,8 @@ public class Primitives {
         }
     }
 
-    public static <A> Constant<A> constant(A value) {
-        return new Constant<A>(value);
+    public static <A> ConstantGenerator<A> constant(A value) {
+        return new ConstantGenerator<A>(value);
     }
 
 
@@ -83,10 +83,10 @@ public class Primitives {
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class NextBoolean extends Generator<Boolean> {
+    public static class BooleanGenerator extends Generator<Boolean> {
         private static Maybe<String> LABEL = Maybe.just("boolean");
 
-        private static final NextBoolean INSTANCE = new NextBoolean();
+        private static final BooleanGenerator INSTANCE = new BooleanGenerator();
 
         @Override
         public Result<? extends Seed, Boolean> run(GeneratorContext context, Seed input) {
@@ -100,17 +100,17 @@ public class Primitives {
 
     }
 
-    public static NextBoolean nextBoolean() {
-        return NextBoolean.INSTANCE;
+    public static BooleanGenerator nextBoolean() {
+        return BooleanGenerator.INSTANCE;
     }
 
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class NextDouble extends Generator<Double> {
+    public static class DoubleGenerator extends Generator<Double> {
         private static Maybe<String> LABEL = Maybe.just("double");
 
-        private static final NextDouble INSTANCE = new NextDouble();
+        private static final DoubleGenerator INSTANCE = new DoubleGenerator();
 
         @Override
         public Result<? extends Seed, Double> run(GeneratorContext context, Seed input) {
@@ -124,17 +124,17 @@ public class Primitives {
 
     }
 
-    public static NextDouble nextDouble() {
-        return NextDouble.INSTANCE;
+    public static DoubleGenerator nextDouble() {
+        return DoubleGenerator.INSTANCE;
     }
 
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class NextFloat extends Generator<Float> {
+    public static class FloatGenerator extends Generator<Float> {
         private static Maybe<String> LABEL = Maybe.just("float");
 
-        private static final NextFloat INSTANCE = new NextFloat();
+        private static final FloatGenerator INSTANCE = new FloatGenerator();
 
         @Override
         public Result<? extends Seed, Float> run(GeneratorContext context, Seed input) {
@@ -148,17 +148,17 @@ public class Primitives {
 
     }
 
-    public static NextFloat nextFloat() {
-        return NextFloat.INSTANCE;
+    public static FloatGenerator nextFloat() {
+        return FloatGenerator.INSTANCE;
     }
 
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class NextInt extends Generator<Integer> {
+    public static class IntGenerator extends Generator<Integer> {
         private static Maybe<String> LABEL = Maybe.just("int");
 
-        private static final NextInt INSTANCE = new NextInt();
+        private static final IntGenerator INSTANCE = new IntGenerator();
 
         @Override
         public Result<? extends Seed, Integer> run(GeneratorContext context, Seed input) {
@@ -172,14 +172,14 @@ public class Primitives {
 
     }
 
-    public static NextInt nextInt() {
-        return NextInt.INSTANCE;
+    public static IntGenerator nextInt() {
+        return IntGenerator.INSTANCE;
     }
 
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class NextIntBounded extends Generator<Integer> {
+    public static class IntBoundedGenerator extends Generator<Integer> {
         private final int bound;
 
         @Override
@@ -197,7 +197,7 @@ public class Primitives {
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class NextIntExclusive extends Generator<Integer> {
+    public static class IntExclusiveGenerator extends Generator<Integer> {
         private final int origin;
         private final int bound;
 
@@ -216,7 +216,7 @@ public class Primitives {
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class NextIntBetween extends Generator<Integer> {
+    public static class IntBetweenGenerator extends Generator<Integer> {
         private final int min;
         private final int max;
 
@@ -235,7 +235,7 @@ public class Primitives {
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class NextIntIndex extends Generator<Integer> {
+    public static class IntIndexGenerator extends Generator<Integer> {
         private final int bound;
 
         @Override
@@ -253,10 +253,10 @@ public class Primitives {
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class NextLong extends Generator<Long> {
+    public static class LongGenerator extends Generator<Long> {
         private static Maybe<String> LABEL = Maybe.just("long");
 
-        private static final NextLong INSTANCE = new NextLong();
+        private static final LongGenerator INSTANCE = new LongGenerator();
 
         @Override
         public Result<? extends Seed, Long> run(GeneratorContext context, Seed input) {
@@ -270,14 +270,14 @@ public class Primitives {
 
     }
 
-    public static NextLong nextLong() {
-        return NextLong.INSTANCE;
+    public static LongGenerator nextLong() {
+        return LongGenerator.INSTANCE;
     }
 
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class NextLongBounded extends Generator<Long> {
+    public static class LongBoundedGenerator extends Generator<Long> {
         private final long bound;
 
         @Override
@@ -295,7 +295,7 @@ public class Primitives {
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class NextLongExclusive extends Generator<Long> {
+    public static class LongExclusiveGenerator extends Generator<Long> {
         private final long origin;
         private final long bound;
 
@@ -314,7 +314,7 @@ public class Primitives {
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class NextLongBetween extends Generator<Long> {
+    public static class LongBetweenGenerator extends Generator<Long> {
         private final long min;
         private final long max;
 
@@ -333,7 +333,7 @@ public class Primitives {
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class NextLongIndex extends Generator<Long> {
+    public static class LongIndexGenerator extends Generator<Long> {
         private final long bound;
 
         @Override
@@ -351,10 +351,10 @@ public class Primitives {
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class NextGaussian extends Generator<Double> {
+    public static class GaussianGenerator extends Generator<Double> {
         private static Maybe<String> LABEL = Maybe.just("gaussian");
 
-        private static final NextGaussian INSTANCE = new NextGaussian();
+        private static final GaussianGenerator INSTANCE = new GaussianGenerator();
 
         @Override
         public Result<? extends Seed, Double> run(GeneratorContext context, Seed input) {
@@ -368,17 +368,17 @@ public class Primitives {
 
     }
 
-    public static NextGaussian nextGaussian() {
-        return NextGaussian.INSTANCE;
+    public static GaussianGenerator nextGaussian() {
+        return GaussianGenerator.INSTANCE;
     }
 
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class NextByte extends Generator<Byte> {
+    public static class ByteGenerator extends Generator<Byte> {
         private static Maybe<String> LABEL = Maybe.just("byte");
 
-        private static final NextByte INSTANCE = new NextByte();
+        private static final ByteGenerator INSTANCE = new ByteGenerator();
 
         @Override
         public Result<? extends Seed, Byte> run(GeneratorContext context, Seed input) {
@@ -392,17 +392,17 @@ public class Primitives {
 
     }
 
-    public static NextByte nextByte() {
-        return NextByte.INSTANCE;
+    public static ByteGenerator nextByte() {
+        return ByteGenerator.INSTANCE;
     }
 
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class NextShort extends Generator<Short> {
+    public static class ShortGenerator extends Generator<Short> {
         private static Maybe<String> LABEL = Maybe.just("short");
 
-        private static final NextShort INSTANCE = new NextShort();
+        private static final ShortGenerator INSTANCE = new ShortGenerator();
 
         @Override
         public Result<? extends Seed, Short> run(GeneratorContext context, Seed input) {
@@ -416,14 +416,14 @@ public class Primitives {
 
     }
 
-    public static NextShort nextShort() {
-        return NextShort.INSTANCE;
+    public static ShortGenerator nextShort() {
+        return ShortGenerator.INSTANCE;
     }
 
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class NextBytes extends Generator<Byte[]> {
+    public static class BytesGenerator extends Generator<Byte[]> {
         private final int count;
 
         @Override
@@ -441,7 +441,7 @@ public class Primitives {
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class Sized<A> extends Generator<A> {
+    public static class SizedGenerator<A> extends Generator<A> {
         private static Maybe<String> LABEL = Maybe.just("sized");
 
         private final Fn1<Integer, Generator<A>> fn;
