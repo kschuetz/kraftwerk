@@ -13,7 +13,7 @@ class BigNumbers {
     static Generator<BigInteger> generateBigIntegerExclusive(BigInteger bound) {
         return generate(rs -> {
             int bitLength = bound.bitLength();
-            Result<? extends Seed, Long> seed = rs.nextLong();
+            Result<? extends LegacySeed, Long> seed = rs.nextLong();
             Random rnd = new Random();
             rnd.setSeed(seed.getValue());
             BigInteger result;

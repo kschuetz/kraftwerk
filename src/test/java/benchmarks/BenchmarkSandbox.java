@@ -3,7 +3,7 @@ package benchmarks;
 import com.jnape.palatable.lambda.adt.hlist.Tuple2;
 import com.jnape.palatable.lambda.adt.hlist.Tuple8;
 import dev.marksman.composablerandom.Generator;
-import dev.marksman.composablerandom.Seed;
+import dev.marksman.composablerandom.LegacySeed;
 import dev.marksman.composablerandom.domain.Characters;
 
 import static dev.marksman.composablerandom.Generator.*;
@@ -39,12 +39,12 @@ public class BenchmarkSandbox {
         Runner.runMark3("short", ITERATIONS, generateShort());
         Runner.runMark3("gaussian", ITERATIONS, generateGaussian());
         System.out.println("---");
-        Runner.runSeed("nextInt", ITERATIONS, Seed::nextInt);
-        Runner.runSeed("nextFloat", ITERATIONS, Seed::nextFloat);
-        Runner.runSeed("nextDouble", ITERATIONS, Seed::nextDouble);
-        Runner.runSeed("nextLong", ITERATIONS, Seed::nextLong);
-        Runner.runSeed("nextBoolean", ITERATIONS, Seed::nextBoolean);
-        Runner.runSeed("nextGaussian", ITERATIONS, Seed::nextGaussian);
+        Runner.runSeed("nextInt", ITERATIONS, LegacySeed::nextInt);
+        Runner.runSeed("nextFloat", ITERATIONS, LegacySeed::nextFloat);
+        Runner.runSeed("nextDouble", ITERATIONS, LegacySeed::nextDouble);
+        Runner.runSeed("nextLong", ITERATIONS, LegacySeed::nextLong);
+        Runner.runSeed("nextBoolean", ITERATIONS, LegacySeed::nextBoolean);
+        Runner.runSeed("nextGaussian", ITERATIONS, LegacySeed::nextGaussian);
     }
 
     private static void sandbox2() {

@@ -47,7 +47,7 @@ class PrimitivesTest {
 
     @Test
     void testIntFullRange() {
-        Seed initial = randomInitialSeed();
+        LegacySeed initial = randomInitialSeed();
         assertEquals(sample(generateInt(Integer.MIN_VALUE, Integer.MAX_VALUE), initial),
                 sample(generateInt(), initial));
     }
@@ -84,7 +84,7 @@ class PrimitivesTest {
 
     @Test
     void testLongFullRange() {
-        Seed initial = randomInitialSeed();
+        LegacySeed initial = randomInitialSeed();
         assertEquals(sample(generateLong(Long.MIN_VALUE, Long.MAX_VALUE), initial),
                 sample(generateLong(), initial));
     }

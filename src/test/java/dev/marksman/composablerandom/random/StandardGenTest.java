@@ -2,7 +2,7 @@ package dev.marksman.composablerandom.random;
 
 import com.jnape.palatable.lambda.adt.product.Product2;
 import com.jnape.palatable.lambda.functions.Fn1;
-import dev.marksman.composablerandom.Seed;
+import dev.marksman.composablerandom.LegacySeed;
 import org.junit.jupiter.api.Test;
 import testsupport.GeneratorPair;
 
@@ -17,7 +17,7 @@ class StandardGenTest {
 
     @Test
     void nextInt() {
-        testAgainstUtilRandom(Random::nextInt, Seed::nextInt);
+        testAgainstUtilRandom(Random::nextInt, LegacySeed::nextInt);
     }
 
     @Test
@@ -37,27 +37,27 @@ class StandardGenTest {
 
     @Test
     void nextDouble() {
-        testAgainstUtilRandom(Random::nextDouble, Seed::nextDouble);
+        testAgainstUtilRandom(Random::nextDouble, LegacySeed::nextDouble);
     }
 
     @Test
     void nextFloat() {
-        testAgainstUtilRandom(Random::nextFloat, Seed::nextFloat);
+        testAgainstUtilRandom(Random::nextFloat, LegacySeed::nextFloat);
     }
 
     @Test
     void nextLong() {
-        testAgainstUtilRandom(Random::nextLong, Seed::nextLong);
+        testAgainstUtilRandom(Random::nextLong, LegacySeed::nextLong);
     }
 
     @Test
     void nextBoolean() {
-        testAgainstUtilRandom(Random::nextBoolean, Seed::nextBoolean);
+        testAgainstUtilRandom(Random::nextBoolean, LegacySeed::nextBoolean);
     }
 
     @Test
     void nextGaussian() {
-        testAgainstUtilRandom(Random::nextGaussian, Seed::nextGaussian);
+        testAgainstUtilRandom(Random::nextGaussian, LegacySeed::nextGaussian);
     }
 
     @Test
@@ -72,27 +72,27 @@ class StandardGenTest {
     @Test
     void mixed() {
         GeneratorPair gp = newRandomGeneratorPair();
-        gp = testAgainstUtilRandom(gp, 1, Random::nextInt, Seed::nextInt);
+        gp = testAgainstUtilRandom(gp, 1, Random::nextInt, LegacySeed::nextInt);
         gp = testAgainstUtilRandom(gp, 1, r -> r.nextInt(10), r -> r.nextIntBounded(10));
-        gp = testAgainstUtilRandom(gp, 1, Random::nextDouble, Seed::nextDouble);
-        gp = testAgainstUtilRandom(gp, 1, Random::nextFloat, Seed::nextFloat);
-        gp = testAgainstUtilRandom(gp, 1, Random::nextLong, Seed::nextLong);
-        gp = testAgainstUtilRandom(gp, 1, Random::nextBoolean, Seed::nextBoolean);
-        testAgainstUtilRandom(gp, 1, Random::nextGaussian, Seed::nextGaussian);
+        gp = testAgainstUtilRandom(gp, 1, Random::nextDouble, LegacySeed::nextDouble);
+        gp = testAgainstUtilRandom(gp, 1, Random::nextFloat, LegacySeed::nextFloat);
+        gp = testAgainstUtilRandom(gp, 1, Random::nextLong, LegacySeed::nextLong);
+        gp = testAgainstUtilRandom(gp, 1, Random::nextBoolean, LegacySeed::nextBoolean);
+        testAgainstUtilRandom(gp, 1, Random::nextGaussian, LegacySeed::nextGaussian);
     }
 
     @Test
     void withCachedGaussian() {
         GeneratorPair gp = newRandomGeneratorPair();
-        gp = testAgainstUtilRandom(gp, 1, Random::nextGaussian, Seed::nextGaussian);
-        gp = testAgainstUtilRandom(gp, 1, Random::nextInt, Seed::nextInt);
+        gp = testAgainstUtilRandom(gp, 1, Random::nextGaussian, LegacySeed::nextGaussian);
+        gp = testAgainstUtilRandom(gp, 1, Random::nextInt, LegacySeed::nextInt);
         gp = testAgainstUtilRandom(gp, 1, r -> r.nextInt(10), r -> r.nextIntBounded(10));
-        gp = testAgainstUtilRandom(gp, 1, Random::nextDouble, Seed::nextDouble);
-        gp = testAgainstUtilRandom(gp, 1, Random::nextFloat, Seed::nextFloat);
-        gp = testAgainstUtilRandom(gp, 1, Random::nextLong, Seed::nextLong);
-        gp = testAgainstUtilRandom(gp, 1, Random::nextBoolean, Seed::nextBoolean);
-        gp = testAgainstUtilRandom(gp, 1, Random::nextGaussian, Seed::nextGaussian);
-        testAgainstUtilRandom(gp, 1, Random::nextInt, Seed::nextInt);
+        gp = testAgainstUtilRandom(gp, 1, Random::nextDouble, LegacySeed::nextDouble);
+        gp = testAgainstUtilRandom(gp, 1, Random::nextFloat, LegacySeed::nextFloat);
+        gp = testAgainstUtilRandom(gp, 1, Random::nextLong, LegacySeed::nextLong);
+        gp = testAgainstUtilRandom(gp, 1, Random::nextBoolean, LegacySeed::nextBoolean);
+        gp = testAgainstUtilRandom(gp, 1, Random::nextGaussian, LegacySeed::nextGaussian);
+        testAgainstUtilRandom(gp, 1, Random::nextInt, LegacySeed::nextInt);
     }
 
     @Test
@@ -133,7 +133,7 @@ class StandardGenTest {
     }
 
     private <A> void testAgainstUtilRandom(Fn1<Random, A> getNextExpected,
-                                           Fn1<Seed, Product2<? extends Seed, A>> getNextResult) {
+                                           Fn1<LegacySeed, Product2<? extends LegacySeed, A>> getNextResult) {
         GeneratorPair gp = newRandomGeneratorPair();
         testAgainstUtilRandom(gp, SEQUENCE_LENGTH, getNextExpected, getNextResult);
     }
@@ -141,12 +141,12 @@ class StandardGenTest {
     private <A> GeneratorPair testAgainstUtilRandom(GeneratorPair gp,
                                                     int times,
                                                     Fn1<Random, A> getNextExpected,
-                                                    Fn1<Seed, Product2<? extends Seed, A>> getNextResult) {
-        Seed current = gp.getSeed();
+                                                    Fn1<LegacySeed, Product2<? extends LegacySeed, A>> getNextResult) {
+        LegacySeed current = gp.getSeed();
         Random random = gp.getRandom();
         for (int i = 0; i < times; i++) {
             A expected = getNextExpected.apply(random);
-            Product2<? extends Seed, A> next = getNextResult.apply(current);
+            Product2<? extends LegacySeed, A> next = getNextResult.apply(current);
             current = next._1();
             A actual = next._2();
 

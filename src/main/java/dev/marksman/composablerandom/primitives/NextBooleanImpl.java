@@ -1,8 +1,8 @@
 package dev.marksman.composablerandom.primitives;
 
 import dev.marksman.composablerandom.GeneratorImpl;
+import dev.marksman.composablerandom.LegacySeed;
 import dev.marksman.composablerandom.Result;
-import dev.marksman.composablerandom.Seed;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
@@ -11,7 +11,7 @@ public class NextBooleanImpl implements GeneratorImpl<Boolean> {
     private static NextBooleanImpl INSTANCE = new NextBooleanImpl();
 
     @Override
-    public Result<? extends Seed, Boolean> run(Seed input) {
+    public Result<? extends LegacySeed, Boolean> run(LegacySeed input) {
         return input.nextBoolean();
     }
 

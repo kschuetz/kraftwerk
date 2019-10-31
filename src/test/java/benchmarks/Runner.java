@@ -14,10 +14,10 @@ public class Runner {
     public static <A> void runMark3(String label, int iterations, Generator<A> gen) {
         GeneratorImpl<A> compiled = defaultInterpreter(defaultParameters()).compile(gen);
 
-        Seed current = initStandardGen();
+        LegacySeed current = initStandardGen();
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < iterations; i++) {
-            Result<? extends Seed, A> result = compiled.run(current);
+            Result<? extends LegacySeed, A> result = compiled.run(current);
             current = result.getNextState();
         }
         long t = System.currentTimeMillis() - t0;
@@ -38,10 +38,10 @@ public class Runner {
         Interpreter interpreter = DefaultInterpreter.defaultInterpreter()
                 .overrideWith(overrides);
         GeneratorImpl<A> compiled = interpreter.compile(defaultParameters(), gen);
-        Seed current = initStandardGen();
+        LegacySeed current = initStandardGen();
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < iterations; i++) {
-            Result<? extends Seed, A> result = compiled.run(current);
+            Result<? extends LegacySeed, A> result = compiled.run(current);
             current = result.getNextState();
         }
         long t = System.currentTimeMillis() - t0;
@@ -62,11 +62,11 @@ public class Runner {
         System.out.println("traced " + label + ": " + t + " ms");
     }
 
-    public static <A> void runSeed(String label, int iterations, Fn1<Seed, Result<? extends Seed, A>> fn) {
-        Seed currentState = initStandardGen();
+    public static <A> void runSeed(String label, int iterations, Fn1<LegacySeed, Result<? extends LegacySeed, A>> fn) {
+        LegacySeed currentState = initStandardGen();
         long t0 = System.currentTimeMillis();
         for (int i = 0; i < iterations; i++) {
-            Result<? extends Seed, A> result = fn.apply(currentState);
+            Result<? extends LegacySeed, A> result = fn.apply(currentState);
             currentState = result.getNextState();
         }
         long t = System.currentTimeMillis() - t0;

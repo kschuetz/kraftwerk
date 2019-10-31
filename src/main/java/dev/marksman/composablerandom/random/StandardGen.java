@@ -1,8 +1,8 @@
 package dev.marksman.composablerandom.random;
 
 import com.jnape.palatable.lambda.adt.Unit;
+import dev.marksman.composablerandom.LegacySeed;
 import dev.marksman.composablerandom.Result;
-import dev.marksman.composablerandom.Seed;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
@@ -15,7 +15,7 @@ import static dev.marksman.composablerandom.random.CacheNextGaussian.cacheNextGa
 
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public final class StandardGen implements Seed {
+public final class StandardGen implements LegacySeed {
     private final long seedValue;
 
     @Override
@@ -239,7 +239,7 @@ public final class StandardGen implements Seed {
     }
 
     @Override
-    public final Seed perturb(long value) {
+    public final LegacySeed perturb(long value) {
         long newSeed = nextLong().getValue() ^ value;
         return nextStandardGen(newSeed);
     }

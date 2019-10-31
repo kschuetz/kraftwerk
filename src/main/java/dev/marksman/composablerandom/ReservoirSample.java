@@ -23,13 +23,13 @@ class ReservoirSample {
 
     private static Generator<Set<Integer>> reservoirSampleImpl(int n, int k) {
         return Generator.generate(rs -> {
-            Seed current = rs;
+            LegacySeed current = rs;
             Integer[] result = new Integer[k];
             for (int i = 0; i < k; i++) {
                 result[i] = i;
             }
             for (int i = k; i < n; i++) {
-                Result<? extends Seed, Integer> next = current.nextIntBounded(i);
+                Result<? extends LegacySeed, Integer> next = current.nextIntBounded(i);
                 Integer value = next.getValue();
                 if (value < k) {
                     result[value] = i;

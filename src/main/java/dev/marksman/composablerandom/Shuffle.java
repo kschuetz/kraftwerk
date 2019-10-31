@@ -36,7 +36,7 @@ class Shuffle {
             return Generator.constant(Vector.of(fn.apply(0)));
         } else return Generator.generate(stateIn -> {
             ArrayList<A> target = newInputInstance(count, fn);
-            Seed stateOut = shuffleInPlace(stateIn, target);
+            LegacySeed stateOut = shuffleInPlace(stateIn, target);
             return result(stateOut, NonEmptyVector.wrapOrThrow(target));
         });
     }
@@ -86,16 +86,16 @@ class Shuffle {
         return result;
     }
 
-    private static <A> Seed shuffleInPlace(Seed inputState, ArrayList<A> target) {
+    private static <A> LegacySeed shuffleInPlace(LegacySeed inputState, ArrayList<A> target) {
         int size = target.size();
         if (size < 2) {
             // No changes
             return inputState;
         } else {
             int n = target.size();
-            Seed state = inputState;
+            LegacySeed state = inputState;
             for (int i = 0; i < size - 1; i++) {
-                Result<? extends Seed, Integer> next = state.nextIntExclusive(i, n);
+                Result<? extends LegacySeed, Integer> next = state.nextIntExclusive(i, n);
                 int j = next.getValue();
                 if (i != j) {
                     A temp = target.get(i);

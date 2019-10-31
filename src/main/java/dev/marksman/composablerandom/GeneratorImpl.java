@@ -1,5 +1,5 @@
 package dev.marksman.composablerandom;
 
 public interface GeneratorImpl<A> {
-    Result<? extends Seed, A> run(Seed input);
+    Result<? extends LegacySeed, A> run(LegacySeed input);
 }

@@ -165,7 +165,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     public static class Custom<A> extends Generator<A> {
         private static Maybe<String> LABEL = Maybe.just("custom");
 
-        private final Fn1<? super Seed, Result<Seed, A>> fn;
+        private final Fn1<? super LegacySeed, Result<LegacySeed, A>> fn;
 
         @Override
         public boolean isPrimitive() {
@@ -645,7 +645,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         private static Maybe<String> LABEL = Maybe.just("tap");
 
         private final Generator<A> inner;
-        private final Fn2<GeneratorImpl<A>, Seed, B> fn;
+        private final Fn2<GeneratorImpl<A>, LegacySeed, B> fn;
 
         @Override
         public Maybe<String> getLabel() {
@@ -672,12 +672,12 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         return new Constant<>(a);
     }
 
-    public static <A> Generator<A> generate(Fn1<? super Seed, Result> fn) {
+    public static <A> Generator<A> generate(Fn1<? super LegacySeed, Result> fn) {
         return new Custom<A>(fn::apply);
     }
 
     public static <A, B> Generator<B> tap(Generator<A> inner,
-                                          Fn2<GeneratorImpl<A>, Seed, B> f) {
+                                          Fn2<GeneratorImpl<A>, LegacySeed, B> f) {
         return new Tap<>(inner, f);
     }
 

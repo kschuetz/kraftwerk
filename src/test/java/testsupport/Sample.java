@@ -1,7 +1,7 @@
 package testsupport;
 
 import dev.marksman.composablerandom.Generator;
-import dev.marksman.composablerandom.Seed;
+import dev.marksman.composablerandom.LegacySeed;
 
 import java.util.ArrayList;
 
@@ -14,7 +14,7 @@ public class Sample {
         return streamFrom(gen).next(SAMPLE_COUNT);
     }
 
-    public static <A> ArrayList<A> sample(Generator<A> gen, Seed initialState) {
+    public static <A> ArrayList<A> sample(Generator<A> gen, LegacySeed initialState) {
         return streamFrom(gen, initialState).next(SAMPLE_COUNT);
     }
 }

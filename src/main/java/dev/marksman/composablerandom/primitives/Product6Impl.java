@@ -20,13 +20,13 @@ public class Product6Impl<A, B, C, D, E, F, Out> implements GeneratorImpl<Out> {
     private final Fn6<A, B, C, D, E, F, Out> combine;
 
     @Override
-    public Result<? extends Seed, Out> run(Seed input) {
-        Result<? extends Seed, A> r1 = a.run(input);
-        Result<? extends Seed, B> r2 = b.run(r1.getNextState());
-        Result<? extends Seed, C> r3 = c.run(r2.getNextState());
-        Result<? extends Seed, D> r4 = d.run(r3.getNextState());
-        Result<? extends Seed, E> r5 = e.run(r4.getNextState());
-        Result<? extends Seed, F> r6 = f.run(r5.getNextState());
+    public Result<? extends LegacySeed, Out> run(LegacySeed input) {
+        Result<? extends LegacySeed, A> r1 = a.run(input);
+        Result<? extends LegacySeed, B> r2 = b.run(r1.getNextState());
+        Result<? extends LegacySeed, C> r3 = c.run(r2.getNextState());
+        Result<? extends LegacySeed, D> r4 = d.run(r3.getNextState());
+        Result<? extends LegacySeed, E> r5 = e.run(r4.getNextState());
+        Result<? extends LegacySeed, F> r6 = f.run(r5.getNextState());
         Out result = combine.apply(r1.getValue(), r2.getValue(), r3.getValue(), r4.getValue(),
                 r5.getValue(), r6.getValue());
         return result(r6.getNextState(), result);

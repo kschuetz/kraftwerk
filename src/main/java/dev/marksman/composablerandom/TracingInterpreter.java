@@ -48,7 +48,7 @@ public class TracingInterpreter {
                 .labeled("sized"));
     }
 
-    private <A> Result<Seed, Trace<A>> traceResult(Generator<A> gen, Result<? extends Seed, A> resultValue) {
+    private <A> Result<LegacySeed, Trace<A>> traceResult(Generator<A> gen, Result<? extends LegacySeed, A> resultValue) {
         return result(resultValue.getNextState(), trace(resultValue.getValue(), gen));
     }
 
@@ -302,10 +302,10 @@ public class TracingInterpreter {
 
         return new GeneratorImpl<Trace<Out>>() {
             @Override
-            public Result<? extends Seed, Trace<Out>> run(Seed input) {
-                Result<? extends Seed, Trace<In>> r1 = g1.run(input);
+            public Result<? extends LegacySeed, Trace<Out>> run(LegacySeed input) {
+                Result<? extends LegacySeed, Trace<In>> r1 = g1.run(input);
                 Trace<In> trace1 = r1.getValue();
-                Result<? extends Seed, Trace<Out>> r2 = compile(fn.apply(trace1.getResult()))
+                Result<? extends LegacySeed, Trace<Out>> r2 = compile(fn.apply(trace1.getResult()))
                         .run(r1.getNextState());
                 Trace<Out> trace2 = r2.getValue();
                 return result(r2.getNextState(),
@@ -342,11 +342,11 @@ public class TracingInterpreter {
 
         return new GeneratorImpl<Trace<A>>() {
             @Override
-            public Result<? extends Seed, Trace<A>> run(Seed input) {
-                Result<? extends Seed, Trace<Integer>> r1 = sizeGenerator.run(input);
+            public Result<? extends LegacySeed, Trace<A>> run(LegacySeed input) {
+                Result<? extends LegacySeed, Trace<Integer>> r1 = sizeGenerator.run(input);
                 Trace<Integer> sizeTrace = r1.getValue();
                 Generator<A> inner = fn.apply(sizeTrace.getResult());
-                Result<? extends Seed, Trace<A>> r2 = compile(inner)
+                Result<? extends LegacySeed, Trace<A>> r2 = compile(inner)
                         .run(r1.getNextState());
                 Trace<A> innerTrace = r2.getValue();
                 return result(r2.getNextState(),
@@ -361,8 +361,8 @@ public class TracingInterpreter {
 
         return new GeneratorImpl<Trace<A>>() {
             @Override
-            public Result<? extends Seed, Trace<A>> run(Seed input) {
-                Result<? extends Seed, Trace<A>> run = inner.run(input);
+            public Result<? extends LegacySeed, Trace<A>> run(LegacySeed input) {
+                Result<? extends LegacySeed, Trace<A>> run = inner.run(input);
                 Trace<A> innerTrace = run.getValue();
                 return result(run.getNextState(),
                         trace(innerTrace.getResult(), gen, singletonList(innerTrace)));
