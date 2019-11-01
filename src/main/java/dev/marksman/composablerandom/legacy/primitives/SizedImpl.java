@@ -15,7 +15,7 @@ public class SizedImpl<A> implements GeneratorImpl<A> {
 
     @Override
     public Result<? extends LegacySeed, A> run(LegacySeed input) {
-        Result<? extends LegacySeed, Integer> sizeResult = sizeSelector.selectSize(input);
+        Result<? extends LegacySeed, Integer> sizeResult = sizeSelector.legacySelectSize(input);
         return fn.apply(sizeResult.getValue())
                 .run(sizeResult.getNextState());
     }

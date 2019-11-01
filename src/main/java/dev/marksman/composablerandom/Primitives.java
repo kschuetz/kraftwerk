@@ -2,16 +2,103 @@ package dev.marksman.composablerandom;
 
 import com.jnape.palatable.lambda.adt.Maybe;
 import com.jnape.palatable.lambda.functions.*;
-import dev.marksman.composablerandom.random.RandomUtils;
 import dev.marksman.composablerandom.util.Labeling;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 
+import static com.jnape.palatable.lambda.adt.Maybe.nothing;
 import static dev.marksman.composablerandom.Result.result;
+import static dev.marksman.composablerandom.random.RandomUtils.*;
 
 public class Primitives {
+
+    public static <A> ConstantGenerator<A> constant(A value) {
+        return new ConstantGenerator<A>(value);
+    }
+
+    public static Generator<Integer> generateInt() {
+        return IntGenerator.INSTANCE;
+    }
+
+    public static Generator<Integer> generateInt(int min, int max) {
+        checkMinMax(min, max);
+        if (max == Integer.MAX_VALUE) {
+            if (min == Integer.MIN_VALUE) {
+                return generateInt();
+            } else {
+                return generateIntExclusive(min - 1, max)
+                        .fmap(n -> n + 1);
+            }
+        } else {
+            return generateIntExclusive(min, max + 1);
+        }
+    }
+
+    public static Generator<Integer> generateIntExclusive(int bound) {
+        checkBound(bound);
+        Maybe<String> label = Maybe.just(Labeling.intInterval(0, bound, true));
+
+        if ((bound & -bound) == bound) { // bound is a power of 2
+            return buildGenerator(label, input -> {
+                long s1 = getNextSeed(input.getSeedValue());
+                int n = bitsFrom(31, s1);
+                return result(input.setNextSeedValue(s1), (int) ((bound * (long) n) >> 31));
+            });
+
+        } else {
+            return buildGenerator(label, input -> {
+                long bits, val;
+                long nextSeed = input.getSeedValue();
+                do {
+                    nextSeed = getNextSeed(nextSeed);
+                    bits = bitsFrom(31, nextSeed);
+                    val = bits % bound;
+                } while (bits - val + (bound - 1) < 0);
+                return result(input.setNextSeedValue(nextSeed), (int) val);
+            });
+        }
+
+    }
+
+    public static Generator<Integer> generateIntExclusive(int origin, int bound) {
+        checkOriginBound(origin, bound);
+        if (origin == 0) {
+            return generateIntExclusive(bound);
+        } else {
+            long n = (long) bound - origin;
+            long m = n - 1;
+            if (n < Integer.MAX_VALUE) {
+                return generateIntExclusive((int) n).fmap(r -> origin + r);
+            } else if ((n & m) == 0) {
+                // power of two
+                return generateInt().fmap(r -> (r & (int) m) + origin);
+            } else {
+                return buildGenerator(nothing(), input -> {
+                    Result<Seed, Integer> rg1 = nextInt(input);
+                    Seed current = rg1.getNextState();
+                    int r = rg1._2();
+                    for (int u = r >>> 1;
+                         u + m - (r = u % (int) n) < 0; ) {
+                        Result<Seed, Integer> next = nextInt(current);
+                        u = next._2() >>> 1;
+                        current = next._1();
+                    }
+                    r += origin;
+
+                    return result(current, r);
+                });
+
+            }
+        }
+    }
+
+    public static Generator<Integer> generateIntIndex(int bound) {
+        return generateIntExclusive(bound);  // TODO: make generateIntIndex unbiased
+    }
+
+
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -31,11 +118,6 @@ public class Primitives {
         }
     }
 
-    public static <A> ConstantGenerator<A> constant(A value) {
-        return new ConstantGenerator<A>(value);
-    }
-
-
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
@@ -47,8 +129,8 @@ public class Primitives {
 
         @Override
         public Result<? extends Seed, A> run(GeneratorContext context, Seed input) {
-            // TODO: mapped
-            return null;
+            Result<? extends Seed, In> run = operand.run(context, input);
+            return run.fmap(fn);
         }
 
         @Override
@@ -69,8 +151,9 @@ public class Primitives {
 
         @Override
         public Result<? extends Seed, A> run(GeneratorContext context, Seed input) {
-            // TODO: flatMapped
-            return null;
+            Result<? extends Seed, In> result1 = operand.run(context, input);
+            return fn.apply(result1.getValue())
+                    .run(context, result1.getNextState());
         }
 
         @Override
@@ -162,7 +245,7 @@ public class Primitives {
 
         @Override
         public Result<? extends Seed, Integer> run(GeneratorContext context, Seed input) {
-            return RandomUtils.nextBits(input, 32);
+            return nextInt(input);
         }
 
         @Override
@@ -172,9 +255,6 @@ public class Primitives {
 
     }
 
-    public static IntGenerator nextInt() {
-        return IntGenerator.INSTANCE;
-    }
 
     @EqualsAndHashCode(callSuper = true)
     @Value
@@ -260,7 +340,12 @@ public class Primitives {
 
         @Override
         public Result<? extends Seed, Long> run(GeneratorContext context, Seed input) {
-            return null;
+            long s1 = getNextSeed(input.getSeedValue());
+            long s2 = getNextSeed(s1);
+            int i1 = bitsFrom(32, s1);
+            int i2 = bitsFrom(32, s2);
+            long result = ((long) i1 << 32) + i2;
+            return result(input.setNextSeedValue(s2), result);
         }
 
         @Override
@@ -448,7 +533,9 @@ public class Primitives {
 
         @Override
         public Result<? extends Seed, A> run(GeneratorContext context, Seed input) {
-            return null;
+            Result<? extends Seed, Integer> sizeResult = context.getSizeSelector().selectSize(input);
+            return fn.apply(sizeResult.getValue())
+                    .run(context, sizeResult.getNextState());
         }
 
         @Override
@@ -468,7 +555,7 @@ public class Primitives {
 
         @Override
         public Result<? extends Seed, A> run(GeneratorContext context, Seed input) {
-            return null;
+            return operand.run(context, input);
         }
 
         @Override
@@ -490,7 +577,15 @@ public class Primitives {
 
         @Override
         public Result<? extends Seed, Out> run(GeneratorContext context, Seed input) {
-            return null;
+            Seed current = input;
+            Builder builder = initialBuilderSupplier.apply();
+
+            for (Generator<Elem> element : elements) {
+                Result<? extends Seed, Elem> next = element.run(context, current);
+                builder = addFn.apply(builder, next.getValue());
+                current = next.getNextState();
+            }
+            return result(current, buildFn.apply(builder));
         }
 
         @Override
@@ -512,7 +607,11 @@ public class Primitives {
 
         @Override
         public Result<? extends Seed, Out> run(GeneratorContext context, Seed input) {
-            return null;
+            Result<? extends Seed, A> ra = a.run(context, input);
+            Result<? extends Seed, B> rb = b.run(context, ra.getNextState());
+            return result(rb.getNextState(),
+                    combine.apply(ra.getValue(),
+                            rb.getValue()));
         }
 
         @Override
@@ -535,7 +634,13 @@ public class Primitives {
 
         @Override
         public Result<? extends Seed, Out> run(GeneratorContext context, Seed input) {
-            return null;
+            Result<? extends Seed, A> ra = a.run(context, input);
+            Result<? extends Seed, B> rb = b.run(context, ra.getNextState());
+            Result<? extends Seed, C> rc = c.run(context, rb.getNextState());
+            return result(rc.getNextState(),
+                    combine.apply(ra.getValue(),
+                            rb.getValue(),
+                            rc.getValue()));
         }
 
         @Override
@@ -559,7 +664,15 @@ public class Primitives {
 
         @Override
         public Result<? extends Seed, Out> run(GeneratorContext context, Seed input) {
-            return null;
+            Result<? extends Seed, A> ra = a.run(context, input);
+            Result<? extends Seed, B> rb = b.run(context, ra.getNextState());
+            Result<? extends Seed, C> rc = c.run(context, rb.getNextState());
+            Result<? extends Seed, D> rd = d.run(context, rc.getNextState());
+            return result(rc.getNextState(),
+                    combine.apply(ra.getValue(),
+                            rb.getValue(),
+                            rc.getValue(),
+                            rd.getValue()));
         }
 
         @Override
@@ -584,7 +697,17 @@ public class Primitives {
 
         @Override
         public Result<? extends Seed, Out> run(GeneratorContext context, Seed input) {
-            return null;
+            Result<? extends Seed, A> ra = a.run(context, input);
+            Result<? extends Seed, B> rb = b.run(context, ra.getNextState());
+            Result<? extends Seed, C> rc = c.run(context, rb.getNextState());
+            Result<? extends Seed, D> rd = d.run(context, rc.getNextState());
+            Result<? extends Seed, E> re = e.run(context, rd.getNextState());
+            return result(rc.getNextState(),
+                    combine.apply(ra.getValue(),
+                            rb.getValue(),
+                            rc.getValue(),
+                            rd.getValue(),
+                            re.getValue()));
         }
 
         @Override
@@ -610,7 +733,19 @@ public class Primitives {
 
         @Override
         public Result<? extends Seed, Out> run(GeneratorContext context, Seed input) {
-            return null;
+            Result<? extends Seed, A> ra = a.run(context, input);
+            Result<? extends Seed, B> rb = b.run(context, ra.getNextState());
+            Result<? extends Seed, C> rc = c.run(context, rb.getNextState());
+            Result<? extends Seed, D> rd = d.run(context, rc.getNextState());
+            Result<? extends Seed, E> re = e.run(context, rd.getNextState());
+            Result<? extends Seed, F> rf = f.run(context, re.getNextState());
+            return result(rc.getNextState(),
+                    combine.apply(ra.getValue(),
+                            rb.getValue(),
+                            rc.getValue(),
+                            rd.getValue(),
+                            re.getValue(),
+                            rf.getValue()));
         }
 
         @Override
@@ -637,7 +772,21 @@ public class Primitives {
 
         @Override
         public Result<? extends Seed, Out> run(GeneratorContext context, Seed input) {
-            return null;
+            Result<? extends Seed, A> ra = a.run(context, input);
+            Result<? extends Seed, B> rb = b.run(context, ra.getNextState());
+            Result<? extends Seed, C> rc = c.run(context, rb.getNextState());
+            Result<? extends Seed, D> rd = d.run(context, rc.getNextState());
+            Result<? extends Seed, E> re = e.run(context, rd.getNextState());
+            Result<? extends Seed, F> rf = f.run(context, re.getNextState());
+            Result<? extends Seed, G> rg = g.run(context, rf.getNextState());
+            return result(rc.getNextState(),
+                    combine.apply(ra.getValue(),
+                            rb.getValue(),
+                            rc.getValue(),
+                            rd.getValue(),
+                            re.getValue(),
+                            rf.getValue(),
+                            rg.getValue()));
         }
 
         @Override
@@ -665,7 +814,23 @@ public class Primitives {
 
         @Override
         public Result<? extends Seed, Out> run(GeneratorContext context, Seed input) {
-            return null;
+            Result<? extends Seed, A> ra = a.run(context, input);
+            Result<? extends Seed, B> rb = b.run(context, ra.getNextState());
+            Result<? extends Seed, C> rc = c.run(context, rb.getNextState());
+            Result<? extends Seed, D> rd = d.run(context, rc.getNextState());
+            Result<? extends Seed, E> re = e.run(context, rd.getNextState());
+            Result<? extends Seed, F> rf = f.run(context, re.getNextState());
+            Result<? extends Seed, G> rg = g.run(context, rf.getNextState());
+            Result<? extends Seed, H> rh = h.run(context, rg.getNextState());
+            return result(rc.getNextState(),
+                    combine.apply(ra.getValue(),
+                            rb.getValue(),
+                            rc.getValue(),
+                            rd.getValue(),
+                            re.getValue(),
+                            rf.getValue(),
+                            rg.getValue(),
+                            rh.getValue()));
         }
 
         @Override
@@ -693,5 +858,49 @@ public class Primitives {
         public Maybe<String> getLabel() {
             return LABEL;
         }
+    }
+
+    private static void checkBound(long bound) {
+        if (bound < 1) throw new IllegalArgumentException("bound must be > 0");
+    }
+
+    private static void checkOriginBound(long origin, long bound) {
+        if (origin >= bound) throw new IllegalArgumentException("bound must be > origin");
+    }
+
+    private static void checkMinMax(long min, long max) {
+        if (min > max) throw new IllegalArgumentException("max must be >= min");
+    }
+
+    private static void checkCount(int count) {
+        if (count < 0) throw new IllegalArgumentException("count must be >= 0");
+    }
+
+    private static <A> Generator<A> buildGenerator(Maybe<String> label, Fn2<GeneratorContext, Seed, Result<? extends Seed, A>> runFn) {
+        return new Generator<A>() {
+            @Override
+            public Result<? extends Seed, A> run(GeneratorContext context, Seed input) {
+                return runFn.apply(context, input);
+            }
+
+            @Override
+            public Maybe<String> getLabel() {
+                return label;
+            }
+        };
+    }
+
+    private static <A> Generator<A> buildGenerator(Maybe<String> label, Fn1<Seed, Result<? extends Seed, A>> runFn) {
+        return new Generator<A>() {
+            @Override
+            public Result<? extends Seed, A> run(GeneratorContext context, Seed input) {
+                return runFn.apply(input);
+            }
+
+            @Override
+            public Maybe<String> getLabel() {
+                return label;
+            }
+        };
     }
 }

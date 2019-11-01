@@ -199,8 +199,8 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         return new Custom<A>(fn::apply);
     }
 
-    public static <A, B> Generator<B> tap(Generator<A> inner,
-                                          Fn2<GeneratorImpl<A>, LegacySeed, B> f) {
+    public static <A, B> Generator<B> legacyTap(Generator<A> inner,
+                                                Fn2<GeneratorImpl<A>, LegacySeed, B> f) {
         return new Primitives.Tap<>(inner, f);
     }
 
@@ -239,27 +239,23 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     }
 
     public static Generator<Integer> generateInt() {
-        return Primitives.nextInt();
+        return Primitives.generateInt();
     }
 
     public static Generator<Integer> generateInt(int min, int max) {
-        checkMinMax(min, max);
-        return new Primitives.IntBetweenGenerator(min, max);
+        return Primitives.generateInt(min, max);
     }
 
     public static Generator<Integer> generateIntExclusive(int bound) {
-        checkBound(bound);
-        return new Primitives.IntBoundedGenerator(bound);
+        return Primitives.generateIntExclusive(bound);
     }
 
     public static Generator<Integer> generateIntExclusive(int origin, int bound) {
-        checkOriginBound(origin, bound);
-        return new Primitives.IntExclusiveGenerator(origin, bound);
+        return Primitives.generateIntExclusive(origin, bound);
     }
 
     public static Generator<Integer> generateIntIndex(int bound) {
-        checkBound(bound);
-        return new Primitives.IntIndexGenerator(bound);
+        return Primitives.generateIntIndex(bound);
     }
 
     public static Generator<Long> generateLong() {
