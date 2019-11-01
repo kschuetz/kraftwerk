@@ -44,7 +44,7 @@ public class TracingInterpreter {
 
     private TracingInterpreter(Parameters parameters) {
         SizeSelector sizeSelector = parameters.getSizeSelector();
-        this.sizeGenerator = compile(Generator.<Integer>generate(sizeSelector::selectSize)
+        this.sizeGenerator = compile(Generator.<Integer>generate(sizeSelector::legacySelectSize)
                 .labeled("sized"));
     }
 

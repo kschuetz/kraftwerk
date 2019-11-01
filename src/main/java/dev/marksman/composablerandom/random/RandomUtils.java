@@ -21,4 +21,9 @@ public class RandomUtils {
 
         return result(seed.setNextSeedValue(newSeedValue), result);
     }
+
+    public static Result<Seed, Integer> nextInt(Seed input) {
+        return nextBits(input, 32);
+    }
+
 }
