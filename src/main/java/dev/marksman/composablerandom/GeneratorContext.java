@@ -7,4 +7,8 @@ public class GeneratorContext {
         // TODO
         return input -> result(input, 5);
     }
+
+    public static GeneratorContext defaultContext() {
+        return new GeneratorContext();
+    }
 }

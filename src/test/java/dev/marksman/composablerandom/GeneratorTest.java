@@ -13,11 +13,9 @@ import static com.jnape.palatable.lambda.adt.hlist.HList.tuple;
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.All.all;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Eq.eq;
-import static dev.marksman.composablerandom.DefaultInterpreter.defaultInterpreter;
 import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
 import static dev.marksman.composablerandom.Generator.*;
-import static dev.marksman.composablerandom.StandardParameters.defaultParameters;
-import static dev.marksman.composablerandom.random.StandardGen.initStandardGen;
+import static dev.marksman.composablerandom.StandardSeed.initStandardSeed;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -118,10 +116,10 @@ class GeneratorTest {
     }
 
     private static <A> void testEquivalent(Generator<A> gen1, Generator<A> gen2) {
-        LegacySeed initial = initStandardGen();
+        Seed initial = initStandardSeed();
 
-        Result<LegacySeed, ArrayList<A>> result1 = run(generateArrayListOfN(SEQUENCE_LENGTH, gen1), initial);
-        Result<LegacySeed, ArrayList<A>> result2 = run(generateArrayListOfN(SEQUENCE_LENGTH, gen2), initial);
+        Result<Seed, ArrayList<A>> result1 = run(generateArrayListOfN(SEQUENCE_LENGTH, gen1), initial);
+        Result<Seed, ArrayList<A>> result2 = run(generateArrayListOfN(SEQUENCE_LENGTH, gen2), initial);
 
         assertEquals(result1.getNextState(),
                 result2.getNextState(), "outbound RandomGens don't match");
@@ -129,9 +127,8 @@ class GeneratorTest {
     }
 
     @SuppressWarnings("unchecked")
-    private static <A> Result<LegacySeed, A> run(Generator<A> gen, LegacySeed input) {
-        GeneratorImpl<A> compiled = defaultInterpreter().compile(defaultParameters(), gen);
-        return (Result<LegacySeed, A>) compiled.run(input);
+    private static <A> Result<Seed, A> run(Generator<A> gen, Seed input) {
+        return (Result<Seed, A>) gen.run(GeneratorContext.defaultContext(), input);
     }
 
 }

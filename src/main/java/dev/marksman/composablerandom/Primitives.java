@@ -5,14 +5,17 @@ import com.jnape.palatable.lambda.functions.*;
 import dev.marksman.composablerandom.util.Labeling;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Value;
 
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
 import static dev.marksman.composablerandom.Result.result;
 import static dev.marksman.composablerandom.random.RandomUtils.*;
 
 public class Primitives {
+
+    public static <A> Generator<A> withMetadata(Maybe<String> label, Maybe<Object> applicationData, Generator<A> operand) {
+        // TODO: withMetadata
+        return operand;
+    }
 
     public static <A> ConstantGenerator<A> constant(A value) {
         return new ConstantGenerator<A>(value);
@@ -98,9 +101,10 @@ public class Primitives {
         return generateIntExclusive(bound);  // TODO: make generateIntIndex unbiased
     }
 
+    public static Generator<Boolean> generateBoolean() {
+        return BooleanGenerator.INSTANCE;
+    }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class ConstantGenerator<A> extends Generator<A> {
         private static Maybe<String> LABEL = Maybe.just("constant");
@@ -118,8 +122,7 @@ public class Primitives {
         }
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Value
+
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
     public static class Mapped<In, A> extends Generator<A> {
         private static Maybe<String> LABEL = Maybe.just("fmap");
@@ -140,8 +143,7 @@ public class Primitives {
 
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Value
+
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
     public static class FlatMapped<In, A> extends Generator<A> {
         private static Maybe<String> LABEL = Maybe.just("flatMap");
@@ -163,8 +165,7 @@ public class Primitives {
 
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Value
+
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
     public static class BooleanGenerator extends Generator<Boolean> {
         private static Maybe<String> LABEL = Maybe.just("boolean");
@@ -183,12 +184,7 @@ public class Primitives {
 
     }
 
-    public static BooleanGenerator nextBoolean() {
-        return BooleanGenerator.INSTANCE;
-    }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Value
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
     public static class DoubleGenerator extends Generator<Double> {
         private static Maybe<String> LABEL = Maybe.just("double");
@@ -211,8 +207,7 @@ public class Primitives {
         return DoubleGenerator.INSTANCE;
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Value
+
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
     public static class FloatGenerator extends Generator<Float> {
         private static Maybe<String> LABEL = Maybe.just("float");
@@ -235,8 +230,7 @@ public class Primitives {
         return FloatGenerator.INSTANCE;
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Value
+
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
     public static class IntGenerator extends Generator<Integer> {
         private static Maybe<String> LABEL = Maybe.just("int");
@@ -256,8 +250,6 @@ public class Primitives {
     }
 
 
-    @EqualsAndHashCode(callSuper = true)
-    @Value
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
     public static class IntBoundedGenerator extends Generator<Integer> {
         private final int bound;
@@ -274,8 +266,7 @@ public class Primitives {
 
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Value
+
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
     public static class IntExclusiveGenerator extends Generator<Integer> {
         private final int origin;
@@ -293,8 +284,6 @@ public class Primitives {
 
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Value
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
     public static class IntBetweenGenerator extends Generator<Integer> {
         private final int min;
@@ -312,8 +301,7 @@ public class Primitives {
 
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Value
+
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
     public static class IntIndexGenerator extends Generator<Integer> {
         private final int bound;
@@ -330,8 +318,7 @@ public class Primitives {
 
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Value
+
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
     public static class LongGenerator extends Generator<Long> {
         private static Maybe<String> LABEL = Maybe.just("long");
@@ -359,8 +346,7 @@ public class Primitives {
         return LongGenerator.INSTANCE;
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Value
+
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
     public static class LongBoundedGenerator extends Generator<Long> {
         private final long bound;
@@ -377,8 +363,7 @@ public class Primitives {
 
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Value
+
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
     public static class LongExclusiveGenerator extends Generator<Long> {
         private final long origin;
@@ -396,8 +381,7 @@ public class Primitives {
 
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Value
+
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
     public static class LongBetweenGenerator extends Generator<Long> {
         private final long min;
@@ -415,8 +399,7 @@ public class Primitives {
 
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Value
+
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
     public static class LongIndexGenerator extends Generator<Long> {
         private final long bound;
@@ -433,8 +416,7 @@ public class Primitives {
 
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Value
+
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
     public static class GaussianGenerator extends Generator<Double> {
         private static Maybe<String> LABEL = Maybe.just("gaussian");
@@ -457,8 +439,7 @@ public class Primitives {
         return GaussianGenerator.INSTANCE;
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Value
+
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
     public static class ByteGenerator extends Generator<Byte> {
         private static Maybe<String> LABEL = Maybe.just("byte");
@@ -481,8 +462,7 @@ public class Primitives {
         return ByteGenerator.INSTANCE;
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Value
+
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
     public static class ShortGenerator extends Generator<Short> {
         private static Maybe<String> LABEL = Maybe.just("short");
@@ -505,8 +485,7 @@ public class Primitives {
         return ShortGenerator.INSTANCE;
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Value
+
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
     public static class BytesGenerator extends Generator<Byte[]> {
         private final int count;
@@ -523,8 +502,7 @@ public class Primitives {
 
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Value
+
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
     public static class SizedGenerator<A> extends Generator<A> {
         private static Maybe<String> LABEL = Maybe.just("sized");
@@ -545,8 +523,7 @@ public class Primitives {
 
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Value
+
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
     public static class WithMetadata<A> extends Generator<A> {
         private final Maybe<String> label;
@@ -564,8 +541,7 @@ public class Primitives {
         }
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Value
+
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
     public static class Aggregate<Elem, Builder, Out> extends Generator<Out> {
         private static Maybe<String> LABEL = Maybe.just("aggregate");
@@ -595,8 +571,7 @@ public class Primitives {
 
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Value
+
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
     public static class Product2<A, B, Out> extends Generator<Out> {
         private static Maybe<String> LABEL = Maybe.just("product2");
@@ -621,8 +596,7 @@ public class Primitives {
 
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Value
+
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
     public static class Product3<A, B, C, Out> extends Generator<Out> {
         private static Maybe<String> LABEL = Maybe.just("product3");
@@ -650,8 +624,7 @@ public class Primitives {
 
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Value
+
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
     public static class Product4<A, B, C, D, Out> extends Generator<Out> {
         private static Maybe<String> LABEL = Maybe.just("product4");
@@ -682,8 +655,7 @@ public class Primitives {
 
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Value
+
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
     public static class Product5<A, B, C, D, E, Out> extends Generator<Out> {
         private static Maybe<String> LABEL = Maybe.just("product5");
@@ -717,8 +689,7 @@ public class Primitives {
 
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Value
+
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
     public static class Product6<A, B, C, D, E, F, Out> extends Generator<Out> {
         private static Maybe<String> LABEL = Maybe.just("product6");
@@ -755,8 +726,7 @@ public class Primitives {
 
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Value
+
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
     public static class Product7<A, B, C, D, E, F, G, Out> extends Generator<Out> {
         private static Maybe<String> LABEL = Maybe.just("product7");
@@ -796,8 +766,7 @@ public class Primitives {
 
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Value
+
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
     public static class Product8<A, B, C, D, E, F, G, H, Out> extends Generator<Out> {
         private static Maybe<String> LABEL = Maybe.just("product8");
@@ -840,8 +809,7 @@ public class Primitives {
 
     }
 
-    @EqualsAndHashCode(callSuper = true)
-    @Value
+
     @AllArgsConstructor(access = AccessLevel.PUBLIC)
     public static class Tap<A, B> extends Generator<B> {
         private static Maybe<String> LABEL = Maybe.just("tap");

@@ -205,7 +205,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     }
 
     public static Generator<Boolean> generateBoolean() {
-        return Primitives.nextBoolean();
+        return Primitives.generateBoolean();
     }
 
     public static Generator<Boolean> generateBoolean(BooleanWeights weights) {
@@ -1045,12 +1045,13 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     }
 
     private static <A> Generator<A> withMetadata(Maybe<String> label, Maybe<Object> applicationData, Generator<A> operand) {
-        if (operand instanceof Primitives.WithMetadata) {
-            Primitives.WithMetadata<A> target1 = (Primitives.WithMetadata<A>) operand;
-            return new Primitives.WithMetadata<>(label, applicationData, target1.getOperand());
-        } else {
-            return new Primitives.WithMetadata<>(label, applicationData, operand);
-        }
+//        if (operand instanceof Primitives.WithMetadata) {
+//            Primitives.WithMetadata<A> target1 = (Primitives.WithMetadata<A>) operand;
+//            return new Primitives.WithMetadata<>(label, applicationData, target1.getOperand());
+//        } else {
+//            return new Primitives.WithMetadata<>(label, applicationData, operand);
+//        }
+        return Primitives.withMetadata(label, applicationData, operand);
     }
 
     private static void checkBound(long bound) {
