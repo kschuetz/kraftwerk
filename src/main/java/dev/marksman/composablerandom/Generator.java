@@ -266,7 +266,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     }
 
     public static Generator<Double> generateGaussian() {
-        return Primitives.nextGaussian();
+        return Primitives.generateGaussian();
     }
 
     public static Generator<Byte[]> generateBytes(int count) {
