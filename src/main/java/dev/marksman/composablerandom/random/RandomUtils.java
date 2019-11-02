@@ -26,4 +26,22 @@ public class RandomUtils {
         return nextBits(input, 32);
     }
 
+    public static Result<Seed, Long> nextLong(Seed input) {
+        long s1 = getNextSeed(input.getSeedValue());
+        long s2 = getNextSeed(s1);
+        int i1 = bitsFrom(32, s1);
+        int i2 = bitsFrom(32, s2);
+        long result = ((long) i1 << 32) + i2;
+        return result(input.setNextSeedValue(s2), result);
+    }
+
+    public static Result<Seed, Double> nextDouble(Seed input) {
+        long s1 = getNextSeed(input.getSeedValue());
+        long s2 = getNextSeed(s1);
+        int i1 = bitsFrom(26, s1);
+        int i2 = bitsFrom(27, s2);
+        double result = (((long) i1 << 27) + i2) / (double) (1L << 53);
+        return result(input.setNextSeedValue(s2), result);
+    }
+
 }

@@ -22,23 +22,26 @@ class ReservoirSample {
     }
 
     private static Generator<Set<Integer>> reservoirSampleImpl(int n, int k) {
-        return Generator.generate(rs -> {
-            LegacySeed current = rs;
-            Integer[] result = new Integer[k];
-            for (int i = 0; i < k; i++) {
-                result[i] = i;
-            }
-            for (int i = k; i < n; i++) {
-                Result<? extends LegacySeed, Integer> next = current.nextIntBounded(i);
-                Integer value = next.getValue();
-                if (value < k) {
-                    result[value] = i;
+        return new Generator<Set<Integer>>() {
+            @Override
+            public Result<? extends Seed, Set<Integer>> run(GeneratorContext context, Seed input) {
+                Seed current = input;
+                Integer[] result = new Integer[k];
+                for (int i = 0; i < k; i++) {
+                    result[i] = i;
                 }
-                current = next.getNextState();
+                for (int i = k; i < n; i++) {
+                    // TODO: speed this up
+                    Result<? extends Seed, Integer> next = generateIntExclusive(i).run(context, current);
+                    Integer value = next.getValue();
+                    if (value < k) {
+                        result[value] = i;
+                    }
+                    current = next.getNextState();
+                }
+                return Result.result(current, Set.copyFrom(result));
             }
-            return Result.result(current, Set.copyFrom(result));
-        });
-
+        };
     }
 
 }

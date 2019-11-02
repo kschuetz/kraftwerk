@@ -2,30 +2,41 @@ package dev.marksman.composablerandom;
 
 import com.jnape.palatable.lambda.adt.Maybe;
 import com.jnape.palatable.lambda.functions.*;
+import dev.marksman.composablerandom.random.RandomUtils;
 import dev.marksman.composablerandom.util.Labeling;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
+import static com.jnape.palatable.lambda.functions.builtin.fn2.Replicate.replicate;
 import static dev.marksman.composablerandom.Result.result;
+import static dev.marksman.composablerandom.StandardSeedCacheGaussian.standardSeedCacheGaussian;
 import static dev.marksman.composablerandom.random.RandomUtils.*;
 
-public class Primitives {
+class Primitives {
 
-    public static <A> Generator<A> withMetadata(Maybe<String> label, Maybe<Object> applicationData, Generator<A> operand) {
+    static <A> Generator<A> withMetadata(Maybe<String> label, Maybe<Object> applicationData, Generator<A> operand) {
         // TODO: withMetadata
         return operand;
     }
 
-    public static <A> ConstantGenerator<A> constant(A value) {
+    static <A, B> Generator<B> mapped(Fn1<? super A, ? extends B> fn, Generator<A> operand) {
+        return new Mapped<>(fn::apply, operand);
+    }
+
+    static <A, B> Generator<B> flatMapped(Fn1<? super A, ? extends Generator<B>> fn, Generator<A> operand) {
+        return new FlatMapped<>(operand, fn::apply);
+    }
+
+    static <A> ConstantGenerator<A> constant(A value) {
         return new ConstantGenerator<A>(value);
     }
 
-    public static Generator<Integer> generateInt() {
+    static Generator<Integer> generateInt() {
         return IntGenerator.INSTANCE;
     }
 
-    public static Generator<Integer> generateInt(int min, int max) {
+    static Generator<Integer> generateInt(int min, int max) {
         checkMinMax(min, max);
         if (max == Integer.MAX_VALUE) {
             if (min == Integer.MIN_VALUE) {
@@ -39,7 +50,7 @@ public class Primitives {
         }
     }
 
-    public static Generator<Integer> generateIntExclusive(int bound) {
+    static Generator<Integer> generateIntExclusive(int bound) {
         checkBound(bound);
         Maybe<String> label = Maybe.just(Labeling.intInterval(0, bound, true));
 
@@ -65,7 +76,7 @@ public class Primitives {
 
     }
 
-    public static Generator<Integer> generateIntExclusive(int origin, int bound) {
+    static Generator<Integer> generateIntExclusive(int origin, int bound) {
         checkOriginBound(origin, bound);
         if (origin == 0) {
             return generateIntExclusive(bound);
@@ -97,16 +108,198 @@ public class Primitives {
         }
     }
 
-    public static Generator<Integer> generateIntIndex(int bound) {
+    static Generator<Integer> generateIntIndex(int bound) {
         return generateIntExclusive(bound);  // TODO: make generateIntIndex unbiased
     }
 
-    public static Generator<Boolean> generateBoolean() {
+    static Generator<Boolean> generateBoolean() {
         return BooleanGenerator.INSTANCE;
     }
 
+    static Generator<Double> generateDouble() {
+        return DoubleGenerator.INSTANCE;
+    }
+
+    static Generator<Float> generateFloat() {
+        return FloatGenerator.INSTANCE;
+    }
+
+    static Generator<Long> generateLong() {
+        return LongGenerator.INSTANCE;
+    }
+
+    static Generator<Long> generateLong(long min, long max) {
+        checkMinMax(min, max);
+        if (max == Long.MAX_VALUE) {
+            if (min == Long.MIN_VALUE) {
+                return generateLong();
+            } else {
+                return generateLongExclusive(min - 1, max)
+                        .fmap(n -> n + 1);
+            }
+        } else {
+            return generateLongExclusive(min, max + 1);
+        }
+    }
+
+    static Generator<Long> generateLongExclusive(long bound) {
+        checkBound(bound);
+        if (bound <= Integer.MAX_VALUE) {
+            return generateIntExclusive((int) bound).fmap(Integer::longValue);
+        } else {
+            return generateLongExclusive(0, bound);
+        }
+    }
+
+    static Generator<Long> generateLongExclusive(long origin, long bound) {
+        checkOriginBound(origin, bound);
+
+        if (origin < 0 && bound > 0 && bound > Math.abs(origin - Long.MIN_VALUE)) {
+            return generateLongExclusiveWithOverflow(origin, bound);
+        }
+
+        long n = bound - origin;
+        long m = n - 1;
+
+        if ((n & m) == 0L) {
+            // power of two
+            return generateLong().fmap(r -> (r & m) + origin);
+        } else {
+            return buildGenerator(nothing(), input -> {
+                Result<Seed, Long> rg1 = RandomUtils.nextLong(input);
+                Seed current = rg1.getNextState();
+                long r = rg1.getValue();
+                for (long u = r >>> 1;
+                     u + m - (r = u % n) < 0L; ) {
+                    Result<Seed, Long> next = RandomUtils.nextLong(current);
+                    u = next._2() >>> 1;
+                    current = next._1();
+                }
+                r += origin;
+
+                return result(current, r);
+            });
+        }
+    }
+
+    private static Generator<Long> generateLongExclusiveWithOverflow(long origin, long bound) {
+        return buildGenerator(nothing(), input -> {
+            Result<Seed, Long> result = RandomUtils.nextLong(input);
+            long value = result.getValue();
+            // since we are covering more than half the range of longs, this loop shouldn't take too long
+            while (value < origin || value >= bound) {
+                result = RandomUtils.nextLong(result.getNextState());
+                value = result.getValue();
+            }
+            return result;
+        });
+    }
+
+    static Generator<Long> generateLongIndex(long bound) {
+        checkBound(bound);
+        return generateLongExclusive(bound);
+    }
+
+    static ByteGenerator generateByte() {
+        return ByteGenerator.INSTANCE;
+    }
+
+    static ShortGenerator generateShort() {
+        return ShortGenerator.INSTANCE;
+    }
+
+    static Generator<Byte[]> generateBytes(int count) {
+        checkCount(count);
+        return new BytesGenerator(count);
+    }
+
+    static <A> Generator<A> sized(Fn1<Integer, Generator<A>> fn) {
+        return new SizedGenerator<>(fn);
+    }
+
+    static <A, B, Out> Generator<Out> product(Generator<A> a,
+                                              Generator<B> b,
+                                              Fn2<A, B, Out> combine) {
+        return new Product2<>(a, b, combine);
+    }
+
+    static <A, B, C, Out> Generator<Out> product(Generator<A> a,
+                                                 Generator<B> b,
+                                                 Generator<C> c,
+                                                 Fn3<A, B, C, Out> combine) {
+        return new Product3<>(a, b, c, combine);
+    }
+
+
+    static <A, B, C, D, Out> Generator<Out> product(Generator<A> a,
+                                                    Generator<B> b,
+                                                    Generator<C> c,
+                                                    Generator<D> d,
+                                                    Fn4<A, B, C, D, Out> combine) {
+        return new Product4<>(a, b, c, d, combine);
+    }
+
+
+    static <A, B, C, D, E, Out> Generator<Out> product(Generator<A> a,
+                                                       Generator<B> b,
+                                                       Generator<C> c,
+                                                       Generator<D> d,
+                                                       Generator<E> e,
+                                                       Fn5<A, B, C, D, E, Out> combine) {
+        return new Product5<>(a, b, c, d, e, combine);
+    }
+
+
+    static <A, B, C, D, E, F, Out> Generator<Out> product(Generator<A> a,
+                                                          Generator<B> b,
+                                                          Generator<C> c,
+                                                          Generator<D> d,
+                                                          Generator<E> e,
+                                                          Generator<F> f,
+                                                          Fn6<A, B, C, D, E, F, Out> combine) {
+        return new Product6<>(a, b, c, d, e, f, combine);
+    }
+
+    static <A, B, C, D, E, F, G, Out> Generator<Out> product(Generator<A> a,
+                                                             Generator<B> b,
+                                                             Generator<C> c,
+                                                             Generator<D> d,
+                                                             Generator<E> e,
+                                                             Generator<F> f,
+                                                             Generator<G> g,
+                                                             Fn7<A, B, C, D, E, F, G, Out> combine) {
+        return new Product7<>(a, b, c, d, e, f, g, combine);
+    }
+
+    static <A, B, C, D, E, F, G, H, Out> Generator<Out> product(Generator<A> a,
+                                                                Generator<B> b,
+                                                                Generator<C> c,
+                                                                Generator<D> d,
+                                                                Generator<E> e,
+                                                                Generator<F> f,
+                                                                Generator<G> g,
+                                                                Generator<H> h,
+                                                                Fn8<A, B, C, D, E, F, G, H, Out> combine) {
+        return new Product8<>(a, b, c, d, e, f, g, h, combine);
+    }
+
+    static <A, Builder, Out> Generator<Out> aggregate(Fn0<Builder> initialBuilderSupplier,
+                                                      Fn2<Builder, A, Builder> addFn,
+                                                      Fn1<Builder, Out> buildFn,
+                                                      Iterable<Generator<A>> elements) {
+        return new Aggregate<>(initialBuilderSupplier, addFn, buildFn, elements);
+    }
+
+    static <Elem, Builder, Out> Generator<Out> aggregate(Fn0<Builder> initialBuilderSupplier,
+                                                         Fn2<Builder, Elem, Builder> addFn,
+                                                         Fn1<Builder, Out> buildFn,
+                                                         int size,
+                                                         Generator<Elem> gen) {
+        return new Aggregate<>(initialBuilderSupplier, addFn, buildFn, replicate(size, gen));
+    }
+
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class ConstantGenerator<A> extends Generator<A> {
+    private static class ConstantGenerator<A> extends Generator<A> {
         private static Maybe<String> LABEL = Maybe.just("constant");
 
         private final A value;
@@ -123,8 +316,8 @@ public class Primitives {
     }
 
 
-    @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class Mapped<In, A> extends Generator<A> {
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    private static class Mapped<In, A> extends Generator<A> {
         private static Maybe<String> LABEL = Maybe.just("fmap");
 
         private final Fn1<In, A> fn;
@@ -144,8 +337,8 @@ public class Primitives {
     }
 
 
-    @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class FlatMapped<In, A> extends Generator<A> {
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    private static class FlatMapped<In, A> extends Generator<A> {
         private static Maybe<String> LABEL = Maybe.just("flatMap");
 
         private final Generator<In> operand;
@@ -166,15 +359,18 @@ public class Primitives {
     }
 
 
-    @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class BooleanGenerator extends Generator<Boolean> {
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    private static class BooleanGenerator extends Generator<Boolean> {
         private static Maybe<String> LABEL = Maybe.just("boolean");
 
         private static final BooleanGenerator INSTANCE = new BooleanGenerator();
 
         @Override
         public Result<? extends Seed, Boolean> run(GeneratorContext context, Seed input) {
-            return null;
+            long newSeedValue = getNextSeed(input.getSeedValue());
+            boolean b = (((int) (newSeedValue >>> 47)) & 1) != 0;
+
+            return result(input.setNextSeedValue(newSeedValue), b);
         }
 
         @Override
@@ -185,15 +381,15 @@ public class Primitives {
     }
 
 
-    @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class DoubleGenerator extends Generator<Double> {
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    private static class DoubleGenerator extends Generator<Double> {
         private static Maybe<String> LABEL = Maybe.just("double");
 
         private static final DoubleGenerator INSTANCE = new DoubleGenerator();
 
         @Override
         public Result<? extends Seed, Double> run(GeneratorContext context, Seed input) {
-            return null;
+            return RandomUtils.nextDouble(input);
         }
 
         @Override
@@ -203,20 +399,19 @@ public class Primitives {
 
     }
 
-    public static DoubleGenerator nextDouble() {
-        return DoubleGenerator.INSTANCE;
-    }
 
-
-    @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class FloatGenerator extends Generator<Float> {
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    private static class FloatGenerator extends Generator<Float> {
         private static Maybe<String> LABEL = Maybe.just("float");
 
         private static final FloatGenerator INSTANCE = new FloatGenerator();
 
         @Override
         public Result<? extends Seed, Float> run(GeneratorContext context, Seed input) {
-            return null;
+            long s1 = getNextSeed(input.getSeedValue());
+            int n = bitsFrom(24, s1);
+            float result = (n / ((float) (1 << 24)));
+            return result(input.setNextSeedValue(s1), result);
         }
 
         @Override
@@ -226,13 +421,8 @@ public class Primitives {
 
     }
 
-    public static FloatGenerator nextFloat() {
-        return FloatGenerator.INSTANCE;
-    }
-
-
-    @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class IntGenerator extends Generator<Integer> {
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    private static class IntGenerator extends Generator<Integer> {
         private static Maybe<String> LABEL = Maybe.just("int");
 
         private static final IntGenerator INSTANCE = new IntGenerator();
@@ -250,8 +440,8 @@ public class Primitives {
     }
 
 
-    @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class IntBoundedGenerator extends Generator<Integer> {
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    private static class IntBoundedGenerator extends Generator<Integer> {
         private final int bound;
 
         @Override
@@ -267,8 +457,8 @@ public class Primitives {
     }
 
 
-    @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class IntExclusiveGenerator extends Generator<Integer> {
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    private static class IntExclusiveGenerator extends Generator<Integer> {
         private final int origin;
         private final int bound;
 
@@ -284,8 +474,8 @@ public class Primitives {
 
     }
 
-    @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class IntBetweenGenerator extends Generator<Integer> {
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    private static class IntBetweenGenerator extends Generator<Integer> {
         private final int min;
         private final int max;
 
@@ -302,8 +492,8 @@ public class Primitives {
     }
 
 
-    @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class IntIndexGenerator extends Generator<Integer> {
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    private static class IntIndexGenerator extends Generator<Integer> {
         private final int bound;
 
         @Override
@@ -318,21 +508,15 @@ public class Primitives {
 
     }
 
-
-    @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class LongGenerator extends Generator<Long> {
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    private static class LongGenerator extends Generator<Long> {
         private static Maybe<String> LABEL = Maybe.just("long");
 
         private static final LongGenerator INSTANCE = new LongGenerator();
 
         @Override
         public Result<? extends Seed, Long> run(GeneratorContext context, Seed input) {
-            long s1 = getNextSeed(input.getSeedValue());
-            long s2 = getNextSeed(s1);
-            int i1 = bitsFrom(32, s1);
-            int i2 = bitsFrom(32, s2);
-            long result = ((long) i1 << 32) + i2;
-            return result(input.setNextSeedValue(s2), result);
+            return RandomUtils.nextLong(input);
         }
 
         @Override
@@ -342,13 +526,8 @@ public class Primitives {
 
     }
 
-    public static LongGenerator nextLong() {
-        return LongGenerator.INSTANCE;
-    }
-
-
-    @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class LongBoundedGenerator extends Generator<Long> {
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    private static class LongBoundedGenerator extends Generator<Long> {
         private final long bound;
 
         @Override
@@ -364,8 +543,8 @@ public class Primitives {
     }
 
 
-    @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class LongExclusiveGenerator extends Generator<Long> {
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    private static class LongExclusiveGenerator extends Generator<Long> {
         private final long origin;
         private final long bound;
 
@@ -382,8 +561,8 @@ public class Primitives {
     }
 
 
-    @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class LongBetweenGenerator extends Generator<Long> {
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    private static class LongBetweenGenerator extends Generator<Long> {
         private final long min;
         private final long max;
 
@@ -400,8 +579,8 @@ public class Primitives {
     }
 
 
-    @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class LongIndexGenerator extends Generator<Long> {
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    private static class LongIndexGenerator extends Generator<Long> {
         private final long bound;
 
         @Override
@@ -417,15 +596,34 @@ public class Primitives {
     }
 
 
-    @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class GaussianGenerator extends Generator<Double> {
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    private static class GaussianGenerator extends Generator<Double> {
         private static Maybe<String> LABEL = Maybe.just("gaussian");
 
         private static final GaussianGenerator INSTANCE = new GaussianGenerator();
 
         @Override
         public Result<? extends Seed, Double> run(GeneratorContext context, Seed input) {
-            return null;
+            if (input instanceof StandardSeedCacheGaussian) {
+                StandardSeedCacheGaussian cached = (StandardSeedCacheGaussian) input;
+                return result(cached.getUnderlying(), cached.getNextGaussian());
+            }
+
+            Seed newSeed = input;
+            double v1, v2, s;
+            do {
+                Result<Seed, Double> d1 = RandomUtils.nextDouble(newSeed);
+                Result<Seed, Double> d2 = RandomUtils.nextDouble(d1._1());
+                newSeed = d2._1();
+                v1 = 2 * d1._2() - 1;
+                v2 = 2 * d2._2() - 1;
+                s = v1 * v1 + v2 * v2;
+            } while (s >= 1 || s == 0);
+            double multiplier = StrictMath.sqrt(-2 * StrictMath.log(s) / s);
+            double result = v1 * multiplier;
+            double nextResult = v2 * multiplier;
+            return result(standardSeedCacheGaussian(newSeed, nextResult), result);
+
         }
 
         @Override
@@ -433,6 +631,25 @@ public class Primitives {
             return LABEL;
         }
 
+        /*
+        @Override
+    public final Result<CacheNextGaussian, Double> nextGaussian() {
+        StandardGen newSeed = this;
+        double v1, v2, s;
+        do {
+            Result<StandardGen, Double> d1 = newSeed.nextDouble();
+            Result<StandardGen, Double> d2 = d1._1().nextDouble();
+            newSeed = d2._1();
+            v1 = 2 * d1._2() - 1;
+            v2 = 2 * d2._2() - 1;
+            s = v1 * v1 + v2 * v2;
+        } while (s >= 1 || s == 0);
+        double multiplier = StrictMath.sqrt(-2 * StrictMath.log(s) / s);
+        double result = v1 * multiplier;
+        double nextResult = v2 * multiplier;
+        return result(cacheNextGaussian(newSeed, nextResult), result);
+    }
+         */
     }
 
     public static GaussianGenerator nextGaussian() {
@@ -440,8 +657,8 @@ public class Primitives {
     }
 
 
-    @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class ByteGenerator extends Generator<Byte> {
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    private static class ByteGenerator extends Generator<Byte> {
         private static Maybe<String> LABEL = Maybe.just("byte");
 
         private static final ByteGenerator INSTANCE = new ByteGenerator();
@@ -458,13 +675,9 @@ public class Primitives {
 
     }
 
-    public static ByteGenerator nextByte() {
-        return ByteGenerator.INSTANCE;
-    }
 
-
-    @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class ShortGenerator extends Generator<Short> {
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    private static class ShortGenerator extends Generator<Short> {
         private static Maybe<String> LABEL = Maybe.just("short");
 
         private static final ShortGenerator INSTANCE = new ShortGenerator();
@@ -481,13 +694,9 @@ public class Primitives {
 
     }
 
-    public static ShortGenerator nextShort() {
-        return ShortGenerator.INSTANCE;
-    }
 
-
-    @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class BytesGenerator extends Generator<Byte[]> {
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    private static class BytesGenerator extends Generator<Byte[]> {
         private final int count;
 
         @Override
@@ -503,8 +712,8 @@ public class Primitives {
     }
 
 
-    @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class SizedGenerator<A> extends Generator<A> {
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    private static class SizedGenerator<A> extends Generator<A> {
         private static Maybe<String> LABEL = Maybe.just("sized");
 
         private final Fn1<Integer, Generator<A>> fn;
@@ -524,8 +733,8 @@ public class Primitives {
     }
 
 
-    @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class WithMetadata<A> extends Generator<A> {
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    private static class WithMetadata<A> extends Generator<A> {
         private final Maybe<String> label;
         private final Maybe<Object> applicationData;
         private final Generator<A> operand;
@@ -542,8 +751,8 @@ public class Primitives {
     }
 
 
-    @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class Aggregate<Elem, Builder, Out> extends Generator<Out> {
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    static class Aggregate<Elem, Builder, Out> extends Generator<Out> {
         private static Maybe<String> LABEL = Maybe.just("aggregate");
 
         private final Fn0<Builder> initialBuilderSupplier;
@@ -572,8 +781,8 @@ public class Primitives {
     }
 
 
-    @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class Product2<A, B, Out> extends Generator<Out> {
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    private static class Product2<A, B, Out> extends Generator<Out> {
         private static Maybe<String> LABEL = Maybe.just("product2");
 
         private final Generator<A> a;
@@ -597,8 +806,8 @@ public class Primitives {
     }
 
 
-    @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class Product3<A, B, C, Out> extends Generator<Out> {
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    private static class Product3<A, B, C, Out> extends Generator<Out> {
         private static Maybe<String> LABEL = Maybe.just("product3");
 
         private final Generator<A> a;
@@ -625,8 +834,8 @@ public class Primitives {
     }
 
 
-    @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class Product4<A, B, C, D, Out> extends Generator<Out> {
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    private static class Product4<A, B, C, D, Out> extends Generator<Out> {
         private static Maybe<String> LABEL = Maybe.just("product4");
 
         private final Generator<A> a;
@@ -656,8 +865,8 @@ public class Primitives {
     }
 
 
-    @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class Product5<A, B, C, D, E, Out> extends Generator<Out> {
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    private static class Product5<A, B, C, D, E, Out> extends Generator<Out> {
         private static Maybe<String> LABEL = Maybe.just("product5");
 
         private final Generator<A> a;
@@ -690,8 +899,8 @@ public class Primitives {
     }
 
 
-    @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class Product6<A, B, C, D, E, F, Out> extends Generator<Out> {
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    private static class Product6<A, B, C, D, E, F, Out> extends Generator<Out> {
         private static Maybe<String> LABEL = Maybe.just("product6");
 
         private final Generator<A> a;
@@ -727,8 +936,8 @@ public class Primitives {
     }
 
 
-    @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class Product7<A, B, C, D, E, F, G, Out> extends Generator<Out> {
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    private static class Product7<A, B, C, D, E, F, G, Out> extends Generator<Out> {
         private static Maybe<String> LABEL = Maybe.just("product7");
 
         private final Generator<A> a;
@@ -767,8 +976,8 @@ public class Primitives {
     }
 
 
-    @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class Product8<A, B, C, D, E, F, G, H, Out> extends Generator<Out> {
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    private static class Product8<A, B, C, D, E, F, G, H, Out> extends Generator<Out> {
         private static Maybe<String> LABEL = Maybe.just("product8");
 
         private final Generator<A> a;
@@ -810,8 +1019,8 @@ public class Primitives {
     }
 
 
-    @AllArgsConstructor(access = AccessLevel.PUBLIC)
-    public static class Tap<A, B> extends Generator<B> {
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    private static class Tap<A, B> extends Generator<B> {
         private static Maybe<String> LABEL = Maybe.just("tap");
 
         private final Generator<A> inner;

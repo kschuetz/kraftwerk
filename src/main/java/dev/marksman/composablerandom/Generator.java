@@ -149,31 +149,6 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class Custom<A> extends Generator<A> {
-        private static Maybe<String> LABEL = Maybe.just("custom");
-
-        private final Fn1<? super LegacySeed, Result<LegacySeed, A>> fn;
-
-        @Override
-        public Result<? extends Seed, A> run(GeneratorContext context, Seed input) {
-            // TODO: Custom
-            return null;
-        }
-
-        @Override
-        public boolean isPrimitive() {
-            return false;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return LABEL;
-        }
-    }
-
-    @EqualsAndHashCode(callSuper = true)
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class InjectSpecialValues<A> extends Generator<A> {
         private static Maybe<String> LABEL = Maybe.just("injectSpecialValues");
 
@@ -195,13 +170,9 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         return Primitives.constant(a);
     }
 
-    public static <A> Generator<A> generate(Fn1<? super LegacySeed, Result> fn) {
-        return new Custom<A>(fn::apply);
-    }
-
     public static <A, B> Generator<B> legacyTap(Generator<A> inner,
                                                 Fn2<GeneratorImpl<A>, LegacySeed, B> f) {
-        return new Primitives.Tap<>(inner, f);
+        throw new UnsupportedOperationException("TODO: tap");
     }
 
     public static Generator<Boolean> generateBoolean() {
@@ -213,7 +184,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     }
 
     public static Generator<Double> generateDouble() {
-        return Primitives.nextDouble();
+        return Primitives.generateDouble();
     }
 
     public static Generator<Double> generateDouble(double scale) {
@@ -226,7 +197,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     }
 
     public static Generator<Float> generateFloat() {
-        return Primitives.nextFloat();
+        return Primitives.generateFloat();
     }
 
     public static Generator<Float> generateFloat(float scale) {
@@ -259,35 +230,35 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     }
 
     public static Generator<Long> generateLong() {
-        return Primitives.nextLong();
+        return Primitives.generateLong();
     }
 
     public static Generator<Long> generateLong(long min, long max) {
         checkMinMax(min, max);
-        return new Primitives.LongBetweenGenerator(min, max);
+        return Primitives.generateLong(min, max);
     }
 
     public static Generator<Long> generateLongExclusive(long bound) {
         checkBound(bound);
-        return new Primitives.LongBoundedGenerator(bound);
+        return Primitives.generateLongExclusive(bound);
     }
 
     public static Generator<Long> generateLongExclusive(long origin, long bound) {
         checkOriginBound(origin, bound);
-        return new Primitives.LongExclusiveGenerator(origin, bound);
+        return Primitives.generateLongExclusive(origin, bound);
     }
 
     public static Generator<Long> generateLongIndex(long bound) {
         checkBound(bound);
-        return new Primitives.LongIndexGenerator(bound);
+        return Primitives.generateLongIndex(bound);
     }
 
     public static Generator<Byte> generateByte() {
-        return Primitives.nextByte();
+        return Primitives.generateByte();
     }
 
     public static Generator<Short> generateShort() {
-        return Primitives.nextShort();
+        return Primitives.generateShort();
     }
 
     public static Generator<Double> generateGaussian() {
@@ -295,12 +266,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     }
 
     public static Generator<Byte[]> generateBytes(int count) {
-        checkCount(count);
-        return new Primitives.BytesGenerator(count);
+        return Primitives.generateBytes(count);
     }
 
     public static <A> Generator<A> sized(Fn1<Integer, Generator<A>> fn) {
-        return new Primitives.SizedGenerator<>(fn::apply);
+        return Primitives.sized(fn);
     }
 
     public static <A> Generator<A> sizedMinimum(int minimum, Fn1<Integer, Generator<A>> fn) {
@@ -311,11 +281,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         }
     }
 
-    public static <A, Builder, Out> Primitives.Aggregate<A, Builder, Out> aggregate(Fn0<Builder> initialBuilderSupplier,
-                                                                                    Fn2<Builder, A, Builder> addFn,
-                                                                                    Fn1<Builder, Out> buildFn,
-                                                                                    Iterable<Generator<A>> elements) {
-        return new Primitives.Aggregate<>(initialBuilderSupplier, addFn, buildFn, elements);
+    public static <A, Builder, Out> Generator<Out> aggregate(Fn0<Builder> initialBuilderSupplier,
+                                                             Fn2<Builder, A, Builder> addFn,
+                                                             Fn1<Builder, Out> buildFn,
+                                                             Iterable<Generator<A>> elements) {
+        return Primitives.aggregate(initialBuilderSupplier, addFn, buildFn, elements);
     }
 
     public static <Elem, Builder, Out> Generator<Out> aggregate(Fn0<Builder> initialBuilderSupplier,
@@ -323,12 +293,12 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
                                                                 Fn1<Builder, Out> buildFn,
                                                                 int size,
                                                                 Generator<Elem> gen) {
-        return new Primitives.Aggregate<>(initialBuilderSupplier, addFn, buildFn, replicate(size, gen));
+        return Primitives.aggregate(initialBuilderSupplier, addFn, buildFn, replicate(size, gen));
     }
 
     public static <A, C extends Collection<A>> Generator<C> buildCollection(Fn0<C> initialCollectionSupplier,
                                                                             Iterable<Generator<A>> elements) {
-        return new Primitives.Aggregate<>(initialCollectionSupplier,
+        return Primitives.aggregate(initialCollectionSupplier,
                 (collection, item) -> {
                     collection.add(item);
                     return collection;
@@ -342,16 +312,16 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     }
 
     public static <A> Generator<ImmutableVector<A>> buildVector(Iterable<Generator<A>> elements) {
-        return new Primitives.Aggregate<>(Vector::<A>builder, VectorBuilder::add, VectorBuilder::build, elements);
+        return Primitives.aggregate(Vector::<A>builder, VectorBuilder::add, VectorBuilder::build, elements);
     }
 
     public static <A> Generator<ImmutableVector<A>> buildVector(int size, Generator<A> gen) {
-        return new Primitives.Aggregate<A, VectorBuilder<A>, ImmutableVector<A>>(() -> Vector.builder(size), VectorBuilder::add,
+        return Primitives.<A, VectorBuilder<A>, ImmutableVector<A>>aggregate(() -> Vector.builder(size), VectorBuilder::add,
                 VectorBuilder::build, replicate(size, gen));
     }
 
     public static <A> Generator<ImmutableNonEmptyVector<A>> buildNonEmptyVector(NonEmptyIterable<Generator<A>> elements) {
-        return new Primitives.Aggregate<>(Vector::<A>builder, VectorBuilder::add, b -> b.build().toNonEmptyOrThrow(), elements);
+        return Primitives.aggregate(Vector::<A>builder, VectorBuilder::add, b -> b.build().toNonEmptyOrThrow(), elements);
     }
 
     public static <A> Generator<ImmutableNonEmptyVector<A>> buildNonEmptyVector(int size, Generator<A> gen) {
@@ -359,7 +329,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
             throw new IllegalArgumentException("size must be >= 1");
 
         }
-        return new Primitives.Aggregate<A, VectorBuilder<A>, ImmutableNonEmptyVector<A>>(() -> Vector.builder(size), VectorBuilder::add,
+        return Primitives.<A, VectorBuilder<A>, ImmutableNonEmptyVector<A>>aggregate(() -> Vector.builder(size), VectorBuilder::add,
                 aVectorBuilder -> aVectorBuilder.build().toNonEmptyOrThrow(),
                 replicate(size, gen));
     }
@@ -367,14 +337,14 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     public static <A, B, Out> Generator<Out> product(Generator<A> a,
                                                      Generator<B> b,
                                                      Fn2<A, B, Out> combine) {
-        return new Primitives.Product2<>(a, b, combine);
+        return Primitives.product(a, b, combine);
     }
 
     public static <A, B, C, Out> Generator<Out> product(Generator<A> a,
                                                         Generator<B> b,
                                                         Generator<C> c,
                                                         Fn3<A, B, C, Out> combine) {
-        return new Primitives.Product3<>(a, b, c, combine);
+        return Primitives.product(a, b, c, combine);
     }
 
 
@@ -383,7 +353,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
                                                            Generator<C> c,
                                                            Generator<D> d,
                                                            Fn4<A, B, C, D, Out> combine) {
-        return new Primitives.Product4<>(a, b, c, d, combine);
+        return Primitives.product(a, b, c, d, combine);
     }
 
 
@@ -393,7 +363,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
                                                               Generator<D> d,
                                                               Generator<E> e,
                                                               Fn5<A, B, C, D, E, Out> combine) {
-        return new Primitives.Product5<>(a, b, c, d, e, combine);
+        return Primitives.product(a, b, c, d, e, combine);
     }
 
 
@@ -404,7 +374,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
                                                                  Generator<E> e,
                                                                  Generator<F> f,
                                                                  Fn6<A, B, C, D, E, F, Out> combine) {
-        return new Primitives.Product6<>(a, b, c, d, e, f, combine);
+        return Primitives.product(a, b, c, d, e, f, combine);
     }
 
     public static <A, B, C, D, E, F, G, Out> Generator<Out> product(Generator<A> a,
@@ -415,7 +385,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
                                                                     Generator<F> f,
                                                                     Generator<G> g,
                                                                     Fn7<A, B, C, D, E, F, G, Out> combine) {
-        return new Primitives.Product7<>(a, b, c, d, e, f, g, combine);
+        return Primitives.product(a, b, c, d, e, f, g, combine);
     }
 
     public static <A, B, C, D, E, F, G, H, Out> Generator<Out> product(Generator<A> a,
@@ -427,25 +397,25 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
                                                                        Generator<G> g,
                                                                        Generator<H> h,
                                                                        Fn8<A, B, C, D, E, F, G, H, Out> combine) {
-        return new Primitives.Product8<>(a, b, c, d, e, f, g, h, combine);
+        return Primitives.product(a, b, c, d, e, f, g, h, combine);
     }
 
     public static <A, B> Generator<Tuple2<A, B>> tupled(Generator<A> a,
                                                         Generator<B> b) {
-        return new Primitives.Product2<>(a, b, Tuple2::tuple);
+        return Primitives.product(a, b, Tuple2::tuple);
     }
 
     public static <A, B, C> Generator<Tuple3<A, B, C>> tupled(Generator<A> a,
                                                               Generator<B> b,
                                                               Generator<C> c) {
-        return new Primitives.Product3<>(a, b, c, Tuple3::tuple);
+        return Primitives.product(a, b, c, Tuple3::tuple);
     }
 
     public static <A, B, C, D> Generator<Tuple4<A, B, C, D>> tupled(Generator<A> a,
                                                                     Generator<B> b,
                                                                     Generator<C> c,
                                                                     Generator<D> d) {
-        return new Primitives.Product4<>(a, b, c, d, Tuple4::tuple);
+        return Primitives.product(a, b, c, d, Tuple4::tuple);
     }
 
     public static <A, B, C, D, E> Generator<Tuple5<A, B, C, D, E>> tupled(Generator<A> a,
@@ -453,7 +423,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
                                                                           Generator<C> c,
                                                                           Generator<D> d,
                                                                           Generator<E> e) {
-        return new Primitives.Product5<>(a, b, c, d, e, Tuple5::tuple);
+        return Primitives.product(a, b, c, d, e, Tuple5::tuple);
     }
 
     public static <A, B, C, D, E, F> Generator<Tuple6<A, B, C, D, E, F>> tupled(Generator<A> a,
@@ -462,7 +432,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
                                                                                 Generator<D> d,
                                                                                 Generator<E> e,
                                                                                 Generator<F> f) {
-        return new Primitives.Product6<>(a, b, c, d, e, f, Tuple6::tuple);
+        return Primitives.product(a, b, c, d, e, f, Tuple6::tuple);
     }
 
     public static <A, B, C, D, E, F, G> Generator<Tuple7<A, B, C, D, E, F, G>> tupled(Generator<A> a,
@@ -472,7 +442,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
                                                                                       Generator<E> e,
                                                                                       Generator<F> f,
                                                                                       Generator<G> g) {
-        return new Primitives.Product7<>(a, b, c, d, e, f, g, Tuple7::tuple);
+        return Primitives.product(a, b, c, d, e, f, g, Tuple7::tuple);
     }
 
     public static <A, B, C, D, E, F, G, H> Generator<Tuple8<A, B, C, D, E, F, G, H>> tupled(Generator<A> a,
@@ -483,7 +453,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
                                                                                             Generator<F> f,
                                                                                             Generator<G> g,
                                                                                             Generator<H> h) {
-        return new Primitives.Product8<>(a, b, c, d, e, f, g, h, Tuple8::tuple);
+        return Primitives.product(a, b, c, d, e, f, g, h, Tuple8::tuple);
     }
 
     public static <A> Generator<ImmutableIterable<A>> sequence(Iterable<Generator<A>> gs) {
@@ -1033,11 +1003,11 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     }
 
     private static <A, B> Generator<B> mapped(Fn1<? super A, ? extends B> fn, Generator<A> operand) {
-        return new Primitives.Mapped<>(fn::apply, operand);
+        return Primitives.mapped(fn, operand);
     }
 
     private static <A, B> Generator<B> flatMapped(Fn1<? super A, ? extends Generator<B>> fn, Generator<A> operand) {
-        return new Primitives.FlatMapped<>(operand, fn::apply);
+        return Primitives.flatMapped(fn, operand);
     }
 
     private static <A> Generator<A> injectSpecialValues(NonEmptyFiniteIterable<A> specialValues, Generator<A> inner) {
