@@ -331,6 +331,12 @@ class Primitives {
         }
 
         @Override
+        public Generate<A> prepare(GeneratorContext context) {
+            Generate<In> g = operand.prepare(context);
+            return input -> g.apply(input).fmap(fn);
+        }
+
+        @Override
         public Maybe<String> getLabel() {
             return LABEL;
         }
@@ -441,6 +447,11 @@ class Primitives {
         @Override
         public Result<? extends Seed, Integer> run(GeneratorContext context, Seed input) {
             return nextInt(input);
+        }
+
+        @Override
+        public Generate<Integer> prepare(GeneratorContext context) {
+            return RandomUtils::nextInt;
         }
 
         @Override
