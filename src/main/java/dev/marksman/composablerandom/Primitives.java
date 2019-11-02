@@ -1,9 +1,10 @@
 package dev.marksman.composablerandom;
 
 import com.jnape.palatable.lambda.adt.Maybe;
+import com.jnape.palatable.lambda.adt.Unit;
 import com.jnape.palatable.lambda.functions.*;
 import com.jnape.palatable.lambda.functions.builtin.fn2.Map;
-import dev.marksman.composablerandom.random.RandomUtils;
+import dev.marksman.composablerandom.random.BuildingBlocks;
 import dev.marksman.composablerandom.util.Labeling;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -11,8 +12,7 @@ import lombok.AllArgsConstructor;
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Replicate.replicate;
 import static dev.marksman.composablerandom.Result.result;
-import static dev.marksman.composablerandom.StandardSeedCacheGaussian.standardSeedCacheGaussian;
-import static dev.marksman.composablerandom.random.RandomUtils.*;
+import static dev.marksman.composablerandom.random.BuildingBlocks.*;
 
 class Primitives {
 
@@ -56,23 +56,9 @@ class Primitives {
         Maybe<String> label = Maybe.just(Labeling.intInterval(0, bound, true));
 
         if ((bound & -bound) == bound) { // bound is a power of 2
-            return simpleGenerator(label, input -> {
-                long s1 = getNextSeed(input.getSeedValue());
-                int n = bitsFrom(31, s1);
-                return result(input.setNextSeedValue(s1), (int) ((bound * (long) n) >> 31));
-            });
-
+            return simpleGenerator(label, input -> unsafeNextIntBoundedPowerOf2(bound, input));
         } else {
-            return simpleGenerator(label, input -> {
-                long bits, val;
-                long nextSeed = input.getSeedValue();
-                do {
-                    nextSeed = getNextSeed(nextSeed);
-                    bits = bitsFrom(31, nextSeed);
-                    val = bits % bound;
-                } while (bits - val + (bound - 1) < 0);
-                return result(input.setNextSeedValue(nextSeed), (int) val);
-            });
+            return simpleGenerator(label, input -> unsafeNextIntBounded(bound, input));
         }
 
     }
@@ -82,29 +68,15 @@ class Primitives {
         if (origin == 0) {
             return generateIntExclusive(bound);
         } else {
-            long n = (long) bound - origin;
-            long m = n - 1;
-            if (n < Integer.MAX_VALUE) {
-                return generateIntExclusive((int) n).fmap(r -> origin + r);
-            } else if ((n & m) == 0) {
+            long range = (long) bound - origin;
+            long m = range - 1;
+            if (range < Integer.MAX_VALUE) {
+                return simpleGenerator(nothing(), input -> unsafeNextIntExclusive(origin, (int) range, input));
+            } else if ((range & m) == 0) {
                 // power of two
-                return generateInt().fmap(r -> (r & (int) m) + origin);
+                return simpleGenerator(nothing(), input -> unsafeNextIntExclusivePowerOf2(origin, range, input));
             } else {
-                return simpleGenerator(nothing(), input -> {
-                    Result<Seed, Integer> rg1 = nextInt(input);
-                    Seed current = rg1.getNextState();
-                    int r = rg1._2();
-                    for (int u = r >>> 1;
-                         u + m - (r = u % (int) n) < 0; ) {
-                        Result<Seed, Integer> next = nextInt(current);
-                        u = next._2() >>> 1;
-                        current = next._1();
-                    }
-                    r += origin;
-
-                    return result(current, r);
-                });
-
+                return simpleGenerator(nothing(), input -> unsafeNextIntExclusiveWide(origin, range, input));
             }
         }
     }
@@ -156,44 +128,18 @@ class Primitives {
         checkOriginBound(origin, bound);
 
         if (origin < 0 && bound > 0 && bound > Math.abs(origin - Long.MIN_VALUE)) {
-            return generateLongExclusiveWithOverflow(origin, bound);
+            return simpleGenerator(nothing(), input -> unsafeNextLongExclusiveWithOverflow(origin, bound, input));
         }
 
-        long n = bound - origin;
-        long m = n - 1;
+        long range = bound - origin;
+        long m = range - 1;
 
-        if ((n & m) == 0L) {
+        if ((range & m) == 0L) {
             // power of two
-            return generateLong().fmap(r -> (r & m) + origin);
+            return simpleGenerator(nothing(), input -> unsafeNextLongExclusivePowerOf2(origin, range, input));
         } else {
-            return simpleGenerator(nothing(), input -> {
-                Result<Seed, Long> rg1 = RandomUtils.nextLong(input);
-                Seed current = rg1.getNextState();
-                long r = rg1.getValue();
-                for (long u = r >>> 1;
-                     u + m - (r = u % n) < 0L; ) {
-                    Result<Seed, Long> next = RandomUtils.nextLong(current);
-                    u = next._2() >>> 1;
-                    current = next._1();
-                }
-                r += origin;
-
-                return result(current, r);
-            });
+            return simpleGenerator(nothing(), input -> unsafeNextLongExclusive(origin, range, input));
         }
-    }
-
-    private static Generator<Long> generateLongExclusiveWithOverflow(long origin, long bound) {
-        return simpleGenerator(nothing(), input -> {
-            Result<Seed, Long> result = RandomUtils.nextLong(input);
-            long value = result.getValue();
-            // since we are covering more than half the range of longs, this loop shouldn't take too long
-            while (value < origin || value >= bound) {
-                result = RandomUtils.nextLong(result.getNextState());
-                value = result.getValue();
-            }
-            return result;
-        });
     }
 
     static Generator<Long> generateLongIndex(long bound) {
@@ -207,6 +153,10 @@ class Primitives {
 
     static ShortGenerator generateShort() {
         return ShortGenerator.INSTANCE;
+    }
+
+    static Generator<Double> generateGaussian() {
+        return GaussianGenerator.INSTANCE;
     }
 
     static Generator<Byte[]> generateBytes(int count) {
@@ -316,7 +266,6 @@ class Primitives {
         }
     }
 
-
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class Mapped<In, A> extends Generator<A> {
         private static Maybe<String> LABEL = Maybe.just("fmap");
@@ -342,7 +291,6 @@ class Primitives {
         }
 
     }
-
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class FlatMapped<In, A> extends Generator<A> {
@@ -375,7 +323,6 @@ class Primitives {
 
     }
 
-
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class BooleanGenerator extends Generator<Boolean> {
         private static Maybe<String> LABEL = Maybe.just("boolean");
@@ -384,10 +331,12 @@ class Primitives {
 
         @Override
         public Result<? extends Seed, Boolean> run(GeneratorContext context, Seed input) {
-            long newSeedValue = getNextSeed(input.getSeedValue());
-            boolean b = (((int) (newSeedValue >>> 47)) & 1) != 0;
+            return nextBoolean(input);
+        }
 
-            return result(input.setNextSeedValue(newSeedValue), b);
+        @Override
+        public Generate<Boolean> prepare(GeneratorContext context) {
+            return BuildingBlocks::nextBoolean;
         }
 
         @Override
@@ -396,7 +345,6 @@ class Primitives {
         }
 
     }
-
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class DoubleGenerator extends Generator<Double> {
@@ -406,7 +354,12 @@ class Primitives {
 
         @Override
         public Result<? extends Seed, Double> run(GeneratorContext context, Seed input) {
-            return RandomUtils.nextDouble(input);
+            return nextDouble(input);
+        }
+
+        @Override
+        public Generate<Double> prepare(GeneratorContext context) {
+            return BuildingBlocks::nextDouble;
         }
 
         @Override
@@ -416,7 +369,6 @@ class Primitives {
 
     }
 
-
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class FloatGenerator extends Generator<Float> {
         private static Maybe<String> LABEL = Maybe.just("float");
@@ -425,10 +377,12 @@ class Primitives {
 
         @Override
         public Result<? extends Seed, Float> run(GeneratorContext context, Seed input) {
-            long s1 = getNextSeed(input.getSeedValue());
-            int n = bitsFrom(24, s1);
-            float result = (n / ((float) (1 << 24)));
-            return result(input.setNextSeedValue(s1), result);
+            return nextFloat(input);
+        }
+
+        @Override
+        public Generate<Float> prepare(GeneratorContext context) {
+            return BuildingBlocks::nextFloat;
         }
 
         @Override
@@ -451,81 +405,12 @@ class Primitives {
 
         @Override
         public Generate<Integer> prepare(GeneratorContext context) {
-            return RandomUtils::nextInt;
+            return BuildingBlocks::nextInt;
         }
 
         @Override
         public Maybe<String> getLabel() {
             return LABEL;
-        }
-
-    }
-
-
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class IntBoundedGenerator extends Generator<Integer> {
-        private final int bound;
-
-        @Override
-        public Result<? extends Seed, Integer> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return Maybe.just(Labeling.intInterval(0, bound, true));
-        }
-
-    }
-
-
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class IntExclusiveGenerator extends Generator<Integer> {
-        private final int origin;
-        private final int bound;
-
-        @Override
-        public Result<? extends Seed, Integer> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return Maybe.just(Labeling.intInterval(origin, bound, true));
-        }
-
-    }
-
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class IntBetweenGenerator extends Generator<Integer> {
-        private final int min;
-        private final int max;
-
-        @Override
-        public Result<? extends Seed, Integer> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return Maybe.just(Labeling.intInterval(min, max, false));
-        }
-
-    }
-
-
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class IntIndexGenerator extends Generator<Integer> {
-        private final int bound;
-
-        @Override
-        public Result<? extends Seed, Integer> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return Maybe.just(Labeling.interval("index", 0, bound, true));
         }
 
     }
@@ -538,7 +423,7 @@ class Primitives {
 
         @Override
         public Result<? extends Seed, Long> run(GeneratorContext context, Seed input) {
-            return RandomUtils.nextLong(input);
+            return nextLong(input);
         }
 
         @Override
@@ -547,76 +432,6 @@ class Primitives {
         }
 
     }
-
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class LongBoundedGenerator extends Generator<Long> {
-        private final long bound;
-
-        @Override
-        public Result<? extends Seed, Long> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return Maybe.just(Labeling.longInterval(0, bound, true));
-        }
-
-    }
-
-
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class LongExclusiveGenerator extends Generator<Long> {
-        private final long origin;
-        private final long bound;
-
-        @Override
-        public Result<? extends Seed, Long> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return Maybe.just(Labeling.longInterval(origin, bound, true));
-        }
-
-    }
-
-
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class LongBetweenGenerator extends Generator<Long> {
-        private final long min;
-        private final long max;
-
-        @Override
-        public Result<? extends Seed, Long> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return Maybe.just(Labeling.longInterval(min, max, false));
-        }
-
-    }
-
-
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class LongIndexGenerator extends Generator<Long> {
-        private final long bound;
-
-        @Override
-        public Result<? extends Seed, Long> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return Maybe.just(Labeling.longInterval(0, bound, true));
-        }
-
-    }
-
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class GaussianGenerator extends Generator<Double> {
@@ -626,26 +441,12 @@ class Primitives {
 
         @Override
         public Result<? extends Seed, Double> run(GeneratorContext context, Seed input) {
-            if (input instanceof StandardSeedCacheGaussian) {
-                StandardSeedCacheGaussian cached = (StandardSeedCacheGaussian) input;
-                return result(cached.getUnderlying(), cached.getNextGaussian());
-            }
+            return nextGaussian(input);
+        }
 
-            Seed newSeed = input;
-            double v1, v2, s;
-            do {
-                Result<Seed, Double> d1 = RandomUtils.nextDouble(newSeed);
-                Result<Seed, Double> d2 = RandomUtils.nextDouble(d1._1());
-                newSeed = d2._1();
-                v1 = 2 * d1._2() - 1;
-                v2 = 2 * d2._2() - 1;
-                s = v1 * v1 + v2 * v2;
-            } while (s >= 1 || s == 0);
-            double multiplier = StrictMath.sqrt(-2 * StrictMath.log(s) / s);
-            double result = v1 * multiplier;
-            double nextResult = v2 * multiplier;
-            return result(standardSeedCacheGaussian(newSeed, nextResult), result);
-
+        @Override
+        public Generate<Double> prepare(GeneratorContext context) {
+            return BuildingBlocks::nextGaussian;
         }
 
         @Override
@@ -653,10 +454,6 @@ class Primitives {
             return LABEL;
         }
 
-    }
-
-    public static GaussianGenerator nextGaussian() {
-        return GaussianGenerator.INSTANCE;
     }
 
 
@@ -668,7 +465,7 @@ class Primitives {
 
         @Override
         public Result<? extends Seed, Byte> run(GeneratorContext context, Seed input) {
-            return null;
+            return nextInt(input).fmap(Integer::byteValue);
         }
 
         @Override
@@ -677,7 +474,6 @@ class Primitives {
         }
 
     }
-
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class ShortGenerator extends Generator<Short> {
@@ -687,7 +483,7 @@ class Primitives {
 
         @Override
         public Result<? extends Seed, Short> run(GeneratorContext context, Seed input) {
-            return null;
+            return nextInt(input).fmap(Integer::shortValue);
         }
 
         @Override
@@ -697,14 +493,34 @@ class Primitives {
 
     }
 
-
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class BytesGenerator extends Generator<Byte[]> {
         private final int count;
 
         @Override
         public Result<? extends Seed, Byte[]> run(GeneratorContext context, Seed input) {
-            return null;
+            byte[] buffer = new byte[count];
+            Result<? extends Seed, Unit> next = nextBytes(buffer, input);
+            Byte[] result = new Byte[count];
+            int i = 0;
+            for (byte b : buffer) {
+                result[i++] = b;
+            }
+            return next.fmap(__ -> result);
+        }
+
+        @Override
+        public Generate<Byte[]> prepare(GeneratorContext context) {
+            return input -> {
+                byte[] buffer = new byte[count];
+                Result<? extends Seed, Unit> next = nextBytes(buffer, input);
+                Byte[] result = new Byte[count];
+                int i = 0;
+                for (byte b : buffer) {
+                    result[i++] = b;
+                }
+                return next.fmap(__ -> result);
+            };
         }
 
         @Override
@@ -713,7 +529,6 @@ class Primitives {
         }
 
     }
-
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class SizedGenerator<A> extends Generator<A> {
@@ -735,7 +550,6 @@ class Primitives {
 
     }
 
-
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class WithMetadata<A> extends Generator<A> {
         private final Maybe<String> label;
@@ -752,7 +566,6 @@ class Primitives {
             return false;
         }
     }
-
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     static class Aggregate<Elem, Builder, Out> extends Generator<Out> {
@@ -800,7 +613,6 @@ class Primitives {
 
     }
 
-
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class Product2<A, B, Out> extends Generator<Out> {
         private static Maybe<String> LABEL = Maybe.just("product2");
@@ -824,7 +636,6 @@ class Primitives {
         }
 
     }
-
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class Product3<A, B, C, Out> extends Generator<Out> {
@@ -852,7 +663,6 @@ class Primitives {
         }
 
     }
-
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class Product4<A, B, C, D, Out> extends Generator<Out> {
@@ -903,7 +713,6 @@ class Primitives {
 
     }
 
-
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class Product5<A, B, C, D, E, Out> extends Generator<Out> {
         private static Maybe<String> LABEL = Maybe.just("product5");
@@ -936,7 +745,6 @@ class Primitives {
         }
 
     }
-
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class Product6<A, B, C, D, E, F, Out> extends Generator<Out> {
@@ -973,7 +781,6 @@ class Primitives {
         }
 
     }
-
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class Product7<A, B, C, D, E, F, G, Out> extends Generator<Out> {
@@ -1013,7 +820,6 @@ class Primitives {
         }
 
     }
-
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class Product8<A, B, C, D, E, F, G, H, Out> extends Generator<Out> {
@@ -1055,60 +861,6 @@ class Primitives {
             return LABEL;
         }
 
-    }
-
-
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class Tap<A, B> extends Generator<B> {
-        private static Maybe<String> LABEL = Maybe.just("tap");
-
-        private final Generator<A> inner;
-        private final Fn2<GeneratorImpl<A>, LegacySeed, B> fn;
-
-        @Override
-        public Result<? extends Seed, B> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Generate<B> prepare(GeneratorContext context) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return LABEL;
-        }
-    }
-
-    private static void checkBound(long bound) {
-        if (bound < 1) throw new IllegalArgumentException("bound must be > 0");
-    }
-
-    private static void checkOriginBound(long origin, long bound) {
-        if (origin >= bound) throw new IllegalArgumentException("bound must be > origin");
-    }
-
-    private static void checkMinMax(long min, long max) {
-        if (min > max) throw new IllegalArgumentException("max must be >= min");
-    }
-
-    private static void checkCount(int count) {
-        if (count < 0) throw new IllegalArgumentException("count must be >= 0");
-    }
-
-    private static <A> Generator<A> simpleGenerator(Maybe<String> label, Fn2<GeneratorContext, Seed, Result<? extends Seed, A>> runFn) {
-        return new Generator<A>() {
-            @Override
-            public Result<? extends Seed, A> run(GeneratorContext context, Seed input) {
-                return runFn.apply(context, input);
-            }
-
-            @Override
-            public Maybe<String> getLabel() {
-                return label;
-            }
-        };
     }
 
     private static <A> Generator<A> simpleGenerator(Maybe<String> label, Generate<A> runFn) {
