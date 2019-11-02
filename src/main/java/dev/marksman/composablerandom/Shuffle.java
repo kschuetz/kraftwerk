@@ -12,6 +12,7 @@ import java.util.Collection;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Upcast.upcast;
+import static dev.marksman.composablerandom.Generator.generateIntExclusive;
 import static dev.marksman.composablerandom.Result.result;
 
 class Shuffle {
@@ -34,11 +35,16 @@ class Shuffle {
             throw new IllegalArgumentException("count must be >= 1");
         } else if (count == 1) {
             return Generator.constant(Vector.of(fn.apply(0)));
-        } else return Generator.generate(stateIn -> {
-            ArrayList<A> target = newInputInstance(count, fn);
-            LegacySeed stateOut = shuffleInPlace(stateIn, target);
-            return result(stateOut, NonEmptyVector.wrapOrThrow(target));
-        });
+        } else {
+            return new Generator<NonEmptyVector<A>>() {
+                @Override
+                public Result<? extends Seed, NonEmptyVector<A>> run(GeneratorContext context, Seed input) {
+                    ArrayList<A> target = newInputInstance(count, fn);
+                    Seed stateOut = shuffleInPlace(context, input, target);
+                    return result(stateOut, NonEmptyVector.wrapOrThrow(target));
+                }
+            };
+        }
     }
 
     static <A> Generator<Vector<A>> generateShuffled(FiniteIterable<A> input) {
@@ -86,16 +92,17 @@ class Shuffle {
         return result;
     }
 
-    private static <A> LegacySeed shuffleInPlace(LegacySeed inputState, ArrayList<A> target) {
+    private static <A> Seed shuffleInPlace(GeneratorContext context, Seed inputState, ArrayList<A> target) {
         int size = target.size();
         if (size < 2) {
             // No changes
             return inputState;
         } else {
             int n = target.size();
-            LegacySeed state = inputState;
+            Seed state = inputState;
             for (int i = 0; i < size - 1; i++) {
-                Result<? extends LegacySeed, Integer> next = state.nextIntExclusive(i, n);
+                // TODO: speed this up
+                Result<? extends Seed, Integer> next = generateIntExclusive(i, n).run(context, state);
                 int j = next.getValue();
                 if (i != j) {
                     A temp = target.get(i);

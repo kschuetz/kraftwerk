@@ -5,23 +5,23 @@ import java.math.BigInteger;
 import java.util.Random;
 
 import static dev.marksman.composablerandom.Generator.constant;
-import static dev.marksman.composablerandom.Generator.generate;
-import static dev.marksman.composablerandom.Result.result;
+import static dev.marksman.composablerandom.Generator.generateLong;
 
 class BigNumbers {
 
     static Generator<BigInteger> generateBigIntegerExclusive(BigInteger bound) {
-        return generate(rs -> {
+
+        return generateLong().fmap(s -> {
             int bitLength = bound.bitLength();
-            Result<? extends LegacySeed, Long> seed = rs.nextLong();
             Random rnd = new Random();
-            rnd.setSeed(seed.getValue());
+            rnd.setSeed(s);
             BigInteger result;
             do {
                 result = new BigInteger(bitLength, rnd);
             } while (result.compareTo(bound) >= 0);
-            return result(seed.getNextState(), result);
+            return result;
         });
+
     }
 
     static Generator<BigInteger> generateBigIntegerExclusive(BigInteger origin, BigInteger bound) {
