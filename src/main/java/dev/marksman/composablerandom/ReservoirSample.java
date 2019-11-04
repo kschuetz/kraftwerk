@@ -25,21 +25,28 @@ class ReservoirSample {
         return new Generator<Set<Integer>>() {
             @Override
             public Result<? extends Seed, Set<Integer>> run(GeneratorContext context, Seed input) {
-                Seed current = input;
-                Integer[] result = new Integer[k];
-                for (int i = 0; i < k; i++) {
-                    result[i] = i;
-                }
-                for (int i = k; i < n; i++) {
-                    // TODO: speed this up
-                    Result<? extends Seed, Integer> next = generateIntExclusive(i).run(context, current);
-                    Integer value = next.getValue();
-                    if (value < k) {
-                        result[value] = i;
+                return prepare(context).apply(input);
+            }
+
+            @Override
+            public Generate<Set<Integer>> prepare(GeneratorContext context) {
+                return input -> {
+                    Seed current = input;
+                    Integer[] result = new Integer[k];
+                    for (int i = 0; i < k; i++) {
+                        result[i] = i;
                     }
-                    current = next.getNextState();
-                }
-                return Result.result(current, Set.copyFrom(result));
+                    for (int i = k; i < n; i++) {
+                        // TODO: speed this up
+                        Result<? extends Seed, Integer> next = generateIntExclusive(i).run(context, current);
+                        Integer value = next.getValue();
+                        if (value < k) {
+                            result[value] = i;
+                        }
+                        current = next.getNextState();
+                    }
+                    return Result.result(current, Set.copyFrom(result));
+                };
             }
         };
     }

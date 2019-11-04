@@ -261,6 +261,11 @@ class Primitives {
         }
 
         @Override
+        public Generate<A> prepare(GeneratorContext context) {
+            return input -> result(input, value);
+        }
+
+        @Override
         public Maybe<String> getLabel() {
             return LABEL;
         }
@@ -427,6 +432,11 @@ class Primitives {
         }
 
         @Override
+        public Generate<Long> prepare(GeneratorContext context) {
+            return BuildingBlocks::nextLong;
+        }
+
+        @Override
         public Maybe<String> getLabel() {
             return LABEL;
         }
@@ -469,6 +479,11 @@ class Primitives {
         }
 
         @Override
+        public Generate<Byte> prepare(GeneratorContext context) {
+            return input -> nextInt(input).fmap(Integer::byteValue);
+        }
+
+        @Override
         public Maybe<String> getLabel() {
             return LABEL;
         }
@@ -484,6 +499,11 @@ class Primitives {
         @Override
         public Result<? extends Seed, Short> run(GeneratorContext context, Seed input) {
             return nextInt(input).fmap(Integer::shortValue);
+        }
+
+        @Override
+        public Generate<Short> prepare(GeneratorContext context) {
+            return input -> nextInt(input).fmap(Integer::shortValue);
         }
 
         @Override
@@ -544,6 +564,15 @@ class Primitives {
         }
 
         @Override
+        public Generate<A> prepare(GeneratorContext context) {
+            return input -> {
+                Result<? extends Seed, Integer> sizeResult = context.getSizeSelector().selectSize(input);
+                return fn.apply(sizeResult.getValue())
+                        .run(context, sizeResult.getNextState());
+            };
+        }
+
+        @Override
         public Maybe<String> getLabel() {
             return LABEL;
         }
@@ -559,6 +588,11 @@ class Primitives {
         @Override
         public Result<? extends Seed, A> run(GeneratorContext context, Seed input) {
             return operand.run(context, input);
+        }
+
+        @Override
+        public Generate<A> prepare(GeneratorContext context) {
+            return operand.prepare(context);
         }
 
         @Override
@@ -631,6 +665,19 @@ class Primitives {
         }
 
         @Override
+        public Generate<Out> prepare(GeneratorContext context) {
+            Fn1<Seed, Result<? extends Seed, A>> runA = a.prepare(context);
+            Fn1<Seed, Result<? extends Seed, B>> runB = b.prepare(context);
+            return input -> {
+                Result<? extends Seed, A> ra = runA.apply(input);
+                Result<? extends Seed, B> rb = runB.apply(ra.getNextState());
+                return result(rb.getNextState(),
+                        combine.apply(ra.getValue(),
+                                rb.getValue()));
+            };
+        }
+
+        @Override
         public Maybe<String> getLabel() {
             return LABEL;
         }
@@ -655,6 +702,22 @@ class Primitives {
                     combine.apply(ra.getValue(),
                             rb.getValue(),
                             rc.getValue()));
+        }
+
+        @Override
+        public Generate<Out> prepare(GeneratorContext context) {
+            Fn1<Seed, Result<? extends Seed, A>> runA = a.prepare(context);
+            Fn1<Seed, Result<? extends Seed, B>> runB = b.prepare(context);
+            Fn1<Seed, Result<? extends Seed, C>> runC = c.prepare(context);
+            return input -> {
+                Result<? extends Seed, A> ra = runA.apply(input);
+                Result<? extends Seed, B> rb = runB.apply(ra.getNextState());
+                Result<? extends Seed, C> rc = runC.apply(rb.getNextState());
+                return result(rc.getNextState(),
+                        combine.apply(ra.getValue(),
+                                rb.getValue(),
+                                rc.getValue()));
+            };
         }
 
         @Override
@@ -698,7 +761,7 @@ class Primitives {
                 Result<? extends Seed, B> rb = runB.apply(ra.getNextState());
                 Result<? extends Seed, C> rc = runC.apply(rb.getNextState());
                 Result<? extends Seed, D> rd = runD.apply(rc.getNextState());
-                return result(rc.getNextState(),
+                return result(rd.getNextState(),
                         combine.apply(ra.getValue(),
                                 rb.getValue(),
                                 rc.getValue(),
@@ -731,12 +794,34 @@ class Primitives {
             Result<? extends Seed, C> rc = c.run(context, rb.getNextState());
             Result<? extends Seed, D> rd = d.run(context, rc.getNextState());
             Result<? extends Seed, E> re = e.run(context, rd.getNextState());
-            return result(rc.getNextState(),
+            return result(re.getNextState(),
                     combine.apply(ra.getValue(),
                             rb.getValue(),
                             rc.getValue(),
                             rd.getValue(),
                             re.getValue()));
+        }
+
+        @Override
+        public Generate<Out> prepare(GeneratorContext context) {
+            Fn1<Seed, Result<? extends Seed, A>> runA = a.prepare(context);
+            Fn1<Seed, Result<? extends Seed, B>> runB = b.prepare(context);
+            Fn1<Seed, Result<? extends Seed, C>> runC = c.prepare(context);
+            Fn1<Seed, Result<? extends Seed, D>> runD = d.prepare(context);
+            Fn1<Seed, Result<? extends Seed, E>> runE = e.prepare(context);
+            return input -> {
+                Result<? extends Seed, A> ra = runA.apply(input);
+                Result<? extends Seed, B> rb = runB.apply(ra.getNextState());
+                Result<? extends Seed, C> rc = runC.apply(rb.getNextState());
+                Result<? extends Seed, D> rd = runD.apply(rc.getNextState());
+                Result<? extends Seed, E> re = runE.apply(rd.getNextState());
+                return result(re.getNextState(),
+                        combine.apply(ra.getValue(),
+                                rb.getValue(),
+                                rc.getValue(),
+                                rd.getValue(),
+                                re.getValue()));
+            };
         }
 
         @Override
@@ -766,13 +851,38 @@ class Primitives {
             Result<? extends Seed, D> rd = d.run(context, rc.getNextState());
             Result<? extends Seed, E> re = e.run(context, rd.getNextState());
             Result<? extends Seed, F> rf = f.run(context, re.getNextState());
-            return result(rc.getNextState(),
+            return result(rf.getNextState(),
                     combine.apply(ra.getValue(),
                             rb.getValue(),
                             rc.getValue(),
                             rd.getValue(),
                             re.getValue(),
                             rf.getValue()));
+        }
+
+        @Override
+        public Generate<Out> prepare(GeneratorContext context) {
+            Fn1<Seed, Result<? extends Seed, A>> runA = a.prepare(context);
+            Fn1<Seed, Result<? extends Seed, B>> runB = b.prepare(context);
+            Fn1<Seed, Result<? extends Seed, C>> runC = c.prepare(context);
+            Fn1<Seed, Result<? extends Seed, D>> runD = d.prepare(context);
+            Fn1<Seed, Result<? extends Seed, E>> runE = e.prepare(context);
+            Fn1<Seed, Result<? extends Seed, F>> runF = f.prepare(context);
+            return input -> {
+                Result<? extends Seed, A> ra = runA.apply(input);
+                Result<? extends Seed, B> rb = runB.apply(ra.getNextState());
+                Result<? extends Seed, C> rc = runC.apply(rb.getNextState());
+                Result<? extends Seed, D> rd = runD.apply(rc.getNextState());
+                Result<? extends Seed, E> re = runE.apply(rd.getNextState());
+                Result<? extends Seed, F> rf = runF.apply(re.getNextState());
+                return result(rf.getNextState(),
+                        combine.apply(ra.getValue(),
+                                rb.getValue(),
+                                rc.getValue(),
+                                rd.getValue(),
+                                re.getValue(),
+                                rf.getValue()));
+            };
         }
 
         @Override
@@ -815,6 +925,34 @@ class Primitives {
         }
 
         @Override
+        public Generate<Out> prepare(GeneratorContext context) {
+            Fn1<Seed, Result<? extends Seed, A>> runA = a.prepare(context);
+            Fn1<Seed, Result<? extends Seed, B>> runB = b.prepare(context);
+            Fn1<Seed, Result<? extends Seed, C>> runC = c.prepare(context);
+            Fn1<Seed, Result<? extends Seed, D>> runD = d.prepare(context);
+            Fn1<Seed, Result<? extends Seed, E>> runE = e.prepare(context);
+            Fn1<Seed, Result<? extends Seed, F>> runF = f.prepare(context);
+            Fn1<Seed, Result<? extends Seed, G>> runG = g.prepare(context);
+            return input -> {
+                Result<? extends Seed, A> ra = runA.apply(input);
+                Result<? extends Seed, B> rb = runB.apply(ra.getNextState());
+                Result<? extends Seed, C> rc = runC.apply(rb.getNextState());
+                Result<? extends Seed, D> rd = runD.apply(rc.getNextState());
+                Result<? extends Seed, E> re = runE.apply(rd.getNextState());
+                Result<? extends Seed, F> rf = runF.apply(re.getNextState());
+                Result<? extends Seed, G> rg = runG.apply(rf.getNextState());
+                return result(rg.getNextState(),
+                        combine.apply(ra.getValue(),
+                                rb.getValue(),
+                                rc.getValue(),
+                                rd.getValue(),
+                                re.getValue(),
+                                rf.getValue(),
+                                rg.getValue()));
+            };
+        }
+
+        @Override
         public Maybe<String> getLabel() {
             return LABEL;
         }
@@ -854,6 +992,37 @@ class Primitives {
                             rf.getValue(),
                             rg.getValue(),
                             rh.getValue()));
+        }
+
+        @Override
+        public Generate<Out> prepare(GeneratorContext context) {
+            Fn1<Seed, Result<? extends Seed, A>> runA = a.prepare(context);
+            Fn1<Seed, Result<? extends Seed, B>> runB = b.prepare(context);
+            Fn1<Seed, Result<? extends Seed, C>> runC = c.prepare(context);
+            Fn1<Seed, Result<? extends Seed, D>> runD = d.prepare(context);
+            Fn1<Seed, Result<? extends Seed, E>> runE = e.prepare(context);
+            Fn1<Seed, Result<? extends Seed, F>> runF = f.prepare(context);
+            Fn1<Seed, Result<? extends Seed, G>> runG = g.prepare(context);
+            Fn1<Seed, Result<? extends Seed, H>> runH = h.prepare(context);
+            return input -> {
+                Result<? extends Seed, A> ra = runA.apply(input);
+                Result<? extends Seed, B> rb = runB.apply(ra.getNextState());
+                Result<? extends Seed, C> rc = runC.apply(rb.getNextState());
+                Result<? extends Seed, D> rd = runD.apply(rc.getNextState());
+                Result<? extends Seed, E> re = runE.apply(rd.getNextState());
+                Result<? extends Seed, F> rf = runF.apply(re.getNextState());
+                Result<? extends Seed, G> rg = runG.apply(rf.getNextState());
+                Result<? extends Seed, H> rh = runH.apply(rg.getNextState());
+                return result(rh.getNextState(),
+                        combine.apply(ra.getValue(),
+                                rb.getValue(),
+                                rc.getValue(),
+                                rd.getValue(),
+                                re.getValue(),
+                                rf.getValue(),
+                                rg.getValue(),
+                                rh.getValue()));
+            };
         }
 
         @Override

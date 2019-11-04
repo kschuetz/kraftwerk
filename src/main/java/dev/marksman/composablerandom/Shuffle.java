@@ -43,6 +43,15 @@ class Shuffle {
                     Seed stateOut = shuffleInPlace(context, input, target);
                     return result(stateOut, NonEmptyVector.wrapOrThrow(target));
                 }
+
+                @Override
+                public Generate<NonEmptyVector<A>> prepare(GeneratorContext context) {
+                    return input -> {
+                        ArrayList<A> target = newInputInstance(count, fn);
+                        Seed stateOut = shuffleInPlace(context, input, target);
+                        return result(stateOut, NonEmptyVector.wrapOrThrow(target));
+                    };
+                }
             };
         }
     }
