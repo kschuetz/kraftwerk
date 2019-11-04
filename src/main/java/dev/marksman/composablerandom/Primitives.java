@@ -256,12 +256,7 @@ class Primitives {
         private final A value;
 
         @Override
-        public Result<? extends Seed, A> run(GeneratorContext context, Seed input) {
-            return result(input, value);
-        }
-
-        @Override
-        public Generate<A> prepare(GeneratorContext context) {
+        public Generate<A> prepare(Parameters parameters) {
             return input -> result(input, value);
         }
 
@@ -279,14 +274,8 @@ class Primitives {
         private final Generator<In> operand;
 
         @Override
-        public Result<? extends Seed, A> run(GeneratorContext context, Seed input) {
-            Result<? extends Seed, In> run = operand.run(context, input);
-            return run.fmap(fn);
-        }
-
-        @Override
-        public Generate<A> prepare(GeneratorContext context) {
-            Generate<In> g = operand.prepare(context);
+        public Generate<A> prepare(Parameters parameters) {
+            Generate<In> g = operand.prepare(parameters);
             return input -> g.apply(input).fmap(fn);
         }
 
@@ -305,19 +294,12 @@ class Primitives {
         private final Fn1<? super In, ? extends Generator<A>> fn;
 
         @Override
-        public Result<? extends Seed, A> run(GeneratorContext context, Seed input) {
-            Result<? extends Seed, In> result1 = operand.run(context, input);
-            return fn.apply(result1.getValue())
-                    .run(context, result1.getNextState());
-        }
-
-        @Override
-        public Generate<A> prepare(GeneratorContext context) {
-            Fn1<Seed, Result<? extends Seed, In>> runner = operand.prepare(context);
+        public Generate<A> prepare(Parameters parameters) {
+            Fn1<Seed, Result<? extends Seed, In>> runner = operand.prepare(parameters);
             return input -> {
                 Result<? extends Seed, In> result1 = runner.apply(input);
                 Generator<A> g2 = fn.apply(result1.getValue());
-                return g2.prepare(context).apply(result1.getNextState());
+                return g2.prepare(parameters).apply(result1.getNextState());
             };
         }
 
@@ -335,12 +317,7 @@ class Primitives {
         private static final BooleanGenerator INSTANCE = new BooleanGenerator();
 
         @Override
-        public Result<? extends Seed, Boolean> run(GeneratorContext context, Seed input) {
-            return nextBoolean(input);
-        }
-
-        @Override
-        public Generate<Boolean> prepare(GeneratorContext context) {
+        public Generate<Boolean> prepare(Parameters parameters) {
             return BuildingBlocks::nextBoolean;
         }
 
@@ -358,12 +335,7 @@ class Primitives {
         private static final DoubleGenerator INSTANCE = new DoubleGenerator();
 
         @Override
-        public Result<? extends Seed, Double> run(GeneratorContext context, Seed input) {
-            return nextDouble(input);
-        }
-
-        @Override
-        public Generate<Double> prepare(GeneratorContext context) {
+        public Generate<Double> prepare(Parameters parameters) {
             return BuildingBlocks::nextDouble;
         }
 
@@ -381,12 +353,7 @@ class Primitives {
         private static final FloatGenerator INSTANCE = new FloatGenerator();
 
         @Override
-        public Result<? extends Seed, Float> run(GeneratorContext context, Seed input) {
-            return nextFloat(input);
-        }
-
-        @Override
-        public Generate<Float> prepare(GeneratorContext context) {
+        public Generate<Float> prepare(Parameters parameters) {
             return BuildingBlocks::nextFloat;
         }
 
@@ -404,12 +371,7 @@ class Primitives {
         private static final IntGenerator INSTANCE = new IntGenerator();
 
         @Override
-        public Result<? extends Seed, Integer> run(GeneratorContext context, Seed input) {
-            return nextInt(input);
-        }
-
-        @Override
-        public Generate<Integer> prepare(GeneratorContext context) {
+        public Generate<Integer> prepare(Parameters parameters) {
             return BuildingBlocks::nextInt;
         }
 
@@ -427,12 +389,7 @@ class Primitives {
         private static final LongGenerator INSTANCE = new LongGenerator();
 
         @Override
-        public Result<? extends Seed, Long> run(GeneratorContext context, Seed input) {
-            return nextLong(input);
-        }
-
-        @Override
-        public Generate<Long> prepare(GeneratorContext context) {
+        public Generate<Long> prepare(Parameters parameters) {
             return BuildingBlocks::nextLong;
         }
 
@@ -450,12 +407,7 @@ class Primitives {
         private static final GaussianGenerator INSTANCE = new GaussianGenerator();
 
         @Override
-        public Result<? extends Seed, Double> run(GeneratorContext context, Seed input) {
-            return nextGaussian(input);
-        }
-
-        @Override
-        public Generate<Double> prepare(GeneratorContext context) {
+        public Generate<Double> prepare(Parameters parameters) {
             return BuildingBlocks::nextGaussian;
         }
 
@@ -474,12 +426,7 @@ class Primitives {
         private static final ByteGenerator INSTANCE = new ByteGenerator();
 
         @Override
-        public Result<? extends Seed, Byte> run(GeneratorContext context, Seed input) {
-            return nextInt(input).fmap(Integer::byteValue);
-        }
-
-        @Override
-        public Generate<Byte> prepare(GeneratorContext context) {
+        public Generate<Byte> prepare(Parameters parameters) {
             return input -> nextInt(input).fmap(Integer::byteValue);
         }
 
@@ -497,12 +444,7 @@ class Primitives {
         private static final ShortGenerator INSTANCE = new ShortGenerator();
 
         @Override
-        public Result<? extends Seed, Short> run(GeneratorContext context, Seed input) {
-            return nextInt(input).fmap(Integer::shortValue);
-        }
-
-        @Override
-        public Generate<Short> prepare(GeneratorContext context) {
+        public Generate<Short> prepare(Parameters parameters) {
             return input -> nextInt(input).fmap(Integer::shortValue);
         }
 
@@ -518,19 +460,7 @@ class Primitives {
         private final int count;
 
         @Override
-        public Result<? extends Seed, Byte[]> run(GeneratorContext context, Seed input) {
-            byte[] buffer = new byte[count];
-            Result<? extends Seed, Unit> next = nextBytes(buffer, input);
-            Byte[] result = new Byte[count];
-            int i = 0;
-            for (byte b : buffer) {
-                result[i++] = b;
-            }
-            return next.fmap(__ -> result);
-        }
-
-        @Override
-        public Generate<Byte[]> prepare(GeneratorContext context) {
+        public Generate<Byte[]> prepare(Parameters parameters) {
             return input -> {
                 byte[] buffer = new byte[count];
                 Result<? extends Seed, Unit> next = nextBytes(buffer, input);
@@ -557,18 +487,12 @@ class Primitives {
         private final Fn1<Integer, Generator<A>> fn;
 
         @Override
-        public Result<? extends Seed, A> run(GeneratorContext context, Seed input) {
-            Result<? extends Seed, Integer> sizeResult = context.getSizeSelector().selectSize(input);
-            return fn.apply(sizeResult.getValue())
-                    .run(context, sizeResult.getNextState());
-        }
-
-        @Override
-        public Generate<A> prepare(GeneratorContext context) {
+        public Generate<A> prepare(Parameters parameters) {
             return input -> {
-                Result<? extends Seed, Integer> sizeResult = context.getSizeSelector().selectSize(input);
+                Result<? extends Seed, Integer> sizeResult = parameters.getSizeSelector().selectSize(input);
                 return fn.apply(sizeResult.getValue())
-                        .run(context, sizeResult.getNextState());
+                        .prepare(parameters)
+                        .apply(sizeResult.getNextState());
             };
         }
 
@@ -586,13 +510,8 @@ class Primitives {
         private final Generator<A> operand;
 
         @Override
-        public Result<? extends Seed, A> run(GeneratorContext context, Seed input) {
-            return operand.run(context, input);
-        }
-
-        @Override
-        public Generate<A> prepare(GeneratorContext context) {
-            return operand.prepare(context);
+        public Generate<A> prepare(Parameters parameters) {
+            return operand.prepare(parameters);
         }
 
         @Override
@@ -611,21 +530,8 @@ class Primitives {
         private final Iterable<Generator<Elem>> elements;
 
         @Override
-        public Result<? extends Seed, Out> run(GeneratorContext context, Seed input) {
-            Seed current = input;
-            Builder builder = initialBuilderSupplier.apply();
-
-            for (Generator<Elem> element : elements) {
-                Result<? extends Seed, Elem> next = element.run(context, current);
-                builder = addFn.apply(builder, next.getValue());
-                current = next.getNextState();
-            }
-            return result(current, buildFn.apply(builder));
-        }
-
-        @Override
-        public Generate<Out> prepare(GeneratorContext context) {
-            Iterable<Generate<Elem>> runners = Map.map(g -> g.prepare(context), elements);
+        public Generate<Out> prepare(Parameters parameters) {
+            Iterable<Generate<Elem>> runners = Map.map(g -> g.prepare(parameters), elements);
             return input -> {
                 Seed current = input;
                 Builder builder = initialBuilderSupplier.apply();
@@ -656,18 +562,9 @@ class Primitives {
         private final Fn2<A, B, Out> combine;
 
         @Override
-        public Result<? extends Seed, Out> run(GeneratorContext context, Seed input) {
-            Result<? extends Seed, A> ra = a.run(context, input);
-            Result<? extends Seed, B> rb = b.run(context, ra.getNextState());
-            return result(rb.getNextState(),
-                    combine.apply(ra.getValue(),
-                            rb.getValue()));
-        }
-
-        @Override
-        public Generate<Out> prepare(GeneratorContext context) {
-            Fn1<Seed, Result<? extends Seed, A>> runA = a.prepare(context);
-            Fn1<Seed, Result<? extends Seed, B>> runB = b.prepare(context);
+        public Generate<Out> prepare(Parameters parameters) {
+            Fn1<Seed, Result<? extends Seed, A>> runA = a.prepare(parameters);
+            Fn1<Seed, Result<? extends Seed, B>> runB = b.prepare(parameters);
             return input -> {
                 Result<? extends Seed, A> ra = runA.apply(input);
                 Result<? extends Seed, B> rb = runB.apply(ra.getNextState());
@@ -694,21 +591,10 @@ class Primitives {
         private final Fn3<A, B, C, Out> combine;
 
         @Override
-        public Result<? extends Seed, Out> run(GeneratorContext context, Seed input) {
-            Result<? extends Seed, A> ra = a.run(context, input);
-            Result<? extends Seed, B> rb = b.run(context, ra.getNextState());
-            Result<? extends Seed, C> rc = c.run(context, rb.getNextState());
-            return result(rc.getNextState(),
-                    combine.apply(ra.getValue(),
-                            rb.getValue(),
-                            rc.getValue()));
-        }
-
-        @Override
-        public Generate<Out> prepare(GeneratorContext context) {
-            Fn1<Seed, Result<? extends Seed, A>> runA = a.prepare(context);
-            Fn1<Seed, Result<? extends Seed, B>> runB = b.prepare(context);
-            Fn1<Seed, Result<? extends Seed, C>> runC = c.prepare(context);
+        public Generate<Out> prepare(Parameters parameters) {
+            Fn1<Seed, Result<? extends Seed, A>> runA = a.prepare(parameters);
+            Fn1<Seed, Result<? extends Seed, B>> runB = b.prepare(parameters);
+            Fn1<Seed, Result<? extends Seed, C>> runC = c.prepare(parameters);
             return input -> {
                 Result<? extends Seed, A> ra = runA.apply(input);
                 Result<? extends Seed, B> rb = runB.apply(ra.getNextState());
@@ -738,24 +624,11 @@ class Primitives {
         private final Fn4<A, B, C, D, Out> combine;
 
         @Override
-        public Result<? extends Seed, Out> run(GeneratorContext context, Seed input) {
-            Result<? extends Seed, A> ra = a.run(context, input);
-            Result<? extends Seed, B> rb = b.run(context, ra.getNextState());
-            Result<? extends Seed, C> rc = c.run(context, rb.getNextState());
-            Result<? extends Seed, D> rd = d.run(context, rc.getNextState());
-            return result(rc.getNextState(),
-                    combine.apply(ra.getValue(),
-                            rb.getValue(),
-                            rc.getValue(),
-                            rd.getValue()));
-        }
-
-        @Override
-        public Generate<Out> prepare(GeneratorContext context) {
-            Fn1<Seed, Result<? extends Seed, A>> runA = a.prepare(context);
-            Fn1<Seed, Result<? extends Seed, B>> runB = b.prepare(context);
-            Fn1<Seed, Result<? extends Seed, C>> runC = c.prepare(context);
-            Fn1<Seed, Result<? extends Seed, D>> runD = d.prepare(context);
+        public Generate<Out> prepare(Parameters parameters) {
+            Fn1<Seed, Result<? extends Seed, A>> runA = a.prepare(parameters);
+            Fn1<Seed, Result<? extends Seed, B>> runB = b.prepare(parameters);
+            Fn1<Seed, Result<? extends Seed, C>> runC = c.prepare(parameters);
+            Fn1<Seed, Result<? extends Seed, D>> runD = d.prepare(parameters);
             return input -> {
                 Result<? extends Seed, A> ra = runA.apply(input);
                 Result<? extends Seed, B> rb = runB.apply(ra.getNextState());
@@ -788,27 +661,12 @@ class Primitives {
         private final Fn5<A, B, C, D, E, Out> combine;
 
         @Override
-        public Result<? extends Seed, Out> run(GeneratorContext context, Seed input) {
-            Result<? extends Seed, A> ra = a.run(context, input);
-            Result<? extends Seed, B> rb = b.run(context, ra.getNextState());
-            Result<? extends Seed, C> rc = c.run(context, rb.getNextState());
-            Result<? extends Seed, D> rd = d.run(context, rc.getNextState());
-            Result<? extends Seed, E> re = e.run(context, rd.getNextState());
-            return result(re.getNextState(),
-                    combine.apply(ra.getValue(),
-                            rb.getValue(),
-                            rc.getValue(),
-                            rd.getValue(),
-                            re.getValue()));
-        }
-
-        @Override
-        public Generate<Out> prepare(GeneratorContext context) {
-            Fn1<Seed, Result<? extends Seed, A>> runA = a.prepare(context);
-            Fn1<Seed, Result<? extends Seed, B>> runB = b.prepare(context);
-            Fn1<Seed, Result<? extends Seed, C>> runC = c.prepare(context);
-            Fn1<Seed, Result<? extends Seed, D>> runD = d.prepare(context);
-            Fn1<Seed, Result<? extends Seed, E>> runE = e.prepare(context);
+        public Generate<Out> prepare(Parameters parameters) {
+            Fn1<Seed, Result<? extends Seed, A>> runA = a.prepare(parameters);
+            Fn1<Seed, Result<? extends Seed, B>> runB = b.prepare(parameters);
+            Fn1<Seed, Result<? extends Seed, C>> runC = c.prepare(parameters);
+            Fn1<Seed, Result<? extends Seed, D>> runD = d.prepare(parameters);
+            Fn1<Seed, Result<? extends Seed, E>> runE = e.prepare(parameters);
             return input -> {
                 Result<? extends Seed, A> ra = runA.apply(input);
                 Result<? extends Seed, B> rb = runB.apply(ra.getNextState());
@@ -844,30 +702,13 @@ class Primitives {
         private final Fn6<A, B, C, D, E, F, Out> combine;
 
         @Override
-        public Result<? extends Seed, Out> run(GeneratorContext context, Seed input) {
-            Result<? extends Seed, A> ra = a.run(context, input);
-            Result<? extends Seed, B> rb = b.run(context, ra.getNextState());
-            Result<? extends Seed, C> rc = c.run(context, rb.getNextState());
-            Result<? extends Seed, D> rd = d.run(context, rc.getNextState());
-            Result<? extends Seed, E> re = e.run(context, rd.getNextState());
-            Result<? extends Seed, F> rf = f.run(context, re.getNextState());
-            return result(rf.getNextState(),
-                    combine.apply(ra.getValue(),
-                            rb.getValue(),
-                            rc.getValue(),
-                            rd.getValue(),
-                            re.getValue(),
-                            rf.getValue()));
-        }
-
-        @Override
-        public Generate<Out> prepare(GeneratorContext context) {
-            Fn1<Seed, Result<? extends Seed, A>> runA = a.prepare(context);
-            Fn1<Seed, Result<? extends Seed, B>> runB = b.prepare(context);
-            Fn1<Seed, Result<? extends Seed, C>> runC = c.prepare(context);
-            Fn1<Seed, Result<? extends Seed, D>> runD = d.prepare(context);
-            Fn1<Seed, Result<? extends Seed, E>> runE = e.prepare(context);
-            Fn1<Seed, Result<? extends Seed, F>> runF = f.prepare(context);
+        public Generate<Out> prepare(Parameters parameters) {
+            Fn1<Seed, Result<? extends Seed, A>> runA = a.prepare(parameters);
+            Fn1<Seed, Result<? extends Seed, B>> runB = b.prepare(parameters);
+            Fn1<Seed, Result<? extends Seed, C>> runC = c.prepare(parameters);
+            Fn1<Seed, Result<? extends Seed, D>> runD = d.prepare(parameters);
+            Fn1<Seed, Result<? extends Seed, E>> runE = e.prepare(parameters);
+            Fn1<Seed, Result<? extends Seed, F>> runF = f.prepare(parameters);
             return input -> {
                 Result<? extends Seed, A> ra = runA.apply(input);
                 Result<? extends Seed, B> rb = runB.apply(ra.getNextState());
@@ -906,33 +747,14 @@ class Primitives {
         private final Fn7<A, B, C, D, E, F, G, Out> combine;
 
         @Override
-        public Result<? extends Seed, Out> run(GeneratorContext context, Seed input) {
-            Result<? extends Seed, A> ra = a.run(context, input);
-            Result<? extends Seed, B> rb = b.run(context, ra.getNextState());
-            Result<? extends Seed, C> rc = c.run(context, rb.getNextState());
-            Result<? extends Seed, D> rd = d.run(context, rc.getNextState());
-            Result<? extends Seed, E> re = e.run(context, rd.getNextState());
-            Result<? extends Seed, F> rf = f.run(context, re.getNextState());
-            Result<? extends Seed, G> rg = g.run(context, rf.getNextState());
-            return result(rc.getNextState(),
-                    combine.apply(ra.getValue(),
-                            rb.getValue(),
-                            rc.getValue(),
-                            rd.getValue(),
-                            re.getValue(),
-                            rf.getValue(),
-                            rg.getValue()));
-        }
-
-        @Override
-        public Generate<Out> prepare(GeneratorContext context) {
-            Fn1<Seed, Result<? extends Seed, A>> runA = a.prepare(context);
-            Fn1<Seed, Result<? extends Seed, B>> runB = b.prepare(context);
-            Fn1<Seed, Result<? extends Seed, C>> runC = c.prepare(context);
-            Fn1<Seed, Result<? extends Seed, D>> runD = d.prepare(context);
-            Fn1<Seed, Result<? extends Seed, E>> runE = e.prepare(context);
-            Fn1<Seed, Result<? extends Seed, F>> runF = f.prepare(context);
-            Fn1<Seed, Result<? extends Seed, G>> runG = g.prepare(context);
+        public Generate<Out> prepare(Parameters parameters) {
+            Fn1<Seed, Result<? extends Seed, A>> runA = a.prepare(parameters);
+            Fn1<Seed, Result<? extends Seed, B>> runB = b.prepare(parameters);
+            Fn1<Seed, Result<? extends Seed, C>> runC = c.prepare(parameters);
+            Fn1<Seed, Result<? extends Seed, D>> runD = d.prepare(parameters);
+            Fn1<Seed, Result<? extends Seed, E>> runE = e.prepare(parameters);
+            Fn1<Seed, Result<? extends Seed, F>> runF = f.prepare(parameters);
+            Fn1<Seed, Result<? extends Seed, G>> runG = g.prepare(parameters);
             return input -> {
                 Result<? extends Seed, A> ra = runA.apply(input);
                 Result<? extends Seed, B> rb = runB.apply(ra.getNextState());
@@ -974,36 +796,15 @@ class Primitives {
         private final Fn8<A, B, C, D, E, F, G, H, Out> combine;
 
         @Override
-        public Result<? extends Seed, Out> run(GeneratorContext context, Seed input) {
-            Result<? extends Seed, A> ra = a.run(context, input);
-            Result<? extends Seed, B> rb = b.run(context, ra.getNextState());
-            Result<? extends Seed, C> rc = c.run(context, rb.getNextState());
-            Result<? extends Seed, D> rd = d.run(context, rc.getNextState());
-            Result<? extends Seed, E> re = e.run(context, rd.getNextState());
-            Result<? extends Seed, F> rf = f.run(context, re.getNextState());
-            Result<? extends Seed, G> rg = g.run(context, rf.getNextState());
-            Result<? extends Seed, H> rh = h.run(context, rg.getNextState());
-            return result(rc.getNextState(),
-                    combine.apply(ra.getValue(),
-                            rb.getValue(),
-                            rc.getValue(),
-                            rd.getValue(),
-                            re.getValue(),
-                            rf.getValue(),
-                            rg.getValue(),
-                            rh.getValue()));
-        }
-
-        @Override
-        public Generate<Out> prepare(GeneratorContext context) {
-            Fn1<Seed, Result<? extends Seed, A>> runA = a.prepare(context);
-            Fn1<Seed, Result<? extends Seed, B>> runB = b.prepare(context);
-            Fn1<Seed, Result<? extends Seed, C>> runC = c.prepare(context);
-            Fn1<Seed, Result<? extends Seed, D>> runD = d.prepare(context);
-            Fn1<Seed, Result<? extends Seed, E>> runE = e.prepare(context);
-            Fn1<Seed, Result<? extends Seed, F>> runF = f.prepare(context);
-            Fn1<Seed, Result<? extends Seed, G>> runG = g.prepare(context);
-            Fn1<Seed, Result<? extends Seed, H>> runH = h.prepare(context);
+        public Generate<Out> prepare(Parameters parameters) {
+            Fn1<Seed, Result<? extends Seed, A>> runA = a.prepare(parameters);
+            Fn1<Seed, Result<? extends Seed, B>> runB = b.prepare(parameters);
+            Fn1<Seed, Result<? extends Seed, C>> runC = c.prepare(parameters);
+            Fn1<Seed, Result<? extends Seed, D>> runD = d.prepare(parameters);
+            Fn1<Seed, Result<? extends Seed, E>> runE = e.prepare(parameters);
+            Fn1<Seed, Result<? extends Seed, F>> runF = f.prepare(parameters);
+            Fn1<Seed, Result<? extends Seed, G>> runG = g.prepare(parameters);
+            Fn1<Seed, Result<? extends Seed, H>> runH = h.prepare(parameters);
             return input -> {
                 Result<? extends Seed, A> ra = runA.apply(input);
                 Result<? extends Seed, B> rb = runB.apply(ra.getNextState());
@@ -1035,12 +836,7 @@ class Primitives {
     private static <A> Generator<A> simpleGenerator(Maybe<String> label, Generate<A> runFn) {
         return new Generator<A>() {
             @Override
-            public Result<? extends Seed, A> run(GeneratorContext context, Seed input) {
-                return runFn.apply(input);
-            }
-
-            @Override
-            public Generate<A> prepare(GeneratorContext context) {
+            public Generate<A> prepare(Parameters parameters) {
                 return runFn;
             }
 

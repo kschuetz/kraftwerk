@@ -6,6 +6,7 @@ import dev.marksman.composablerandom.Seed;
 import java.util.ArrayList;
 
 import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
+import static dev.marksman.composablerandom.StandardParameters.defaultParameters;
 
 public class Sample {
     private static final int SAMPLE_COUNT = 10000;
@@ -15,6 +16,6 @@ public class Sample {
     }
 
     public static <A> ArrayList<A> sample(Generator<A> gen, Seed initialState) {
-        return streamFrom(gen, initialState).next(SAMPLE_COUNT);
+        return streamFrom(gen.prepare(defaultParameters()), initialState).next(SAMPLE_COUNT);
     }
 }

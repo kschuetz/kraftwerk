@@ -32,13 +32,9 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     public Generator() {
     }
 
-    public abstract Result<? extends Seed, A> run(GeneratorContext context, Seed input);
+//    public abstract Result<? extends Seed, A> run(GeneratorContext context, Seed input);
 
-//    public Generate<A> prepare(GeneratorContext context) {
-//        return seed -> run(context, seed);
-//    }
-
-    public abstract Generate<A> prepare(GeneratorContext context);
+    public abstract Generate<A> prepare(Parameters parameters);
 
     @Override
     public final <B> Generator<B> fmap(Fn1<? super A, ? extends B> fn) {
@@ -162,12 +158,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         private final Generator<A> inner;
 
         @Override
-        public Result<? extends Seed, A> run(GeneratorContext context, Seed input) {
-            return null;
-        }
-
-        @Override
-        public Generate<A> prepare(GeneratorContext context) {
+        public Generate<A> prepare(Parameters parameters) {
             return null;
         }
 

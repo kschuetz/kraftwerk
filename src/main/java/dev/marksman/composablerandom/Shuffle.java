@@ -3,6 +3,7 @@ package dev.marksman.composablerandom;
 import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.collectionviews.NonEmptyVector;
 import dev.marksman.collectionviews.Vector;
+import dev.marksman.composablerandom.random.BuildingBlocks;
 import dev.marksman.enhancediterables.FiniteIterable;
 import dev.marksman.enhancediterables.NonEmptyFiniteIterable;
 
@@ -12,7 +13,6 @@ import java.util.Collection;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Upcast.upcast;
-import static dev.marksman.composablerandom.Generator.generateIntExclusive;
 import static dev.marksman.composablerandom.Result.result;
 
 class Shuffle {
@@ -37,18 +37,12 @@ class Shuffle {
             return Generator.constant(Vector.of(fn.apply(0)));
         } else {
             return new Generator<NonEmptyVector<A>>() {
-                @Override
-                public Result<? extends Seed, NonEmptyVector<A>> run(GeneratorContext context, Seed input) {
-                    ArrayList<A> target = newInputInstance(count, fn);
-                    Seed stateOut = shuffleInPlace(context, input, target);
-                    return result(stateOut, NonEmptyVector.wrapOrThrow(target));
-                }
 
                 @Override
-                public Generate<NonEmptyVector<A>> prepare(GeneratorContext context) {
+                public Generate<NonEmptyVector<A>> prepare(Parameters parameters) {
                     return input -> {
                         ArrayList<A> target = newInputInstance(count, fn);
-                        Seed stateOut = shuffleInPlace(context, input, target);
+                        Seed stateOut = shuffleInPlace(input, target);
                         return result(stateOut, NonEmptyVector.wrapOrThrow(target));
                     };
                 }
@@ -101,7 +95,7 @@ class Shuffle {
         return result;
     }
 
-    private static <A> Seed shuffleInPlace(GeneratorContext context, Seed inputState, ArrayList<A> target) {
+    private static <A> Seed shuffleInPlace(Seed inputState, ArrayList<A> target) {
         int size = target.size();
         if (size < 2) {
             // No changes
@@ -110,8 +104,7 @@ class Shuffle {
             int n = target.size();
             Seed state = inputState;
             for (int i = 0; i < size - 1; i++) {
-                // TODO: speed this up
-                Result<? extends Seed, Integer> next = generateIntExclusive(i, n).run(context, state);
+                Result<? extends Seed, Integer> next = BuildingBlocks.nextIntBounded(i, state);
                 int j = next.getValue();
                 if (i != j) {
                     A temp = target.get(i);

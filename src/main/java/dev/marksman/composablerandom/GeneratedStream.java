@@ -5,15 +5,14 @@ import java.util.Iterator;
 
 import static dev.marksman.composablerandom.Initialize.createInitialSeed;
 import static dev.marksman.composablerandom.Initialize.randomInitialSeed;
+import static dev.marksman.composablerandom.StandardParameters.defaultParameters;
 
 public class GeneratedStream<A> implements Iterator<A> {
-    private final Generator<A> gen;
-    private final GeneratorContext context;
+    private final Generate<A> gen;
     private Seed currentState;
 
-    private GeneratedStream(Generator<A> gen, GeneratorContext context, Seed initialSeed) {
+    private GeneratedStream(Generate<A> gen, Seed initialSeed) {
         this.gen = gen;
-        this.context = context;
         this.currentState = initialSeed;
     }
 
@@ -26,7 +25,7 @@ public class GeneratedStream<A> implements Iterator<A> {
     public A next() {
         Result<? extends Seed, A> run;
         synchronized (this) {
-            run = this.gen.run(context, currentState);
+            run = this.gen.apply(currentState);
             currentState = run.getNextState();
         }
 
@@ -66,24 +65,28 @@ public class GeneratedStream<A> implements Iterator<A> {
         }
     }
 
-    public static <A> GeneratedStream<A> streamFrom(Generator<A> gen, Seed initialSeed) {
-        return new GeneratedStream<>(gen, GeneratorContext.defaultContext(), initialSeed);
+    public static <A> GeneratedStream<A> streamFrom(Generate<A> gen, Seed initialSeed) {
+        return new GeneratedStream<>(gen, initialSeed);
+    }
+
+    public static <A> GeneratedStream<A> streamFrom(Generator<A> gen, Parameters parameters, Seed initialSeed) {
+        return new GeneratedStream<>(gen.prepare(parameters), initialSeed);
     }
 
     public static <A> GeneratedStream<A> streamFrom(Generator<A> gen, long initialSeedValue) {
-        return streamFrom(gen, createInitialSeed(initialSeedValue));
+        return streamFrom(gen, defaultParameters(), createInitialSeed(initialSeedValue));
     }
 
     public static <A> GeneratedStream<A> streamFrom(Generator<A> gen, Parameters parameters) {
-        return streamFrom(gen, randomInitialSeed());
+        return streamFrom(gen, defaultParameters(), randomInitialSeed());
     }
 
     public static <A> GeneratedStream<A> streamFrom(Generator<A> gen, Parameters parameters, long initialSeedValue) {
-        return streamFrom(gen, createInitialSeed(initialSeedValue));
+        return streamFrom(gen, defaultParameters(), createInitialSeed(initialSeedValue));
     }
 
     public static <A> GeneratedStream<A> streamFrom(Generator<A> gen) {
-        return streamFrom(gen, randomInitialSeed());
+        return streamFrom(gen, defaultParameters(), randomInitialSeed());
     }
 
 }

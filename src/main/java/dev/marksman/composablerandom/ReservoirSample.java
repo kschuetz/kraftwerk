@@ -2,6 +2,7 @@ package dev.marksman.composablerandom;
 
 import dev.marksman.collectionviews.Set;
 import dev.marksman.collectionviews.Vector;
+import dev.marksman.composablerandom.random.BuildingBlocks;
 import dev.marksman.enhancediterables.FiniteIterable;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Upcast.upcast;
@@ -23,13 +24,9 @@ class ReservoirSample {
 
     private static Generator<Set<Integer>> reservoirSampleImpl(int n, int k) {
         return new Generator<Set<Integer>>() {
-            @Override
-            public Result<? extends Seed, Set<Integer>> run(GeneratorContext context, Seed input) {
-                return prepare(context).apply(input);
-            }
 
             @Override
-            public Generate<Set<Integer>> prepare(GeneratorContext context) {
+            public Generate<Set<Integer>> prepare(Parameters parameters) {
                 return input -> {
                     Seed current = input;
                     Integer[] result = new Integer[k];
@@ -37,8 +34,7 @@ class ReservoirSample {
                         result[i] = i;
                     }
                     for (int i = k; i < n; i++) {
-                        // TODO: speed this up
-                        Result<? extends Seed, Integer> next = generateIntExclusive(i).run(context, current);
+                        Result<? extends Seed, Integer> next = BuildingBlocks.nextIntBounded(i, current);
                         Integer value = next.getValue();
                         if (value < k) {
                             result[value] = i;
