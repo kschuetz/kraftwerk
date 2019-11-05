@@ -1,17 +1,17 @@
 package examples.components;
 
 import com.jnape.palatable.lambda.adt.Maybe;
-import dev.marksman.composablerandom.Generator;
+import dev.marksman.kraftwerk.Generator;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into3.into3;
-import static dev.marksman.composablerandom.FrequencyEntry.entry;
-import static dev.marksman.composablerandom.FrequencyEntry.entryForValue;
-import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
-import static dev.marksman.composablerandom.Generator.*;
-import static dev.marksman.composablerandom.MaybeWeights.nothingWeight;
+import static dev.marksman.kraftwerk.FrequencyEntry.entry;
+import static dev.marksman.kraftwerk.FrequencyEntry.entryForValue;
+import static dev.marksman.kraftwerk.GeneratedStream.streamFrom;
+import static dev.marksman.kraftwerk.Generator.*;
+import static dev.marksman.kraftwerk.MaybeWeights.nothingWeight;
 import static examples.components.City.generateCityRootName;
 
 @Value

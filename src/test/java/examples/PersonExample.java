@@ -2,7 +2,7 @@ package examples;
 
 import examples.components.Person;
 
-import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
+import static dev.marksman.kraftwerk.GeneratedStream.streamFrom;
 import static examples.components.Person.generatePerson;
 
 public class PersonExample {

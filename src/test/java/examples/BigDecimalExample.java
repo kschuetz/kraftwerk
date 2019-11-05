@@ -1,13 +1,13 @@
 package examples;
 
 import com.jnape.palatable.lambda.adt.hlist.Tuple5;
-import dev.marksman.composablerandom.Generator;
+import dev.marksman.kraftwerk.Generator;
 
 import java.math.BigDecimal;
 
-import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
-import static dev.marksman.composablerandom.Generator.generateBigDecimal;
-import static dev.marksman.composablerandom.Generator.generateBigDecimalExclusive;
+import static dev.marksman.kraftwerk.GeneratedStream.streamFrom;
+import static dev.marksman.kraftwerk.Generator.generateBigDecimal;
+import static dev.marksman.kraftwerk.Generator.generateBigDecimalExclusive;
 
 public class BigDecimalExample {
 

@@ -1,7 +1,7 @@
 package testsupport;
 
 import com.jnape.palatable.lambda.functions.Fn1;
-import dev.marksman.composablerandom.Generator;
+import dev.marksman.kraftwerk.Generator;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.All.all;
 import static org.junit.jupiter.api.Assertions.assertTrue;

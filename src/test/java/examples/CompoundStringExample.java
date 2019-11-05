@@ -1,12 +1,12 @@
 package examples;
 
-import dev.marksman.composablerandom.Generator;
+import dev.marksman.kraftwerk.Generator;
 
-import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
-import static dev.marksman.composablerandom.Generator.*;
-import static dev.marksman.composablerandom.MaybeWeights.justWeight;
-import static dev.marksman.composablerandom.MaybeWeights.nothingWeight;
-import static dev.marksman.composablerandom.frequency.FrequencyMap.frequencyMap;
+import static dev.marksman.kraftwerk.GeneratedStream.streamFrom;
+import static dev.marksman.kraftwerk.Generator.*;
+import static dev.marksman.kraftwerk.MaybeWeights.justWeight;
+import static dev.marksman.kraftwerk.MaybeWeights.nothingWeight;
+import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
 
 public class CompoundStringExample {
 

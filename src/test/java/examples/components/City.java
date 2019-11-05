@@ -1,17 +1,17 @@
 package examples.components;
 
 
-import dev.marksman.composablerandom.Generator;
+import dev.marksman.kraftwerk.Generator;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into3.into3;
-import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
-import static dev.marksman.composablerandom.Generator.chooseOneOfValues;
-import static dev.marksman.composablerandom.Generator.generateString;
-import static dev.marksman.composablerandom.MaybeWeights.nothingWeight;
-import static dev.marksman.composablerandom.frequency.FrequencyMap.frequencyMap;
+import static dev.marksman.kraftwerk.GeneratedStream.streamFrom;
+import static dev.marksman.kraftwerk.Generator.chooseOneOfValues;
+import static dev.marksman.kraftwerk.Generator.generateString;
+import static dev.marksman.kraftwerk.MaybeWeights.nothingWeight;
+import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
 
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

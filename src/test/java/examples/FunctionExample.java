@@ -5,11 +5,11 @@ import com.jnape.palatable.lambda.functions.Fn2;
 import dev.marksman.collectionviews.ImmutableNonEmptyVector;
 import dev.marksman.collectionviews.Vector;
 
-import static dev.marksman.composablerandom.Cogenerator.cogeneratorInt;
-import static dev.marksman.composablerandom.Cogenerator.cogeneratorString;
-import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
-import static dev.marksman.composablerandom.Generator.generateFn2;
-import static dev.marksman.composablerandom.Generator.generateIntExclusive;
+import static dev.marksman.kraftwerk.Cogenerator.cogeneratorInt;
+import static dev.marksman.kraftwerk.Cogenerator.cogeneratorString;
+import static dev.marksman.kraftwerk.GeneratedStream.streamFrom;
+import static dev.marksman.kraftwerk.Generator.generateFn2;
+import static dev.marksman.kraftwerk.Generator.generateIntExclusive;
 
 public class FunctionExample {
 

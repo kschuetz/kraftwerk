@@ -2,12 +2,12 @@ package examples;
 
 import dev.marksman.collectionviews.NonEmptyVector;
 import dev.marksman.collectionviews.Vector;
-import dev.marksman.composablerandom.Generator;
+import dev.marksman.kraftwerk.Generator;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into.into;
-import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
+import static dev.marksman.kraftwerk.GeneratedStream.streamFrom;
 import static examples.ShuffleExample.Rank.*;
 import static examples.ShuffleExample.Suit.*;
 import static lombok.AccessLevel.PRIVATE;

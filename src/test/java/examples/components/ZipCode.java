@@ -1,13 +1,13 @@
 package examples.components;
 
-import dev.marksman.composablerandom.Generator;
+import dev.marksman.kraftwerk.Generator;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
-import static dev.marksman.composablerandom.Generator.*;
-import static dev.marksman.composablerandom.domain.Characters.numeric;
-import static dev.marksman.composablerandom.frequency.FrequencyMap.frequencyMap;
+import static dev.marksman.kraftwerk.Generator.*;
+import static dev.marksman.kraftwerk.domain.Characters.numeric;
+import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
 
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

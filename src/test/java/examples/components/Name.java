@@ -1,17 +1,17 @@
 package examples.components;
 
 import com.jnape.palatable.lambda.adt.Maybe;
-import dev.marksman.composablerandom.Generator;
-import dev.marksman.composablerandom.domain.Characters;
+import dev.marksman.kraftwerk.Generator;
+import dev.marksman.kraftwerk.domain.Characters;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into4.into4;
-import static dev.marksman.composablerandom.FrequencyEntry.entry;
-import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
-import static dev.marksman.composablerandom.Generator.*;
-import static dev.marksman.composablerandom.MaybeWeights.nothingWeight;
+import static dev.marksman.kraftwerk.FrequencyEntry.entry;
+import static dev.marksman.kraftwerk.GeneratedStream.streamFrom;
+import static dev.marksman.kraftwerk.Generator.*;
+import static dev.marksman.kraftwerk.MaybeWeights.nothingWeight;
 import static java.util.Arrays.asList;
 
 @Value

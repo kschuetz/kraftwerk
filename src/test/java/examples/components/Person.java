@@ -1,6 +1,6 @@
 package examples.components;
 
-import dev.marksman.composablerandom.Generator;
+import dev.marksman.kraftwerk.Generator;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
@@ -9,9 +9,9 @@ import java.time.LocalDate;
 import java.time.Year;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into3.into3;
-import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
-import static dev.marksman.composablerandom.Generator.*;
-import static dev.marksman.composablerandom.frequency.FrequencyMap.frequencyMap;
+import static dev.marksman.kraftwerk.GeneratedStream.streamFrom;
+import static dev.marksman.kraftwerk.Generator.*;
+import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
 import static examples.components.Address.generateAddress;
 import static examples.components.Name.generateName;
 

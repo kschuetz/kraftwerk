@@ -1,7 +1,7 @@
 package examples;
 
-import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
-import static dev.marksman.composablerandom.Generator.generateUUID;
+import static dev.marksman.kraftwerk.GeneratedStream.streamFrom;
+import static dev.marksman.kraftwerk.Generator.generateUUID;
 
 public class UUIDExample {
 

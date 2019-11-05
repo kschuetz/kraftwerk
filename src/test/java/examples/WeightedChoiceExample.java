@@ -1,11 +1,11 @@
 package examples;
 
 import com.jnape.palatable.lambda.adt.choice.Choice8;
-import dev.marksman.composablerandom.Generator;
-import dev.marksman.composablerandom.domain.Characters;
+import dev.marksman.kraftwerk.Generator;
+import dev.marksman.kraftwerk.domain.Characters;
 
-import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
-import static dev.marksman.composablerandom.Generator.*;
+import static dev.marksman.kraftwerk.GeneratedStream.streamFrom;
+import static dev.marksman.kraftwerk.Generator.*;
 
 public class WeightedChoiceExample {
 

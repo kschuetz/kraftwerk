@@ -1,12 +1,12 @@
 package testsupport;
 
-import dev.marksman.composablerandom.Generator;
-import dev.marksman.composablerandom.Seed;
+import dev.marksman.kraftwerk.Generator;
+import dev.marksman.kraftwerk.Seed;
 
 import java.util.ArrayList;
 
-import static dev.marksman.composablerandom.GeneratedStream.streamFrom;
-import static dev.marksman.composablerandom.StandardParameters.defaultParameters;
+import static dev.marksman.kraftwerk.GeneratedStream.streamFrom;
+import static dev.marksman.kraftwerk.StandardParameters.defaultParameters;
 
 public class Sample {
     private static final int SAMPLE_COUNT = 10000;
