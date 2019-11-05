@@ -16,12 +16,12 @@ public abstract class Cogenerator<A> implements Contravariant<A, Cogenerator<?>>
 
     }
 
-    public abstract LegacySeed apply(LegacySeed seed, A value);
+    public abstract Seed apply(Seed seed, A value);
 
     public final <B> Cogenerator<B> contraMap(Fn1<? super B, ? extends A> fn) {
         return new Cogenerator<B>() {
             @Override
-            public LegacySeed apply(LegacySeed seed, B value) {
+            public Seed apply(Seed seed, B value) {
                 return Cogenerator.this.apply(seed, fn.apply(value));
             }
         };
@@ -30,16 +30,16 @@ public abstract class Cogenerator<A> implements Contravariant<A, Cogenerator<?>>
     public static <A> Cogenerator<A> cogenerator(Fn1<A, Long> f) {
         return new Cogenerator<A>() {
             @Override
-            public LegacySeed apply(LegacySeed seed, A value) {
+            public Seed apply(Seed seed, A value) {
                 return seed.perturb(f.apply(value));
             }
         };
     }
 
-    public static <A> Cogenerator<A> cogenerator(Fn2<LegacySeed, A, LegacySeed> f) {
+    public static <A> Cogenerator<A> cogenerator(Fn2<Seed, A, Seed> f) {
         return new Cogenerator<A>() {
             @Override
-            public LegacySeed apply(LegacySeed seed, A value) {
+            public Seed apply(Seed seed, A value) {
                 return f.apply(seed, value);
             }
         };

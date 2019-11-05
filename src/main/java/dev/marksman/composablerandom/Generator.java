@@ -13,6 +13,7 @@ import dev.marksman.collectionviews.Vector;
 import dev.marksman.collectionviews.*;
 import dev.marksman.composablerandom.choice.ChoiceBuilder1;
 import dev.marksman.composablerandom.frequency.FrequencyMap;
+import dev.marksman.composablerandom.random.BuildingBlocks;
 import dev.marksman.enhancediterables.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -27,6 +28,7 @@ import java.util.*;
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Replicate.replicate;
+import static dev.marksman.composablerandom.Result.result;
 
 public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerator<A> {
     public Generator() {
@@ -186,9 +188,19 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         return Primitives.constant(a);
     }
 
-    public static <A, B> Generator<B> legacyTap(Generator<A> inner,
-                                                Fn2<GeneratorImpl<A>, LegacySeed, B> f) {
-        throw new UnsupportedOperationException("TODO: tap");
+    public static <A, B> Generator<B> tap(Generator<A> inner,
+                                          Fn2<Generate<A>, Seed, B> f) {
+        return new Generator<B>() {
+            @Override
+            public Generate<B> prepare(Parameters parameters) {
+                Generate<A> runA = inner.prepare(parameters);
+                return input -> {
+                    Seed nextState = BuildingBlocks.nextInt(input).getNextState();
+                    return result(nextState,
+                            f.apply(runA, input));
+                };
+            }
+        };
     }
 
     public static Generator<Boolean> generateBoolean() {
