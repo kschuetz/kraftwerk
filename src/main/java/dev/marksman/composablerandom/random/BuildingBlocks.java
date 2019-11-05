@@ -289,4 +289,12 @@ public final class BuildingBlocks {
         if (count < 0) throw new IllegalArgumentException("count must be >= 0");
     }
 
+    /*
+     @Override
+    public final LegacySeed perturb(long value) {
+        long newSeed = nextLong().getValue() ^ value;
+        return nextStandardGen(newSeed);
+    }
+     */
+
 }

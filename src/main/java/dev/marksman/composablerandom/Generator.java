@@ -168,6 +168,20 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         }
     }
 
+    /*
+    if (gen instanceof Generator.InjectSpecialValues) {
+            Generator.InjectSpecialValues<A> g1 = (Generator.InjectSpecialValues<A>) gen;
+            NonEmptyFiniteIterable<A> acc = g1.getSpecialValues();
+            while (g1.getInner() instanceof Generator.InjectSpecialValues) {
+                g1 = (Generator.InjectSpecialValues<A>) g1.getInner();
+                acc = acc.concat(g1.getSpecialValues());
+            }
+            ImmutableNonEmptyVector<A> specialValues = NonEmptyVector.copyFromOrThrow(acc);
+            return mixInSpecialValuesImpl(specialValues, 20 + 3 * specialValues.size(),
+                    context.recurse(g1.getInner()));
+        }
+     */
+
     public static <A> Generator<A> constant(A a) {
         return Primitives.constant(a);
     }

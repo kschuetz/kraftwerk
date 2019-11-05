@@ -118,11 +118,6 @@ public class SizeSelectors {
         }
     }
 
-    private static Result<LegacySeed, Boolean> shouldUsePreferred(LegacySeed input) {
-        Result<? extends LegacySeed, Integer> s1 = input.nextIntBounded(7);
-        return result(s1.getNextState(), s1.getValue() < 2);
-    }
-
     private static Result<Seed, Boolean> shouldUsePreferred(Seed input) {
         Result<? extends Seed, Integer> s1 = BuildingBlocks.nextIntBounded(7, input);
         return result(s1.getNextState(), s1.getValue() < 2);
