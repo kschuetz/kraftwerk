@@ -1,20 +1,18 @@
 package testsupport;
 
 import com.jnape.palatable.lambda.functions.Fn1;
-import dev.marksman.composablerandom.Seed;
-import dev.marksman.composablerandom.StandardSeed;
+import dev.marksman.composablerandom.LegacySeed;
+import dev.marksman.composablerandom.random.StandardGen;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 import java.util.Random;
 
-import static dev.marksman.composablerandom.StandardSeed.initStandardSeed;
-
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class GeneratorPair {
+public class LegacyGeneratorPair {
     private final long initialSeedValue;
     private final Random random;
-    private final Seed seed;
+    private final LegacySeed seed;
 
     public long getInitialSeedValue() {
         return initialSeedValue;
@@ -24,15 +22,15 @@ public class GeneratorPair {
         return random;
     }
 
-    public Seed getSeed() {
+    public LegacySeed getSeed() {
         return seed;
     }
 
-    public GeneratorPair withSeed(Seed rs) {
-        return new GeneratorPair(initialSeedValue, random, rs);
+    public LegacyGeneratorPair withSeed(LegacySeed rs) {
+        return new LegacyGeneratorPair(initialSeedValue, random, rs);
     }
 
-    public GeneratorPair updateSeed(Fn1<Seed, Seed> f) {
+    public LegacyGeneratorPair updateSeed(Fn1<LegacySeed, LegacySeed> f) {
         return withSeed(f.apply(seed));
     }
 
@@ -40,14 +38,14 @@ public class GeneratorPair {
         return "initial seed = " + initialSeedValue;
     }
 
-    public static GeneratorPair generatorPair(long initialSeedValue) {
+    public static LegacyGeneratorPair generatorPair(long initialSeedValue) {
         Random random = new Random();
         random.setSeed(initialSeedValue);
-        StandardSeed standardSeed = initStandardSeed(initialSeedValue);
-        return new GeneratorPair(initialSeedValue, random, standardSeed);
+        StandardGen standardGen = StandardGen.initStandardGen(initialSeedValue);
+        return new LegacyGeneratorPair(initialSeedValue, random, standardGen);
     }
 
-    public static GeneratorPair newRandomGeneratorPair() {
+    public static LegacyGeneratorPair newRandomGeneratorPair() {
         return generatorPair(new Random().nextLong());
     }
 

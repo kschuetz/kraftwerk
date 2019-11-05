@@ -4,12 +4,12 @@ import com.jnape.palatable.lambda.adt.product.Product2;
 import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.composablerandom.LegacySeed;
 import org.junit.jupiter.api.Test;
-import testsupport.GeneratorPair;
+import testsupport.LegacyGeneratorPair;
 
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static testsupport.GeneratorPair.newRandomGeneratorPair;
+import static testsupport.LegacyGeneratorPair.newRandomGeneratorPair;
 
 class StandardGenTest {
 
@@ -30,7 +30,7 @@ class StandardGenTest {
 
     @Test
     void nextIntWithInvalidBound() {
-        GeneratorPair gp = newRandomGeneratorPair();
+        LegacyGeneratorPair gp = newRandomGeneratorPair();
         assertThrows(IllegalArgumentException.class, () -> gp.getSeed().nextIntBounded(0));
         assertThrows(IllegalArgumentException.class, () -> gp.getSeed().nextIntBounded(-1));
     }
@@ -71,7 +71,7 @@ class StandardGenTest {
 
     @Test
     void mixed() {
-        GeneratorPair gp = newRandomGeneratorPair();
+        LegacyGeneratorPair gp = newRandomGeneratorPair();
         gp = testAgainstUtilRandom(gp, 1, Random::nextInt, LegacySeed::nextInt);
         gp = testAgainstUtilRandom(gp, 1, r -> r.nextInt(10), r -> r.nextIntBounded(10));
         gp = testAgainstUtilRandom(gp, 1, Random::nextDouble, LegacySeed::nextDouble);
@@ -83,7 +83,7 @@ class StandardGenTest {
 
     @Test
     void withCachedGaussian() {
-        GeneratorPair gp = newRandomGeneratorPair();
+        LegacyGeneratorPair gp = newRandomGeneratorPair();
         gp = testAgainstUtilRandom(gp, 1, Random::nextGaussian, LegacySeed::nextGaussian);
         gp = testAgainstUtilRandom(gp, 1, Random::nextInt, LegacySeed::nextInt);
         gp = testAgainstUtilRandom(gp, 1, r -> r.nextInt(10), r -> r.nextIntBounded(10));
@@ -97,7 +97,7 @@ class StandardGenTest {
 
     @Test
     void nextBytesWithCachedGaussian() {
-        GeneratorPair gp = newRandomGeneratorPair();
+        LegacyGeneratorPair gp = newRandomGeneratorPair();
         gp.getRandom().nextGaussian();
         testNextBytes(gp.updateSeed(r -> r.nextGaussian()._1()), 4);
     }
@@ -134,14 +134,14 @@ class StandardGenTest {
 
     private <A> void testAgainstUtilRandom(Fn1<Random, A> getNextExpected,
                                            Fn1<LegacySeed, Product2<? extends LegacySeed, A>> getNextResult) {
-        GeneratorPair gp = newRandomGeneratorPair();
+        LegacyGeneratorPair gp = newRandomGeneratorPair();
         testAgainstUtilRandom(gp, SEQUENCE_LENGTH, getNextExpected, getNextResult);
     }
 
-    private <A> GeneratorPair testAgainstUtilRandom(GeneratorPair gp,
-                                                    int times,
-                                                    Fn1<Random, A> getNextExpected,
-                                                    Fn1<LegacySeed, Product2<? extends LegacySeed, A>> getNextResult) {
+    private <A> LegacyGeneratorPair testAgainstUtilRandom(LegacyGeneratorPair gp,
+                                                          int times,
+                                                          Fn1<Random, A> getNextExpected,
+                                                          Fn1<LegacySeed, Product2<? extends LegacySeed, A>> getNextResult) {
         LegacySeed current = gp.getSeed();
         Random random = gp.getRandom();
         for (int i = 0; i < times; i++) {
@@ -155,7 +155,7 @@ class StandardGenTest {
         return gp.withSeed(current);
     }
 
-    private static void testNextBytes(GeneratorPair gp, int count) {
+    private static void testNextBytes(LegacyGeneratorPair gp, int count) {
         byte[] expected = new byte[count];
         byte[] actual = new byte[count];
 
