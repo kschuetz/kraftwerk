@@ -171,6 +171,33 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
     }
 
     /*
+
+    private final ImmutableNonEmptyVector<Elem> elements;
+    private final int specialWeight;
+    private final long totalWeight;
+    private final GeneratorImpl<Elem> inner;
+
+    private InjectSpecialValuesImpl(ImmutableNonEmptyVector<Elem> elements, long nonSpecialWeight, GeneratorImpl<Elem> inner) {
+        this.elements = elements;
+        this.specialWeight = elements.size();
+        this.totalWeight = Math.max(0, nonSpecialWeight) + specialWeight;
+        this.inner = inner;
+    }
+
+    @Override
+    public Result<? extends LegacySeed, Elem> run(LegacySeed input) {
+        // TODO: InjectSpecialValuesImpl
+        long n = input.getSeedValue() % totalWeight;
+        if (n < specialWeight) {
+            Result<? extends LegacySeed, Integer> nextSeed = input.nextInt();
+            return result(nextSeed.getNextState(), elements.unsafeGet((int) n));
+        } else {
+            return inner.run(input);
+        }
+    }
+
+
+
     if (gen instanceof Generator.InjectSpecialValues) {
             Generator.InjectSpecialValues<A> g1 = (Generator.InjectSpecialValues<A>) gen;
             NonEmptyFiniteIterable<A> acc = g1.getSpecialValues();
