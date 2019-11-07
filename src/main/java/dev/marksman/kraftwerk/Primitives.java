@@ -11,7 +11,9 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
+import static com.jnape.palatable.lambda.functions.builtin.fn1.Constantly.constantly;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Replicate.replicate;
+import static dev.marksman.kraftwerk.BiasSetting.noBias;
 import static dev.marksman.kraftwerk.Result.result;
 import static dev.marksman.kraftwerk.SizeSelectors.sizeSelector;
 import static dev.marksman.kraftwerk.random.BuildingBlocks.*;
@@ -54,18 +56,28 @@ class Primitives {
     }
 
     static Generator<Integer> generateIntExclusive(int bound) {
+        return generateIntExclusiveImpl(bound, p -> p.getBiasSettings().intBias(0, bound - 1));
+    }
+
+    private static Generator<Integer> generateIntExclusiveImpl(int bound,
+                                                               Fn1<Parameters, BiasSetting<Integer>> getBias) {
         checkBound(bound);
         Maybe<String> label = Maybe.just(Labeling.intInterval(0, bound, true));
 
         if ((bound & -bound) == bound) { // bound is a power of 2
-            return simpleGenerator(label, input -> unsafeNextIntBoundedPowerOf2(bound, input));
+            return simpleGenerator(label, getBias, input -> unsafeNextIntBoundedPowerOf2(bound, input));
         } else {
-            return simpleGenerator(label, input -> unsafeNextIntBounded(bound, input));
+            return simpleGenerator(label, getBias, input -> unsafeNextIntBounded(bound, input));
         }
 
     }
 
     static Generator<Integer> generateIntExclusive(int origin, int bound) {
+        return generateIntExclusiveImpl(origin, bound, p -> p.getBiasSettings().intBias(origin, bound - 1));
+    }
+
+    private static Generator<Integer> generateIntExclusiveImpl(int origin, int bound,
+                                                               Fn1<Parameters, BiasSetting<Integer>> getBias) {
         checkOriginBound(origin, bound);
         if (origin == 0) {
             return generateIntExclusive(bound);
@@ -73,18 +85,18 @@ class Primitives {
             long range = (long) bound - origin;
             long m = range - 1;
             if (range < Integer.MAX_VALUE) {
-                return simpleGenerator(nothing(), input -> unsafeNextIntExclusive(origin, (int) range, input));
+                return simpleGenerator(nothing(), getBias, input -> unsafeNextIntExclusive(origin, (int) range, input));
             } else if ((range & m) == 0) {
                 // power of two
-                return simpleGenerator(nothing(), input -> unsafeNextIntExclusivePowerOf2(origin, range, input));
+                return simpleGenerator(nothing(), getBias, input -> unsafeNextIntExclusivePowerOf2(origin, range, input));
             } else {
-                return simpleGenerator(nothing(), input -> unsafeNextIntExclusiveWide(origin, range, input));
+                return simpleGenerator(nothing(), getBias, input -> unsafeNextIntExclusiveWide(origin, range, input));
             }
         }
     }
 
     static Generator<Integer> generateIntIndex(int bound) {
-        return generateIntExclusive(bound);  // TODO: make generateIntIndex unbiased
+        return generateIntExclusiveImpl(bound, constantly(noBias()));
     }
 
     static Generator<Boolean> generateBoolean() {
@@ -126,11 +138,25 @@ class Primitives {
         }
     }
 
+    static Generator<Long> generateLongExclusiveImpl(long bound,
+                                                     Fn1<Parameters, BiasSetting<Long>> getBias) {
+        checkBound(bound);
+        if (bound <= Integer.MAX_VALUE) {
+            return generateIntExclusive((int) bound).fmap(Integer::longValue);
+        } else {
+            return generateLongExclusive(0, bound);
+        }
+    }
+
     static Generator<Long> generateLongExclusive(long origin, long bound) {
+        return generateLongExclusiveImpl(origin, bound, p -> p.getBiasSettings().longBias(origin, bound - 1));
+    }
+
+    private static Generator<Long> generateLongExclusiveImpl(long origin, long bound, Fn1<Parameters, BiasSetting<Long>> getBias) {
         checkOriginBound(origin, bound);
 
         if (origin < 0 && bound > 0 && bound > Math.abs(origin - Long.MIN_VALUE)) {
-            return simpleGenerator(nothing(), input -> unsafeNextLongExclusiveWithOverflow(origin, bound, input));
+            return simpleGenerator(nothing(), getBias, input -> unsafeNextLongExclusiveWithOverflow(origin, bound, input));
         }
 
         long range = bound - origin;
@@ -138,15 +164,14 @@ class Primitives {
 
         if ((range & m) == 0L) {
             // power of two
-            return simpleGenerator(nothing(), input -> unsafeNextLongExclusivePowerOf2(origin, range, input));
+            return simpleGenerator(nothing(), getBias, input -> unsafeNextLongExclusivePowerOf2(origin, range, input));
         } else {
-            return simpleGenerator(nothing(), input -> unsafeNextLongExclusive(origin, range, input));
+            return simpleGenerator(nothing(), getBias, input -> unsafeNextLongExclusive(origin, range, input));
         }
     }
 
     static Generator<Long> generateLongIndex(long bound) {
-        checkBound(bound);
-        return generateLongExclusive(bound);
+        return generateLongExclusiveImpl(bound, constantly(noBias()));
     }
 
     static ByteGenerator generateByte() {
@@ -338,7 +363,9 @@ class Primitives {
 
         @Override
         public Generate<Double> prepare(Parameters parameters) {
-            return BuildingBlocks::nextDouble;
+            return applyBiasSetting(parameters.getBiasSettings()
+                            .doubleBias(Double.MIN_VALUE, Double.MAX_VALUE),
+                    BuildingBlocks::nextDouble);
         }
 
         @Override
@@ -356,7 +383,9 @@ class Primitives {
 
         @Override
         public Generate<Float> prepare(Parameters parameters) {
-            return BuildingBlocks::nextFloat;
+            return applyBiasSetting(parameters.getBiasSettings()
+                            .floatBias(Float.MIN_VALUE, Float.MAX_VALUE),
+                    BuildingBlocks::nextFloat);
         }
 
         @Override
@@ -395,7 +424,9 @@ class Primitives {
 
         @Override
         public Generate<Long> prepare(Parameters parameters) {
-            return BuildingBlocks::nextLong;
+            return applyBiasSetting(parameters.getBiasSettings()
+                            .longBias(Long.MIN_VALUE, Long.MAX_VALUE),
+                    BuildingBlocks::nextLong);
         }
 
         @Override
@@ -432,7 +463,8 @@ class Primitives {
 
         @Override
         public Generate<Byte> prepare(Parameters parameters) {
-            return input -> nextInt(input).fmap(Integer::byteValue);
+            return applyBiasSetting(parameters.getBiasSettings().byteBias(Byte.MIN_VALUE, Byte.MAX_VALUE),
+                    input -> nextInt(input).fmap(Integer::byteValue));
         }
 
         @Override
@@ -450,7 +482,8 @@ class Primitives {
 
         @Override
         public Generate<Short> prepare(Parameters parameters) {
-            return input -> nextInt(input).fmap(Integer::shortValue);
+            return applyBiasSetting(parameters.getBiasSettings().shortBias(Short.MIN_VALUE, Short.MAX_VALUE),
+                    input -> nextInt(input).fmap(Integer::shortValue));
         }
 
         @Override
@@ -493,9 +526,10 @@ class Primitives {
 
         @Override
         public Generate<A> prepare(Parameters parameters) {
-            SizeSelector sizeSelector = sizeSelector(parameters.getSizeParameters());
+            Generate<Integer> sizeSelector = applyBiasSetting(parameters.getBiasSettings().sizeBias(parameters.getSizeParameters()),
+                    sizeSelector(parameters.getSizeParameters()));
             return input -> {
-                Result<? extends Seed, Integer> sizeResult = sizeSelector.selectSize(input);
+                Result<? extends Seed, Integer> sizeResult = sizeSelector.apply(input);
                 return fn.apply(sizeResult.getValue())
                         .prepare(parameters)
                         .apply(sizeResult.getNextState());
@@ -839,11 +873,27 @@ class Primitives {
 
     }
 
-    private static <A> Generator<A> simpleGenerator(Maybe<String> label, Generate<A> runFn) {
+//    private static <A> Generator<A> simpleGenerator(Maybe<String> label, Generate<A> runFn) {
+//        return new Generator<A>() {
+//            @Override
+//            public Generate<A> prepare(Parameters parameters) {
+//                return runFn;
+//            }
+//
+//            @Override
+//            public Maybe<String> getLabel() {
+//                return label;
+//            }
+//        };
+//    }
+
+    private static <A> Generator<A> simpleGenerator(Maybe<String> label,
+                                                    Fn1<Parameters, BiasSetting<A>> getBias,
+                                                    Generate<A> runFn) {
         return new Generator<A>() {
             @Override
             public Generate<A> prepare(Parameters parameters) {
-                return runFn;
+                return applyBiasSetting(getBias.apply(parameters), runFn);
             }
 
             @Override

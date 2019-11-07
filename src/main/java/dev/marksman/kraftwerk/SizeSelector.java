@@ -1,5 +1,5 @@
 package dev.marksman.kraftwerk;
 
-public interface SizeSelector {
-    Result<? extends Seed, Integer> selectSize(Seed input);
+public interface SizeSelector extends Generate<Integer> {
+//    Result<? extends Seed, Integer> selectSize(Seed input);
 }

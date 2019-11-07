@@ -18,7 +18,7 @@ public class SizeSelectors {
         private final int preferred;
 
         @Override
-        public Result<? extends Seed, Integer> selectSize(Seed input) {
+        public Result<? extends Seed, Integer> checkedApply(Seed input) {
             Result<Seed, Boolean> s1 = shouldUsePreferred(input);
             if (s1.getValue()) {
                 return result(s1.getNextState(), preferred);
@@ -35,7 +35,7 @@ public class SizeSelectors {
         private final int max;
 
         @Override
-        public Result<? extends Seed, Integer> selectSize(Seed input) {
+        public Result<? extends Seed, Integer> checkedApply(Seed input) {
             return BuildingBlocks.nextIntBetween(min, max, input);
         }
     }
@@ -47,7 +47,7 @@ public class SizeSelectors {
         private final int preferred;
 
         @Override
-        public Result<? extends Seed, Integer> selectSize(Seed input) {
+        public Result<? extends Seed, Integer> checkedApply(Seed input) {
             Result<Seed, Boolean> s1 = shouldUsePreferred(input);
             if (s1.getValue()) {
                 return result(s1.getNextState(), preferred);
@@ -63,7 +63,7 @@ public class SizeSelectors {
         private final int min;
 
         @Override
-        public Result<? extends Seed, Integer> selectSize(Seed input) {
+        public Result<? extends Seed, Integer> checkedApply(Seed input) {
             return BuildingBlocks.nextIntBetween(min, min + DEFAULT_RANGE, input);
         }
     }
@@ -75,7 +75,7 @@ public class SizeSelectors {
         private final int preferred;
 
         @Override
-        public Result<? extends Seed, Integer> selectSize(Seed input) {
+        public Result<? extends Seed, Integer> checkedApply(Seed input) {
             Result<Seed, Boolean> s1 = shouldUsePreferred(input);
             if (s1.getValue()) {
                 return result(s1.getNextState(), preferred);
@@ -91,7 +91,7 @@ public class SizeSelectors {
         private final int max;
 
         @Override
-        public Result<? extends Seed, Integer> selectSize(Seed input) {
+        public Result<? extends Seed, Integer> checkedApply(Seed input) {
             return BuildingBlocks.nextIntBounded(max, input);
         }
     }
@@ -102,7 +102,7 @@ public class SizeSelectors {
         private final int preferred;
 
         @Override
-        public Result<? extends Seed, Integer> selectSize(Seed input) {
+        public Result<? extends Seed, Integer> checkedApply(Seed input) {
             return result(input, preferred);
         }
     }
@@ -113,7 +113,7 @@ public class SizeSelectors {
         private static final NoSizeParameters INSTANCE = new NoSizeParameters();
 
         @Override
-        public Result<? extends Seed, Integer> selectSize(Seed input) {
+        public Result<? extends Seed, Integer> checkedApply(Seed input) {
             return BuildingBlocks.nextIntBounded(DEFAULT_RANGE, input);
         }
     }
