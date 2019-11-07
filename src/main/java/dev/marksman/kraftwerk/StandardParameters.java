@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import static dev.marksman.kraftwerk.NoBias.noBias;
+import static dev.marksman.kraftwerk.EmptyBiasSettings.emptyBiasSettings;
 import static dev.marksman.kraftwerk.SizeParameters.noSizeLimits;
 import static dev.marksman.kraftwerk.SizeSelectors.sizeSelector;
 
@@ -13,7 +13,7 @@ import static dev.marksman.kraftwerk.SizeSelectors.sizeSelector;
 public class StandardParameters implements Parameters {
 
     private static final StandardParameters DEFAULT_PARAMETERS = standardParameters(sizeSelector(noSizeLimits()),
-            noBias());
+            emptyBiasSettings());
 
     @Getter
     private final SizeSelector sizeSelector;

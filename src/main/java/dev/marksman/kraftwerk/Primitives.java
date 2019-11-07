@@ -4,6 +4,7 @@ import com.jnape.palatable.lambda.adt.Maybe;
 import com.jnape.palatable.lambda.adt.Unit;
 import com.jnape.palatable.lambda.functions.*;
 import com.jnape.palatable.lambda.functions.builtin.fn2.Map;
+import dev.marksman.collectionviews.ImmutableNonEmptyVector;
 import dev.marksman.kraftwerk.random.BuildingBlocks;
 import dev.marksman.kraftwerk.util.Labeling;
 import lombok.AccessLevel;
@@ -372,7 +373,10 @@ class Primitives {
 
         @Override
         public Generate<Integer> prepare(Parameters parameters) {
-            return BuildingBlocks::nextInt;
+
+            return applyBiasSetting(parameters.getBiasSettings()
+                            .intBias(Integer.MIN_VALUE, Integer.MAX_VALUE),
+                    BuildingBlocks::nextInt);
         }
 
         @Override
@@ -845,5 +849,16 @@ class Primitives {
                 return label;
             }
         };
+    }
+
+    private static <A> Generate<A> applyBiasSetting(BiasSetting<A> biasSetting,
+                                                    Generate<A> underlying) {
+        return biasSetting.match(__ -> underlying,
+                isv -> injectSpecial(isv.getSpecialValues(), underlying));
+    }
+
+    private static <A> Generate<A> injectSpecial(ImmutableNonEmptyVector<A> specialValues,
+                                                 Generate<A> underlying) {
+        return underlying;
     }
 }
