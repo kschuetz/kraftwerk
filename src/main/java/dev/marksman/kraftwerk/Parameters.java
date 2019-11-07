@@ -1,9 +1,9 @@
 package dev.marksman.kraftwerk;
 
 public interface Parameters {
-    SizeSelector getSizeSelector();
+    SizeParameters getSizeParameters();
 
-    Parameters withSizeSelector(SizeSelector sizeSelector);
+    Parameters withSizeParameters(SizeParameters sizeParameters);
 
     BiasSettings getBiasSettings();
 

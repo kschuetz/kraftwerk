@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Replicate.replicate;
 import static dev.marksman.kraftwerk.Result.result;
+import static dev.marksman.kraftwerk.SizeSelectors.sizeSelector;
 import static dev.marksman.kraftwerk.random.BuildingBlocks.*;
 
 class Primitives {
@@ -492,8 +493,9 @@ class Primitives {
 
         @Override
         public Generate<A> prepare(Parameters parameters) {
+            SizeSelector sizeSelector = sizeSelector(parameters.getSizeParameters());
             return input -> {
-                Result<? extends Seed, Integer> sizeResult = parameters.getSizeSelector().selectSize(input);
+                Result<? extends Seed, Integer> sizeResult = sizeSelector.selectSize(input);
                 return fn.apply(sizeResult.getValue())
                         .prepare(parameters)
                         .apply(sizeResult.getNextState());
