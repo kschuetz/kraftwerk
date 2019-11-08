@@ -16,7 +16,6 @@ import dev.marksman.kraftwerk.frequency.FrequencyMap;
 import dev.marksman.kraftwerk.random.BuildingBlocks;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Value;
 
 import java.math.BigDecimal;
@@ -907,10 +906,9 @@ public class Generators {
         if (count < 0) throw new IllegalArgumentException("count must be >= 0");
     }
 
-    @EqualsAndHashCode(callSuper = true)
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class InjectSpecialValues<A> extends Generator<A> {
+    public static class InjectSpecialValues<A> implements Generator<A> {
         private static Maybe<String> LABEL = Maybe.just("injectSpecialValues");
 
         private final NonEmptyFiniteIterable<A> specialValues;

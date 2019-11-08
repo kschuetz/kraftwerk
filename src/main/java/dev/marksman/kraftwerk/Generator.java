@@ -14,123 +14,118 @@ import java.util.ArrayList;
 
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
 
-public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerator<A> {
-    public Generator() {
-    }
-
-//    public abstract Result<? extends Seed, A> run(GeneratorContext context, Seed input);
-
-    public abstract Generate<A> prepare(Parameters parameters);
+public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
+    Generate<A> prepare(Parameters parameters);
 
     @Override
-    public final <B> Generator<B> fmap(Fn1<? super A, ? extends B> fn) {
+    default <B> Generator<B> fmap(Fn1<? super A, ? extends B> fn) {
         return Generators.mapped(fn, this);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public final <B> Generator<B> flatMap(Fn1<? super A, ? extends Monad<B, Generator<?>>> f) {
+    default <B> Generator<B> flatMap(Fn1<? super A, ? extends Monad<B, Generator<?>>> f) {
         return Generators.flatMapped((Fn1<? super A, ? extends Generator<B>>) f, this);
     }
 
     @Override
-    public final <B> Generator<B> pure(B b) {
+    default <B> Generator<B> pure(B b) {
         return Generators.constant(b);
     }
 
     @Override
-    public final Generator<A> toGenerator() {
+    default Generator<A> toGenerator() {
         return this;
     }
 
-    public Maybe<String> getLabel() {
+    default Maybe<String> getLabel() {
         return nothing();
     }
 
-    public Maybe<Object> getApplicationData() {
+    default Maybe<Object> getApplicationData() {
         return nothing();
     }
 
-    public boolean isPrimitive() {
+    default boolean isPrimitive() {
         return true;
     }
 
-    public final Generator<A> labeled(String label) {
+    default Generator<A> labeled(String label) {
         return Generators.withMetadata(Maybe.maybe(label), this.getApplicationData(), this);
     }
 
-    public final Generator<A> attachApplicationData(Object applicationData) {
+    default Generator<A> attachApplicationData(Object applicationData) {
         return Generators.withMetadata(getLabel(), Maybe.maybe(applicationData), this);
     }
 
-    public final Generator<Tuple2<A, A>> pair() {
+    default Generator<Tuple2<A, A>> pair() {
         return Generators.tupled(this, this);
     }
 
-    public final Generator<Tuple3<A, A, A>> triple() {
+    default Generator<Tuple3<A, A, A>> triple() {
         return Generators.tupled(this, this, this);
     }
 
-    public final Generator<Maybe<A>> just() {
+    default Generator<Maybe<A>> just() {
         return Generators.generateJust(this);
     }
 
-    public final Generator<Maybe<A>> maybe() {
+    default Generator<Maybe<A>> maybe() {
         return Generators.generateMaybe(this);
     }
 
-    public final Generator<Maybe<A>> maybe(MaybeWeights weights) {
+    default Generator<Maybe<A>> maybe(MaybeWeights weights) {
         return Generators.generateMaybe(weights, this);
     }
 
-    public final <R> Generator<Either<A, R>> left() {
+    default <R> Generator<Either<A, R>> left() {
         return CoProducts.generateLeft(this);
     }
 
-    public final <L> Generator<Either<L, A>> right() {
+    default <L> Generator<Either<L, A>> right() {
         return CoProducts.generateRight(this);
     }
 
-    public final Generator<A> withNulls() {
+    default Generator<A> withNulls() {
         return Generators.generateWithNulls(this);
     }
 
-    public final Generator<A> withNulls(NullWeights weights) {
+    default Generator<A> withNulls(NullWeights weights) {
         return Generators.generateWithNulls(weights, this);
     }
 
-    public final Generator<ArrayList<A>> arrayList() {
+    default Generator<ArrayList<A>> arrayList() {
         return Generators.generateArrayList(this);
     }
 
-    public final Generator<ArrayList<A>> nonEmptyArrayList() {
+    default Generator<ArrayList<A>> nonEmptyArrayList() {
         return Generators.generateNonEmptyArrayList(this);
     }
 
-    public final Generator<ArrayList<A>> arrayListOfN(int count) {
+    default Generator<ArrayList<A>> arrayListOfN(int count) {
         return Generators.generateArrayListOfN(count, this);
     }
 
-    public final Generator<ImmutableVector<A>> vector() {
+    default Generator<ImmutableVector<A>> vector() {
         return Generators.generateVector(this);
     }
 
-    public final Generator<ImmutableVector<A>> vectorOfN(int count) {
+    default Generator<ImmutableVector<A>> vectorOfN(int count) {
         return Generators.generateVectorOfN(count, this);
     }
 
-    public final Generator<ImmutableNonEmptyVector<A>> nonEmptyVector() {
+    default Generator<ImmutableNonEmptyVector<A>> nonEmptyVector() {
         return Generators.generateNonEmptyVector(this);
     }
 
-    public final Generator<ImmutableNonEmptyVector<A>> nonEmptyVectorOfN(int count) {
+    default Generator<ImmutableNonEmptyVector<A>> nonEmptyVectorOfN(int count) {
         return Generators.generateNonEmptyVectorOfN(count, this);
     }
 
     // **********
     // mixing in edge cases
 
-    public final Generator<A> injectSpecialValues(NonEmptyFiniteIterable<A> values) {
+    default Generator<A> injectSpecialValues(NonEmptyFiniteIterable<A> values) {
         return Generators.injectSpecialValues(values, this);
     }
 

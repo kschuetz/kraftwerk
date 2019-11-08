@@ -277,7 +277,7 @@ class Primitives {
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class ConstantGenerator<A> extends Generator<A> {
+    private static class ConstantGenerator<A> implements Generator<A> {
         private static Maybe<String> LABEL = Maybe.just("constant");
 
         private final A value;
@@ -294,7 +294,7 @@ class Primitives {
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class Mapped<In, A> extends Generator<A> {
+    private static class Mapped<In, A> implements Generator<A> {
         private static Maybe<String> LABEL = Maybe.just("fmap");
 
         private final Fn1<In, A> fn;
@@ -314,7 +314,7 @@ class Primitives {
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class FlatMapped<In, A> extends Generator<A> {
+    private static class FlatMapped<In, A> implements Generator<A> {
         private static Maybe<String> LABEL = Maybe.just("flatMap");
 
         private final Generator<In> operand;
@@ -338,7 +338,7 @@ class Primitives {
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class BooleanGenerator extends Generator<Boolean> {
+    private static class BooleanGenerator implements Generator<Boolean> {
         private static Maybe<String> LABEL = Maybe.just("boolean");
 
         private static final BooleanGenerator INSTANCE = new BooleanGenerator();
@@ -356,7 +356,7 @@ class Primitives {
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class DoubleGenerator extends FloatingPointGenerator<Double> {
+    private static class DoubleGenerator implements FloatingPointGenerator<Double> {
         private static Maybe<String> LABEL = Maybe.just("double");
 
         private final boolean includeNaNs;
@@ -394,7 +394,7 @@ class Primitives {
 
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class FloatGenerator extends Generator<Float> {
+    private static class FloatGenerator implements Generator<Float> {
         private static Maybe<String> LABEL = Maybe.just("float");
 
         private static final FloatGenerator INSTANCE = new FloatGenerator();
@@ -414,7 +414,7 @@ class Primitives {
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class IntGenerator extends Generator<Integer> {
+    private static class IntGenerator implements Generator<Integer> {
         private static Maybe<String> LABEL = Maybe.just("int");
 
         private static final IntGenerator INSTANCE = new IntGenerator();
@@ -435,7 +435,7 @@ class Primitives {
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class LongGenerator extends Generator<Long> {
+    private static class LongGenerator implements Generator<Long> {
         private static Maybe<String> LABEL = Maybe.just("long");
 
         private static final LongGenerator INSTANCE = new LongGenerator();
@@ -455,7 +455,7 @@ class Primitives {
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class GaussianGenerator extends Generator<Double> {
+    private static class GaussianGenerator implements Generator<Double> {
         private static Maybe<String> LABEL = Maybe.just("gaussian");
 
         private static final GaussianGenerator INSTANCE = new GaussianGenerator();
@@ -474,7 +474,7 @@ class Primitives {
 
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class ByteGenerator extends Generator<Byte> {
+    private static class ByteGenerator implements Generator<Byte> {
         private static Maybe<String> LABEL = Maybe.just("byte");
 
         private static final ByteGenerator INSTANCE = new ByteGenerator();
@@ -493,7 +493,7 @@ class Primitives {
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class ShortGenerator extends Generator<Short> {
+    private static class ShortGenerator implements Generator<Short> {
         private static Maybe<String> LABEL = Maybe.just("short");
 
         private static final ShortGenerator INSTANCE = new ShortGenerator();
@@ -512,7 +512,7 @@ class Primitives {
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class BytesGenerator extends Generator<Byte[]> {
+    private static class BytesGenerator implements Generator<Byte[]> {
         private final int count;
 
         @Override
@@ -537,7 +537,7 @@ class Primitives {
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class SizedGenerator<A> extends Generator<A> {
+    private static class SizedGenerator<A> implements Generator<A> {
         private static Maybe<String> LABEL = Maybe.just("sized");
 
         private final Fn1<Integer, Generator<A>> fn;
@@ -562,7 +562,7 @@ class Primitives {
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class WithMetadata<A> extends Generator<A> {
+    private static class WithMetadata<A> implements Generator<A> {
         private final Maybe<String> label;
         private final Maybe<Object> applicationData;
         private final Generator<A> operand;
@@ -579,7 +579,7 @@ class Primitives {
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    static class Aggregate<Elem, Builder, Out> extends Generator<Out> {
+    static class Aggregate<Elem, Builder, Out> implements Generator<Out> {
         private static Maybe<String> LABEL = Maybe.just("aggregate");
 
         private final Fn0<Builder> initialBuilderSupplier;
@@ -612,7 +612,7 @@ class Primitives {
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class Product2<A, B, Out> extends Generator<Out> {
+    private static class Product2<A, B, Out> implements Generator<Out> {
         private static Maybe<String> LABEL = Maybe.just("product2");
 
         private final Generator<A> a;
@@ -640,7 +640,7 @@ class Primitives {
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class Product3<A, B, C, Out> extends Generator<Out> {
+    private static class Product3<A, B, C, Out> implements Generator<Out> {
         private static Maybe<String> LABEL = Maybe.just("product3");
 
         private final Generator<A> a;
@@ -672,7 +672,7 @@ class Primitives {
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class Product4<A, B, C, D, Out> extends Generator<Out> {
+    private static class Product4<A, B, C, D, Out> implements Generator<Out> {
         private static Maybe<String> LABEL = Maybe.just("product4");
 
         private final Generator<A> a;
@@ -708,7 +708,7 @@ class Primitives {
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class Product5<A, B, C, D, E, Out> extends Generator<Out> {
+    private static class Product5<A, B, C, D, E, Out> implements Generator<Out> {
         private static Maybe<String> LABEL = Maybe.just("product5");
 
         private final Generator<A> a;
@@ -748,7 +748,7 @@ class Primitives {
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class Product6<A, B, C, D, E, F, Out> extends Generator<Out> {
+    private static class Product6<A, B, C, D, E, F, Out> implements Generator<Out> {
         private static Maybe<String> LABEL = Maybe.just("product6");
 
         private final Generator<A> a;
@@ -792,7 +792,7 @@ class Primitives {
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class Product7<A, B, C, D, E, F, G, Out> extends Generator<Out> {
+    private static class Product7<A, B, C, D, E, F, G, Out> implements Generator<Out> {
         private static Maybe<String> LABEL = Maybe.just("product7");
 
         private final Generator<A> a;
@@ -840,7 +840,7 @@ class Primitives {
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class Product8<A, B, C, D, E, F, G, H, Out> extends Generator<Out> {
+    private static class Product8<A, B, C, D, E, F, G, H, Out> implements Generator<Out> {
         private static Maybe<String> LABEL = Maybe.just("product8");
 
         private final Generator<A> a;

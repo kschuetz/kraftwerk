@@ -1,16 +1,16 @@
 package dev.marksman.kraftwerk;
 
-public abstract class FloatingPointGenerator<A> extends Generator<A> {
+public interface FloatingPointGenerator<A> extends Generator<A> {
 
-    public abstract FloatingPointGenerator<A> withNaNs(boolean enabled);
+    FloatingPointGenerator<A> withNaNs(boolean enabled);
 
-    public abstract FloatingPointGenerator<A> withInfinities(boolean enabled);
+    FloatingPointGenerator<A> withInfinities(boolean enabled);
 
-    public FloatingPointGenerator<A> withNaNs() {
+    default FloatingPointGenerator<A> withNaNs() {
         return withNaNs(true);
     }
 
-    public FloatingPointGenerator<A> withInfinities() {
+    default FloatingPointGenerator<A> withInfinities() {
         return withInfinities(true);
     }
 
