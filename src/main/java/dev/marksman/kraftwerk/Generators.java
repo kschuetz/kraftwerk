@@ -14,9 +14,6 @@ import dev.marksman.enhancediterables.*;
 import dev.marksman.kraftwerk.choice.ChoiceBuilder1;
 import dev.marksman.kraftwerk.frequency.FrequencyMap;
 import dev.marksman.kraftwerk.random.BuildingBlocks;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Value;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -28,22 +25,20 @@ import static com.jnape.palatable.lambda.functions.builtin.fn2.Replicate.replica
 import static dev.marksman.kraftwerk.Result.result;
 
 public class Generators {
+
     public static <A> Generator<A> constant(A a) {
         return Primitives.constant(a);
     }
 
     public static <A, B> Generator<B> tap(Generator<A> inner,
                                           Fn2<Generate<A>, Seed, B> f) {
-        return new Generator<B>() {
-            @Override
-            public Generate<B> prepare(Parameters parameters) {
-                Generate<A> runA = inner.prepare(parameters);
-                return input -> {
-                    Seed nextState = BuildingBlocks.nextInt(input).getNextState();
-                    return result(nextState,
-                            f.apply(runA, input));
-                };
-            }
+        return parameters -> {
+            Generate<A> runA = inner.prepare(parameters);
+            return input -> {
+                Seed nextState = BuildingBlocks.nextInt(input).getNextState();
+                return result(nextState,
+                        f.apply(runA, input));
+            };
         };
     }
 
@@ -106,22 +101,18 @@ public class Generators {
     }
 
     public static Generator<Long> generateLong(long min, long max) {
-        checkMinMax(min, max);
         return Primitives.generateLong(min, max);
     }
 
     public static Generator<Long> generateLongExclusive(long bound) {
-        checkBound(bound);
         return Primitives.generateLongExclusive(bound);
     }
 
     public static Generator<Long> generateLongExclusive(long origin, long bound) {
-        checkOriginBound(origin, bound);
         return Primitives.generateLongExclusive(origin, bound);
     }
 
     public static Generator<Long> generateLongIndex(long bound) {
-        checkBound(bound);
         return Primitives.generateLongIndex(bound);
     }
 
@@ -866,62 +857,5 @@ public class Generators {
                                                                             int maxCountEachElement,
                                                                             ImmutableVector<A> orderedElems) {
         return Sequences.generateOrderedSequence(minCountEachElement, maxCountEachElement, orderedElems);
-    }
-
-    static <A, B> Generator<B> mapped(Fn1<? super A, ? extends B> fn, Generator<A> operand) {
-        return Primitives.mapped(fn, operand);
-    }
-
-    static <A, B> Generator<B> flatMapped(Fn1<? super A, ? extends Generator<B>> fn, Generator<A> operand) {
-        return Primitives.flatMapped(fn, operand);
-    }
-
-    static <A> Generator<A> injectSpecialValues(NonEmptyFiniteIterable<A> specialValues, Generator<A> inner) {
-        return new InjectSpecialValues<>(specialValues, inner);
-    }
-
-    static <A> Generator<A> withMetadata(Maybe<String> label, Maybe<Object> applicationData, Generator<A> operand) {
-//        if (operand instanceof Primitives.WithMetadata) {
-//            Primitives.WithMetadata<A> target1 = (Primitives.WithMetadata<A>) operand;
-//            return new Primitives.WithMetadata<>(label, applicationData, target1.getOperand());
-//        } else {
-//            return new Primitives.WithMetadata<>(label, applicationData, operand);
-//        }
-        return Primitives.withMetadata(label, applicationData, operand);
-    }
-
-    private static void checkBound(long bound) {
-        if (bound < 1) throw new IllegalArgumentException("bound must be > 0");
-    }
-
-    private static void checkOriginBound(long origin, long bound) {
-        if (origin >= bound) throw new IllegalArgumentException("bound must be > origin");
-    }
-
-    private static void checkMinMax(long min, long max) {
-        if (min > max) throw new IllegalArgumentException("max must be >= min");
-    }
-
-    private static void checkCount(int count) {
-        if (count < 0) throw new IllegalArgumentException("count must be >= 0");
-    }
-
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    public static class InjectSpecialValues<A> implements Generator<A> {
-        private static Maybe<String> LABEL = Maybe.just("injectSpecialValues");
-
-        private final NonEmptyFiniteIterable<A> specialValues;
-        private final Generator<A> inner;
-
-        @Override
-        public Generate<A> prepare(Parameters parameters) {
-            return null;
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return LABEL;
-        }
     }
 }

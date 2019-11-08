@@ -19,18 +19,18 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
 
     @Override
     default <B> Generator<B> fmap(Fn1<? super A, ? extends B> fn) {
-        return Generators.mapped(fn, this);
+        return Primitives.mapped(fn, this);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     default <B> Generator<B> flatMap(Fn1<? super A, ? extends Monad<B, Generator<?>>> f) {
-        return Generators.flatMapped((Fn1<? super A, ? extends Generator<B>>) f, this);
+        return Primitives.flatMapped((Fn1<? super A, ? extends Generator<B>>) f, this);
     }
 
     @Override
     default <B> Generator<B> pure(B b) {
-        return Generators.constant(b);
+        return Primitives.constant(b);
     }
 
     @Override
@@ -51,11 +51,11 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
     }
 
     default Generator<A> labeled(String label) {
-        return Generators.withMetadata(Maybe.maybe(label), this.getApplicationData(), this);
+        return Primitives.withMetadata(Maybe.maybe(label), this.getApplicationData(), this);
     }
 
     default Generator<A> attachApplicationData(Object applicationData) {
-        return Generators.withMetadata(getLabel(), Maybe.maybe(applicationData), this);
+        return Primitives.withMetadata(getLabel(), Maybe.maybe(applicationData), this);
     }
 
     default Generator<Tuple2<A, A>> pair() {
@@ -126,54 +126,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
     // mixing in edge cases
 
     default Generator<A> injectSpecialValues(NonEmptyFiniteIterable<A> values) {
-        return Generators.injectSpecialValues(values, this);
+        return Primitives.injectSpecialValues(values, this);
     }
-
-
-
-    /*
-
-    private final ImmutableNonEmptyVector<Elem> elements;
-    private final int specialWeight;
-    private final long totalWeight;
-    private final GeneratorImpl<Elem> inner;
-
-    private InjectSpecialValuesImpl(ImmutableNonEmptyVector<Elem> elements, long nonSpecialWeight, GeneratorImpl<Elem> inner) {
-        this.elements = elements;
-        this.specialWeight = elements.size();
-        this.totalWeight = Math.max(0, nonSpecialWeight) + specialWeight;
-        this.inner = inner;
-    }
-
-    @Override
-    public Result<? extends LegacySeed, Elem> run(LegacySeed input) {
-        // TODO: InjectSpecialValuesImpl
-        long n = input.getSeedValue() % totalWeight;
-        if (n < specialWeight) {
-            Result<? extends LegacySeed, Integer> nextSeed = input.nextInt();
-            return result(nextSeed.getNextState(), elements.unsafeGet((int) n));
-        } else {
-            return inner.run(input);
-        }
-    }
-
-
-
-    if (gen instanceof Generator.InjectSpecialValues) {
-            Generator.InjectSpecialValues<A> g1 = (Generator.InjectSpecialValues<A>) gen;
-            NonEmptyFiniteIterable<A> acc = g1.getSpecialValues();
-            while (g1.getInner() instanceof Generator.InjectSpecialValues) {
-                g1 = (Generator.InjectSpecialValues<A>) g1.getInner();
-                acc = acc.concat(g1.getSpecialValues());
-            }
-            ImmutableNonEmptyVector<A> specialValues = NonEmptyVector.copyFromOrThrow(acc);
-            return mixInSpecialValuesImpl(specialValues, 20 + 3 * specialValues.size(),
-                    context.recurse(g1.getInner()));
-        }
-     */
-
-
-    // TODO:  organize these
-
 
 }
