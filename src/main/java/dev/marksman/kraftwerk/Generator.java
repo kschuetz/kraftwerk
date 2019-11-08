@@ -238,7 +238,7 @@ public abstract class Generator<A> implements Monad<A, Generator<?>>, ToGenerato
         return CoProducts.generateBoolean(weights);
     }
 
-    public static Generator<Double> generateDouble() {
+    public static FloatingPointGenerator<Double> generateDouble() {
         return Primitives.generateDouble();
     }
 

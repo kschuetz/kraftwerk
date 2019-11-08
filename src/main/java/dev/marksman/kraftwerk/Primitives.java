@@ -103,8 +103,8 @@ class Primitives {
         return BooleanGenerator.INSTANCE;
     }
 
-    static Generator<Double> generateDouble() {
-        return DoubleGenerator.INSTANCE;
+    static FloatingPointGenerator<Double> generateDouble() {
+        return DoubleGenerator.BASIC;
     }
 
     static Generator<Float> generateFloat() {
@@ -356,10 +356,13 @@ class Primitives {
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class DoubleGenerator extends Generator<Double> {
+    private static class DoubleGenerator extends FloatingPointGenerator<Double> {
         private static Maybe<String> LABEL = Maybe.just("double");
 
-        private static final DoubleGenerator INSTANCE = new DoubleGenerator();
+        private final boolean includeNaNs;
+        private final boolean includeInfinities;
+
+        private static final DoubleGenerator BASIC = new DoubleGenerator(false, false);
 
         @Override
         public Generate<Double> prepare(Parameters parameters) {
@@ -369,11 +372,26 @@ class Primitives {
         }
 
         @Override
+        public FloatingPointGenerator<Double> withNaNs(boolean enabled) {
+            return (enabled != includeNaNs)
+                    ? new DoubleGenerator(enabled, includeInfinities)
+                    : this;
+        }
+
+        @Override
+        public FloatingPointGenerator<Double> withInfinities(boolean enabled) {
+            return (enabled != includeInfinities)
+                    ? new DoubleGenerator(includeNaNs, enabled)
+                    : this;
+        }
+
+        @Override
         public Maybe<String> getLabel() {
             return LABEL;
         }
 
     }
+
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class FloatGenerator extends Generator<Float> {
