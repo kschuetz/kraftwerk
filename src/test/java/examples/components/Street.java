@@ -2,6 +2,7 @@ package examples.components;
 
 import com.jnape.palatable.lambda.adt.Maybe;
 import dev.marksman.kraftwerk.Generator;
+import dev.marksman.kraftwerk.Generators;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
@@ -10,7 +11,6 @@ import static com.jnape.palatable.lambda.functions.builtin.fn2.Into3.into3;
 import static dev.marksman.kraftwerk.FrequencyEntry.entry;
 import static dev.marksman.kraftwerk.FrequencyEntry.entryForValue;
 import static dev.marksman.kraftwerk.GeneratedStream.streamFrom;
-import static dev.marksman.kraftwerk.Generator.*;
 import static dev.marksman.kraftwerk.MaybeWeights.nothingWeight;
 import static examples.components.City.generateCityRootName;
 
@@ -33,11 +33,11 @@ public class Street {
 
     private static class generators {
         static final Generator<String> compass =
-                frequency(entry(8, chooseOneOfValues("N.", "S.", "W.", "E.")),
-                        entry(1, chooseOneOfValues("NW", "NE", "SW", "SE")));
+                Generators.frequency(entry(8, Generators.chooseOneOfValues("N.", "S.", "W.", "E.")),
+                        entry(1, Generators.chooseOneOfValues("NW", "NE", "SW", "SE")));
 
         static final Generator<String> ordinal =
-                generateInt(1, 99).fmap(n -> {
+                Generators.generateInt(1, 99).fmap(n -> {
                     if (n == 11) return "11th";
                     else if (n % 10 == 1) return n + "st";
                     else if (n % 10 == 2) return n + "nd";
@@ -46,13 +46,13 @@ public class Street {
                 });
 
         static final Generator<String> president =
-                chooseOneOfValues("Washington", "Adams", "Jefferson", "Madison", "Monroe", "Lincoln");
+                Generators.chooseOneOfValues("Washington", "Adams", "Jefferson", "Madison", "Monroe", "Lincoln");
 
         static final Generator<String> tree =
-                chooseOneOfValues("Oak", "Maple", "Elm", "Pine", "Spruce", "Sycamore", "Birch", "Apple", "Peach");
+                Generators.chooseOneOfValues("Oak", "Maple", "Elm", "Pine", "Spruce", "Sycamore", "Birch", "Apple", "Peach");
 
         static final Generator<String> suffix =
-                frequency(entryForValue(10, "St."),
+                Generators.frequency(entryForValue(10, "St."),
                         entryForValue(7, "Ave."),
                         entryForValue(5, "Rd."),
                         entryForValue(3, "Dr."),
@@ -61,12 +61,12 @@ public class Street {
                         entryForValue(1, "Ct."));
 
         static final Generator<String> name =
-                frequency(entry(3, ordinal),
+                Generators.frequency(entry(3, ordinal),
                         entry(2, tree),
                         entry(2, president),
                         entry(2, generateCityRootName()));
 
-        static final Generator<Street> street = tupled(
+        static final Generator<Street> street = Generators.tupled(
                 compass.maybe(nothingWeight(3).toJust(1)),
                 name,
                 suffix)

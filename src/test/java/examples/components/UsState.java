@@ -7,7 +7,7 @@ import lombok.Value;
 
 import static dev.marksman.kraftwerk.FrequencyEntry.entryForValue;
 import static dev.marksman.kraftwerk.GeneratedStream.streamFrom;
-import static dev.marksman.kraftwerk.Generator.frequency;
+import static dev.marksman.kraftwerk.Generators.frequency;
 
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

@@ -14,7 +14,6 @@ import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.All.all;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Eq.eq;
 import static dev.marksman.kraftwerk.GeneratedStream.streamFrom;
-import static dev.marksman.kraftwerk.Generator.*;
 import static dev.marksman.kraftwerk.StandardParameters.defaultParameters;
 import static dev.marksman.kraftwerk.StandardSeed.initStandardSeed;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,10 +23,10 @@ class GeneratorTest {
 
     private static final int SEQUENCE_LENGTH = 17;
 
-    private static final Generator<Integer> gen1 = generateInt();
-    private static final Generator<Double> gen2 = generateGaussian();
-    private static final Generator<Integer> gen3 = generateIntExclusive(1, 10);
-    private static final Generator<String> gen4 = frequency(FrequencyEntry.entryForValue(3, "foo"),
+    private static final Generator<Integer> gen1 = Generators.generateInt();
+    private static final Generator<Double> gen2 = Generators.generateGaussian();
+    private static final Generator<Integer> gen3 = Generators.generateIntExclusive(1, 10);
+    private static final Generator<String> gen4 = Generators.frequency(FrequencyEntry.entryForValue(3, "foo"),
             FrequencyEntry.entryForValue(7, "bar"));
 
     @Test
@@ -64,7 +63,7 @@ class GeneratorTest {
 
     @Test
     void generateConstant() {
-        assertTrue(all(eq(1), streamFrom(Generator.constant(1)).next(1000)));
+        assertTrue(all(eq(1), streamFrom(Generators.constant(1)).next(1000)));
     }
 
     @Test
@@ -72,9 +71,9 @@ class GeneratorTest {
     void stackSafeFlatMap() {
         int LARGE_NUMBER = 10_000;
         int max = 2 * LARGE_NUMBER;
-        Generator<Integer> g = generateInt(0, max);
+        Generator<Integer> g = Generators.generateInt(0, max);
         for (int i = 0; i < LARGE_NUMBER; i++) {
-            g = g.flatMap(n -> generateInt(n, max));
+            g = g.flatMap(n -> Generators.generateInt(n, max));
         }
         streamFrom(g).next();
     }
@@ -84,7 +83,7 @@ class GeneratorTest {
     void stackSafeFmap() {
         int LARGE_NUMBER = 10_000;
         int max = 2 * LARGE_NUMBER;
-        Generator<Integer> g = generateInt(0, max);
+        Generator<Integer> g = Generators.generateInt(0, max);
         for (int i = 0; i < LARGE_NUMBER; i++) {
             g = g.fmap(n -> n + 1);
         }
@@ -119,8 +118,8 @@ class GeneratorTest {
     private static <A> void testEquivalent(Generator<A> gen1, Generator<A> gen2) {
         Seed initial = initStandardSeed();
 
-        Result<Seed, ArrayList<A>> result1 = run(generateArrayListOfN(SEQUENCE_LENGTH, gen1), initial);
-        Result<Seed, ArrayList<A>> result2 = run(generateArrayListOfN(SEQUENCE_LENGTH, gen2), initial);
+        Result<Seed, ArrayList<A>> result1 = run(Generators.generateArrayListOfN(SEQUENCE_LENGTH, gen1), initial);
+        Result<Seed, ArrayList<A>> result2 = run(Generators.generateArrayListOfN(SEQUENCE_LENGTH, gen2), initial);
 
         assertEquals(result1.getNextState(),
                 result2.getNextState(), "outbound RandomGens don't match");

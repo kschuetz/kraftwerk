@@ -8,7 +8,7 @@ import dev.marksman.kraftwerk.ToGenerator;
 import dev.marksman.kraftwerk.frequency.FrequencyMap;
 import lombok.AllArgsConstructor;
 
-import static dev.marksman.kraftwerk.Generator.constant;
+import static dev.marksman.kraftwerk.Generators.constant;
 import static dev.marksman.kraftwerk.choice.ChoiceBuilder6.choiceBuilder6;
 
 @AllArgsConstructor

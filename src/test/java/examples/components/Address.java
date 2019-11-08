@@ -2,12 +2,12 @@ package examples.components;
 
 import com.jnape.palatable.lambda.adt.Maybe;
 import dev.marksman.kraftwerk.Generator;
+import dev.marksman.kraftwerk.Generators;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into.into;
-import static dev.marksman.kraftwerk.Generator.*;
 import static dev.marksman.kraftwerk.MaybeWeights.nothingWeight;
 import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
 import static examples.components.City.generateCity;
@@ -48,20 +48,20 @@ public class Address {
 
     private static class generators {
         static Generator<String> number =
-                frequencyMap(3, generateInt(0, 990).fmap(n -> 100 + 10 * n))
-                        .add(3, generateInt(0, 990).fmap(n -> 101 + 10 * n))
-                        .add(4, generateInt(10, 999))
+                frequencyMap(3, Generators.generateInt(0, 990).fmap(n -> 100 + 10 * n))
+                        .add(3, Generators.generateInt(0, 990).fmap(n -> 101 + 10 * n))
+                        .add(4, Generators.generateInt(10, 999))
                         .toGenerator()
                         .fmap(Object::toString);
 
 
         static Generator<String> unit =
-                tupled(chooseOneOfValues(" #", ", Apt. ", ", Suite "),
-                        chooseOneOf(generateInt(100, 3000), generateInt(1, 99)))
+                Generators.tupled(Generators.chooseOneOfValues(" #", ", Apt. ", ", Suite "),
+                        Generators.chooseOneOf(Generators.generateInt(100, 3000), Generators.generateInt(1, 99)))
                         .fmap(into((unitName, number) -> unitName + number));
 
         static Generator<Address> address =
-                product(number,
+                Generators.product(number,
                         generateStreet(),
                         unit.maybe(nothingWeight(4).toJust(1)),
                         generateCity(),

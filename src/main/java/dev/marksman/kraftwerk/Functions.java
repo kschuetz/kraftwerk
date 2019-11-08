@@ -3,7 +3,7 @@ package dev.marksman.kraftwerk;
 import com.jnape.palatable.lambda.adt.product.*;
 import com.jnape.palatable.lambda.functions.*;
 
-import static dev.marksman.kraftwerk.Generator.tap;
+import static dev.marksman.kraftwerk.Generators.tap;
 
 class Functions {
 
@@ -20,7 +20,7 @@ class Functions {
                                                          Cogenerator<B> param2,
                                                          Generator<R> result) {
         Cogenerator<Product2<A, B>> params = Cogenerator.product(param1, param2);
-        return Generator.tap(result,
+        return Generators.tap(result,
                 (output, rs) -> (a, b) -> output.apply(params.apply(rs, Product2.product(a, b))).getValue());
     }
 
@@ -29,7 +29,7 @@ class Functions {
                                                                Cogenerator<C> param3,
                                                                Generator<R> result) {
         Cogenerator<Product3<A, B, C>> params = Cogenerator.product(param1, param2, param3);
-        return Generator.tap(result,
+        return Generators.tap(result,
                 (output, rs) -> (a, b, c) -> output.apply(params.apply(rs, Product3.product(a, b, c))).getValue());
     }
 
@@ -39,7 +39,7 @@ class Functions {
                                                                      Cogenerator<D> param4,
                                                                      Generator<R> result) {
         Cogenerator<Product4<A, B, C, D>> params = Cogenerator.product(param1, param2, param3, param4);
-        return Generator.tap(result,
+        return Generators.tap(result,
                 (output, rs) -> (a, b, c, d) -> output.apply(params.apply(rs, Product4.product(a, b, c, d))).getValue());
     }
 
@@ -50,7 +50,7 @@ class Functions {
                                                                            Cogenerator<E> param5,
                                                                            Generator<R> result) {
         Cogenerator<Product5<A, B, C, D, E>> params = Cogenerator.product(param1, param2, param3, param4, param5);
-        return Generator.tap(result,
+        return Generators.tap(result,
                 (output, rs) -> (a, b, c, d, e) -> output.apply(params.apply(rs, Product5.product(a, b, c, d, e))).getValue());
     }
 
@@ -62,7 +62,7 @@ class Functions {
                                                                                  Cogenerator<F> param6,
                                                                                  Generator<R> result) {
         Cogenerator<Product6<A, B, C, D, E, F>> params = Cogenerator.product(param1, param2, param3, param4, param5, param6);
-        return Generator.tap(result,
+        return Generators.tap(result,
                 (output, rs) -> (a, b, c, d, e, f) ->
                         output.apply(params.apply(rs, Product6.product(a, b, c, d, e, f))).getValue());
     }
@@ -77,7 +77,7 @@ class Functions {
                                                                                        Generator<R> result) {
         Cogenerator<Product7<A, B, C, D, E, F, G>> params = Cogenerator.product(param1, param2, param3, param4, param5,
                 param6, param7);
-        return Generator.tap(result,
+        return Generators.tap(result,
                 (output, rs) -> (a, b, c, d, e, f, g) ->
                         output.apply(params.apply(rs, Product7.product(a, b, c, d, e, f, g))).getValue());
     }
@@ -93,7 +93,7 @@ class Functions {
                                                                                              Generator<R> result) {
         Cogenerator<Product8<A, B, C, D, E, F, G, H>> params = Cogenerator.product(param1, param2, param3, param4, param5,
                 param6, param7, param8);
-        return Generator.tap(result,
+        return Generators.tap(result,
                 (output, rs) -> (a, b, c, d, e, f, g, h) ->
                         output.apply(params.apply(rs, Product8.product(a, b, c, d, e, f, g, h))).getValue());
     }

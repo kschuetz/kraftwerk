@@ -5,7 +5,7 @@ import dev.marksman.kraftwerk.Generator;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
-import static dev.marksman.kraftwerk.Generator.generateLongExclusive;
+import static dev.marksman.kraftwerk.Generators.generateLongExclusive;
 import static dev.marksman.kraftwerk.frequency.FrequencyMap1.checkMultiplier;
 import static dev.marksman.kraftwerk.frequency.FrequencyMap3.frequencyMap3;
 import static dev.marksman.kraftwerk.frequency.FrequencyMapN.addLabel;

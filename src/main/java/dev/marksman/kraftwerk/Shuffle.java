@@ -23,7 +23,7 @@ class Shuffle {
 
     static <A> Generator<Vector<A>> generateShuffled(int count, Fn1<Integer, A> fn) {
         if (count <= 0) {
-            return Generator.constant(Vector.empty());
+            return Generators.constant(Vector.empty());
         } else {
             return generateNonEmptyShuffled(count + 1, fn)
                     .fmap(upcast());
@@ -34,7 +34,7 @@ class Shuffle {
         if (count < 1) {
             throw new IllegalArgumentException("count must be >= 1");
         } else if (count == 1) {
-            return Generator.constant(Vector.of(fn.apply(0)));
+            return Generators.constant(Vector.of(fn.apply(0)));
         } else {
             return new Generator<NonEmptyVector<A>>() {
 

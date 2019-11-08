@@ -9,7 +9,7 @@ import dev.marksman.kraftwerk.frequency.FrequencyMap;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
-import static dev.marksman.kraftwerk.Generator.constant;
+import static dev.marksman.kraftwerk.Generators.constant;
 import static dev.marksman.kraftwerk.choice.ChoiceBuilder5.choiceBuilder5;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

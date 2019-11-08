@@ -1,6 +1,7 @@
 package examples.components;
 
 import dev.marksman.kraftwerk.Generator;
+import dev.marksman.kraftwerk.Generators;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
@@ -10,7 +11,6 @@ import java.time.Year;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into3.into3;
 import static dev.marksman.kraftwerk.GeneratedStream.streamFrom;
-import static dev.marksman.kraftwerk.Generator.*;
 import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
 import static examples.components.Address.generateAddress;
 import static examples.components.Name.generateName;
@@ -39,21 +39,21 @@ public class Person {
         private static int currentYear = LocalDate.now().getYear();
 
         private static Generator<Integer> age =
-                frequencyMap(1, generateInt(2, 9))
-                        .add(2, generateInt(10, 19))
-                        .add(3, generateInt(20, 29))
-                        .add(3, generateInt(30, 39))
-                        .add(3, generateInt(40, 49))
-                        .add(3, generateInt(50, 59))
-                        .add(2, generateInt(60, 69))
-                        .add(2, generateInt(70, 79))
-                        .add(2, generateInt(80, 99))
+                frequencyMap(1, Generators.generateInt(2, 9))
+                        .add(2, Generators.generateInt(10, 19))
+                        .add(3, Generators.generateInt(20, 29))
+                        .add(3, Generators.generateInt(30, 39))
+                        .add(3, Generators.generateInt(40, 49))
+                        .add(3, Generators.generateInt(50, 59))
+                        .add(2, Generators.generateInt(60, 69))
+                        .add(2, Generators.generateInt(70, 79))
+                        .add(2, Generators.generateInt(80, 99))
                         .toGenerator();
 
         private static Generator<LocalDate> dateOfBirth =
-                age.flatMap(n -> generateLocalDateForYear(Year.of(currentYear - n)));
+                age.flatMap(n -> Generators.generateLocalDateForYear(Year.of(currentYear - n)));
 
-        static Generator<Person> person = tupled(generateName(),
+        static Generator<Person> person = Generators.tupled(generateName(),
                 generateAddress(),
                 dateOfBirth)
                 .fmap(into3(Person::person));

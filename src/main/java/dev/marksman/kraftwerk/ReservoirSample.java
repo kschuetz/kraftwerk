@@ -11,9 +11,9 @@ class ReservoirSample {
 
     static Generator<FiniteIterable<Integer>> reservoirSample(int n, int k) {
         if (k < 1 || n < 1) {
-            return Generator.constant(Vector.empty());
+            return Generators.constant(Vector.empty());
         } else if (k >= n) {
-            return Generator.constant(Vector.range(n));
+            return Generators.constant(Vector.range(n));
         } else if (k > n / 2) {
             return reservoirSampleImpl(n, n - k)
                     .fmap(exclude -> Vector.range(n).filter(i -> !exclude.contains(i)));

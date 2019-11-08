@@ -2,23 +2,23 @@ package examples;
 
 import com.jnape.palatable.lambda.adt.choice.Choice8;
 import dev.marksman.kraftwerk.Generator;
+import dev.marksman.kraftwerk.Generators;
 import dev.marksman.kraftwerk.domain.Characters;
 
 import static dev.marksman.kraftwerk.GeneratedStream.streamFrom;
-import static dev.marksman.kraftwerk.Generator.*;
 
 public class WeightedChoiceExample {
 
     private static void example1() {
         Generator<Choice8<Integer, Double, Float, Boolean, Long, Byte, Short, Character>> primitiveGenerator =
-                choiceBuilder(generateInt())
-                        .or(generateDouble())
-                        .or(generateFloat())
-                        .or(generateBoolean())
-                        .or(generateLong())
-                        .or(generateByte())
-                        .or(generateShort())
-                        .or(chooseOneFromDomain(Characters.asciiPrintable()))
+                Generators.choiceBuilder(Generators.generateInt())
+                        .or(Generators.generateDouble())
+                        .or(Generators.generateFloat())
+                        .or(Generators.generateBoolean())
+                        .or(Generators.generateLong())
+                        .or(Generators.generateByte())
+                        .or(Generators.generateShort())
+                        .or(Generators.chooseOneFromDomain(Characters.asciiPrintable()))
                         .toGenerator();
 
         streamFrom(primitiveGenerator).next(100).forEach(System.out::println);

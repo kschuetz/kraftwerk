@@ -5,7 +5,7 @@ import dev.marksman.kraftwerk.FrequencyEntry;
 import dev.marksman.kraftwerk.Generator;
 import dev.marksman.kraftwerk.ToGenerator;
 
-import static dev.marksman.kraftwerk.Generator.constant;
+import static dev.marksman.kraftwerk.Generators.constant;
 import static dev.marksman.kraftwerk.frequency.FrequencyMap1.frequencyMap1;
 
 public interface FrequencyMap<A> extends ToGenerator<A> {

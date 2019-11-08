@@ -11,8 +11,8 @@ import java.util.Arrays;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Intersperse.intersperse;
 import static dev.marksman.enhancediterables.EnhancedIterable.enhance;
-import static dev.marksman.kraftwerk.Generator.aggregate;
-import static dev.marksman.kraftwerk.Generator.constant;
+import static dev.marksman.kraftwerk.Generators.aggregate;
+import static dev.marksman.kraftwerk.Generators.constant;
 import static dev.marksman.kraftwerk.Sequence.sequence;
 
 class Strings {
@@ -31,11 +31,11 @@ class Strings {
     }
 
     static Generator<String> generateStringFromCharacters(Generator<Character> g) {
-        return Generator.sized(size -> generateStringFromCharacters(size, g));
+        return Generators.sized(size -> generateStringFromCharacters(size, g));
     }
 
     static Generator<String> generateStringFromCharacters(NonEmptyVector<Character> characters) {
-        return Generator.sized(size -> generateStringFromCharacters(size, Choose.chooseOneFromDomain(characters)));
+        return Generators.sized(size -> generateStringFromCharacters(size, Choose.chooseOneFromDomain(characters)));
     }
 
     static Generator<String> generateStringFromCharacters(int length, Generator<Character> g) {
@@ -64,7 +64,7 @@ class Strings {
     }
 
     static Generator<String> generateIdentifier() {
-        return Generator.sizedMinimum(1, Strings::generateIdentifier);
+        return Generators.sizedMinimum(1, Strings::generateIdentifier);
     }
 
     static Generator<String> generateIdentifier(int length) {
@@ -109,7 +109,7 @@ class Strings {
             Generator<EnhancedIterable<Generator<String>>> step1 = sequence(components)
                     .fmap(cs ->
                             enhance(CatMaybes.catMaybes(cs))
-                                    .fmap(Generator::constant)
+                                    .fmap(Generators::constant)
                                     .intersperse(separator));
 
             return step1.flatMap(ss ->

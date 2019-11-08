@@ -9,7 +9,7 @@ class Nulls {
     private static final NullWeights DEFAULT_NULL_WEIGHTS = nonNullWeight(9).toNull(1);
 
     static <A> Generator<A> generateNull() {
-        return Generator.constant(null);
+        return Generators.constant(null);
     }
 
     static <A> Generator<A> generateWithNulls(NullWeights weights, Generator<A> g) {

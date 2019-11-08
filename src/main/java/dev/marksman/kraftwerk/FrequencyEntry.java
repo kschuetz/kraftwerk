@@ -5,7 +5,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
-import static dev.marksman.kraftwerk.Generator.constant;
+import static dev.marksman.kraftwerk.Generators.constant;
 
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

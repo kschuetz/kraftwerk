@@ -6,8 +6,8 @@ import dev.marksman.collectionviews.Vector;
 import dev.marksman.collectionviews.VectorBuilder;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Replicate.replicate;
-import static dev.marksman.kraftwerk.Generator.constant;
-import static dev.marksman.kraftwerk.Generator.generateInt;
+import static dev.marksman.kraftwerk.Generators.constant;
+import static dev.marksman.kraftwerk.Generators.generateInt;
 
 class Sequences {
 

@@ -2,14 +2,15 @@ package examples.components;
 
 
 import dev.marksman.kraftwerk.Generator;
+import dev.marksman.kraftwerk.Generators;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into3.into3;
 import static dev.marksman.kraftwerk.GeneratedStream.streamFrom;
-import static dev.marksman.kraftwerk.Generator.chooseOneOfValues;
-import static dev.marksman.kraftwerk.Generator.generateString;
+import static dev.marksman.kraftwerk.Generators.chooseOneOfValues;
+import static dev.marksman.kraftwerk.Generators.generateString;
 import static dev.marksman.kraftwerk.MaybeWeights.nothingWeight;
 import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
 
@@ -55,7 +56,7 @@ public class City {
         static Generator<String> rootName = generateString(part1, part2);
 
         static Generator<City> city =
-                Generator.tupled(prefix.maybe(nothingWeight(5).toJust(1))
+                Generators.tupled(prefix.maybe(nothingWeight(5).toJust(1))
                                 .fmap(p -> p.orElse("")),
                         rootName,
                         suffix.maybe(nothingWeight(5).toJust(1))

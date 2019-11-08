@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Random;
 
-import static dev.marksman.kraftwerk.Generator.constant;
-import static dev.marksman.kraftwerk.Generator.generateLong;
+import static dev.marksman.kraftwerk.Generators.constant;
+import static dev.marksman.kraftwerk.Generators.generateLong;
 
 class BigNumbers {
 

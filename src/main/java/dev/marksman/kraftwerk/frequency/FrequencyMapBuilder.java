@@ -4,7 +4,7 @@ import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.kraftwerk.FrequencyEntry;
 import dev.marksman.kraftwerk.Generator;
 
-import static dev.marksman.kraftwerk.Generator.constant;
+import static dev.marksman.kraftwerk.Generators.constant;
 import static dev.marksman.kraftwerk.frequency.FrequencyMapBuilder0.frequencyMapBuilder0;
 
 public interface FrequencyMapBuilder<A> {

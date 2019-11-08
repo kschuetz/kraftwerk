@@ -2,18 +2,19 @@ package examples;
 
 import com.jnape.palatable.lambda.adt.hlist.Tuple5;
 import dev.marksman.kraftwerk.Generator;
+import dev.marksman.kraftwerk.Generators;
 
 import java.math.BigDecimal;
 
 import static dev.marksman.kraftwerk.GeneratedStream.streamFrom;
-import static dev.marksman.kraftwerk.Generator.generateBigDecimal;
-import static dev.marksman.kraftwerk.Generator.generateBigDecimalExclusive;
+import static dev.marksman.kraftwerk.Generators.generateBigDecimal;
+import static dev.marksman.kraftwerk.Generators.generateBigDecimalExclusive;
 
 public class BigDecimalExample {
 
     public static void main(String[] args) {
         Generator<Tuple5<BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigDecimal>> examples =
-                Generator.tupled(generateBigDecimalExclusive(5, BigDecimal.valueOf(100_000_000)),
+                Generators.tupled(generateBigDecimalExclusive(5, BigDecimal.valueOf(100_000_000)),
                         generateBigDecimalExclusive(0, BigDecimal.valueOf(100)),
                         generateBigDecimalExclusive(-3, BigDecimal.valueOf(100_000_000)),
                         generateBigDecimalExclusive(5, BigDecimal.valueOf(123.456), BigDecimal.valueOf(789.0123)),

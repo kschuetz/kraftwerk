@@ -7,7 +7,7 @@ import dev.marksman.kraftwerk.frequency.FrequencyMapBuilder;
 
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
 import static dev.marksman.kraftwerk.EitherWeights.rightWeight;
-import static dev.marksman.kraftwerk.Generator.constant;
+import static dev.marksman.kraftwerk.Generators.constant;
 import static dev.marksman.kraftwerk.MaybeWeights.justWeight;
 
 class CoProducts {
@@ -27,7 +27,7 @@ class CoProducts {
         int trueWeight = weights.getTrueWeight();
         int falseWeight = weights.getFalseWeight();
         if (trueWeight == falseWeight) {
-            return Generator.generateBoolean();
+            return Generators.generateBoolean();
         } else {
             return FrequencyMapBuilder.<Boolean>frequencyMapBuilder()
                     .add(falseWeight, generateFalse())

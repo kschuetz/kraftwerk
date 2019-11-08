@@ -10,7 +10,7 @@ import lombok.AllArgsConstructor;
 
 import static com.jnape.palatable.lambda.adt.Maybe.just;
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
-import static dev.marksman.kraftwerk.Generator.constant;
+import static dev.marksman.kraftwerk.Generators.constant;
 
 abstract class ConcreteCompoundStringBuilder implements CoProduct2<ConcreteCompoundStringBuilder.Plain,
         ConcreteCompoundStringBuilder.Maybes, ConcreteCompoundStringBuilder>, CompoundStringBuilder {
@@ -62,7 +62,7 @@ abstract class ConcreteCompoundStringBuilder implements CoProduct2<ConcreteCompo
 
         @Override
         public CompoundStringBuilder addManyValues(Iterable<String> gs) {
-            return new Plain(components.concat(Vector.copyFrom(gs).fmap(Generator::constant)),
+            return new Plain(components.concat(Vector.copyFrom(gs).fmap(Generators::constant)),
                     separator, startDelimiter, endDelimiter);
 
         }
@@ -183,7 +183,7 @@ abstract class ConcreteCompoundStringBuilder implements CoProduct2<ConcreteCompo
 
         @Override
         public CompoundStringBuilder addManyValues(Iterable<String> gs) {
-            return new Maybes(components.concat(Vector.copyFrom(gs).fmap(s -> Generator.constant(s).just())),
+            return new Maybes(components.concat(Vector.copyFrom(gs).fmap(s -> Generators.constant(s).just())),
                     separator, startDelimiter, endDelimiter);
         }
 
@@ -196,7 +196,7 @@ abstract class ConcreteCompoundStringBuilder implements CoProduct2<ConcreteCompo
 
         @Override
         public CompoundStringBuilder addManyMaybeValues(Iterable<Maybe<String>> g) {
-            return new Maybes(components.concat(Vector.copyFrom(g).fmap(Generator::constant)),
+            return new Maybes(components.concat(Vector.copyFrom(g).fmap(Generators::constant)),
                     separator, startDelimiter, endDelimiter);
         }
 
@@ -255,12 +255,12 @@ abstract class ConcreteCompoundStringBuilder implements CoProduct2<ConcreteCompo
 
     private static Generator<String> applyStartDelimiter(Maybe<Generator<String>> startDelimiter,
                                                          Generator<String> gen) {
-        return startDelimiter.match(__ -> gen, d -> Generator.generateString(d, gen));
+        return startDelimiter.match(__ -> gen, d -> Generators.generateString(d, gen));
     }
 
     private static Generator<String> applyEndDelimiter(Maybe<Generator<String>> endDelimiter,
                                                        Generator<String> gen) {
-        return endDelimiter.match(__ -> gen, d -> Generator.generateString(gen, d));
+        return endDelimiter.match(__ -> gen, d -> Generators.generateString(gen, d));
     }
 
     static ConcreteCompoundStringBuilder builder() {
