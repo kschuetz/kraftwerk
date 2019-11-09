@@ -129,4 +129,8 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
         return Primitives.injectSpecialValues(values, this);
     }
 
+    default Generator<A> injectSpecialValue(A specialValue) {
+        return Primitives.injectSpecialValue(specialValue, this);
+    }
+
 }

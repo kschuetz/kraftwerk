@@ -43,8 +43,16 @@ class Primitives {
     }
 
     static <A> Generator<A> injectSpecialValues(NonEmptyFiniteIterable<A> specialValues, Generator<A> inner) {
-        // TODO:  NonEmptyVector.nonEmptyCopyFrom()
-        return new InjectSpecialValues<>(Vector.copyFrom(specialValues).toNonEmptyOrThrow(), inner);
+        if (inner instanceof InjectSpecialValues<?>) {
+            return ((InjectSpecialValues<A>) inner).add(specialValues);
+        } else {
+            // TODO:  NonEmptyVector.nonEmptyCopyFrom()
+            return new InjectSpecialValues<>(Vector.copyFrom(specialValues).toNonEmptyOrThrow(), inner);
+        }
+    }
+
+    static <A> Generator<A> injectSpecialValue(A specialValue, Generator<A> inner) {
+        return injectSpecialValues(Vector.of(specialValue), inner);
     }
 
     static <A> ConstantGenerator<A> constant(A value) {
@@ -910,6 +918,11 @@ class Primitives {
     private static class InjectSpecialValues<A> implements Generator<A> {
         private final ImmutableNonEmptyVector<A> specialValues;
         private final Generator<A> inner;
+
+        InjectSpecialValues<A> add(NonEmptyFiniteIterable<A> newValues) {
+            return new InjectSpecialValues<>(Vector.copyFrom(specialValues.concat(newValues)).toNonEmptyOrThrow(),
+                    inner);
+        }
 
         @Override
         public Generate<A> prepare(Parameters parameters) {
