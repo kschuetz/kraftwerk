@@ -200,14 +200,14 @@ public class Generators {
     public static <A, B, Out> Generator<Out> product(Generator<A> a,
                                                      Generator<B> b,
                                                      Fn2<A, B, Out> combine) {
-        return Primitives.product(a, b, combine);
+        return Products.product(a, b, combine);
     }
 
     public static <A, B, C, Out> Generator<Out> product(Generator<A> a,
                                                         Generator<B> b,
                                                         Generator<C> c,
                                                         Fn3<A, B, C, Out> combine) {
-        return Primitives.product(a, b, c, combine);
+        return Products.product(a, b, c, combine);
     }
 
     public static <A, B, C, D, Out> Generator<Out> product(Generator<A> a,
@@ -215,7 +215,7 @@ public class Generators {
                                                            Generator<C> c,
                                                            Generator<D> d,
                                                            Fn4<A, B, C, D, Out> combine) {
-        return Primitives.product(a, b, c, d, combine);
+        return Products.product(a, b, c, d, combine);
     }
 
     public static <A, B, C, D, E, Out> Generator<Out> product(Generator<A> a,
@@ -224,7 +224,7 @@ public class Generators {
                                                               Generator<D> d,
                                                               Generator<E> e,
                                                               Fn5<A, B, C, D, E, Out> combine) {
-        return Primitives.product(a, b, c, d, e, combine);
+        return Products.product(a, b, c, d, e, combine);
     }
 
     public static <A, B, C, D, E, F, Out> Generator<Out> product(Generator<A> a,
@@ -234,7 +234,7 @@ public class Generators {
                                                                  Generator<E> e,
                                                                  Generator<F> f,
                                                                  Fn6<A, B, C, D, E, F, Out> combine) {
-        return Primitives.product(a, b, c, d, e, f, combine);
+        return Products.product(a, b, c, d, e, f, combine);
     }
 
     public static <A, B, C, D, E, F, G, Out> Generator<Out> product(Generator<A> a,
@@ -245,7 +245,7 @@ public class Generators {
                                                                     Generator<F> f,
                                                                     Generator<G> g,
                                                                     Fn7<A, B, C, D, E, F, G, Out> combine) {
-        return Primitives.product(a, b, c, d, e, f, g, combine);
+        return Products.product(a, b, c, d, e, f, g, combine);
     }
 
     public static <A, B, C, D, E, F, G, H, Out> Generator<Out> product(Generator<A> a,
@@ -257,25 +257,25 @@ public class Generators {
                                                                        Generator<G> g,
                                                                        Generator<H> h,
                                                                        Fn8<A, B, C, D, E, F, G, H, Out> combine) {
-        return Primitives.product(a, b, c, d, e, f, g, h, combine);
+        return Products.product(a, b, c, d, e, f, g, h, combine);
     }
 
     public static <A, B> Generator<Tuple2<A, B>> tupled(Generator<A> a,
                                                         Generator<B> b) {
-        return Primitives.product(a, b, Tuple2::tuple);
+        return Products.product(a, b, Tuple2::tuple);
     }
 
     public static <A, B, C> Generator<Tuple3<A, B, C>> tupled(Generator<A> a,
                                                               Generator<B> b,
                                                               Generator<C> c) {
-        return Primitives.product(a, b, c, Tuple3::tuple);
+        return Products.product(a, b, c, Tuple3::tuple);
     }
 
     public static <A, B, C, D> Generator<Tuple4<A, B, C, D>> tupled(Generator<A> a,
                                                                     Generator<B> b,
                                                                     Generator<C> c,
                                                                     Generator<D> d) {
-        return Primitives.product(a, b, c, d, Tuple4::tuple);
+        return Products.product(a, b, c, d, Tuple4::tuple);
     }
 
     public static <A, B, C, D, E> Generator<Tuple5<A, B, C, D, E>> tupled(Generator<A> a,
@@ -283,7 +283,7 @@ public class Generators {
                                                                           Generator<C> c,
                                                                           Generator<D> d,
                                                                           Generator<E> e) {
-        return Primitives.product(a, b, c, d, e, Tuple5::tuple);
+        return Products.product(a, b, c, d, e, Tuple5::tuple);
     }
 
     public static <A, B, C, D, E, F> Generator<Tuple6<A, B, C, D, E, F>> tupled(Generator<A> a,
@@ -292,7 +292,7 @@ public class Generators {
                                                                                 Generator<D> d,
                                                                                 Generator<E> e,
                                                                                 Generator<F> f) {
-        return Primitives.product(a, b, c, d, e, f, Tuple6::tuple);
+        return Products.product(a, b, c, d, e, f, Tuple6::tuple);
     }
 
     public static <A, B, C, D, E, F, G> Generator<Tuple7<A, B, C, D, E, F, G>> tupled(Generator<A> a,
@@ -302,7 +302,7 @@ public class Generators {
                                                                                       Generator<E> e,
                                                                                       Generator<F> f,
                                                                                       Generator<G> g) {
-        return Primitives.product(a, b, c, d, e, f, g, Tuple7::tuple);
+        return Products.product(a, b, c, d, e, f, g, Tuple7::tuple);
     }
 
     public static <A, B, C, D, E, F, G, H> Generator<Tuple8<A, B, C, D, E, F, G, H>> tupled(Generator<A> a,
@@ -313,7 +313,7 @@ public class Generators {
                                                                                             Generator<F> f,
                                                                                             Generator<G> g,
                                                                                             Generator<H> h) {
-        return Primitives.product(a, b, c, d, e, f, g, h, Tuple8::tuple);
+        return Products.product(a, b, c, d, e, f, g, h, Tuple8::tuple);
     }
 
     public static <A> Generator<ImmutableIterable<A>> sequence(Iterable<Generator<A>> gs) {
