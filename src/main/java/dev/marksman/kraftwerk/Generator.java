@@ -13,9 +13,15 @@ import dev.marksman.enhancediterables.NonEmptyFiniteIterable;
 import java.util.ArrayList;
 
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
+import static dev.marksman.kraftwerk.Trace.trace;
 
 public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
     Generate<A> prepare(Parameters parameters);
+
+    default Generate<Trace<A>> prepareTraced(Parameters parameters) {
+        Generate<A> generate = this.prepare(parameters);
+        return input -> generate.apply(input).fmap(value -> trace(value, this));
+    }
 
     @Override
     default <B> Generator<B> fmap(Fn1<? super A, ? extends B> fn) {

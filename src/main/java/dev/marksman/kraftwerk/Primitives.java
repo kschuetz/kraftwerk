@@ -21,6 +21,7 @@ import static com.jnape.palatable.lambda.functions.builtin.fn2.Replicate.replica
 import static dev.marksman.kraftwerk.BiasSetting.noBias;
 import static dev.marksman.kraftwerk.Result.result;
 import static dev.marksman.kraftwerk.SizeSelectors.sizeSelector;
+import static dev.marksman.kraftwerk.Trace.trace;
 import static dev.marksman.kraftwerk.random.BuildingBlocks.*;
 
 class Primitives {
@@ -266,6 +267,18 @@ class Primitives {
         }
 
         @Override
+        public Generate<Trace<A>> prepareTraced(Parameters parameters) {
+            Generate<Trace<In>> g = operand.prepareTraced(parameters);
+            return input -> {
+                Result<? extends Seed, Trace<In>> result1 = g.apply(input);
+                return result1.fmap(t ->
+                        trace(fn.apply(t.getResult()),
+                                this,
+                                Vector.of(result1.getValue())));
+            };
+        }
+
+        @Override
         public Maybe<String> getLabel() {
             return LABEL;
         }
@@ -286,6 +299,19 @@ class Primitives {
                 Result<? extends Seed, In> result1 = runner.apply(input);
                 Generator<A> g2 = fn.apply(result1.getValue());
                 return g2.prepare(parameters).apply(result1.getNextState());
+            };
+        }
+
+        @Override
+        public Generate<Trace<A>> prepareTraced(Parameters parameters) {
+            Generate<Trace<In>> runner = operand.prepareTraced(parameters);
+            return input -> {
+                Result<? extends Seed, Trace<In>> result1 = runner.apply(input);
+                Result<? extends Seed, Trace<A>> result2 = fn.apply(result1.getValue().getResult())
+                        .prepareTraced(parameters).apply(result1.getNextState());
+                return result(result2.getNextState(),
+                        trace(result2.getValue().getResult(),
+                                this, Vector.of(result1.getValue(), result2.getValue())));
             };
         }
 
