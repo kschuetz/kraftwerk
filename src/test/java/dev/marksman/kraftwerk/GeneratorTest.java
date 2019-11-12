@@ -66,8 +66,8 @@ class GeneratorTest {
         assertTrue(all(eq(1), streamFrom(Generators.constant(1)).next(1000)));
     }
 
-    @Test
     @Disabled
+    @Test
     void stackSafeFlatMap() {
         int LARGE_NUMBER = 10_000;
         int max = 2 * LARGE_NUMBER;
@@ -79,7 +79,6 @@ class GeneratorTest {
     }
 
     @Test
-    @Disabled
     void stackSafeFmap() {
         int LARGE_NUMBER = 10_000;
         int max = 2 * LARGE_NUMBER;

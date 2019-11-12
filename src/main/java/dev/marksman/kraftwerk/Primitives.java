@@ -15,9 +15,16 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
+import java.util.ArrayList;
+import java.util.function.Function;
+
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Constantly.constantly;
+import static com.jnape.palatable.lambda.functions.builtin.fn1.Reverse.reverse;
+import static com.jnape.palatable.lambda.functions.builtin.fn2.Cons.cons;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Replicate.replicate;
+import static com.jnape.palatable.lambda.functions.builtin.fn2.ToCollection.toCollection;
+import static com.jnape.palatable.lambda.functions.builtin.fn3.FoldLeft.foldLeft;
 import static dev.marksman.kraftwerk.BiasSetting.noBias;
 import static dev.marksman.kraftwerk.Result.result;
 import static dev.marksman.kraftwerk.SizeSelectors.sizeSelector;
@@ -37,8 +44,8 @@ class Primitives {
         return operand;
     }
 
-    static <A, B> Generator<B> mapped(Fn1<? super A, ? extends B> fn, Generator<A> operand) {
-        return new Mapped<>(fn::apply, operand);
+    static <A, B> Generator<B> mapped(Fn1<? super A, ? extends B> fn, Generator<A> source) {
+        return new Mapped<>(source, fn::apply);
     }
 
     static <A, B> Generator<B> flatMapped(Fn1<? super A, ? extends Generator<B>> fn, Generator<A> operand) {
@@ -257,18 +264,18 @@ class Primitives {
     private static class Mapped<In, A> implements Generator<A> {
         private static Maybe<String> LABEL = Maybe.just("fmap");
 
+        private final Generator<In> source;
         private final Fn1<In, A> fn;
-        private final Generator<In> operand;
 
         @Override
         public Generate<A> prepare(Parameters parameters) {
-            Generate<In> g = operand.prepare(parameters);
+            Generate<In> g = source.prepare(parameters);
             return input -> g.apply(input).fmap(fn);
         }
 
         @Override
         public Generate<Trace<A>> prepareTraced(Parameters parameters) {
-            Generate<Trace<In>> g = operand.prepareTraced(parameters);
+            Generate<Trace<In>> g = source.prepareTraced(parameters);
             return input -> {
                 Result<? extends Seed, Trace<In>> result1 = g.apply(input);
                 return result1.fmap(t ->
@@ -278,9 +285,64 @@ class Primitives {
             };
         }
 
+        @SuppressWarnings("unchecked")
+        @Override
+        public <B> Generator<B> fmap(Fn1<? super A, ? extends B> fn) {
+            Iterable<Function<Object, Object>> fs = Vector.of(o -> fn.apply((A) o),
+                    o -> this.fn.apply((In) o));
+            return new ManyMapped(source, fs);
+        }
+
         @Override
         public Maybe<String> getLabel() {
             return LABEL;
+        }
+
+    }
+
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    private static class ManyMapped<In, A> implements Generator<A> {
+        private static Maybe<String> LABEL = Maybe.just("fmap");
+
+        private final Generator<In> source;
+        private final Iterable<Function<Object, Object>> functions;
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public Generate<A> prepare(Parameters parameters) {
+            Generate<In> g = source.prepare(parameters);
+            Fn1<Object, Object> fn = buildFn();
+            return input -> g.apply(input).fmap(x -> (A) fn.apply(x));
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public <B> Generator<B> fmap(Fn1<? super A, ? extends B> fn) {
+            return new ManyMapped<>(source, cons(o -> fn.apply((A) o), functions));
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public Generate<Trace<A>> prepareTraced(Parameters parameters) {
+            Generate<Trace<In>> g = source.prepareTraced(parameters);
+            Fn1<Object, Object> fn = buildFn();
+            return input -> {
+                Result<? extends Seed, Trace<In>> result1 = g.apply(input);
+                return result1.fmap(t ->
+                        trace((A) fn.apply(t.getResult()),
+                                this,
+                                Vector.of(result1.getValue())));
+            };
+        }
+
+        @Override
+        public Maybe<String> getLabel() {
+            return LABEL;
+        }
+
+        private Fn1<Object, Object> buildFn() {
+            ArrayList<Function<Object, Object>> fnChain = toCollection(ArrayList::new, reverse(functions));
+            return o -> foldLeft((x, fn) -> fn.apply(x), o, fnChain);
         }
 
     }
