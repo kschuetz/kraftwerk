@@ -13,8 +13,6 @@ public interface BiasSettings {
 
     BiasSetting<Short> shortBias(short min, short max);
 
-    BiasSetting<Character> charBias(char min, char max);
-
     BiasSetting<Integer> sizeBias(SizeParameters sizeParameters);
 
     BiasSettings overrideWith(BiasSettings other);

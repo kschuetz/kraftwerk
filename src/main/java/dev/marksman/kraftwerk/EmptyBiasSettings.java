@@ -40,11 +40,6 @@ public final class EmptyBiasSettings implements BiasSettings {
     }
 
     @Override
-    public BiasSetting<Character> charBias(char min, char max) {
-        return noBias();
-    }
-
-    @Override
     public BiasSetting<Integer> sizeBias(SizeParameters sizeParameters) {
         return noBias();
     }
