@@ -19,7 +19,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
 
     @Override
     default <B> Generator<B> fmap(Fn1<? super A, ? extends B> fn) {
-        return Primitives.mapped(fn, this);
+        return Mapping.mapped(fn, this);
     }
 
     @SuppressWarnings("unchecked")
