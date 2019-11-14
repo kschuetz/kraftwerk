@@ -28,7 +28,6 @@ import static com.jnape.palatable.lambda.functions.builtin.fn3.FoldLeft.foldLeft
 import static dev.marksman.kraftwerk.BiasSetting.noBias;
 import static dev.marksman.kraftwerk.Result.result;
 import static dev.marksman.kraftwerk.SizeSelectors.sizeSelector;
-import static dev.marksman.kraftwerk.Trace.trace;
 import static dev.marksman.kraftwerk.random.BuildingBlocks.*;
 
 class Primitives {
@@ -273,18 +272,6 @@ class Primitives {
             return input -> g.apply(input).fmap(fn);
         }
 
-        @Override
-        public Generate<Trace<A>> prepareTraced(Parameters parameters) {
-            Generate<Trace<In>> g = source.prepareTraced(parameters);
-            return input -> {
-                Result<? extends Seed, Trace<In>> result1 = g.apply(input);
-                return result1.fmap(t ->
-                        trace(fn.apply(t.getResult()),
-                                this,
-                                Vector.of(result1.getValue())));
-            };
-        }
-
         @SuppressWarnings("unchecked")
         @Override
         public <B> Generator<B> fmap(Fn1<? super A, ? extends B> fn) {
@@ -321,20 +308,6 @@ class Primitives {
             return new ManyMapped<>(source, cons(o -> fn.apply((A) o), functions));
         }
 
-        @SuppressWarnings("unchecked")
-        @Override
-        public Generate<Trace<A>> prepareTraced(Parameters parameters) {
-            Generate<Trace<In>> g = source.prepareTraced(parameters);
-            Fn1<Object, Object> fn = buildFn();
-            return input -> {
-                Result<? extends Seed, Trace<In>> result1 = g.apply(input);
-                return result1.fmap(t ->
-                        trace((A) fn.apply(t.getResult()),
-                                this,
-                                Vector.of(result1.getValue())));
-            };
-        }
-
         @Override
         public Maybe<String> getLabel() {
             return LABEL;
@@ -361,19 +334,6 @@ class Primitives {
                 Result<? extends Seed, In> result1 = runner.apply(input);
                 Generator<A> g2 = fn.apply(result1.getValue());
                 return g2.prepare(parameters).apply(result1.getNextState());
-            };
-        }
-
-        @Override
-        public Generate<Trace<A>> prepareTraced(Parameters parameters) {
-            Generate<Trace<In>> runner = operand.prepareTraced(parameters);
-            return input -> {
-                Result<? extends Seed, Trace<In>> result1 = runner.apply(input);
-                Result<? extends Seed, Trace<A>> result2 = fn.apply(result1.getValue().getResult())
-                        .prepareTraced(parameters).apply(result1.getNextState());
-                return result(result2.getNextState(),
-                        trace(result2.getValue().getResult(),
-                                this, Vector.of(result1.getValue(), result2.getValue())));
             };
         }
 
