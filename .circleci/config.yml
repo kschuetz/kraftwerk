@@ -38,4 +38,3 @@ workflows:
     jobs:
       - java-8
       - java-11
-
