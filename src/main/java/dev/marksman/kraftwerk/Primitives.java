@@ -3,14 +3,11 @@ package dev.marksman.kraftwerk;
 import com.jnape.palatable.lambda.adt.Maybe;
 import com.jnape.palatable.lambda.adt.Unit;
 import com.jnape.palatable.lambda.functions.Fn1;
-import dev.marksman.collectionviews.ImmutableNonEmptyVector;
 import dev.marksman.collectionviews.Vector;
-import dev.marksman.enhancediterables.NonEmptyFiniteIterable;
 import dev.marksman.kraftwerk.random.BuildingBlocks;
 import dev.marksman.kraftwerk.util.Labeling;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Value;
 
 import java.util.ArrayList;
 import java.util.function.Function;
@@ -45,19 +42,6 @@ class Primitives {
 
     static <A, B> Generator<B> flatMapped(Fn1<? super A, ? extends Generator<B>> fn, Generator<A> operand) {
         return new FlatMapped<>(operand, fn::apply);
-    }
-
-    static <A> Generator<A> injectSpecialValues(NonEmptyFiniteIterable<A> specialValues, Generator<A> inner) {
-        if (inner instanceof InjectSpecialValues<?>) {
-            return ((InjectSpecialValues<A>) inner).add(specialValues);
-        } else {
-            // TODO:  NonEmptyVector.nonEmptyCopyFrom()
-            return new InjectSpecialValues<>(Vector.copyFrom(specialValues).toNonEmptyOrThrow(), inner);
-        }
-    }
-
-    static <A> Generator<A> injectSpecialValue(A specialValue, Generator<A> inner) {
-        return injectSpecialValues(Vector.of(specialValue), inner);
     }
 
     static <A> ConstantGenerator<A> constant(A value) {
@@ -354,7 +338,7 @@ class Primitives {
 
         @Override
         public Generate<Double> prepare(Parameters parameters) {
-            return applyBiasSetting(parameters.getBiasSettings()
+            return Bias.applyBiasSetting(parameters.getBiasSettings()
                             .doubleBias(Double.MIN_VALUE, Double.MAX_VALUE),
                     BuildingBlocks::nextDouble);
         }
@@ -389,7 +373,7 @@ class Primitives {
 
         @Override
         public Generate<Float> prepare(Parameters parameters) {
-            return applyBiasSetting(parameters.getBiasSettings()
+            return Bias.applyBiasSetting(parameters.getBiasSettings()
                             .floatBias(Float.MIN_VALUE, Float.MAX_VALUE),
                     BuildingBlocks::nextFloat);
         }
@@ -410,7 +394,7 @@ class Primitives {
         @Override
         public Generate<Integer> prepare(Parameters parameters) {
 
-            return applyBiasSetting(parameters.getBiasSettings()
+            return Bias.applyBiasSetting(parameters.getBiasSettings()
                             .intBias(Integer.MIN_VALUE, Integer.MAX_VALUE),
                     BuildingBlocks::nextInt);
         }
@@ -430,7 +414,7 @@ class Primitives {
 
         @Override
         public Generate<Long> prepare(Parameters parameters) {
-            return applyBiasSetting(parameters.getBiasSettings()
+            return Bias.applyBiasSetting(parameters.getBiasSettings()
                             .longBias(Long.MIN_VALUE, Long.MAX_VALUE),
                     BuildingBlocks::nextLong);
         }
@@ -469,7 +453,7 @@ class Primitives {
 
         @Override
         public Generate<Byte> prepare(Parameters parameters) {
-            return applyBiasSetting(parameters.getBiasSettings().byteBias(Byte.MIN_VALUE, Byte.MAX_VALUE),
+            return Bias.applyBiasSetting(parameters.getBiasSettings().byteBias(Byte.MIN_VALUE, Byte.MAX_VALUE),
                     input -> nextInt(input).fmap(Integer::byteValue));
         }
 
@@ -488,7 +472,7 @@ class Primitives {
 
         @Override
         public Generate<Short> prepare(Parameters parameters) {
-            return applyBiasSetting(parameters.getBiasSettings().shortBias(Short.MIN_VALUE, Short.MAX_VALUE),
+            return Bias.applyBiasSetting(parameters.getBiasSettings().shortBias(Short.MIN_VALUE, Short.MAX_VALUE),
                     input -> nextInt(input).fmap(Integer::shortValue));
         }
 
@@ -532,7 +516,7 @@ class Primitives {
 
         @Override
         public Generate<A> prepare(Parameters parameters) {
-            Generate<Integer> sizeSelector = applyBiasSetting(parameters.getBiasSettings().sizeBias(parameters.getSizeParameters()),
+            Generate<Integer> sizeSelector = Bias.applyBiasSetting(parameters.getBiasSettings().sizeBias(parameters.getSizeParameters()),
                     sizeSelector(parameters.getSizeParameters()));
             return input -> {
                 Result<? extends Seed, Integer> sizeResult = sizeSelector.apply(input);
@@ -566,35 +550,13 @@ class Primitives {
         }
     }
 
-    @Value
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class InjectSpecialValues<A> implements Generator<A> {
-        private final ImmutableNonEmptyVector<A> specialValues;
-        private final Generator<A> inner;
-
-        InjectSpecialValues<A> add(NonEmptyFiniteIterable<A> newValues) {
-            return new InjectSpecialValues<>(Vector.copyFrom(specialValues.concat(newValues)).toNonEmptyOrThrow(),
-                    inner);
-        }
-
-        @Override
-        public Generate<A> prepare(Parameters parameters) {
-            return injectSpecial(specialValues, inner.prepare(parameters));
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return inner.getLabel();
-        }
-    }
-
     private static <A> Generator<A> simpleGenerator(Maybe<String> label,
                                                     Fn1<Parameters, BiasSetting<A>> getBias,
                                                     Generate<A> runFn) {
         return new Generator<A>() {
             @Override
             public Generate<A> prepare(Parameters parameters) {
-                return applyBiasSetting(getBias.apply(parameters), runFn);
+                return Bias.applyBiasSetting(getBias.apply(parameters), runFn);
             }
 
             @Override
@@ -603,57 +565,5 @@ class Primitives {
             }
         };
     }
-
-    private static <A> Generate<A> applyBiasSetting(BiasSetting<A> biasSetting,
-                                                    Generate<A> underlying) {
-        return biasSetting.match(__ -> underlying,
-                isv -> injectSpecial(isv.getSpecialValues(), underlying));
-    }
-
-    private static <A> Generate<A> injectSpecial(ImmutableNonEmptyVector<A> specialValues,
-                                                 Generate<A> underlying) {
-        return underlying;
-    }
-
-    /*
-
-    private final ImmutableNonEmptyVector<Elem> elements;
-    private final int specialWeight;
-    private final long totalWeight;
-    private final GeneratorImpl<Elem> inner;
-
-    private InjectSpecialValuesImpl(ImmutableNonEmptyVector<Elem> elements, long nonSpecialWeight, GeneratorImpl<Elem> inner) {
-        this.elements = elements;
-        this.specialWeight = elements.size();
-        this.totalWeight = Math.max(0, nonSpecialWeight) + specialWeight;
-        this.inner = inner;
-    }
-
-    @Override
-    public Result<? extends LegacySeed, Elem> run(LegacySeed input) {
-        // TODO: InjectSpecialValuesImpl
-        long n = input.getSeedValue() % totalWeight;
-        if (n < specialWeight) {
-            Result<? extends LegacySeed, Integer> nextSeed = input.nextInt();
-            return result(nextSeed.getNextState(), elements.unsafeGet((int) n));
-        } else {
-            return inner.run(input);
-        }
-    }
-
-
-
-    if (gen instanceof Generator.InjectSpecialValues) {
-            Generator.InjectSpecialValues<A> g1 = (Generator.InjectSpecialValues<A>) gen;
-            NonEmptyFiniteIterable<A> acc = g1.getSpecialValues();
-            while (g1.getInner() instanceof Generator.InjectSpecialValues) {
-                g1 = (Generator.InjectSpecialValues<A>) g1.getInner();
-                acc = acc.concat(g1.getSpecialValues());
-            }
-            ImmutableNonEmptyVector<A> specialValues = NonEmptyVector.copyFromOrThrow(acc);
-            return mixInSpecialValuesImpl(specialValues, 20 + 3 * specialValues.size(),
-                    context.recurse(g1.getInner()));
-        }
-     */
 
 }
