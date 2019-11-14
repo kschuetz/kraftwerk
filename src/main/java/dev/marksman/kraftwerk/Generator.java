@@ -25,7 +25,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
     @SuppressWarnings("unchecked")
     @Override
     default <B> Generator<B> flatMap(Fn1<? super A, ? extends Monad<B, Generator<?>>> f) {
-        return Primitives.flatMapped((Fn1<? super A, ? extends Generator<B>>) f, this);
+        return Composition.flatMapped((Fn1<? super A, ? extends Generator<B>>) f, this);
     }
 
     @Override
