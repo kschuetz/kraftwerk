@@ -1,5 +1,7 @@
 package dev.marksman.kraftwerk;
 
+import static dev.marksman.kraftwerk.CompositeBiasSettings.compositeBiasSettings;
+
 public interface BiasSettings {
     BiasSetting<Integer> intBias(int min, int max);
 
@@ -15,5 +17,7 @@ public interface BiasSettings {
 
     BiasSetting<Integer> sizeBias(SizeParameters sizeParameters);
 
-    BiasSettings overrideWith(BiasSettings other);
+    default BiasSettings overrideWith(BiasSettings other) {
+        return compositeBiasSettings(other, this);
+    }
 }
