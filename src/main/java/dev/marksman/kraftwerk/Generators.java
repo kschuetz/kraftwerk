@@ -148,7 +148,7 @@ public class Generators {
                                                              Fn2<Builder, A, Builder> addFn,
                                                              Fn1<Builder, Out> buildFn,
                                                              Iterable<Generator<A>> elements) {
-        return Primitives.aggregate(initialBuilderSupplier, addFn, buildFn, elements);
+        return Aggregation.aggregate(initialBuilderSupplier, addFn, buildFn, elements);
     }
 
     public static <Elem, Builder, Out> Generator<Out> aggregate(Fn0<Builder> initialBuilderSupplier,
@@ -156,12 +156,12 @@ public class Generators {
                                                                 Fn1<Builder, Out> buildFn,
                                                                 int size,
                                                                 Generator<Elem> gen) {
-        return Primitives.aggregate(initialBuilderSupplier, addFn, buildFn, replicate(size, gen));
+        return Aggregation.aggregate(initialBuilderSupplier, addFn, buildFn, replicate(size, gen));
     }
 
     public static <A, C extends Collection<A>> Generator<C> buildCollection(Fn0<C> initialCollectionSupplier,
                                                                             Iterable<Generator<A>> elements) {
-        return Primitives.aggregate(initialCollectionSupplier,
+        return Aggregation.aggregate(initialCollectionSupplier,
                 (collection, item) -> {
                     collection.add(item);
                     return collection;
@@ -175,16 +175,16 @@ public class Generators {
     }
 
     public static <A> Generator<ImmutableVector<A>> buildVector(Iterable<Generator<A>> elements) {
-        return Primitives.aggregate(Vector::<A>builder, VectorBuilder::add, VectorBuilder::build, elements);
+        return Aggregation.aggregate(Vector::<A>builder, VectorBuilder::add, VectorBuilder::build, elements);
     }
 
     public static <A> Generator<ImmutableVector<A>> buildVector(int size, Generator<A> gen) {
-        return Primitives.<A, VectorBuilder<A>, ImmutableVector<A>>aggregate(() -> Vector.builder(size), VectorBuilder::add,
+        return Aggregation.<A, VectorBuilder<A>, ImmutableVector<A>>aggregate(() -> Vector.builder(size), VectorBuilder::add,
                 VectorBuilder::build, replicate(size, gen));
     }
 
     public static <A> Generator<ImmutableNonEmptyVector<A>> buildNonEmptyVector(NonEmptyIterable<Generator<A>> elements) {
-        return Primitives.aggregate(Vector::<A>builder, VectorBuilder::add, b -> b.build().toNonEmptyOrThrow(), elements);
+        return Aggregation.aggregate(Vector::<A>builder, VectorBuilder::add, b -> b.build().toNonEmptyOrThrow(), elements);
     }
 
     public static <A> Generator<ImmutableNonEmptyVector<A>> buildNonEmptyVector(int size, Generator<A> gen) {
@@ -192,7 +192,7 @@ public class Generators {
             throw new IllegalArgumentException("size must be >= 1");
 
         }
-        return Primitives.<A, VectorBuilder<A>, ImmutableNonEmptyVector<A>>aggregate(() -> Vector.builder(size), VectorBuilder::add,
+        return Aggregation.<A, VectorBuilder<A>, ImmutableNonEmptyVector<A>>aggregate(() -> Vector.builder(size), VectorBuilder::add,
                 aVectorBuilder -> aVectorBuilder.build().toNonEmptyOrThrow(),
                 replicate(size, gen));
     }
