@@ -27,7 +27,7 @@ import static dev.marksman.kraftwerk.Result.result;
 public class Generators {
 
     public static <A> Generator<A> constant(A a) {
-        return Primitives.constant(a);
+        return Constant.constant(a);
     }
 
     public static <A, B> Generator<B> tap(Generator<A> inner,

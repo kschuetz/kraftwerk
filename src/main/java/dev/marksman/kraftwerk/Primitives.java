@@ -11,7 +11,6 @@ import lombok.AllArgsConstructor;
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Constantly.constantly;
 import static dev.marksman.kraftwerk.BiasSetting.noBias;
-import static dev.marksman.kraftwerk.Result.result;
 import static dev.marksman.kraftwerk.SizeSelectors.sizeSelector;
 import static dev.marksman.kraftwerk.random.BuildingBlocks.*;
 
@@ -26,10 +25,6 @@ class Primitives {
 //            return new Primitives.WithMetadata<>(label, applicationData, operand);
 //        }
         return operand;
-    }
-
-    static <A> ConstantGenerator<A> constant(A value) {
-        return new ConstantGenerator<A>(value);
     }
 
     static Generator<Integer> generateInt() {
@@ -190,23 +185,6 @@ class Primitives {
         return new SizedGenerator<>(fn);
     }
 
-
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class ConstantGenerator<A> implements Generator<A> {
-        private static Maybe<String> LABEL = Maybe.just("constant");
-
-        private final A value;
-
-        @Override
-        public Generate<A> prepare(Parameters parameters) {
-            return input -> result(input, value);
-        }
-
-        @Override
-        public Maybe<String> getLabel() {
-            return LABEL;
-        }
-    }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class BooleanGenerator implements Generator<Boolean> {

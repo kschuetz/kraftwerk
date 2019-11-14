@@ -30,7 +30,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
 
     @Override
     default <B> Generator<B> pure(B b) {
-        return Primitives.constant(b);
+        return Constant.constant(b);
     }
 
     @Override
