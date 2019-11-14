@@ -16,17 +16,6 @@ import static dev.marksman.kraftwerk.random.BuildingBlocks.*;
 
 class Primitives {
 
-    static <A> Generator<A> withMetadata(Maybe<String> label, Maybe<Object> applicationData, Generator<A> operand) {
-        // TODO: withMetadata
-        //        if (operand instanceof Primitives.WithMetadata) {
-//            Primitives.WithMetadata<A> target1 = (Primitives.WithMetadata<A>) operand;
-//            return new Primitives.WithMetadata<>(label, applicationData, target1.getOperand());
-//        } else {
-//            return new Primitives.WithMetadata<>(label, applicationData, operand);
-//        }
-        return operand;
-    }
-
     static Generator<Integer> generateInt() {
         return IntGenerator.INSTANCE;
     }
@@ -241,7 +230,6 @@ class Primitives {
 
     }
 
-
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class FloatGenerator implements Generator<Float> {
         private static Maybe<String> LABEL = Maybe.just("float");
@@ -408,23 +396,6 @@ class Primitives {
             return LABEL;
         }
 
-    }
-
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class WithMetadata<A> implements Generator<A> {
-        private final Maybe<String> label;
-        private final Maybe<Object> applicationData;
-        private final Generator<A> operand;
-
-        @Override
-        public Generate<A> prepare(Parameters parameters) {
-            return operand.prepare(parameters);
-        }
-
-        @Override
-        public boolean isPrimitive() {
-            return false;
-        }
     }
 
     private static <A> Generator<A> simpleGenerator(Maybe<String> label,

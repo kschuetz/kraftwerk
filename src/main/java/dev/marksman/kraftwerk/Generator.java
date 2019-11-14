@@ -51,11 +51,11 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
     }
 
     default Generator<A> labeled(String label) {
-        return Primitives.withMetadata(Maybe.maybe(label), this.getApplicationData(), this);
+        return Meta.withMetadata(Maybe.maybe(label), this.getApplicationData(), this);
     }
 
     default Generator<A> attachApplicationData(Object applicationData) {
-        return Primitives.withMetadata(getLabel(), Maybe.maybe(applicationData), this);
+        return Meta.withMetadata(getLabel(), Maybe.maybe(applicationData), this);
     }
 
     default Generator<Tuple2<A, A>> pair() {
