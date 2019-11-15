@@ -8,8 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into.into;
-import static dev.marksman.kraftwerk.MaybeWeights.nothingWeight;
 import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
+import static dev.marksman.kraftwerk.weights.MaybeWeights.nothingWeight;
 import static examples.components.City.generateCity;
 import static examples.components.Street.generateStreet;
 import static examples.components.UsState.generateUsState;

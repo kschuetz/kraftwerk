@@ -9,6 +9,8 @@ import com.jnape.palatable.lambda.monad.Monad;
 import dev.marksman.collectionviews.ImmutableNonEmptyVector;
 import dev.marksman.collectionviews.ImmutableVector;
 import dev.marksman.enhancediterables.NonEmptyFiniteIterable;
+import dev.marksman.kraftwerk.weights.MaybeWeights;
+import dev.marksman.kraftwerk.weights.NullWeights;
 
 import java.util.ArrayList;
 

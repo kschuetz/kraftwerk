@@ -1,4 +1,4 @@
-package dev.marksman.kraftwerk;
+package dev.marksman.kraftwerk.weights;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

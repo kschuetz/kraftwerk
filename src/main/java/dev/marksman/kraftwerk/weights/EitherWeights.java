@@ -1,10 +1,10 @@
-package dev.marksman.kraftwerk;
+package dev.marksman.kraftwerk.weights;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
-import static dev.marksman.kraftwerk.BinaryWeights.binaryWeights;
+import static dev.marksman.kraftwerk.weights.BinaryWeights.binaryWeights;
 
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

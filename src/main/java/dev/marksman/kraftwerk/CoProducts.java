@@ -4,11 +4,14 @@ import com.jnape.palatable.lambda.adt.Either;
 import com.jnape.palatable.lambda.adt.Maybe;
 import com.jnape.palatable.lambda.adt.Unit;
 import dev.marksman.kraftwerk.frequency.FrequencyMapBuilder;
+import dev.marksman.kraftwerk.weights.BooleanWeights;
+import dev.marksman.kraftwerk.weights.EitherWeights;
+import dev.marksman.kraftwerk.weights.MaybeWeights;
 
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
-import static dev.marksman.kraftwerk.EitherWeights.rightWeight;
 import static dev.marksman.kraftwerk.Generators.constant;
-import static dev.marksman.kraftwerk.MaybeWeights.justWeight;
+import static dev.marksman.kraftwerk.weights.EitherWeights.rightWeight;
+import static dev.marksman.kraftwerk.weights.MaybeWeights.justWeight;
 
 class CoProducts {
 

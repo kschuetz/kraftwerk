@@ -11,7 +11,7 @@ import static com.jnape.palatable.lambda.functions.builtin.fn2.Into3.into3;
 import static dev.marksman.kraftwerk.FrequencyEntry.entry;
 import static dev.marksman.kraftwerk.FrequencyEntry.entryForValue;
 import static dev.marksman.kraftwerk.GeneratedStream.streamFrom;
-import static dev.marksman.kraftwerk.MaybeWeights.nothingWeight;
+import static dev.marksman.kraftwerk.weights.MaybeWeights.nothingWeight;
 import static examples.components.City.generateCityRootName;
 
 @Value

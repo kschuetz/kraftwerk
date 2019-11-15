@@ -11,7 +11,7 @@ import lombok.Value;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into4.into4;
 import static dev.marksman.kraftwerk.FrequencyEntry.entry;
 import static dev.marksman.kraftwerk.GeneratedStream.streamFrom;
-import static dev.marksman.kraftwerk.MaybeWeights.nothingWeight;
+import static dev.marksman.kraftwerk.weights.MaybeWeights.nothingWeight;
 import static java.util.Arrays.asList;
 
 @Value

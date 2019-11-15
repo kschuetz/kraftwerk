@@ -1,8 +1,9 @@
 package dev.marksman.kraftwerk;
 
 import dev.marksman.kraftwerk.frequency.FrequencyMapBuilder;
+import dev.marksman.kraftwerk.weights.NullWeights;
 
-import static dev.marksman.kraftwerk.NullWeights.nonNullWeight;
+import static dev.marksman.kraftwerk.weights.NullWeights.nonNullWeight;
 
 class Nulls {
 

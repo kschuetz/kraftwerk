@@ -14,6 +14,10 @@ import dev.marksman.enhancediterables.*;
 import dev.marksman.kraftwerk.choice.ChoiceBuilder1;
 import dev.marksman.kraftwerk.core.BuildingBlocks;
 import dev.marksman.kraftwerk.frequency.FrequencyMap;
+import dev.marksman.kraftwerk.weights.BooleanWeights;
+import dev.marksman.kraftwerk.weights.EitherWeights;
+import dev.marksman.kraftwerk.weights.MaybeWeights;
+import dev.marksman.kraftwerk.weights.NullWeights;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
