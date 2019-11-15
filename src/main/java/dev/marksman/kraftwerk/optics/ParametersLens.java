@@ -1,6 +1,8 @@
-package dev.marksman.kraftwerk;
+package dev.marksman.kraftwerk.optics;
 
 import com.jnape.palatable.lambda.optics.Lens;
+import dev.marksman.kraftwerk.Parameters;
+import dev.marksman.kraftwerk.SizeParameters;
 
 import static com.jnape.palatable.lambda.optics.Lens.simpleLens;
 
