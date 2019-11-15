@@ -1,6 +1,7 @@
-package dev.marksman.kraftwerk;
+package dev.marksman.kraftwerk.bias;
 
 import com.jnape.palatable.lambda.functions.Fn1;
+import dev.marksman.kraftwerk.SizeParameters;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 

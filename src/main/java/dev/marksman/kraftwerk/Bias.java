@@ -4,6 +4,7 @@ import com.jnape.palatable.lambda.adt.Maybe;
 import dev.marksman.collectionviews.ImmutableNonEmptyVector;
 import dev.marksman.collectionviews.Vector;
 import dev.marksman.enhancediterables.NonEmptyFiniteIterable;
+import dev.marksman.kraftwerk.bias.BiasSetting;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;

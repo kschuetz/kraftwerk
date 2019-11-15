@@ -1,4 +1,6 @@
-package dev.marksman.kraftwerk;
+package dev.marksman.kraftwerk.bias;
+
+import dev.marksman.kraftwerk.SizeParameters;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn3.Between.between;
 

@@ -1,6 +1,8 @@
-package dev.marksman.kraftwerk;
+package dev.marksman.kraftwerk.bias;
 
-import static dev.marksman.kraftwerk.CompositeBiasSettings.compositeBiasSettings;
+import dev.marksman.kraftwerk.SizeParameters;
+
+import static dev.marksman.kraftwerk.bias.CompositeBiasSettings.compositeBiasSettings;
 
 public interface BiasSettings {
     BiasSetting<Integer> intBias(int min, int max);

@@ -1,6 +1,8 @@
-package dev.marksman.kraftwerk;
+package dev.marksman.kraftwerk.bias;
 
-import static dev.marksman.kraftwerk.BiasSetting.noBias;
+import dev.marksman.kraftwerk.SizeParameters;
+
+import static dev.marksman.kraftwerk.bias.BiasSetting.noBias;
 
 public final class EmptyBiasSettings implements BiasSettings {
     private static final EmptyBiasSettings INSTANCE = new EmptyBiasSettings();

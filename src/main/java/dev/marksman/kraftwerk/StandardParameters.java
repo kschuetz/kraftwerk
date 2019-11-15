@@ -1,11 +1,12 @@
 package dev.marksman.kraftwerk;
 
+import dev.marksman.kraftwerk.bias.BiasSettings;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import static dev.marksman.kraftwerk.EmptyBiasSettings.emptyBiasSettings;
 import static dev.marksman.kraftwerk.SizeParameters.noSizeLimits;
+import static dev.marksman.kraftwerk.bias.EmptyBiasSettings.emptyBiasSettings;
 
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

@@ -1,4 +1,4 @@
-package dev.marksman.kraftwerk;
+package dev.marksman.kraftwerk.bias;
 
 import com.jnape.palatable.lambda.adt.coproduct.CoProduct2;
 import com.jnape.palatable.lambda.functions.Fn1;

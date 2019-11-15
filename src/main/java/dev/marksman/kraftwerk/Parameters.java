@@ -1,5 +1,7 @@
 package dev.marksman.kraftwerk;
 
+import dev.marksman.kraftwerk.bias.BiasSettings;
+
 public interface Parameters {
     SizeParameters getSizeParameters();
 
