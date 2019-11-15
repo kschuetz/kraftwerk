@@ -1,16 +1,15 @@
-package dev.marksman.kraftwerk.random;
+package dev.marksman.kraftwerk.core;
 
 import com.jnape.palatable.lambda.adt.Unit;
 import dev.marksman.kraftwerk.Result;
 import dev.marksman.kraftwerk.Seed;
-import dev.marksman.kraftwerk.StandardSeedCacheGaussian;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
 import static com.jnape.palatable.lambda.adt.Unit.UNIT;
 import static dev.marksman.kraftwerk.Result.result;
-import static dev.marksman.kraftwerk.StandardSeedCacheGaussian.standardSeedCacheGaussian;
+import static dev.marksman.kraftwerk.core.StandardSeedCacheGaussian.standardSeedCacheGaussian;
 
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

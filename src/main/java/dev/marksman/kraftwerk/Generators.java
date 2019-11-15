@@ -12,8 +12,8 @@ import dev.marksman.collectionviews.Vector;
 import dev.marksman.collectionviews.*;
 import dev.marksman.enhancediterables.*;
 import dev.marksman.kraftwerk.choice.ChoiceBuilder1;
+import dev.marksman.kraftwerk.core.BuildingBlocks;
 import dev.marksman.kraftwerk.frequency.FrequencyMap;
-import dev.marksman.kraftwerk.random.BuildingBlocks;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

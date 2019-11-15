@@ -1,5 +1,6 @@
-package dev.marksman.kraftwerk;
+package dev.marksman.kraftwerk.core;
 
+import dev.marksman.kraftwerk.Seed;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;

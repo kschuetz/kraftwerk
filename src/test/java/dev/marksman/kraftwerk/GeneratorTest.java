@@ -15,7 +15,7 @@ import static com.jnape.palatable.lambda.functions.builtin.fn2.All.all;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Eq.eq;
 import static dev.marksman.kraftwerk.GeneratedStream.streamFrom;
 import static dev.marksman.kraftwerk.StandardParameters.defaultParameters;
-import static dev.marksman.kraftwerk.StandardSeed.initStandardSeed;
+import static dev.marksman.kraftwerk.core.StandardSeed.initStandardSeed;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

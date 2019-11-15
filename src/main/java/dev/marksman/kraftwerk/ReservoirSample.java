@@ -3,7 +3,7 @@ package dev.marksman.kraftwerk;
 import dev.marksman.collectionviews.Set;
 import dev.marksman.collectionviews.Vector;
 import dev.marksman.enhancediterables.FiniteIterable;
-import dev.marksman.kraftwerk.random.BuildingBlocks;
+import dev.marksman.kraftwerk.core.BuildingBlocks;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Upcast.upcast;
 

@@ -5,7 +5,7 @@ import dev.marksman.collectionviews.NonEmptyVector;
 import dev.marksman.collectionviews.Vector;
 import dev.marksman.enhancediterables.FiniteIterable;
 import dev.marksman.enhancediterables.NonEmptyFiniteIterable;
-import dev.marksman.kraftwerk.random.BuildingBlocks;
+import dev.marksman.kraftwerk.core.BuildingBlocks;
 
 import java.util.ArrayList;
 import java.util.Arrays;

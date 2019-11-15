@@ -1,9 +1,8 @@
-package dev.marksman.kraftwerk.random;
+package dev.marksman.kraftwerk.core;
 
 import com.jnape.palatable.lambda.adt.product.Product2;
 import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.kraftwerk.Seed;
-import dev.marksman.kraftwerk.StandardSeed;
 import org.junit.jupiter.api.Test;
 import testsupport.GeneratorPair;
 

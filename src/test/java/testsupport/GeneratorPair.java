@@ -2,13 +2,13 @@ package testsupport;
 
 import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.kraftwerk.Seed;
-import dev.marksman.kraftwerk.StandardSeed;
+import dev.marksman.kraftwerk.core.StandardSeed;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 import java.util.Random;
 
-import static dev.marksman.kraftwerk.StandardSeed.initStandardSeed;
+import static dev.marksman.kraftwerk.core.StandardSeed.initStandardSeed;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class GeneratorPair {

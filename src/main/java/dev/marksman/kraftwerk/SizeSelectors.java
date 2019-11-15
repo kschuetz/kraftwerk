@@ -1,6 +1,6 @@
 package dev.marksman.kraftwerk;
 
-import dev.marksman.kraftwerk.random.BuildingBlocks;
+import dev.marksman.kraftwerk.core.BuildingBlocks;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;

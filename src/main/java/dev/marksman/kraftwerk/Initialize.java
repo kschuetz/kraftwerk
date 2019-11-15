@@ -2,7 +2,7 @@ package dev.marksman.kraftwerk;
 
 import java.util.Random;
 
-import static dev.marksman.kraftwerk.StandardSeed.initStandardSeed;
+import static dev.marksman.kraftwerk.core.StandardSeed.initStandardSeed;
 
 public class Initialize {
     public static Seed createInitialSeed(long initialSeedValue) {

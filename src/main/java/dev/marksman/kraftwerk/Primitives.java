@@ -3,7 +3,7 @@ package dev.marksman.kraftwerk;
 import com.jnape.palatable.lambda.adt.Maybe;
 import com.jnape.palatable.lambda.adt.Unit;
 import com.jnape.palatable.lambda.functions.Fn1;
-import dev.marksman.kraftwerk.random.BuildingBlocks;
+import dev.marksman.kraftwerk.core.BuildingBlocks;
 import dev.marksman.kraftwerk.util.Labeling;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import static com.jnape.palatable.lambda.adt.Maybe.nothing;
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Constantly.constantly;
 import static dev.marksman.kraftwerk.BiasSetting.noBias;
 import static dev.marksman.kraftwerk.SizeSelectors.sizeSelector;
-import static dev.marksman.kraftwerk.random.BuildingBlocks.*;
+import static dev.marksman.kraftwerk.core.BuildingBlocks.*;
 
 class Primitives {
 
