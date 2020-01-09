@@ -2,6 +2,7 @@ package dev.marksman.kraftwerk;
 
 import com.jnape.palatable.lambda.adt.Maybe;
 import dev.marksman.collectionviews.ImmutableNonEmptyVector;
+import dev.marksman.collectionviews.NonEmptyVector;
 import dev.marksman.collectionviews.Vector;
 import dev.marksman.enhancediterables.NonEmptyFiniteIterable;
 import dev.marksman.kraftwerk.bias.BiasSetting;
@@ -26,8 +27,7 @@ class Bias {
         if (inner instanceof InjectSpecialValues<?>) {
             return ((InjectSpecialValues<A>) inner).add(specialValues);
         } else {
-            // TODO:  NonEmptyVector.nonEmptyCopyFrom()
-            return new InjectSpecialValues<>(Vector.copyFrom(specialValues).toNonEmptyOrThrow(), inner);
+            return new InjectSpecialValues<>(NonEmptyVector.nonEmptyCopyFrom(specialValues), inner);
         }
     }
 
