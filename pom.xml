@@ -6,7 +6,7 @@
 
     <groupId>dev.marksman</groupId>
     <artifactId>kraftwerk</artifactId>
-    <version>0.4.0-SNAPSHOT</version>
+    <version>0.4.0</version>
 
     <name>kraftwerk</name>
     <description>
@@ -172,6 +172,7 @@
                 <version>3.1.0</version>
                 <configuration>
                     <encoding>UTF-8</encoding>
+                    <source>8</source>
                 </configuration>
                 <executions>
                     <execution>
