@@ -1,7 +1,7 @@
 package examples;
 
-import static dev.marksman.kraftwerk.GeneratedStream.streamFrom;
 import static dev.marksman.kraftwerk.Generators.generateUUID;
+import static dev.marksman.kraftwerk.ValueSupplyIterator.streamFrom;
 
 public class UUIDExample {
 

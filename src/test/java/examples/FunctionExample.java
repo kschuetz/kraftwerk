@@ -7,9 +7,9 @@ import dev.marksman.collectionviews.Vector;
 
 import static dev.marksman.kraftwerk.Cogenerator.cogeneratorInt;
 import static dev.marksman.kraftwerk.Cogenerator.cogeneratorString;
-import static dev.marksman.kraftwerk.GeneratedStream.streamFrom;
 import static dev.marksman.kraftwerk.Generators.generateFn2;
 import static dev.marksman.kraftwerk.Generators.generateIntExclusive;
+import static dev.marksman.kraftwerk.ValueSupplyIterator.streamFrom;
 
 public class FunctionExample {
 

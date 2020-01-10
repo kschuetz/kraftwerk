@@ -12,7 +12,7 @@ public class StreamFrom {
     }
 
     private static <A> Stream<A> streamFrom(Generate<A> gen, Seed initialSeed) {
-        Iterable<A> iterable = () -> GeneratedStream.streamFrom(gen, initialSeed);
+        Iterable<A> iterable = () -> ValueSupplyIterator.streamFrom(gen, initialSeed);
         return StreamSupport.stream(iterable.spliterator(), false);
 
     }

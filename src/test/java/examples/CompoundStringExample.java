@@ -3,7 +3,7 @@ package examples;
 import dev.marksman.kraftwerk.Generator;
 import dev.marksman.kraftwerk.Generators;
 
-import static dev.marksman.kraftwerk.GeneratedStream.streamFrom;
+import static dev.marksman.kraftwerk.ValueSupplyIterator.streamFrom;
 import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
 import static dev.marksman.kraftwerk.weights.MaybeWeights.justWeight;
 import static dev.marksman.kraftwerk.weights.MaybeWeights.nothingWeight;

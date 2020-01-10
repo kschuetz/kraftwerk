@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into.into;
-import static dev.marksman.kraftwerk.GeneratedStream.streamFrom;
+import static dev.marksman.kraftwerk.ValueSupplyIterator.streamFrom;
 import static examples.ShuffleExample.Rank.*;
 import static examples.ShuffleExample.Suit.*;
 import static lombok.AccessLevel.PRIVATE;

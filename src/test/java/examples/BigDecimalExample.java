@@ -6,9 +6,9 @@ import dev.marksman.kraftwerk.Generators;
 
 import java.math.BigDecimal;
 
-import static dev.marksman.kraftwerk.GeneratedStream.streamFrom;
 import static dev.marksman.kraftwerk.Generators.generateBigDecimal;
 import static dev.marksman.kraftwerk.Generators.generateBigDecimalExclusive;
+import static dev.marksman.kraftwerk.ValueSupplyIterator.streamFrom;
 
 public class BigDecimalExample {
 

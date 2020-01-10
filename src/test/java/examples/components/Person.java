@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.time.Year;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into3.into3;
-import static dev.marksman.kraftwerk.GeneratedStream.streamFrom;
+import static dev.marksman.kraftwerk.ValueSupplyIterator.streamFrom;
 import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
 import static examples.components.Address.generateAddress;
 import static examples.components.Name.generateName;

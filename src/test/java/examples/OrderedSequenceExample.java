@@ -4,8 +4,8 @@ import dev.marksman.collectionviews.ImmutableNonEmptyVector;
 import dev.marksman.kraftwerk.Generator;
 import dev.marksman.kraftwerk.domain.Characters;
 
-import static dev.marksman.kraftwerk.GeneratedStream.streamFrom;
 import static dev.marksman.kraftwerk.Generators.generateOrderedSequence;
+import static dev.marksman.kraftwerk.ValueSupplyIterator.streamFrom;
 
 public class OrderedSequenceExample {
 

@@ -5,8 +5,8 @@ import dev.marksman.kraftwerk.Seed;
 
 import java.util.ArrayList;
 
-import static dev.marksman.kraftwerk.GeneratedStream.streamFrom;
 import static dev.marksman.kraftwerk.StandardParameters.defaultParameters;
+import static dev.marksman.kraftwerk.ValueSupplyIterator.streamFrom;
 
 public class Sample {
     private static final int SAMPLE_COUNT = 10000;

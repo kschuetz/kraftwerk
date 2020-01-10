@@ -7,11 +7,11 @@ import static dev.marksman.kraftwerk.Initialize.createInitialSeed;
 import static dev.marksman.kraftwerk.Initialize.randomInitialSeed;
 import static dev.marksman.kraftwerk.StandardParameters.defaultParameters;
 
-public class GeneratedStream<A> implements Iterator<A> {
+public class ValueSupplyIterator<A> implements Iterator<A> {
     private final Generate<A> gen;
     private Seed currentState;
 
-    private GeneratedStream(Generate<A> gen, Seed initialSeed) {
+    public ValueSupplyIterator(Generate<A> gen, Seed initialSeed) {
         this.gen = gen;
         this.currentState = initialSeed;
     }
@@ -65,27 +65,27 @@ public class GeneratedStream<A> implements Iterator<A> {
         }
     }
 
-    public static <A> GeneratedStream<A> streamFrom(Generate<A> gen, Seed initialSeed) {
-        return new GeneratedStream<>(gen, initialSeed);
+    public static <A> ValueSupplyIterator<A> streamFrom(Generate<A> gen, Seed initialSeed) {
+        return new ValueSupplyIterator<>(gen, initialSeed);
     }
 
-    public static <A> GeneratedStream<A> streamFrom(Generator<A> gen, Parameters parameters, Seed initialSeed) {
-        return new GeneratedStream<>(gen.prepare(parameters), initialSeed);
+    public static <A> ValueSupplyIterator<A> streamFrom(Generator<A> gen, Parameters parameters, Seed initialSeed) {
+        return new ValueSupplyIterator<>(gen.prepare(parameters), initialSeed);
     }
 
-    public static <A> GeneratedStream<A> streamFrom(Generator<A> gen, long initialSeedValue) {
+    public static <A> ValueSupplyIterator<A> streamFrom(Generator<A> gen, long initialSeedValue) {
         return streamFrom(gen, defaultParameters(), createInitialSeed(initialSeedValue));
     }
 
-    public static <A> GeneratedStream<A> streamFrom(Generator<A> gen, Parameters parameters) {
+    public static <A> ValueSupplyIterator<A> streamFrom(Generator<A> gen, Parameters parameters) {
         return streamFrom(gen, defaultParameters(), randomInitialSeed());
     }
 
-    public static <A> GeneratedStream<A> streamFrom(Generator<A> gen, Parameters parameters, long initialSeedValue) {
+    public static <A> ValueSupplyIterator<A> streamFrom(Generator<A> gen, Parameters parameters, long initialSeedValue) {
         return streamFrom(gen, defaultParameters(), createInitialSeed(initialSeedValue));
     }
 
-    public static <A> GeneratedStream<A> streamFrom(Generator<A> gen) {
+    public static <A> ValueSupplyIterator<A> streamFrom(Generator<A> gen) {
         return streamFrom(gen, defaultParameters(), randomInitialSeed());
     }
 
