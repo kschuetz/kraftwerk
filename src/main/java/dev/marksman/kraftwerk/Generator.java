@@ -5,6 +5,7 @@ import com.jnape.palatable.lambda.adt.Maybe;
 import com.jnape.palatable.lambda.adt.hlist.Tuple2;
 import com.jnape.palatable.lambda.adt.hlist.Tuple3;
 import com.jnape.palatable.lambda.functions.Fn1;
+import com.jnape.palatable.lambda.functions.Fn2;
 import com.jnape.palatable.lambda.monad.Monad;
 import dev.marksman.collectionviews.ImmutableNonEmptyVector;
 import dev.marksman.collectionviews.ImmutableVector;
@@ -140,6 +141,10 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
 
     default Generator<ImmutableNonEmptyVector<A>> nonEmptyVectorOfN(int count) {
         return Generators.generateNonEmptyVectorOfN(count, this);
+    }
+
+    default <B, C> Generator<C> zipWith(Fn2<A, B, C> fn, Generator<B> other) {
+        return Generators.product(this, other, fn);
     }
 
     // **********
