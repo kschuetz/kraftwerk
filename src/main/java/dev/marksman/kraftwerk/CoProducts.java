@@ -2,16 +2,19 @@ package dev.marksman.kraftwerk;
 
 import com.jnape.palatable.lambda.adt.Either;
 import com.jnape.palatable.lambda.adt.Maybe;
+import com.jnape.palatable.lambda.adt.These;
 import com.jnape.palatable.lambda.adt.Unit;
 import dev.marksman.kraftwerk.frequency.FrequencyMapBuilder;
 import dev.marksman.kraftwerk.weights.BooleanWeights;
 import dev.marksman.kraftwerk.weights.EitherWeights;
 import dev.marksman.kraftwerk.weights.MaybeWeights;
+import dev.marksman.kraftwerk.weights.TernaryWeights;
 
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
 import static dev.marksman.kraftwerk.Generators.constant;
 import static dev.marksman.kraftwerk.weights.EitherWeights.rightWeight;
 import static dev.marksman.kraftwerk.weights.MaybeWeights.justWeight;
+import static dev.marksman.kraftwerk.weights.TernaryWeights.ternaryWeights;
 
 class CoProducts {
 
@@ -21,6 +24,7 @@ class CoProducts {
 
     private static final MaybeWeights DEFAULT_MAYBE_WEIGHTS = justWeight(9).toNothing(1);
     private static final EitherWeights DEFAULT_EITHER_WEIGHTS = rightWeight(9).toLeft(1);
+    private static final TernaryWeights DEFAULT_THESE_WEIGHTS = ternaryWeights();
 
     static Generator<Unit> generateUnit() {
         return GENERATE_UNIT;
@@ -86,6 +90,19 @@ class CoProducts {
 
     static <L, R> Generator<Either<L, R>> generateRight(Generator<R> g) {
         return g.fmap(Either::right);
+    }
+
+    static <A, B> Generator<These<A, B>> generateThese(Generator<A> generatorA, Generator<B> generatorB) {
+        return generateThese(DEFAULT_THESE_WEIGHTS, generatorA, generatorB);
+    }
+
+    static <A, B> Generator<These<A, B>> generateThese(TernaryWeights weights, Generator<A> generatorA, Generator<B> generatorB) {
+        return FrequencyMapBuilder.<These<A, B>>frequencyMapBuilder()
+                .add(weights.getWeightA(), generatorA.fmap(These::a))
+                .add(weights.getWeightB(), generatorB.fmap(These::b))
+                .add(weights.getWeightC(), generatorA.zipWith(These::both, generatorB))
+                .build()
+                .toGenerator();
     }
 
 }

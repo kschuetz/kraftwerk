@@ -2,6 +2,7 @@ package dev.marksman.kraftwerk;
 
 import com.jnape.palatable.lambda.adt.Either;
 import com.jnape.palatable.lambda.adt.Maybe;
+import com.jnape.palatable.lambda.adt.These;
 import com.jnape.palatable.lambda.adt.Unit;
 import com.jnape.palatable.lambda.adt.choice.*;
 import com.jnape.palatable.lambda.adt.hlist.*;
@@ -14,10 +15,7 @@ import dev.marksman.enhancediterables.*;
 import dev.marksman.kraftwerk.choice.ChoiceBuilder1;
 import dev.marksman.kraftwerk.core.BuildingBlocks;
 import dev.marksman.kraftwerk.frequency.FrequencyMap;
-import dev.marksman.kraftwerk.weights.BooleanWeights;
-import dev.marksman.kraftwerk.weights.EitherWeights;
-import dev.marksman.kraftwerk.weights.MaybeWeights;
-import dev.marksman.kraftwerk.weights.NullWeights;
+import dev.marksman.kraftwerk.weights.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -443,6 +441,14 @@ public class Generators {
 
     public static <L, R> Generator<Either<L, R>> generateRight(Generator<R> g) {
         return CoProducts.generateRight(g);
+    }
+
+    public static <A, B> Generator<These<A, B>> generateThese(Generator<A> generatorA, Generator<B> generatorB) {
+        return CoProducts.generateThese(generatorA, generatorB);
+    }
+
+    public static <A, B> Generator<These<A, B>> generateThese(TernaryWeights weights, Generator<A> generatorA, Generator<B> generatorB) {
+        return CoProducts.generateThese(weights, generatorA, generatorB);
     }
 
     @SafeVarargs
