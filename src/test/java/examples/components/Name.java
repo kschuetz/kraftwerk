@@ -10,7 +10,6 @@ import lombok.Value;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into4.into4;
 import static dev.marksman.kraftwerk.FrequencyEntry.entry;
-import static dev.marksman.kraftwerk.ValueSupplyIterator.streamFrom;
 import static dev.marksman.kraftwerk.weights.MaybeWeights.nothingWeight;
 import static java.util.Arrays.asList;
 
@@ -73,8 +72,10 @@ public class Name {
     }
 
     public static void main(String[] args) {
-        streamFrom(Generators.generateNonEmptyMap(Generators.generateInt(0, 255), generateName().fmap(Name::pretty)))
-                .next(100).forEach(System.out::println);
+        Generators.generateNonEmptyMap(Generators.generateInt(0, 255), generateName().fmap(Name::pretty))
+                .run()
+                .take(100)
+                .forEach(System.out::println);
     }
 
 }

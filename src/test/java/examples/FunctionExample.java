@@ -9,7 +9,6 @@ import static dev.marksman.kraftwerk.Cogenerator.cogeneratorInt;
 import static dev.marksman.kraftwerk.Cogenerator.cogeneratorString;
 import static dev.marksman.kraftwerk.Generators.generateFn2;
 import static dev.marksman.kraftwerk.Generators.generateIntExclusive;
-import static dev.marksman.kraftwerk.ValueSupplyIterator.streamFrom;
 
 public class FunctionExample {
 
@@ -19,10 +18,11 @@ public class FunctionExample {
 
 
     public static void main(String[] args) {
-        streamFrom(generateFn2(cogeneratorInt(),
+        generateFn2(cogeneratorInt(),
                 cogeneratorString(),
-                generateIntExclusive(0, 99)))
-                .next(10)
+                generateIntExclusive(0, 99))
+                .run()
+                .take(10)
                 .forEach(FunctionExample::runFunction);
     }
 

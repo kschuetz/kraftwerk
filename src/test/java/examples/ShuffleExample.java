@@ -2,13 +2,11 @@ package examples;
 
 import dev.marksman.collectionviews.NonEmptyVector;
 import dev.marksman.collectionviews.Vector;
-import dev.marksman.kraftwerk.Generator;
 import dev.marksman.kraftwerk.Generators;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into.into;
-import static dev.marksman.kraftwerk.ValueSupplyIterator.streamFrom;
 import static examples.ShuffleExample.Rank.*;
 import static examples.ShuffleExample.Suit.*;
 import static lombok.AccessLevel.PRIVATE;
@@ -70,10 +68,11 @@ public class ShuffleExample {
 
     private static NonEmptyVector<Card> cards = suits.cross(ranks).fmap(into(Card::card));
 
-    private static Generator<NonEmptyVector<Card>> generateDeck = Generators.generateShuffled(cards);
-
     public static void main(String[] args) {
-        streamFrom(generateDeck).next(10).forEach(System.out::println);
+        Generators.generateShuffled(cards)
+                .run()
+                .take(10)
+                .forEach(System.out::println);
     }
 
 }

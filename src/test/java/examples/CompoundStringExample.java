@@ -3,7 +3,6 @@ package examples;
 import dev.marksman.kraftwerk.Generator;
 import dev.marksman.kraftwerk.Generators;
 
-import static dev.marksman.kraftwerk.ValueSupplyIterator.streamFrom;
 import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
 import static dev.marksman.kraftwerk.weights.MaybeWeights.justWeight;
 import static dev.marksman.kraftwerk.weights.MaybeWeights.nothingWeight;
@@ -32,6 +31,9 @@ public class CompoundStringExample {
                 .withEndDelimiter(Generators.chooseOneOfValues(".", "!"))
                 .build();
 
-        streamFrom(sentence).next(50).forEach(System.out::println);
+        sentence
+                .run()
+                .take(50)
+                .forEach(System.out::println);
     }
 }

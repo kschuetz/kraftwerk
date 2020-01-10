@@ -10,7 +10,6 @@ import lombok.Value;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into3.into3;
 import static dev.marksman.kraftwerk.Generators.chooseOneOfValues;
 import static dev.marksman.kraftwerk.Generators.generateString;
-import static dev.marksman.kraftwerk.ValueSupplyIterator.streamFrom;
 import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
 import static dev.marksman.kraftwerk.weights.MaybeWeights.nothingWeight;
 
@@ -73,6 +72,9 @@ public class City {
     }
 
     public static void main(String[] args) {
-        streamFrom(generateCity()).next(100).forEach(System.out::println);
+        generateCity()
+                .run()
+                .take(100)
+                .forEach(System.out::println);
     }
 }

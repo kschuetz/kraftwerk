@@ -15,9 +15,27 @@ import dev.marksman.kraftwerk.weights.NullWeights;
 import java.util.ArrayList;
 
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
+import static dev.marksman.kraftwerk.StandardParameters.defaultParameters;
+import static dev.marksman.kraftwerk.ValueSupply.valueSupply;
 
 public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
     Generate<A> prepare(Parameters parameters);
+
+    default ValueSupply<A> run(Parameters parameters, Seed initialSeed) {
+        return valueSupply(prepare(parameters), initialSeed);
+    }
+
+    default ValueSupply<A> run(Seed initialSeed) {
+        return run(defaultParameters(), initialSeed);
+    }
+
+    default ValueSupply<A> run(Parameters parameters) {
+        return run(parameters, Seed.random());
+    }
+
+    default ValueSupply<A> run() {
+        return run(defaultParameters(), Seed.random());
+    }
 
     @Override
     default <B> Generator<B> fmap(Fn1<? super A, ? extends B> fn) {

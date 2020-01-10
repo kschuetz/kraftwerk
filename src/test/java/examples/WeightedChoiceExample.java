@@ -5,8 +5,6 @@ import dev.marksman.kraftwerk.Generator;
 import dev.marksman.kraftwerk.Generators;
 import dev.marksman.kraftwerk.domain.Characters;
 
-import static dev.marksman.kraftwerk.ValueSupplyIterator.streamFrom;
-
 public class WeightedChoiceExample {
 
     private static void example1() {
@@ -21,7 +19,9 @@ public class WeightedChoiceExample {
                         .or(Generators.chooseOneFromDomain(Characters.asciiPrintable()))
                         .toGenerator();
 
-        streamFrom(primitiveGenerator).next(100).forEach(System.out::println);
+        primitiveGenerator
+                .run()
+                .take(100).forEach(System.out::println);
     }
 
     public static void main(String[] args) {

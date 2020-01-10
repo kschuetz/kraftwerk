@@ -14,7 +14,6 @@ import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.All.all;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Eq.eq;
 import static dev.marksman.kraftwerk.StandardParameters.defaultParameters;
-import static dev.marksman.kraftwerk.ValueSupplyIterator.streamFrom;
 import static dev.marksman.kraftwerk.core.StandardSeed.initStandardSeed;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -63,7 +62,7 @@ class GeneratorTest {
 
     @Test
     void generateConstant() {
-        assertTrue(all(eq(1), streamFrom(Generators.constant(1)).next(1000)));
+        assertTrue(all(eq(1), Generators.constant(1).run().take(1000)));
     }
 
     @Disabled
@@ -75,7 +74,7 @@ class GeneratorTest {
         for (int i = 0; i < LARGE_NUMBER; i++) {
             g = g.flatMap(n -> Generators.generateInt(n, max));
         }
-        streamFrom(g).next();
+        g.run().iterator().next();
     }
 
     @Test
@@ -86,7 +85,7 @@ class GeneratorTest {
         for (int i = 0; i < LARGE_NUMBER; i++) {
             g = g.fmap(n -> n + 1);
         }
-        streamFrom(g).next();
+        g.run().iterator().next();
     }
 
     private static <A> void testFunctorIdentity(Generator<A> gen) {

@@ -11,5 +11,8 @@ public interface Parameters {
 
     Parameters withBiasSettings(BiasSettings biasSettings);
 
+    static Parameters parameters() {
+        return StandardParameters.defaultParameters();
+    }
 }
 

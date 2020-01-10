@@ -23,7 +23,7 @@ public class StandardSeed implements Seed {
         return new StandardSeed(value);
     }
 
-    public static StandardSeed standardSeed(long value) {
+    private static StandardSeed standardSeed(long value) {
         return new StandardSeed(value);
     }
 

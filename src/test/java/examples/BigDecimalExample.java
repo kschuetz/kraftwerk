@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 
 import static dev.marksman.kraftwerk.Generators.generateBigDecimal;
 import static dev.marksman.kraftwerk.Generators.generateBigDecimalExclusive;
-import static dev.marksman.kraftwerk.ValueSupplyIterator.streamFrom;
 
 public class BigDecimalExample {
 
@@ -20,7 +19,10 @@ public class BigDecimalExample {
                         generateBigDecimalExclusive(5, BigDecimal.valueOf(123.456), BigDecimal.valueOf(789.0123)),
                         generateBigDecimal(5, BigDecimal.valueOf(-1000), BigDecimal.valueOf(1000)));
 
-        streamFrom(examples).next(50).forEach(System.out::println);
+        examples
+                .run()
+                .take(50)
+                .forEach(System.out::println);
     }
 
 }

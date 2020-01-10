@@ -7,7 +7,6 @@ import lombok.Value;
 
 import static dev.marksman.kraftwerk.FrequencyEntry.entryForValue;
 import static dev.marksman.kraftwerk.Generators.frequency;
-import static dev.marksman.kraftwerk.ValueSupplyIterator.streamFrom;
 
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -49,6 +48,10 @@ public class UsState {
     }
 
     public static void main(String[] args) {
-        streamFrom(generateUsState().fmap(UsState::getCode)).next(100).forEach(System.out::println);
+        generateUsState()
+                .fmap(UsState::getCode)
+                .run()
+                .take(100)
+                .forEach(System.out::println);
     }
 }

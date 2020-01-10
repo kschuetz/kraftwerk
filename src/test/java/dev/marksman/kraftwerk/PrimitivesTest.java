@@ -7,7 +7,6 @@ import static com.jnape.palatable.lambda.functions.builtin.fn2.Eq.eq;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.GTE.gte;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.LT.lt;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.LTE.lte;
-import static dev.marksman.kraftwerk.Initialize.randomInitialSeed;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static testsupport.Assert.assertForAll;
 import static testsupport.Sample.sample;
@@ -46,7 +45,7 @@ class PrimitivesTest {
 
     @Test
     void testIntFullRange() {
-        Seed initial = randomInitialSeed();
+        Seed initial = Seed.random();
         assertEquals(sample(Generators.generateInt(Integer.MIN_VALUE, Integer.MAX_VALUE), initial),
                 sample(Generators.generateInt(), initial));
     }
@@ -83,7 +82,7 @@ class PrimitivesTest {
 
     @Test
     void testLongFullRange() {
-        Seed initial = randomInitialSeed();
+        Seed initial = Seed.random();
         assertEquals(sample(Generators.generateLong(Long.MIN_VALUE, Long.MAX_VALUE), initial),
                 sample(Generators.generateLong(), initial));
     }
