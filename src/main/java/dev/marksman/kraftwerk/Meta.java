@@ -7,14 +7,10 @@ import lombok.AllArgsConstructor;
 class Meta {
 
     static <A> Generator<A> withMetadata(Maybe<String> label, Maybe<Object> applicationData, Generator<A> operand) {
-        // TODO: withMetadata
-        //        if (operand instanceof Primitives.WithMetadata) {
-//            Primitives.WithMetadata<A> target1 = (Primitives.WithMetadata<A>) operand;
-//            return new Primitives.WithMetadata<>(label, applicationData, target1.getOperand());
-//        } else {
-//            return new Primitives.WithMetadata<>(label, applicationData, operand);
-//        }
-        return operand;
+        while (operand instanceof WithMetadata<?>) {
+            operand = ((WithMetadata<A>) operand).getOperand();
+        }
+        return new WithMetadata<>(label, applicationData, operand);
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -22,6 +18,20 @@ class Meta {
         private final Maybe<String> label;
         private final Maybe<Object> applicationData;
         private final Generator<A> operand;
+
+        @Override
+        public Maybe<String> getLabel() {
+            return label;
+        }
+
+        @Override
+        public Maybe<Object> getApplicationData() {
+            return applicationData;
+        }
+
+        Generator<A> getOperand() {
+            return operand;
+        }
 
         @Override
         public Generate<A> prepare(Parameters parameters) {
@@ -33,4 +43,5 @@ class Meta {
             return false;
         }
     }
+
 }
