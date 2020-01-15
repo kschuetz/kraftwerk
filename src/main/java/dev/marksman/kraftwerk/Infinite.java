@@ -1,18 +1,17 @@
 package dev.marksman.kraftwerk;
 
 import dev.marksman.enhancediterables.ImmutableNonEmptyIterable;
+import dev.marksman.kraftwerk.core.BuildingBlocks;
+
+import static dev.marksman.kraftwerk.ValueSupply.valueSupply;
 
 class Infinite {
 
-    // TODO: generateInfiniteIterable
     static <A> Generator<ImmutableNonEmptyIterable<A>> generateInfiniteIterable(Generator<A> gen) {
-//        return legacyTap(gen,
-//                (inner, rs) -> {
-//                    StandardGen initialState = initStandardGen(rs.nextLong().getValue());
-//                    ImmutableIterable<A> iterable = () -> GeneratedStream.streamFrom(inner, initialState);
-//                    return iterable.toNonEmpty().orElseThrow(AssertionError::new);
-//                });
-        return null;
+        return Generators.tap(gen, (g1, input) -> {
+            Result<Seed, Long> initialState = BuildingBlocks.nextLong(input);
+            return valueSupply(g1, Seed.create(initialState._2()));
+        });
     }
 
 }
