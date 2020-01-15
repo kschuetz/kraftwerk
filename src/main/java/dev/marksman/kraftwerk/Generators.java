@@ -11,7 +11,10 @@ import com.jnape.palatable.lambda.monoid.Monoid;
 import com.jnape.palatable.lambda.semigroup.Semigroup;
 import dev.marksman.collectionviews.Vector;
 import dev.marksman.collectionviews.*;
-import dev.marksman.enhancediterables.*;
+import dev.marksman.enhancediterables.FiniteIterable;
+import dev.marksman.enhancediterables.ImmutableNonEmptyIterable;
+import dev.marksman.enhancediterables.NonEmptyFiniteIterable;
+import dev.marksman.enhancediterables.NonEmptyIterable;
 import dev.marksman.kraftwerk.choice.ChoiceBuilder1;
 import dev.marksman.kraftwerk.core.BuildingBlocks;
 import dev.marksman.kraftwerk.frequency.FrequencyMap;
@@ -318,8 +321,12 @@ public class Generators {
         return Products.product(a, b, c, d, e, f, g, h, Tuple8::tuple);
     }
 
-    public static <A> Generator<ImmutableIterable<A>> sequence(Iterable<Generator<A>> gs) {
+    public static <A> Generator<ImmutableVector<A>> sequence(Iterable<Generator<A>> gs) {
         return Sequence.sequence(gs);
+    }
+
+    public static <A> Generator<ImmutableNonEmptyVector<A>> sequenceNonEmpty(NonEmptyIterable<Generator<A>> gs) {
+        return Sequence.sequenceNonEmpty(gs);
     }
 
     public static Generator<String> generateString() {
