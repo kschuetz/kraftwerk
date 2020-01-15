@@ -14,8 +14,7 @@ public class StandardSeed implements Seed {
 
     @Override
     public Seed perturb(long value) {
-        // TODO
-        return new StandardSeed(seedValue ^ value);
+        return BuildingBlocks.perturb(value, this);
     }
 
     @Override
