@@ -25,7 +25,7 @@ class Shuffle {
         if (count <= 0) {
             return Generators.constant(Vector.empty());
         } else {
-            return generateNonEmptyShuffled(count + 1, fn)
+            return generateNonEmptyShuffled(count, fn)
                     .fmap(upcast());
         }
     }
@@ -103,7 +103,7 @@ class Shuffle {
         } else {
             int n = target.size();
             Seed state = inputState;
-            for (int i = 0; i < size - 1; i++) {
+            for (int i = 1; i < size - 1; i++) {
                 Result<? extends Seed, Integer> next = BuildingBlocks.nextIntBounded(i, state);
                 int j = next.getValue();
                 if (i != j) {

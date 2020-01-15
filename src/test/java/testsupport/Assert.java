@@ -11,4 +11,8 @@ public class Assert {
     public static <A> void assertForAll(Generator<A> gen, Fn1<A, Boolean> condition) {
         assertTrue(all(condition, sample(gen)));
     }
+
+    public static <A> void assertForAll(int sampleCount, Generator<A> gen, Fn1<A, Boolean> condition) {
+        assertTrue(all(condition, sample(sampleCount, gen)));
+    }
 }
