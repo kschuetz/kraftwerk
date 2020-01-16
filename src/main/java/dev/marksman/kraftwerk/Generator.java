@@ -67,10 +67,6 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
         return nothing();
     }
 
-    default boolean isPrimitive() {
-        return true;
-    }
-
     default Generator<A> labeled(String label) {
         return Meta.withMetadata(Maybe.maybe(label), this.getApplicationData(), this);
     }

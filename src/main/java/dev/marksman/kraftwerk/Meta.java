@@ -38,10 +38,6 @@ class Meta {
             return operand.prepare(parameters);
         }
 
-        @Override
-        public boolean isPrimitive() {
-            return false;
-        }
     }
 
 }
