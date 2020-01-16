@@ -6,18 +6,18 @@ import lombok.AllArgsConstructor;
 
 class Meta {
 
-    static <A> Generator<A> withMetadata(Maybe<String> label, Maybe<Object> applicationData, Generator<A> operand) {
-        while (operand instanceof WithMetadata<?>) {
-            operand = ((WithMetadata<A>) operand).getOperand();
+    static <A> Generator<A> withMetadata(Maybe<String> label, Maybe<Object> applicationData, Generator<A> underlying) {
+        while (underlying instanceof WithMetadata<?>) {
+            underlying = ((WithMetadata<A>) underlying).getUnderlying();
         }
-        return new WithMetadata<>(label, applicationData, operand);
+        return new WithMetadata<>(label, applicationData, underlying);
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class WithMetadata<A> implements Generator<A> {
         private final Maybe<String> label;
         private final Maybe<Object> applicationData;
-        private final Generator<A> operand;
+        private final Generator<A> underlying;
 
         @Override
         public Maybe<String> getLabel() {
@@ -29,13 +29,13 @@ class Meta {
             return applicationData;
         }
 
-        Generator<A> getOperand() {
-            return operand;
+        Generator<A> getUnderlying() {
+            return underlying;
         }
 
         @Override
         public Generate<A> prepare(Parameters parameters) {
-            return operand.prepare(parameters);
+            return underlying.prepare(parameters);
         }
 
     }

@@ -35,10 +35,10 @@ public class Generators {
         return Constant.constant(a);
     }
 
-    public static <A, B> Generator<B> tap(Generator<A> inner,
+    public static <A, B> Generator<B> tap(Generator<A> gen,
                                           Fn2<Generate<A>, Seed, B> f) {
         return parameters -> {
-            Generate<A> runA = inner.prepare(parameters);
+            Generate<A> runA = gen.prepare(parameters);
             return input -> {
                 Seed nextState = BuildingBlocks.nextInt(input).getNextState();
                 return result(nextState,

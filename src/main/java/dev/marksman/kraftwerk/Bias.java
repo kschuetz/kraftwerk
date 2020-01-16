@@ -21,37 +21,37 @@ class Bias {
                 isv -> injectSpecial(isv.getSpecialValues(), underlying));
     }
 
-    static <A> Generator<A> injectSpecialValues(NonEmptyFiniteIterable<A> specialValues, Generator<A> inner) {
-        if (inner instanceof InjectSpecialValues<?>) {
-            return ((InjectSpecialValues<A>) inner).add(specialValues);
+    static <A> Generator<A> injectSpecialValues(NonEmptyFiniteIterable<A> specialValues, Generator<A> underlying) {
+        if (underlying instanceof InjectSpecialValues<?>) {
+            return ((InjectSpecialValues<A>) underlying).add(specialValues);
         } else {
-            return new InjectSpecialValues<>(NonEmptyVector.nonEmptyCopyFrom(specialValues), inner);
+            return new InjectSpecialValues<>(NonEmptyVector.nonEmptyCopyFrom(specialValues), underlying);
         }
     }
 
-    static <A> Generator<A> injectSpecialValue(A specialValue, Generator<A> inner) {
-        return injectSpecialValues(Vector.of(specialValue), inner);
+    static <A> Generator<A> injectSpecialValue(A specialValue, Generator<A> underlying) {
+        return injectSpecialValues(Vector.of(specialValue), underlying);
     }
 
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class InjectSpecialValues<A> implements Generator<A> {
         private final ImmutableNonEmptyVector<A> specialValues;
-        private final Generator<A> inner;
+        private final Generator<A> underlying;
 
         InjectSpecialValues<A> add(NonEmptyFiniteIterable<A> newValues) {
             return new InjectSpecialValues<>(Vector.copyFrom(specialValues.concat(newValues)).toNonEmptyOrThrow(),
-                    inner);
+                    underlying);
         }
 
         @Override
         public Generate<A> prepare(Parameters parameters) {
-            return injectSpecial(specialValues, inner.prepare(parameters));
+            return injectSpecial(specialValues, underlying.prepare(parameters));
         }
 
         @Override
         public Maybe<String> getLabel() {
-            return inner.getLabel();
+            return underlying.getLabel();
         }
     }
 
