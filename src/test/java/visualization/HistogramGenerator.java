@@ -8,6 +8,7 @@ import lombok.Value;
 import lombok.experimental.Wither;
 import org.knowm.xchart.CategoryChart;
 import org.knowm.xchart.CategoryChartBuilder;
+import org.knowm.xchart.style.CategoryStyler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,9 +32,11 @@ public class HistogramGenerator<A> implements ChartGenerator {
                 .yAxisTitle("Frequency")
                 .build();
 
-        chart.getStyler().setLegendVisible(false);
-        chart.getStyler().setHasAnnotations(false);
-        chart.getStyler().setXAxisTicksVisible(false);
+        CategoryStyler styler = chart.getStyler();
+        styler.setLegendVisible(false);
+        styler.setHasAnnotations(false);
+        styler.setXAxisTicksVisible(false);
+        styler.setPlotGridLinesVisible(false);
 
         Integer[] frequencies = new Integer[bucketCount];
 
@@ -48,7 +51,6 @@ public class HistogramGenerator<A> implements ChartGenerator {
         ArrayList<Integer> xs = Vector.range(bucketCount).toCollection(ArrayList::new);
         List<Integer> ys = Arrays.asList(frequencies);
 
-        // Series
         chart.addSeries("frequency", xs, ys);
 
         return chart;
