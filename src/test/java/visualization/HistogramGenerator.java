@@ -16,7 +16,7 @@ import java.util.List;
 @Value
 @Wither
 @AllArgsConstructor
-public class GenerateHistogram<A> {
+public class HistogramGenerator<A> implements ChartGenerator {
     private final String title;
     private final Generator<A> generator;
     private final int bucketCount;
@@ -54,10 +54,10 @@ public class GenerateHistogram<A> {
         return chart;
     }
 
-    public static <A> GenerateHistogram<A> generateHistogram(Generator<A> generator,
-                                                             int bucketCount,
-                                                             Fn1<A, Integer> getBucket) {
-        return new GenerateHistogram<>(generator.getLabel().orElse("untitled"),
+    public static <A> HistogramGenerator<A> histogram(Generator<A> generator,
+                                                      int bucketCount,
+                                                      Fn1<A, Integer> getBucket) {
+        return new HistogramGenerator<>(generator.getLabel().orElse("untitled"),
                 generator, bucketCount, getBucket, 100000);
     }
 
