@@ -42,10 +42,12 @@ public class HistogramGenerator<A> implements ChartGenerator {
 
         generator
                 .run()
-                .take(100000)
+                .take(sampleCount)
                 .forEach(i -> {
                     int bucket = getBucket.apply(i);
-                    frequencies[bucket] = frequencies[bucket] == null ? 0 : frequencies[bucket] + 1;
+                    if (bucket >= 0 && bucket < bucketCount) {
+                        frequencies[bucket] = frequencies[bucket] == null ? 0 : frequencies[bucket] + 1;
+                    }
                 });
 
         ArrayList<Integer> xs = Vector.range(bucketCount).toCollection(ArrayList::new);
