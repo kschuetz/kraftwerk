@@ -8,6 +8,7 @@ import org.knowm.xchart.CategoryChart;
 import java.io.File;
 import java.io.IOException;
 
+import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
 import static visualization.GenerateHistogram.generateHistogram;
 
 public class Sandbox {
@@ -22,7 +23,19 @@ public class Sandbox {
 
         CategoryChart chart2 = generateHistogram(Generators.generateDouble(), 256, n -> (int) (n * 256)).run();
         BitmapEncoder.saveBitmap(chart2, "target/charts/double.png", BitmapEncoder.BitmapFormat.PNG);
-    }
 
+        CategoryChart chart3 = generateHistogram(frequencyMap(1, 0)
+                .addValue(2, 1)
+                .addValue(3, 2)
+                .addValue(4, 3)
+                .addValue(5, 4)
+                .addValue(6, 5)
+                .addValue(7, 6)
+                .addValue(8, 7)
+                .addValue(9, 8)
+                .addValue(10, 9)
+                .toGenerator(), 10, Id.id()).run();
+        BitmapEncoder.saveBitmap(chart3, "target/charts/freqmap.png", BitmapEncoder.BitmapFormat.PNG);
+    }
 
 }
