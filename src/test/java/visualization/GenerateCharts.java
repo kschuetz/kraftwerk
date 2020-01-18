@@ -29,7 +29,11 @@ public class GenerateCharts {
 
     private static Fn1<ChartSuite, ChartSuite> primitives() {
         return cs -> cs
-                .add("int1", histogram(generateInt(0, 255), 256, id()))
+                .add("int-byte0", histogram(generateInt(), 256, n -> n & 255))
+                .add("int-byte1", histogram(generateInt(), 256, n -> (n >> 8) & 255))
+                .add("int-byte2", histogram(generateInt(), 256, n -> (n >> 16) & 255))
+                .add("int-byte3", histogram(generateInt(), 256, n -> (n >> 24) & 255))
+                .add("int-inclusive", histogram(generateInt(0, 255), 256, id()))
                 .add("byte", histogram(generateByte(), 256, n -> 128 + n))
                 .add("short", histogram(generateShort(), 256, n -> (n >> 8) & 255))
                 .add("boolean", histogram(generateBoolean(), 2, b -> b ? 0 : 1))
