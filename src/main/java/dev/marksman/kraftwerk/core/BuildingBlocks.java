@@ -1,6 +1,7 @@
 package dev.marksman.kraftwerk.core;
 
 import com.jnape.palatable.lambda.adt.Unit;
+import com.jnape.palatable.lambda.adt.hlist.Tuple2;
 import dev.marksman.kraftwerk.Result;
 import dev.marksman.kraftwerk.Seed;
 import lombok.AccessLevel;
@@ -8,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 
 import static com.jnape.palatable.lambda.adt.Unit.UNIT;
+import static com.jnape.palatable.lambda.adt.hlist.HList.tuple;
 import static dev.marksman.kraftwerk.Result.result;
 import static dev.marksman.kraftwerk.core.StandardSeedCacheGaussian.standardSeedCacheGaussian;
 
@@ -263,6 +265,12 @@ public final class BuildingBlocks {
     public static Seed perturb(long value, Seed input) {
         long newSeed = nextLong(input).getValue() ^ value;
         return input.setNextSeedValue(newSeed);
+    }
+
+    public static Tuple2<Seed, Seed> split(Seed input) {
+        Result<Seed, Long> out1 = nextLong(input);
+        StandardSeed out2 = StandardSeed.initStandardSeed(out1.getValue());
+        return tuple(out1.getNextState(), out2);
     }
 
     private static Result<Seed, Integer> next(int bits, Seed input) {
