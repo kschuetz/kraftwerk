@@ -137,6 +137,10 @@ public class Generators {
         return Primitives.generateBytes(count);
     }
 
+    public static Generator<Integer> generateSize() {
+        return Primitives.generateSize();
+    }
+
     public static <A> Generator<A> sized(Fn1<Integer, Generator<A>> fn) {
         return Primitives.sized(fn);
     }

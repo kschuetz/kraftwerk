@@ -171,10 +171,13 @@ class Primitives {
         return new BytesGenerator(count);
     }
 
-    static <A> Generator<A> sized(Fn1<Integer, Generator<A>> fn) {
-        return new SizedGenerator<>(fn);
+    static Generator<Integer> generateSize() {
+        return SizeGenerator.INSTANCE;
     }
 
+    static <A> Generator<A> sized(Fn1<Integer, Generator<A>> fn) {
+        return generateSize().flatMap(fn);
+    }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class BooleanGenerator implements Generator<Boolean> {
@@ -375,21 +378,15 @@ class Primitives {
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class SizedGenerator<A> implements Generator<A> {
-        private static Maybe<String> LABEL = Maybe.just("sized");
+    private static class SizeGenerator implements Generator<Integer> {
+        private static Maybe<String> LABEL = Maybe.just("size");
 
-        private final Fn1<Integer, Generator<A>> fn;
+        private static SizeGenerator INSTANCE = new SizeGenerator();
 
         @Override
-        public Generate<A> prepare(Parameters parameters) {
-            Generate<Integer> sizeSelector = Bias.applyBiasSetting(parameters.getBiasSettings().sizeBias(parameters.getSizeParameters()),
+        public Generate<Integer> prepare(Parameters parameters) {
+            return Bias.applyBiasSetting(parameters.getBiasSettings().sizeBias(parameters.getSizeParameters()),
                     sizeSelector(parameters.getSizeParameters()));
-            return input -> {
-                Result<? extends Seed, Integer> sizeResult = sizeSelector.apply(input);
-                return fn.apply(sizeResult.getValue())
-                        .prepare(parameters)
-                        .apply(sizeResult.getNextState());
-            };
         }
 
         @Override
