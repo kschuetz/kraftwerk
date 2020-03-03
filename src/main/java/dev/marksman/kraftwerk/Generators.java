@@ -9,12 +9,15 @@ import com.jnape.palatable.lambda.adt.hlist.*;
 import com.jnape.palatable.lambda.functions.*;
 import com.jnape.palatable.lambda.monoid.Monoid;
 import com.jnape.palatable.lambda.semigroup.Semigroup;
+import dev.marksman.collectionviews.ImmutableNonEmptyVector;
+import dev.marksman.collectionviews.ImmutableVector;
+import dev.marksman.collectionviews.NonEmptyVector;
 import dev.marksman.collectionviews.Vector;
-import dev.marksman.collectionviews.*;
 import dev.marksman.enhancediterables.FiniteIterable;
 import dev.marksman.enhancediterables.ImmutableNonEmptyIterable;
 import dev.marksman.enhancediterables.NonEmptyFiniteIterable;
 import dev.marksman.enhancediterables.NonEmptyIterable;
+import dev.marksman.kraftwerk.aggregator.Aggregator;
 import dev.marksman.kraftwerk.choice.ChoiceBuilder1;
 import dev.marksman.kraftwerk.core.BuildingBlocks;
 import dev.marksman.kraftwerk.frequency.FrequencyMap;
@@ -25,9 +28,10 @@ import java.math.BigInteger;
 import java.time.*;
 import java.util.*;
 
-import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Replicate.replicate;
 import static dev.marksman.kraftwerk.Result.result;
+import static dev.marksman.kraftwerk.aggregator.Aggregators.collectionAggregator;
+import static dev.marksman.kraftwerk.aggregator.Aggregators.vectorAggregator;
 
 public class Generators {
 
@@ -153,47 +157,40 @@ public class Generators {
         }
     }
 
-    public static <A, Builder, Out> Generator<Out> aggregate(Fn0<Builder> initialBuilderSupplier,
-                                                             Fn2<Builder, A, Builder> addFn,
-                                                             Fn1<Builder, Out> buildFn,
+
+    public static <A, Builder, Out> Generator<Out> aggregate(Aggregator<A, Builder, Out> aggregator,
                                                              Iterable<Generator<A>> elements) {
-        return Aggregation.aggregate(initialBuilderSupplier, addFn, buildFn, elements);
+        return Aggregation.aggregate(aggregator, elements);
     }
 
-    public static <Elem, Builder, Out> Generator<Out> aggregate(Fn0<Builder> initialBuilderSupplier,
-                                                                Fn2<Builder, Elem, Builder> addFn,
-                                                                Fn1<Builder, Out> buildFn,
-                                                                int size,
-                                                                Generator<Elem> gen) {
-        return Aggregation.aggregate(initialBuilderSupplier, addFn, buildFn, replicate(size, gen));
+    public static <A, Builder, Out> Generator<Out> aggregate(Aggregator<A, Builder, Out> aggregator,
+                                                             int size,
+                                                             Generator<A> gen) {
+        return Aggregation.aggregate(aggregator, size, gen);
     }
 
-    public static <A, C extends Collection<A>> Generator<C> buildCollection(Fn0<C> initialCollectionSupplier,
+    public static <A, C extends Collection<A>> Generator<C> buildCollection(Fn0<C> constructCollection,
                                                                             Iterable<Generator<A>> elements) {
-        return Aggregation.aggregate(initialCollectionSupplier,
-                (collection, item) -> {
-                    collection.add(item);
-                    return collection;
-                }, id(), elements);
+        return Aggregation.aggregate(collectionAggregator(constructCollection), elements);
     }
 
-    public static <A, C extends Collection<A>> Generator<C> buildCollection(Fn0<C> initialCollectionSupplier,
+    public static <A, C extends Collection<A>> Generator<C> buildCollection(Fn0<C> constructCollection,
                                                                             int size,
                                                                             Generator<A> gen) {
-        return buildCollection(initialCollectionSupplier, replicate(size, gen));
+        return buildCollection(constructCollection, replicate(size, gen));
     }
 
     public static <A> Generator<ImmutableVector<A>> buildVector(Iterable<Generator<A>> elements) {
-        return Aggregation.aggregate(Vector::<A>builder, VectorBuilder::add, VectorBuilder::build, elements);
+        return Aggregation.aggregate(vectorAggregator(), elements);
     }
 
     public static <A> Generator<ImmutableVector<A>> buildVector(int size, Generator<A> gen) {
-        return Aggregation.<A, VectorBuilder<A>, ImmutableVector<A>>aggregate(() -> Vector.builder(size), VectorBuilder::add,
-                VectorBuilder::build, replicate(size, gen));
+        return Aggregation.aggregate(vectorAggregator(size), replicate(size, gen));
     }
 
     public static <A> Generator<ImmutableNonEmptyVector<A>> buildNonEmptyVector(NonEmptyIterable<Generator<A>> elements) {
-        return Aggregation.aggregate(Vector::<A>builder, VectorBuilder::add, b -> b.build().toNonEmptyOrThrow(), elements);
+        return Aggregation.aggregate(vectorAggregator(), elements)
+                .fmap(ImmutableVector::toNonEmptyOrThrow);
     }
 
     public static <A> Generator<ImmutableNonEmptyVector<A>> buildNonEmptyVector(int size, Generator<A> gen) {
@@ -201,9 +198,8 @@ public class Generators {
             throw new IllegalArgumentException("size must be >= 1");
 
         }
-        return Aggregation.<A, VectorBuilder<A>, ImmutableNonEmptyVector<A>>aggregate(() -> Vector.builder(size), VectorBuilder::add,
-                aVectorBuilder -> aVectorBuilder.build().toNonEmptyOrThrow(),
-                replicate(size, gen));
+        return Aggregation.aggregate(vectorAggregator(), replicate(size, gen))
+                .fmap(ImmutableVector::toNonEmptyOrThrow);
     }
 
     public static <A, B, Out> Generator<Out> product(Generator<A> a,

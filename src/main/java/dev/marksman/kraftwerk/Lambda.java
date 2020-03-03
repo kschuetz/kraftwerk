@@ -4,6 +4,8 @@ import com.jnape.palatable.lambda.monoid.Monoid;
 import com.jnape.palatable.lambda.semigroup.Semigroup;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
+import static dev.marksman.kraftwerk.aggregator.Aggregator.aggregator;
+import static dev.marksman.kraftwerk.aggregator.Aggregators.monoidAggregator;
 
 class Lambda {
 
@@ -20,9 +22,9 @@ class Lambda {
         } else {
             return gen.flatMap(initial ->
                     Generators.sized(size ->
-                            Generators.aggregate(() -> initial,
+                            Generators.aggregate(aggregator(() -> initial,
                                     semigroup::apply,
-                                    id(),
+                                    id()),
                                     count - 1,
                                     gen)));
         }
@@ -39,11 +41,7 @@ class Lambda {
         } else if (count == 1) {
             return Generators.constant(monoid.identity());
         } else {
-            return Generators.aggregate(monoid::identity,
-                    monoid::apply,
-                    id(),
-                    count,
-                    gen);
+            return Generators.aggregate(monoidAggregator(monoid), count, gen);
         }
     }
 

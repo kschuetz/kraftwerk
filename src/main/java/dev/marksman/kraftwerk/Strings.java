@@ -14,6 +14,7 @@ import static dev.marksman.enhancediterables.EnhancedIterable.enhance;
 import static dev.marksman.kraftwerk.Generators.aggregate;
 import static dev.marksman.kraftwerk.Generators.constant;
 import static dev.marksman.kraftwerk.Sequence.sequence;
+import static dev.marksman.kraftwerk.aggregator.Aggregators.*;
 
 class Strings {
 
@@ -25,8 +26,7 @@ class Strings {
         if (length <= 0) return constant("");
         else if (length == 1) return g;
         else {
-            return aggregate(StringBuilder::new, StringBuilder::append, StringBuilder::toString,
-                    length, g);
+            return aggregate(stringAggregator(), length, g);
         }
     }
 
@@ -42,8 +42,7 @@ class Strings {
         if (length <= 0) return constant("");
         else if (length == 1) return g.fmap(Object::toString);
         else {
-            return aggregate(StringBuilder::new, StringBuilder::append, StringBuilder::toString,
-                    length, g);
+            return aggregate(charAggregator(), length, g);
         }
     }
 
@@ -58,8 +57,7 @@ class Strings {
             ArrayList<Generator<String>> generators = new ArrayList<>();
             generators.add(first);
             generators.addAll(Arrays.asList(more));
-            return aggregate(StringBuilder::new, StringBuilder::append, StringBuilder::toString,
-                    generators);
+            return aggregate(stringAggregator(), generators);
         }
     }
 
@@ -84,8 +82,7 @@ class Strings {
         if (!components.iterator().hasNext()) {
             return constant("");
         } else {
-            return aggregate(StringBuilder::new, StringBuilder::append, StringBuilder::toString,
-                    intersperse(separator, components));
+            return aggregate(stringAggregator(), intersperse(separator, components));
         }
     }
 
@@ -97,8 +94,7 @@ class Strings {
         if (!components.iterator().hasNext()) {
             return constant("");
         } else {
-            return aggregate(StringBuilder::new, StringBuilder::append, StringBuilder::toString,
-                    components);
+            return aggregate(stringAggregator(), components);
         }
     }
 
@@ -113,7 +109,7 @@ class Strings {
                                     .intersperse(separator));
 
             return step1.flatMap(ss ->
-                    aggregate(StringBuilder::new, StringBuilder::append, StringBuilder::toString, ss));
+                    aggregate(stringAggregator(), ss));
 
         }
     }
@@ -126,11 +122,7 @@ class Strings {
         if (!components.iterator().hasNext()) {
             return constant("");
         } else {
-            return aggregate(StringBuilder::new,
-                    (builder, maybeString) -> builder.append(maybeString.orElse("")),
-                    StringBuilder::toString,
-                    components);
-
+            return aggregate(maybeStringAggregator(), components);
         }
     }
 
