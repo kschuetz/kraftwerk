@@ -13,7 +13,7 @@ import static com.jnape.palatable.lambda.adt.hlist.HList.tuple;
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.All.all;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Eq.eq;
-import static dev.marksman.kraftwerk.StandardParameters.defaultParameters;
+import static dev.marksman.kraftwerk.StandardGeneratorParameters.defaultGeneratorParameters;
 import static dev.marksman.kraftwerk.core.StandardSeed.initStandardSeed;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -126,7 +126,7 @@ class GeneratorTest {
 
     @SuppressWarnings("unchecked")
     private static <A> Result<Seed, A> run(Generator<A> gen, Seed input) {
-        return (Result<Seed, A>) gen.prepare(defaultParameters()).apply(input);
+        return (Result<Seed, A>) gen.prepare(defaultGeneratorParameters()).apply(input);
     }
 
 }

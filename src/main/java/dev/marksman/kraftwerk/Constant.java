@@ -13,7 +13,7 @@ class Constant<A> implements Generator<A> {
     private final A value;
 
     @Override
-    public Generate<A> prepare(Parameters parameters) {
+    public Generate<A> prepare(GeneratorParameters generatorParameters) {
         return input -> result(input, value);
     }
 
@@ -23,6 +23,6 @@ class Constant<A> implements Generator<A> {
     }
 
     static <A> Constant<A> constant(A value) {
-        return new Constant<A>(value);
+        return new Constant<>(value);
     }
 }

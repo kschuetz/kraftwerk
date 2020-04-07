@@ -36,8 +36,8 @@ class Bias {
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class InjectSpecialValues<A> implements Generator<A> {
-        private final ImmutableNonEmptyVector<A> specialValues;
-        private final Generator<A> underlying;
+        ImmutableNonEmptyVector<A> specialValues;
+        Generator<A> underlying;
 
         InjectSpecialValues<A> add(NonEmptyFiniteIterable<A> newValues) {
             return new InjectSpecialValues<>(Vector.copyFrom(specialValues.concat(newValues)).toNonEmptyOrThrow(),
@@ -45,8 +45,8 @@ class Bias {
         }
 
         @Override
-        public Generate<A> prepare(Parameters parameters) {
-            return injectSpecial(specialValues, underlying.prepare(parameters));
+        public Generate<A> prepare(GeneratorParameters generatorParameters) {
+            return injectSpecial(specialValues, underlying.prepare(generatorParameters));
         }
 
         @Override

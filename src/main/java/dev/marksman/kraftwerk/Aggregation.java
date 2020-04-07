@@ -30,8 +30,8 @@ class Aggregation {
         private final Iterable<Generator<Elem>> elements;
 
         @Override
-        public Generate<Out> prepare(Parameters parameters) {
-            Iterable<Generate<Elem>> runners = Map.map(g -> g.prepare(parameters), elements);
+        public Generate<Out> prepare(GeneratorParameters generatorParameters) {
+            Iterable<Generate<Elem>> runners = Map.map(g -> g.prepare(generatorParameters), elements);
             return input -> {
                 Seed current = input;
                 Builder builder = aggregator.builder();

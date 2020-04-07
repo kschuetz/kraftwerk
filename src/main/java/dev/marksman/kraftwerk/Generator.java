@@ -16,26 +16,26 @@ import dev.marksman.kraftwerk.weights.NullWeights;
 import java.util.ArrayList;
 
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
-import static dev.marksman.kraftwerk.StandardParameters.defaultParameters;
+import static dev.marksman.kraftwerk.StandardGeneratorParameters.defaultGeneratorParameters;
 import static dev.marksman.kraftwerk.ValueSupply.valueSupply;
 
 public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
-    Generate<A> prepare(Parameters parameters);
+    Generate<A> prepare(GeneratorParameters generatorParameters);
 
-    default ValueSupply<A> run(Parameters parameters, Seed initialSeed) {
-        return valueSupply(prepare(parameters), initialSeed);
+    default ValueSupply<A> run(GeneratorParameters generatorParameters, Seed initialSeed) {
+        return valueSupply(prepare(generatorParameters), initialSeed);
     }
 
     default ValueSupply<A> run(Seed initialSeed) {
-        return run(defaultParameters(), initialSeed);
+        return run(defaultGeneratorParameters(), initialSeed);
     }
 
-    default ValueSupply<A> run(Parameters parameters) {
-        return run(parameters, Seed.random());
+    default ValueSupply<A> run(GeneratorParameters generatorParameters) {
+        return run(generatorParameters, Seed.random());
     }
 
     default ValueSupply<A> run() {
-        return run(defaultParameters(), Seed.random());
+        return run(defaultGeneratorParameters(), Seed.random());
     }
 
     @Override

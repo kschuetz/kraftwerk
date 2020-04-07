@@ -36,16 +36,10 @@ class Shuffle {
         } else if (count == 1) {
             return Generators.constant(Vector.of(fn.apply(0)));
         } else {
-            return new Generator<NonEmptyVector<A>>() {
-
-                @Override
-                public Generate<NonEmptyVector<A>> prepare(Parameters parameters) {
-                    return input -> {
-                        ArrayList<A> target = newInputInstance(count, fn);
-                        Seed stateOut = shuffleInPlace(input, target);
-                        return result(stateOut, NonEmptyVector.wrapOrThrow(target));
-                    };
-                }
+            return generatorParameters -> input -> {
+                ArrayList<A> target = newInputInstance(count, fn);
+                Seed stateOut = shuffleInPlace(input, target);
+                return result(stateOut, NonEmptyVector.wrapOrThrow(target));
             };
         }
     }
@@ -67,7 +61,7 @@ class Shuffle {
     }
 
     static <A> Generator<Vector<A>> generateShuffled(Collection<A> input) {
-        ArrayList<A> inputList = new ArrayList<A>(input.size());
+        ArrayList<A> inputList = new ArrayList<>(input.size());
         inputList.addAll(input);
         return generateShuffled(inputList.size(), inputList::get);
     }

@@ -81,9 +81,9 @@ class Products {
         private final Fn2<A, B, Out> combine;
 
         @Override
-        public Generate<Out> prepare(Parameters parameters) {
-            Fn1<Seed, Result<? extends Seed, A>> runA = a.prepare(parameters);
-            Fn1<Seed, Result<? extends Seed, B>> runB = b.prepare(parameters);
+        public Generate<Out> prepare(GeneratorParameters generatorParameters) {
+            Fn1<Seed, Result<? extends Seed, A>> runA = a.prepare(generatorParameters);
+            Fn1<Seed, Result<? extends Seed, B>> runB = b.prepare(generatorParameters);
             return input -> {
                 Result<? extends Seed, A> ra = runA.apply(input);
                 Result<? extends Seed, B> rb = runB.apply(ra.getNextState());
@@ -110,10 +110,10 @@ class Products {
         private final Fn3<A, B, C, Out> combine;
 
         @Override
-        public Generate<Out> prepare(Parameters parameters) {
-            Fn1<Seed, Result<? extends Seed, A>> runA = a.prepare(parameters);
-            Fn1<Seed, Result<? extends Seed, B>> runB = b.prepare(parameters);
-            Fn1<Seed, Result<? extends Seed, C>> runC = c.prepare(parameters);
+        public Generate<Out> prepare(GeneratorParameters generatorParameters) {
+            Fn1<Seed, Result<? extends Seed, A>> runA = a.prepare(generatorParameters);
+            Fn1<Seed, Result<? extends Seed, B>> runB = b.prepare(generatorParameters);
+            Fn1<Seed, Result<? extends Seed, C>> runC = c.prepare(generatorParameters);
             return input -> {
                 Result<? extends Seed, A> ra = runA.apply(input);
                 Result<? extends Seed, B> rb = runB.apply(ra.getNextState());
@@ -143,11 +143,11 @@ class Products {
         private final Fn4<A, B, C, D, Out> combine;
 
         @Override
-        public Generate<Out> prepare(Parameters parameters) {
-            Fn1<Seed, Result<? extends Seed, A>> runA = a.prepare(parameters);
-            Fn1<Seed, Result<? extends Seed, B>> runB = b.prepare(parameters);
-            Fn1<Seed, Result<? extends Seed, C>> runC = c.prepare(parameters);
-            Fn1<Seed, Result<? extends Seed, D>> runD = d.prepare(parameters);
+        public Generate<Out> prepare(GeneratorParameters generatorParameters) {
+            Fn1<Seed, Result<? extends Seed, A>> runA = a.prepare(generatorParameters);
+            Fn1<Seed, Result<? extends Seed, B>> runB = b.prepare(generatorParameters);
+            Fn1<Seed, Result<? extends Seed, C>> runC = c.prepare(generatorParameters);
+            Fn1<Seed, Result<? extends Seed, D>> runD = d.prepare(generatorParameters);
             return input -> {
                 Result<? extends Seed, A> ra = runA.apply(input);
                 Result<? extends Seed, B> rb = runB.apply(ra.getNextState());
@@ -180,12 +180,12 @@ class Products {
         private final Fn5<A, B, C, D, E, Out> combine;
 
         @Override
-        public Generate<Out> prepare(Parameters parameters) {
-            Fn1<Seed, Result<? extends Seed, A>> runA = a.prepare(parameters);
-            Fn1<Seed, Result<? extends Seed, B>> runB = b.prepare(parameters);
-            Fn1<Seed, Result<? extends Seed, C>> runC = c.prepare(parameters);
-            Fn1<Seed, Result<? extends Seed, D>> runD = d.prepare(parameters);
-            Fn1<Seed, Result<? extends Seed, E>> runE = e.prepare(parameters);
+        public Generate<Out> prepare(GeneratorParameters generatorParameters) {
+            Fn1<Seed, Result<? extends Seed, A>> runA = a.prepare(generatorParameters);
+            Fn1<Seed, Result<? extends Seed, B>> runB = b.prepare(generatorParameters);
+            Fn1<Seed, Result<? extends Seed, C>> runC = c.prepare(generatorParameters);
+            Fn1<Seed, Result<? extends Seed, D>> runD = d.prepare(generatorParameters);
+            Fn1<Seed, Result<? extends Seed, E>> runE = e.prepare(generatorParameters);
             return input -> {
                 Result<? extends Seed, A> ra = runA.apply(input);
                 Result<? extends Seed, B> rb = runB.apply(ra.getNextState());
@@ -221,13 +221,13 @@ class Products {
         private final Fn6<A, B, C, D, E, F, Out> combine;
 
         @Override
-        public Generate<Out> prepare(Parameters parameters) {
-            Fn1<Seed, Result<? extends Seed, A>> runA = a.prepare(parameters);
-            Fn1<Seed, Result<? extends Seed, B>> runB = b.prepare(parameters);
-            Fn1<Seed, Result<? extends Seed, C>> runC = c.prepare(parameters);
-            Fn1<Seed, Result<? extends Seed, D>> runD = d.prepare(parameters);
-            Fn1<Seed, Result<? extends Seed, E>> runE = e.prepare(parameters);
-            Fn1<Seed, Result<? extends Seed, F>> runF = f.prepare(parameters);
+        public Generate<Out> prepare(GeneratorParameters generatorParameters) {
+            Fn1<Seed, Result<? extends Seed, A>> runA = a.prepare(generatorParameters);
+            Fn1<Seed, Result<? extends Seed, B>> runB = b.prepare(generatorParameters);
+            Fn1<Seed, Result<? extends Seed, C>> runC = c.prepare(generatorParameters);
+            Fn1<Seed, Result<? extends Seed, D>> runD = d.prepare(generatorParameters);
+            Fn1<Seed, Result<? extends Seed, E>> runE = e.prepare(generatorParameters);
+            Fn1<Seed, Result<? extends Seed, F>> runF = f.prepare(generatorParameters);
             return input -> {
                 Result<? extends Seed, A> ra = runA.apply(input);
                 Result<? extends Seed, B> rb = runB.apply(ra.getNextState());
@@ -266,14 +266,14 @@ class Products {
         private final Fn7<A, B, C, D, E, F, G, Out> combine;
 
         @Override
-        public Generate<Out> prepare(Parameters parameters) {
-            Fn1<Seed, Result<? extends Seed, A>> runA = a.prepare(parameters);
-            Fn1<Seed, Result<? extends Seed, B>> runB = b.prepare(parameters);
-            Fn1<Seed, Result<? extends Seed, C>> runC = c.prepare(parameters);
-            Fn1<Seed, Result<? extends Seed, D>> runD = d.prepare(parameters);
-            Fn1<Seed, Result<? extends Seed, E>> runE = e.prepare(parameters);
-            Fn1<Seed, Result<? extends Seed, F>> runF = f.prepare(parameters);
-            Fn1<Seed, Result<? extends Seed, G>> runG = g.prepare(parameters);
+        public Generate<Out> prepare(GeneratorParameters generatorParameters) {
+            Fn1<Seed, Result<? extends Seed, A>> runA = a.prepare(generatorParameters);
+            Fn1<Seed, Result<? extends Seed, B>> runB = b.prepare(generatorParameters);
+            Fn1<Seed, Result<? extends Seed, C>> runC = c.prepare(generatorParameters);
+            Fn1<Seed, Result<? extends Seed, D>> runD = d.prepare(generatorParameters);
+            Fn1<Seed, Result<? extends Seed, E>> runE = e.prepare(generatorParameters);
+            Fn1<Seed, Result<? extends Seed, F>> runF = f.prepare(generatorParameters);
+            Fn1<Seed, Result<? extends Seed, G>> runG = g.prepare(generatorParameters);
             return input -> {
                 Result<? extends Seed, A> ra = runA.apply(input);
                 Result<? extends Seed, B> rb = runB.apply(ra.getNextState());
@@ -315,15 +315,15 @@ class Products {
         private final Fn8<A, B, C, D, E, F, G, H, Out> combine;
 
         @Override
-        public Generate<Out> prepare(Parameters parameters) {
-            Fn1<Seed, Result<? extends Seed, A>> runA = a.prepare(parameters);
-            Fn1<Seed, Result<? extends Seed, B>> runB = b.prepare(parameters);
-            Fn1<Seed, Result<? extends Seed, C>> runC = c.prepare(parameters);
-            Fn1<Seed, Result<? extends Seed, D>> runD = d.prepare(parameters);
-            Fn1<Seed, Result<? extends Seed, E>> runE = e.prepare(parameters);
-            Fn1<Seed, Result<? extends Seed, F>> runF = f.prepare(parameters);
-            Fn1<Seed, Result<? extends Seed, G>> runG = g.prepare(parameters);
-            Fn1<Seed, Result<? extends Seed, H>> runH = h.prepare(parameters);
+        public Generate<Out> prepare(GeneratorParameters generatorParameters) {
+            Fn1<Seed, Result<? extends Seed, A>> runA = a.prepare(generatorParameters);
+            Fn1<Seed, Result<? extends Seed, B>> runB = b.prepare(generatorParameters);
+            Fn1<Seed, Result<? extends Seed, C>> runC = c.prepare(generatorParameters);
+            Fn1<Seed, Result<? extends Seed, D>> runD = d.prepare(generatorParameters);
+            Fn1<Seed, Result<? extends Seed, E>> runE = e.prepare(generatorParameters);
+            Fn1<Seed, Result<? extends Seed, F>> runF = f.prepare(generatorParameters);
+            Fn1<Seed, Result<? extends Seed, G>> runG = g.prepare(generatorParameters);
+            Fn1<Seed, Result<? extends Seed, H>> runH = h.prepare(generatorParameters);
             return input -> {
                 Result<? extends Seed, A> ra = runA.apply(input);
                 Result<? extends Seed, B> rb = runB.apply(ra.getNextState());

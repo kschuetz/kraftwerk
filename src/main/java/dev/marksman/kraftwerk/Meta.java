@@ -34,8 +34,8 @@ class Meta {
         }
 
         @Override
-        public Generate<A> prepare(Parameters parameters) {
-            return underlying.prepare(parameters);
+        public Generate<A> prepare(GeneratorParameters generatorParameters) {
+            return underlying.prepare(generatorParameters);
         }
 
     }

@@ -28,8 +28,8 @@ class Mapping {
         private final Fn1<In, A> fn;
 
         @Override
-        public Generate<A> prepare(Parameters parameters) {
-            Generate<In> g = source.prepare(parameters);
+        public Generate<A> prepare(GeneratorParameters generatorParameters) {
+            Generate<In> g = source.prepare(generatorParameters);
             return input -> g.apply(input).fmap(fn);
         }
 
@@ -38,7 +38,7 @@ class Mapping {
         public <B> Generator<B> fmap(Fn1<? super A, ? extends B> fn) {
             Iterable<Function<Object, Object>> fs = Vector.of(o -> fn.apply((A) o),
                     o -> this.fn.apply((In) o));
-            return new ManyMapped(source, fs);
+            return new ManyMapped<>(source, fs);
         }
 
         @Override
@@ -57,8 +57,8 @@ class Mapping {
 
         @SuppressWarnings("unchecked")
         @Override
-        public Generate<A> prepare(Parameters parameters) {
-            Generate<In> g = source.prepare(parameters);
+        public Generate<A> prepare(GeneratorParameters generatorParameters) {
+            Generate<In> g = source.prepare(generatorParameters);
             Fn1<Object, Object> fn = buildFn();
             return input -> g.apply(input).fmap(x -> (A) fn.apply(x));
         }

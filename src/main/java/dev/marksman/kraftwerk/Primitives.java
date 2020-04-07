@@ -40,7 +40,7 @@ class Primitives {
     }
 
     private static Generator<Integer> generateIntExclusiveImpl(int bound,
-                                                               Fn1<Parameters, BiasSetting<Integer>> getBias) {
+                                                               Fn1<GeneratorParameters, BiasSetting<Integer>> getBias) {
         checkBound(bound);
         Maybe<String> label = Maybe.just(Labeling.intInterval(0, bound, true));
 
@@ -57,7 +57,7 @@ class Primitives {
     }
 
     private static Generator<Integer> generateIntExclusiveImpl(int origin, int bound,
-                                                               Fn1<Parameters, BiasSetting<Integer>> getBias) {
+                                                               Fn1<GeneratorParameters, BiasSetting<Integer>> getBias) {
         checkOriginBound(origin, bound);
         if (origin == 0) {
             return generateIntExclusive(bound);
@@ -119,7 +119,7 @@ class Primitives {
     }
 
     static Generator<Long> generateLongExclusiveImpl(long bound,
-                                                     Fn1<Parameters, BiasSetting<Long>> getBias) {
+                                                     Fn1<GeneratorParameters, BiasSetting<Long>> getBias) {
         checkBound(bound);
         if (bound <= Integer.MAX_VALUE) {
             return generateIntExclusive((int) bound).fmap(Integer::longValue);
@@ -132,7 +132,7 @@ class Primitives {
         return generateLongExclusiveImpl(origin, bound, p -> p.getBiasSettings().longBias(origin, bound - 1));
     }
 
-    private static Generator<Long> generateLongExclusiveImpl(long origin, long bound, Fn1<Parameters, BiasSetting<Long>> getBias) {
+    private static Generator<Long> generateLongExclusiveImpl(long origin, long bound, Fn1<GeneratorParameters, BiasSetting<Long>> getBias) {
         checkOriginBound(origin, bound);
 
         if (origin < 0 && bound > 0 && bound > Math.abs(origin - Long.MIN_VALUE)) {
@@ -186,7 +186,7 @@ class Primitives {
         private static final BooleanGenerator INSTANCE = new BooleanGenerator();
 
         @Override
-        public Generate<Boolean> prepare(Parameters parameters) {
+        public Generate<Boolean> prepare(GeneratorParameters generatorParameters) {
             return BuildingBlocks::nextBoolean;
         }
 
@@ -207,8 +207,8 @@ class Primitives {
         private static final DoubleGenerator BASIC = new DoubleGenerator(false, false);
 
         @Override
-        public Generate<Double> prepare(Parameters parameters) {
-            return Bias.applyBiasSetting(parameters.getBiasSettings()
+        public Generate<Double> prepare(GeneratorParameters generatorParameters) {
+            return Bias.applyBiasSetting(generatorParameters.getBiasSettings()
                             .doubleBias(Double.MIN_VALUE, Double.MAX_VALUE),
                     BuildingBlocks::nextDouble);
         }
@@ -241,8 +241,8 @@ class Primitives {
         private static final FloatGenerator INSTANCE = new FloatGenerator();
 
         @Override
-        public Generate<Float> prepare(Parameters parameters) {
-            return Bias.applyBiasSetting(parameters.getBiasSettings()
+        public Generate<Float> prepare(GeneratorParameters generatorParameters) {
+            return Bias.applyBiasSetting(generatorParameters.getBiasSettings()
                             .floatBias(Float.MIN_VALUE, Float.MAX_VALUE),
                     BuildingBlocks::nextFloat);
         }
@@ -261,9 +261,9 @@ class Primitives {
         private static final IntGenerator INSTANCE = new IntGenerator();
 
         @Override
-        public Generate<Integer> prepare(Parameters parameters) {
+        public Generate<Integer> prepare(GeneratorParameters generatorParameters) {
 
-            return Bias.applyBiasSetting(parameters.getBiasSettings()
+            return Bias.applyBiasSetting(generatorParameters.getBiasSettings()
                             .intBias(Integer.MIN_VALUE, Integer.MAX_VALUE),
                     BuildingBlocks::nextInt);
         }
@@ -282,8 +282,8 @@ class Primitives {
         private static final LongGenerator INSTANCE = new LongGenerator();
 
         @Override
-        public Generate<Long> prepare(Parameters parameters) {
-            return Bias.applyBiasSetting(parameters.getBiasSettings()
+        public Generate<Long> prepare(GeneratorParameters generatorParameters) {
+            return Bias.applyBiasSetting(generatorParameters.getBiasSettings()
                             .longBias(Long.MIN_VALUE, Long.MAX_VALUE),
                     BuildingBlocks::nextLong);
         }
@@ -302,7 +302,7 @@ class Primitives {
         private static final GaussianGenerator INSTANCE = new GaussianGenerator();
 
         @Override
-        public Generate<Double> prepare(Parameters parameters) {
+        public Generate<Double> prepare(GeneratorParameters generatorParameters) {
             return BuildingBlocks::nextGaussian;
         }
 
@@ -321,8 +321,8 @@ class Primitives {
         private static final ByteGenerator INSTANCE = new ByteGenerator();
 
         @Override
-        public Generate<Byte> prepare(Parameters parameters) {
-            return Bias.applyBiasSetting(parameters.getBiasSettings().byteBias(Byte.MIN_VALUE, Byte.MAX_VALUE),
+        public Generate<Byte> prepare(GeneratorParameters generatorParameters) {
+            return Bias.applyBiasSetting(generatorParameters.getBiasSettings().byteBias(Byte.MIN_VALUE, Byte.MAX_VALUE),
                     input -> nextInt(input).fmap(Integer::byteValue));
         }
 
@@ -340,8 +340,8 @@ class Primitives {
         private static final ShortGenerator INSTANCE = new ShortGenerator();
 
         @Override
-        public Generate<Short> prepare(Parameters parameters) {
-            return Bias.applyBiasSetting(parameters.getBiasSettings().shortBias(Short.MIN_VALUE, Short.MAX_VALUE),
+        public Generate<Short> prepare(GeneratorParameters generatorParameters) {
+            return Bias.applyBiasSetting(generatorParameters.getBiasSettings().shortBias(Short.MIN_VALUE, Short.MAX_VALUE),
                     input -> nextInt(input).fmap(Integer::shortValue));
         }
 
@@ -357,7 +357,7 @@ class Primitives {
         private final int count;
 
         @Override
-        public Generate<Byte[]> prepare(Parameters parameters) {
+        public Generate<Byte[]> prepare(GeneratorParameters generatorParameters) {
             return input -> {
                 byte[] buffer = new byte[count];
                 Result<? extends Seed, Unit> next = nextBytes(buffer, input);
@@ -384,9 +384,9 @@ class Primitives {
         private static SizeGenerator INSTANCE = new SizeGenerator();
 
         @Override
-        public Generate<Integer> prepare(Parameters parameters) {
-            return Bias.applyBiasSetting(parameters.getBiasSettings().sizeBias(parameters.getSizeParameters()),
-                    sizeSelector(parameters.getSizeParameters()));
+        public Generate<Integer> prepare(GeneratorParameters generatorParameters) {
+            return Bias.applyBiasSetting(generatorParameters.getBiasSettings().sizeBias(generatorParameters.getSizeParameters()),
+                    sizeSelector(generatorParameters.getSizeParameters()));
         }
 
         @Override
@@ -397,12 +397,12 @@ class Primitives {
     }
 
     private static <A> Generator<A> simpleGenerator(Maybe<String> label,
-                                                    Fn1<Parameters, BiasSetting<A>> getBias,
+                                                    Fn1<GeneratorParameters, BiasSetting<A>> getBias,
                                                     Generate<A> runFn) {
         return new Generator<A>() {
             @Override
-            public Generate<A> prepare(Parameters parameters) {
-                return Bias.applyBiasSetting(getBias.apply(parameters), runFn);
+            public Generate<A> prepare(GeneratorParameters generatorParameters) {
+                return Bias.applyBiasSetting(getBias.apply(generatorParameters), runFn);
             }
 
             @Override
