@@ -865,6 +865,10 @@ public class Generators {
         return Lambda.generateNFromMonoid(monoid, gen, count);
     }
 
+    public static <A extends Comparable<A>> Generator<Tuple2<A, A>> generateOrderedPair(Generator<A> generator) {
+        return OrderedTuples.generateOrderedPair(generator);
+    }
+
     public static <A> Generator<ImmutableVector<A>> generateOrderedSequence(Generator<Integer> countForEachElement,
                                                                             ImmutableVector<A> orderedElems) {
         return Sequences.generateOrderedSequence(countForEachElement, orderedElems);
