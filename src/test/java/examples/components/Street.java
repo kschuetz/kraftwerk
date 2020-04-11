@@ -16,9 +16,9 @@ import static examples.components.City.generateCityRootName;
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Street {
-    private final Maybe<String> compass;
-    private final String name;
-    private final String suffix;
+    Maybe<String> compass;
+    String name;
+    String suffix;
 
     public String pretty() {
         return compass.match(__ -> "", s -> s + " ")

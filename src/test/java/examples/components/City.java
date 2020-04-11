@@ -16,7 +16,7 @@ import static dev.marksman.kraftwerk.weights.MaybeWeights.nothings;
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class City {
-    private final String name;
+    String name;
 
     public static City city(String name) {
         return new City(name);

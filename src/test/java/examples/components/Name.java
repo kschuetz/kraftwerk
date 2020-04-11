@@ -16,10 +16,10 @@ import static java.util.Arrays.asList;
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Name {
-    private final String first;
-    private final Maybe<String> middle;
-    private final String last;
-    private final Maybe<String> suffix;
+    String first;
+    Maybe<String> middle;
+    String last;
+    Maybe<String> suffix;
 
     public String pretty() {
         return first +

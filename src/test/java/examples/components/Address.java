@@ -18,12 +18,12 @@ import static examples.components.ZipCode.generateZipCode;
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Address {
-    private final String number;
-    private final Street street;
-    private final Maybe<String> unit;
-    private final City city;
-    private final UsState state;
-    private final ZipCode zipCode;
+    String number;
+    Street street;
+    Maybe<String> unit;
+    City city;
+    UsState state;
+    ZipCode zipCode;
 
     public String prettyMultiLine() {
         return renderPretty(true);
