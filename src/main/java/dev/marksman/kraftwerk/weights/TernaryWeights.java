@@ -9,9 +9,9 @@ import lombok.Value;
 public class TernaryWeights {
     public static final TernaryWeights BALANCED = new TernaryWeights(1, 1, 1);
 
-    private final int weightA;
-    private final int weightB;
-    private final int weightC;
+    int weightA;
+    int weightB;
+    int weightC;
 
     TernaryWeights toA(int weight) {
         return ternaryWeights(weight, weightB, weightC);

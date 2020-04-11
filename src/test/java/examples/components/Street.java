@@ -10,7 +10,7 @@ import lombok.Value;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into3.into3;
 import static dev.marksman.kraftwerk.FrequencyEntry.entry;
 import static dev.marksman.kraftwerk.FrequencyEntry.entryForValue;
-import static dev.marksman.kraftwerk.weights.MaybeWeights.nothingWeight;
+import static dev.marksman.kraftwerk.weights.MaybeWeights.nothings;
 import static examples.components.City.generateCityRootName;
 
 @Value
@@ -66,7 +66,7 @@ public class Street {
                         entry(2, generateCityRootName()));
 
         static final Generator<Street> street = Generators.tupled(
-                compass.maybe(nothingWeight(3).toJust(1)),
+                compass.maybe(nothings(3).toJusts(1)),
                 name,
                 suffix)
                 .fmap(into3(Street::street));

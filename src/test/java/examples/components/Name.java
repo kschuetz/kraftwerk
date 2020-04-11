@@ -10,7 +10,7 @@ import lombok.Value;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into4.into4;
 import static dev.marksman.kraftwerk.FrequencyEntry.entry;
-import static dev.marksman.kraftwerk.weights.MaybeWeights.nothingWeight;
+import static dev.marksman.kraftwerk.weights.MaybeWeights.nothings;
 import static java.util.Arrays.asList;
 
 @Value
@@ -60,9 +60,9 @@ public class Name {
 
         static final Generator<Name> name = Generators.tupled(
                 first,
-                middle.maybe(nothingWeight(6).toJust(1)),
+                middle.maybe(nothings(6).toJusts(1)),
                 last,
-                suffix.maybe(nothingWeight(19).toJust(1))
+                suffix.maybe(nothings(19).toJusts(1))
         ).fmap(into4(Name::name));
 
     }

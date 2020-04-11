@@ -3,11 +3,11 @@ package dev.marksman.kraftwerk;
 import dev.marksman.kraftwerk.frequency.FrequencyMapBuilder;
 import dev.marksman.kraftwerk.weights.NullWeights;
 
-import static dev.marksman.kraftwerk.weights.NullWeights.nonNullWeight;
+import static dev.marksman.kraftwerk.weights.NullWeights.nonNulls;
 
 class Nulls {
 
-    private static final NullWeights DEFAULT_NULL_WEIGHTS = nonNullWeight(9).toNull(1);
+    private static final NullWeights DEFAULT_NULL_WEIGHTS = nonNulls(9).toNulls(1);
 
     static <A> Generator<A> generateNull() {
         return Generators.constant(null);

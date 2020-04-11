@@ -12,8 +12,8 @@ import dev.marksman.kraftwerk.weights.TernaryWeights;
 
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
 import static dev.marksman.kraftwerk.Generators.constant;
-import static dev.marksman.kraftwerk.weights.EitherWeights.rightWeight;
-import static dev.marksman.kraftwerk.weights.MaybeWeights.justWeight;
+import static dev.marksman.kraftwerk.weights.EitherWeights.rights;
+import static dev.marksman.kraftwerk.weights.MaybeWeights.justs;
 import static dev.marksman.kraftwerk.weights.TernaryWeights.ternaryWeights;
 
 class CoProducts {
@@ -22,8 +22,8 @@ class CoProducts {
     private static final Generator<Boolean> GENERATE_TRUE = constant(true);
     private static final Generator<Boolean> GENERATE_FALSE = constant(false);
 
-    private static final MaybeWeights DEFAULT_MAYBE_WEIGHTS = justWeight(9).toNothing(1);
-    private static final EitherWeights DEFAULT_EITHER_WEIGHTS = rightWeight(9).toLeft(1);
+    private static final MaybeWeights DEFAULT_MAYBE_WEIGHTS = justs(9).toNothings(1);
+    private static final EitherWeights DEFAULT_EITHER_WEIGHTS = rights(9).toLefts(1);
     private static final TernaryWeights DEFAULT_THESE_WEIGHTS = ternaryWeights();
 
     static Generator<Unit> generateUnit() {
@@ -74,7 +74,7 @@ class CoProducts {
 
     static <L, R> Generator<Either<L, R>> generateEither(EitherWeights weights, Generator<L> leftGenerator, Generator<R> rightGenerator) {
         return FrequencyMapBuilder.<Either<L, R>>frequencyMapBuilder()
-                .add(weights.getLeftWeight(), CoProducts.<L, R>generateLeft(leftGenerator))
+                .add(weights.getLeftWeight(), CoProducts.generateLeft(leftGenerator))
                 .add(weights.getRightWeight(), generateRight(rightGenerator))
                 .build()
                 .toGenerator();

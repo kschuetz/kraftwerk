@@ -7,8 +7,8 @@ import lombok.Value;
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class BinaryWeights {
-    private final int weightA;
-    private final int weightB;
+    int weightA;
+    int weightB;
 
     BinaryWeights toA(int weight) {
         return binaryWeights(weight, weightB);

@@ -9,7 +9,7 @@ import static dev.marksman.kraftwerk.weights.BinaryWeights.binaryWeights;
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class MaybeWeights {
-    private final BinaryWeights weights;
+    BinaryWeights weights;
 
     public int getNothingWeight() {
         return weights.getWeightA();
@@ -19,24 +19,34 @@ public class MaybeWeights {
         return weights.getWeightB();
     }
 
-    public MaybeWeights toNothing(int weight) {
-        return new MaybeWeights(weights.toA(weight));
+    public static MaybeWeightsBuilderJusts justs(int weight) {
+        return new MaybeWeightsBuilderJusts(binaryWeights(1, weight));
     }
 
-    public MaybeWeights toJust(int weight) {
-        return new MaybeWeights(weights.toB(weight));
-    }
-
-    public static MaybeWeights justWeight(int weight) {
-        return new MaybeWeights(binaryWeights(1, weight));
-    }
-
-    public static MaybeWeights nothingWeight(int weight) {
-        return new MaybeWeights(binaryWeights(weight, 1));
+    public static MaybeWeightsBuilderNothings nothings(int weight) {
+        return new MaybeWeightsBuilderNothings(binaryWeights(weight, 1));
     }
 
     public static MaybeWeights maybeWeights(int nothingWeight, int justWeight) {
         return new MaybeWeights(binaryWeights(nothingWeight, justWeight));
+    }
+
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static final class MaybeWeightsBuilderNothings {
+        BinaryWeights weights;
+
+        public MaybeWeights toJusts(int weight) {
+            return new MaybeWeights(weights.toB(weight));
+        }
+    }
+
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static final class MaybeWeightsBuilderJusts {
+        BinaryWeights weights;
+
+        public MaybeWeights toNothings(int weight) {
+            return new MaybeWeights(weights.toA(weight));
+        }
     }
 
 }

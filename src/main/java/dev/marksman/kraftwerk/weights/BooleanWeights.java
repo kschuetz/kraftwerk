@@ -9,7 +9,7 @@ import static dev.marksman.kraftwerk.weights.BinaryWeights.binaryWeights;
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class BooleanWeights {
-    private final BinaryWeights weights;
+    BinaryWeights weights;
 
     public int getFalseWeight() {
         return weights.getWeightA();
@@ -19,24 +19,34 @@ public class BooleanWeights {
         return weights.getWeightB();
     }
 
-    public BooleanWeights toFalse(int weight) {
-        return new BooleanWeights(weights.toA(weight));
+    public static BooleanWeightsBuilderTrues trues(int weight) {
+        return new BooleanWeightsBuilderTrues(binaryWeights(1, weight));
     }
 
-    public BooleanWeights toTrue(int weight) {
-        return new BooleanWeights(weights.toB(weight));
-    }
-
-    public static BooleanWeights trueWeight(int weight) {
-        return new BooleanWeights(binaryWeights(1, weight));
-    }
-
-    public static BooleanWeights falseWeight(int weight) {
-        return new BooleanWeights(binaryWeights(weight, 1));
+    public static BooleanWeightsBuilderFalses falses(int weight) {
+        return new BooleanWeightsBuilderFalses(binaryWeights(weight, 1));
     }
 
     public static BooleanWeights booleanWeights(int falseWeight, int trueWeight) {
         return new BooleanWeights(binaryWeights(falseWeight, trueWeight));
+    }
+
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static final class BooleanWeightsBuilderFalses {
+        BinaryWeights weights;
+
+        public BooleanWeights toTrues(int weight) {
+            return new BooleanWeights(weights.toB(weight));
+        }
+    }
+
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static final class BooleanWeightsBuilderTrues {
+        BinaryWeights weights;
+
+        public BooleanWeights toFalses(int weight) {
+            return new BooleanWeights(weights.toA(weight));
+        }
     }
 
 }

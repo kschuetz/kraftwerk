@@ -9,7 +9,7 @@ import lombok.Value;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into.into;
 import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
-import static dev.marksman.kraftwerk.weights.MaybeWeights.nothingWeight;
+import static dev.marksman.kraftwerk.weights.MaybeWeights.nothings;
 import static examples.components.City.generateCity;
 import static examples.components.Street.generateStreet;
 import static examples.components.UsState.generateUsState;
@@ -63,7 +63,7 @@ public class Address {
         static Generator<Address> address =
                 Generators.product(number,
                         generateStreet(),
-                        unit.maybe(nothingWeight(4).toJust(1)),
+                        unit.maybe(nothings(4).toJusts(1)),
                         generateCity(),
                         generateUsState(),
                         generateZipCode(),

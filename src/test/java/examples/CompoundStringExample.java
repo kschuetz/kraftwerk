@@ -4,8 +4,8 @@ import dev.marksman.kraftwerk.Generator;
 import dev.marksman.kraftwerk.Generators;
 
 import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
-import static dev.marksman.kraftwerk.weights.MaybeWeights.justWeight;
-import static dev.marksman.kraftwerk.weights.MaybeWeights.nothingWeight;
+import static dev.marksman.kraftwerk.weights.MaybeWeights.justs;
+import static dev.marksman.kraftwerk.weights.MaybeWeights.nothings;
 
 public class CompoundStringExample {
 
@@ -22,10 +22,10 @@ public class CompoundStringExample {
                         .addValue(1, "purple").toGenerator())
                 .add(Generators.chooseOneOfValues("fox", "wolf", "tiger"))
                 .addMaybe(Generators.chooseOneOfValues("quickly", "reluctantly", "smugly")
-                        .maybe(justWeight(3).toNothing(2)))
+                        .maybe(justs(3).toNothings(2)))
                 .add("jumped over the")
                 .add(Generators.chooseOneOfValues("lazy", "sleeping"))
-                .addMaybe(Generators.constant("no good").maybe(nothingWeight(4)))
+                .addMaybe(Generators.constant("no good").maybe(nothings(4).toJusts(1)))
                 .add(Generators.chooseOneOfValues("dogs", "horses", "people"))
                 .withSeparator(" ")
                 .withEndDelimiter(Generators.chooseOneOfValues(".", "!"))

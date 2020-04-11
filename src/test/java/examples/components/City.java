@@ -11,7 +11,7 @@ import static com.jnape.palatable.lambda.functions.builtin.fn2.Into3.into3;
 import static dev.marksman.kraftwerk.Generators.chooseOneOfValues;
 import static dev.marksman.kraftwerk.Generators.generateString;
 import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
-import static dev.marksman.kraftwerk.weights.MaybeWeights.nothingWeight;
+import static dev.marksman.kraftwerk.weights.MaybeWeights.nothings;
 
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -55,10 +55,10 @@ public class City {
         static Generator<String> rootName = generateString(part1, part2);
 
         static Generator<City> city =
-                Generators.tupled(prefix.maybe(nothingWeight(5).toJust(1))
+                Generators.tupled(prefix.maybe(nothings(5).toJusts(1))
                                 .fmap(p -> p.orElse("")),
                         rootName,
-                        suffix.maybe(nothingWeight(5).toJust(1))
+                        suffix.maybe(nothings(5).toJusts(1))
                                 .fmap(s -> s.orElse("")))
                         .fmap(into3((prefix, root, suffix) -> city(prefix + root + suffix)));
     }

@@ -9,7 +9,7 @@ import static dev.marksman.kraftwerk.weights.BinaryWeights.binaryWeights;
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class EitherWeights {
-    private final BinaryWeights weights;
+    BinaryWeights weights;
 
     public int getLeftWeight() {
         return weights.getWeightA();
@@ -19,24 +19,34 @@ public class EitherWeights {
         return weights.getWeightB();
     }
 
-    public EitherWeights toLeft(int weight) {
-        return new EitherWeights(weights.toA(weight));
+    public static EitherWeightsBuilderLefts lefts(int weight) {
+        return new EitherWeightsBuilderLefts(binaryWeights(1, weight));
     }
 
-    public EitherWeights toRight(int weight) {
-        return new EitherWeights(weights.toB(weight));
-    }
-
-    public static EitherWeights leftWeight(int weight) {
-        return new EitherWeights(binaryWeights(1, weight));
-    }
-
-    public static EitherWeights rightWeight(int weight) {
-        return new EitherWeights(binaryWeights(weight, 1));
+    public static EitherWeightsBuilderRights rights(int weight) {
+        return new EitherWeightsBuilderRights(binaryWeights(weight, 1));
     }
 
     public static EitherWeights eitherWeights(int falseWeight, int trueWeight) {
         return new EitherWeights(binaryWeights(falseWeight, trueWeight));
+    }
+
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static final class EitherWeightsBuilderLefts {
+        BinaryWeights weights;
+
+        public EitherWeights toRights(int weight) {
+            return new EitherWeights(weights.toB(weight));
+        }
+    }
+
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static final class EitherWeightsBuilderRights {
+        BinaryWeights weights;
+
+        public EitherWeights toLefts(int weight) {
+            return new EitherWeights(weights.toA(weight));
+        }
     }
 
 }

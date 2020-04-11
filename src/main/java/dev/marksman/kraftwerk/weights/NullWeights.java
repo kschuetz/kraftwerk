@@ -9,7 +9,7 @@ import static dev.marksman.kraftwerk.weights.BinaryWeights.binaryWeights;
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class NullWeights {
-    private final BinaryWeights weights;
+    BinaryWeights weights;
 
     public int getNullWeight() {
         return weights.getWeightA();
@@ -19,24 +19,34 @@ public class NullWeights {
         return weights.getWeightB();
     }
 
-    public NullWeights toNull(int weight) {
-        return new NullWeights(weights.toA(weight));
+    public static NullWeightsBuilderNonNull nonNulls(int weight) {
+        return new NullWeightsBuilderNonNull(binaryWeights(1, weight));
     }
 
-    public NullWeights toNonNull(int weight) {
-        return new NullWeights(weights.toB(weight));
-    }
-
-    public static NullWeights nonNullWeight(int weight) {
-        return new NullWeights(binaryWeights(1, weight));
-    }
-
-    public static NullWeights nullWeight(int weight) {
-        return new NullWeights(binaryWeights(weight, 1));
+    public static NullWeightsBuilderNulls nulls(int weight) {
+        return new NullWeightsBuilderNulls(binaryWeights(weight, 1));
     }
 
     public static NullWeights nullWeights(int nullWeight, int nonNullWeight) {
         return new NullWeights(binaryWeights(nullWeight, nonNullWeight));
+    }
+
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static final class NullWeightsBuilderNulls {
+        BinaryWeights weights;
+
+        public NullWeights toNonNulls(int weight) {
+            return new NullWeights(weights.toB(weight));
+        }
+    }
+
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public static final class NullWeightsBuilderNonNull {
+        BinaryWeights weights;
+
+        public NullWeights toNulls(int weight) {
+            return new NullWeights(weights.toA(weight));
+        }
     }
 
 }
