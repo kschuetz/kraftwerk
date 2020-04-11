@@ -1,5 +1,7 @@
 package dev.marksman.kraftwerk;
 
+import dev.marksman.kraftwerk.constraints.BigIntegerRange;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Random;
@@ -9,7 +11,16 @@ import static dev.marksman.kraftwerk.Generators.generateLong;
 
 class BigNumbers {
 
-    static Generator<BigInteger> generateBigIntegerExclusive(BigInteger bound) {
+    static Generator<BigInteger> generateBigInteger(BigIntegerRange range) {
+        BigInteger min = range.min();
+        if (min.signum() == 0) {
+            return generateBigIntegerExclusive(range.maxExclusive());
+        } else {
+            return generateBigIntegerExclusive(min, range.maxExclusive());
+        }
+    }
+
+    private static Generator<BigInteger> generateBigIntegerExclusive(BigInteger bound) {
 
         return generateLong().fmap(s -> {
             int bitLength = bound.bitLength();
@@ -24,13 +35,13 @@ class BigNumbers {
 
     }
 
-    static Generator<BigInteger> generateBigIntegerExclusive(BigInteger origin, BigInteger bound) {
+    private static Generator<BigInteger> generateBigIntegerExclusive(BigInteger origin, BigInteger bound) {
         BigInteger range = bound.subtract(origin);
         if (range.signum() < 1) throw new IllegalArgumentException("bound must be > origin");
         return generateBigIntegerExclusive(range).fmap(origin::add);
     }
 
-    static Generator<BigInteger> generateBigInteger(BigInteger min, BigInteger max) {
+    private static Generator<BigInteger> generateBigInteger(BigInteger min, BigInteger max) {
         BigInteger range = max.subtract(min);
         if (range.signum() < 0) throw new IllegalArgumentException("max must be >= min");
         return generateBigIntegerExclusive(range.add(BigInteger.ONE));

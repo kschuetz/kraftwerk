@@ -42,7 +42,7 @@ final class ConcreteIntRange implements IntRange {
 
             @Override
             public IntRange until(int maxExclusive) {
-                return concreteIntRangeExclusive(min, maxExclusive - 1);
+                return concreteIntRangeExclusive(min, maxExclusive);
             }
         };
     }

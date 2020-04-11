@@ -19,6 +19,7 @@ import dev.marksman.enhancediterables.NonEmptyFiniteIterable;
 import dev.marksman.enhancediterables.NonEmptyIterable;
 import dev.marksman.kraftwerk.aggregator.Aggregator;
 import dev.marksman.kraftwerk.choice.ChoiceBuilder1;
+import dev.marksman.kraftwerk.constraints.BigIntegerRange;
 import dev.marksman.kraftwerk.constraints.IntRange;
 import dev.marksman.kraftwerk.constraints.LongRange;
 import dev.marksman.kraftwerk.core.BuildingBlocks;
@@ -775,16 +776,8 @@ public class Generators {
         return UUIDs.generateUUID();
     }
 
-    public static Generator<BigInteger> generateBigInteger(BigInteger min, BigInteger max) {
-        return BigNumbers.generateBigInteger(min, max);
-    }
-
-    public static Generator<BigInteger> generateBigIntegerExclusive(BigInteger bound) {
-        return BigNumbers.generateBigIntegerExclusive(bound);
-    }
-
-    public static Generator<BigInteger> generateBigIntegerExclusive(BigInteger origin, BigInteger bound) {
-        return BigNumbers.generateBigIntegerExclusive(origin, bound);
+    public static Generator<BigInteger> generateBigInteger(BigIntegerRange range) {
+        return BigNumbers.generateBigInteger(range);
     }
 
     public static Generator<BigDecimal> generateBigDecimalExclusive(int decimalPlaces, BigDecimal bound) {

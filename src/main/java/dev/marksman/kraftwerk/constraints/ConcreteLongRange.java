@@ -42,7 +42,7 @@ final class ConcreteLongRange implements LongRange {
 
             @Override
             public LongRange until(long maxExclusive) {
-                return concreteLongRangeExclusive(min, maxExclusive - 1);
+                return concreteLongRangeExclusive(min, maxExclusive);
             }
         };
     }
