@@ -8,6 +8,7 @@ import dev.marksman.collectionviews.VectorBuilder;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Replicate.replicate;
 import static dev.marksman.kraftwerk.Generators.constant;
 import static dev.marksman.kraftwerk.Generators.generateInt;
+import static dev.marksman.kraftwerk.constraints.IntRange.inclusive;
 
 class Sequences {
 
@@ -48,7 +49,7 @@ class Sequences {
                         .flatMap(elem -> LambdaIterable.wrap(replicate(max, elem)))
                         .unwrap()));
             } else {
-                return generateOrderedSequence(generateInt(min, max), orderedElems);
+                return generateOrderedSequence(generateInt(inclusive(min, max)), orderedElems);
             }
         }
     }

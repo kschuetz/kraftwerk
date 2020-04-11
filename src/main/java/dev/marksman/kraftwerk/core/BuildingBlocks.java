@@ -3,17 +3,17 @@ package dev.marksman.kraftwerk.core;
 import com.jnape.palatable.lambda.adt.Unit;
 import dev.marksman.kraftwerk.Result;
 import dev.marksman.kraftwerk.Seed;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Value;
 
 import static com.jnape.palatable.lambda.adt.Unit.UNIT;
 import static dev.marksman.kraftwerk.Result.result;
 import static dev.marksman.kraftwerk.core.StandardSeedCacheGaussian.standardSeedCacheGaussian;
 
-@Value
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+
 public final class BuildingBlocks {
+
+    private BuildingBlocks() {
+
+    }
 
     public static Result<Seed, Integer> nextIntBounded(int bound, Seed input) {
         checkBound(bound);

@@ -19,6 +19,7 @@ import dev.marksman.enhancediterables.NonEmptyFiniteIterable;
 import dev.marksman.enhancediterables.NonEmptyIterable;
 import dev.marksman.kraftwerk.aggregator.Aggregator;
 import dev.marksman.kraftwerk.choice.ChoiceBuilder1;
+import dev.marksman.kraftwerk.constraints.IntRange;
 import dev.marksman.kraftwerk.core.BuildingBlocks;
 import dev.marksman.kraftwerk.frequency.FrequencyMap;
 import dev.marksman.kraftwerk.weights.*;
@@ -89,16 +90,8 @@ public class Generators {
         return Primitives.generateInt();
     }
 
-    public static Generator<Integer> generateInt(int min, int max) {
-        return Primitives.generateInt(min, max);
-    }
-
-    public static Generator<Integer> generateIntExclusive(int bound) {
-        return Primitives.generateIntExclusive(bound);
-    }
-
-    public static Generator<Integer> generateIntExclusive(int origin, int bound) {
-        return Primitives.generateIntExclusive(origin, bound);
+    public static Generator<Integer> generateInt(IntRange range) {
+        return Primitives.generateInt(range);
     }
 
     public static Generator<Integer> generateIntIndex(int bound) {

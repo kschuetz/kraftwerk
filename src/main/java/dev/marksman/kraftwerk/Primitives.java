@@ -4,6 +4,7 @@ import com.jnape.palatable.lambda.adt.Maybe;
 import com.jnape.palatable.lambda.adt.Unit;
 import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.kraftwerk.bias.BiasSetting;
+import dev.marksman.kraftwerk.constraints.IntRange;
 import dev.marksman.kraftwerk.core.BuildingBlocks;
 import dev.marksman.kraftwerk.util.Labeling;
 import lombok.AccessLevel;
@@ -21,7 +22,11 @@ class Primitives {
         return IntGenerator.INSTANCE;
     }
 
-    static Generator<Integer> generateInt(int min, int max) {
+    static Generator<Integer> generateInt(IntRange range) {
+        return generateInt(range.min(), range.max());
+    }
+
+    private static Generator<Integer> generateInt(int min, int max) {
         checkMinMax(min, max);
         if (max == Integer.MAX_VALUE) {
             if (min == Integer.MIN_VALUE) {
@@ -35,7 +40,7 @@ class Primitives {
         }
     }
 
-    static Generator<Integer> generateIntExclusive(int bound) {
+    private static Generator<Integer> generateIntExclusive(int bound) {
         return generateIntExclusiveImpl(bound, p -> p.getBiasSettings().intBias(0, bound - 1));
     }
 
@@ -52,7 +57,7 @@ class Primitives {
 
     }
 
-    static Generator<Integer> generateIntExclusive(int origin, int bound) {
+    private static Generator<Integer> generateIntExclusive(int origin, int bound) {
         return generateIntExclusiveImpl(origin, bound, p -> p.getBiasSettings().intBias(origin, bound - 1));
     }
 

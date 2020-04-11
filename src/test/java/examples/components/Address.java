@@ -3,6 +3,7 @@ package examples.components;
 import com.jnape.palatable.lambda.adt.Maybe;
 import dev.marksman.kraftwerk.Generator;
 import dev.marksman.kraftwerk.Generators;
+import dev.marksman.kraftwerk.constraints.IntRange;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
@@ -48,16 +49,16 @@ public class Address {
 
     private static class generators {
         static Generator<String> number =
-                frequencyMap(3, Generators.generateInt(0, 990).fmap(n -> 100 + 10 * n))
-                        .add(3, Generators.generateInt(0, 990).fmap(n -> 101 + 10 * n))
-                        .add(4, Generators.generateInt(10, 999))
+                frequencyMap(3, Generators.generateInt(IntRange.from(0).to(990)).fmap(n -> 100 + 10 * n))
+                        .add(3, Generators.generateInt(IntRange.from(0).to(990)).fmap(n -> 101 + 10 * n))
+                        .add(4, Generators.generateInt(IntRange.from(10).to(999)))
                         .toGenerator()
                         .fmap(Object::toString);
 
 
         static Generator<String> unit =
                 Generators.tupled(Generators.chooseOneOfValues(" #", ", Apt. ", ", Suite "),
-                        Generators.chooseOneOf(Generators.generateInt(100, 3000), Generators.generateInt(1, 99)))
+                        Generators.chooseOneOf(Generators.generateInt(IntRange.from(100).to(3000)), Generators.generateInt(IntRange.from(1).to(99))))
                         .fmap(into((unitName, number) -> unitName + number));
 
         static Generator<Address> address =

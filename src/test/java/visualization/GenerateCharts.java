@@ -1,6 +1,7 @@
 package visualization;
 
 import com.jnape.palatable.lambda.functions.Fn1;
+import dev.marksman.kraftwerk.constraints.IntRange;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -33,7 +34,7 @@ public class GenerateCharts {
                 .add("int-byte1", histogram(generateInt(), 256, n -> (n >> 8) & 255))
                 .add("int-byte2", histogram(generateInt(), 256, n -> (n >> 16) & 255))
                 .add("int-byte3", histogram(generateInt(), 256, n -> (n >> 24) & 255))
-                .add("int-inclusive", histogram(generateInt(0, 255), 256, id()))
+                .add("int-inclusive", histogram(generateInt(IntRange.from(0).to(255)), 256, id()))
                 .add("byte", histogram(generateByte(), 256, n -> 128 + n))
                 .add("short", histogram(generateShort(), 256, n -> (n >> 8) & 255))
                 .add("boolean", histogram(generateBoolean(), 2, b -> b ? 0 : 1))

@@ -1,5 +1,7 @@
 package dev.marksman.kraftwerk;
 
+import dev.marksman.kraftwerk.constraints.IntRange;
+
 import java.time.*;
 
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -26,11 +28,11 @@ class Temporal {
     }
 
     static Generator<LocalDate> generateLocalDateForYear(Year year) {
-        return Generators.generateInt(1, year.length()).fmap(year::atDay);
+        return Generators.generateInt(IntRange.from(1).to(year.length())).fmap(year::atDay);
     }
 
     static Generator<LocalDate> generateLocalDateForMonth(YearMonth yearMonth) {
-        return Generators.generateInt(1, yearMonth.lengthOfMonth())
+        return Generators.generateInt(IntRange.from(1).to(yearMonth.lengthOfMonth()))
                 .fmap(yearMonth::atDay);
     }
 
@@ -94,7 +96,7 @@ class Temporal {
                 return Generators.generateLong(0, maxSeconds)
                         .flatMap(s -> {
                             int maxNanos = s == maxSeconds ? extraNanos : 999_999_999;
-                            return Generators.generateInt(0, maxNanos)
+                            return Generators.generateInt(IntRange.from(0).to(maxNanos))
                                     .fmap(ns -> Duration.ofSeconds(s, ns));
                         });
             }

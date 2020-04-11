@@ -3,6 +3,7 @@ package examples.components;
 import com.jnape.palatable.lambda.adt.Maybe;
 import dev.marksman.kraftwerk.Generator;
 import dev.marksman.kraftwerk.Generators;
+import dev.marksman.kraftwerk.constraints.IntRange;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
@@ -36,7 +37,7 @@ public class Street {
                         entry(1, Generators.chooseOneOfValues("NW", "NE", "SW", "SE")));
 
         static final Generator<String> ordinal =
-                Generators.generateInt(1, 99).fmap(n -> {
+                Generators.generateInt(IntRange.from(1).to(99)).fmap(n -> {
                     if (n == 11) return "11th";
                     else if (n % 10 == 1) return n + "st";
                     else if (n % 10 == 2) return n + "nd";

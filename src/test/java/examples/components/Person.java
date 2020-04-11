@@ -2,6 +2,7 @@ package examples.components;
 
 import dev.marksman.kraftwerk.Generator;
 import dev.marksman.kraftwerk.Generators;
+import dev.marksman.kraftwerk.constraints.IntRange;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
@@ -38,15 +39,15 @@ public class Person {
         private static int currentYear = LocalDate.now().getYear();
 
         private static Generator<Integer> age =
-                frequencyMap(1, Generators.generateInt(2, 9))
-                        .add(2, Generators.generateInt(10, 19))
-                        .add(3, Generators.generateInt(20, 29))
-                        .add(3, Generators.generateInt(30, 39))
-                        .add(3, Generators.generateInt(40, 49))
-                        .add(3, Generators.generateInt(50, 59))
-                        .add(2, Generators.generateInt(60, 69))
-                        .add(2, Generators.generateInt(70, 79))
-                        .add(2, Generators.generateInt(80, 99))
+                frequencyMap(1, Generators.generateInt(IntRange.from(2).to(9)))
+                        .add(2, Generators.generateInt(IntRange.from(10).to(19)))
+                        .add(3, Generators.generateInt(IntRange.from(20).to(29)))
+                        .add(3, Generators.generateInt(IntRange.from(30).to(39)))
+                        .add(3, Generators.generateInt(IntRange.from(40).to(49)))
+                        .add(3, Generators.generateInt(IntRange.from(50).to(59)))
+                        .add(2, Generators.generateInt(IntRange.from(60).to(69)))
+                        .add(2, Generators.generateInt(IntRange.from(70).to(79)))
+                        .add(2, Generators.generateInt(IntRange.from(80).to(99)))
                         .toGenerator();
 
         private static Generator<LocalDate> dateOfBirth =

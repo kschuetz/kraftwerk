@@ -4,11 +4,12 @@ import com.jnape.palatable.lambda.adt.hlist.Tuple2;
 import com.jnape.palatable.lambda.functions.Fn2;
 import dev.marksman.collectionviews.ImmutableNonEmptyVector;
 import dev.marksman.collectionviews.Vector;
+import dev.marksman.kraftwerk.constraints.IntRange;
 
 import static dev.marksman.kraftwerk.Cogenerator.cogeneratorInt;
 import static dev.marksman.kraftwerk.Cogenerator.cogeneratorString;
 import static dev.marksman.kraftwerk.Generators.generateFn2;
-import static dev.marksman.kraftwerk.Generators.generateIntExclusive;
+import static dev.marksman.kraftwerk.Generators.generateInt;
 
 public class FunctionExample {
 
@@ -20,7 +21,7 @@ public class FunctionExample {
     public static void main(String[] args) {
         generateFn2(cogeneratorInt(),
                 cogeneratorString(),
-                generateIntExclusive(0, 99))
+                generateInt(IntRange.from(0).until(99)))
                 .run()
                 .take(10)
                 .forEach(FunctionExample::runFunction);

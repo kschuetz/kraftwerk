@@ -4,6 +4,7 @@ import com.jnape.palatable.lambda.adt.hlist.Tuple2;
 import com.jnape.palatable.lambda.adt.hlist.Tuple3;
 import com.jnape.palatable.lambda.functions.Fn1;
 import com.jnape.palatable.lambda.functions.builtin.fn1.Id;
+import dev.marksman.kraftwerk.constraints.IntRange;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +25,7 @@ class GeneratorTest {
 
     private static final Generator<Integer> gen1 = Generators.generateInt();
     private static final Generator<Double> gen2 = Generators.generateGaussian();
-    private static final Generator<Integer> gen3 = Generators.generateIntExclusive(1, 10);
+    private static final Generator<Integer> gen3 = Generators.generateInt(IntRange.from(1).until(10));
     private static final Generator<String> gen4 = Generators.frequency(FrequencyEntry.entryForValue(3, "foo"),
             FrequencyEntry.entryForValue(7, "bar"));
 
@@ -70,9 +71,9 @@ class GeneratorTest {
     void stackSafeFlatMap() {
         int LARGE_NUMBER = 10_000;
         int max = 2 * LARGE_NUMBER;
-        Generator<Integer> g = Generators.generateInt(0, max);
+        Generator<Integer> g = Generators.generateInt(IntRange.from(0).to(max));
         for (int i = 0; i < LARGE_NUMBER; i++) {
-            g = g.flatMap(n -> Generators.generateInt(n, max));
+            g = g.flatMap(n -> Generators.generateInt(IntRange.from(n).to(max)));
         }
         g.run().iterator().next();
     }
@@ -81,7 +82,7 @@ class GeneratorTest {
     void stackSafeFmap() {
         int LARGE_NUMBER = 10_000;
         int max = 2 * LARGE_NUMBER;
-        Generator<Integer> g = Generators.generateInt(0, max);
+        Generator<Integer> g = Generators.generateInt(IntRange.from(0).to(max));
         for (int i = 0; i < LARGE_NUMBER; i++) {
             g = g.fmap(n -> n + 1);
         }

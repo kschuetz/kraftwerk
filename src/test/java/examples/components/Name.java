@@ -3,6 +3,7 @@ package examples.components;
 import com.jnape.palatable.lambda.adt.Maybe;
 import dev.marksman.kraftwerk.Generator;
 import dev.marksman.kraftwerk.Generators;
+import dev.marksman.kraftwerk.constraints.IntRange;
 import dev.marksman.kraftwerk.domain.Characters;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -72,7 +73,7 @@ public class Name {
     }
 
     public static void main(String[] args) {
-        Generators.generateNonEmptyMap(Generators.generateInt(0, 255), generateName().fmap(Name::pretty))
+        Generators.generateNonEmptyMap(Generators.generateInt(IntRange.from(0).to(255)), generateName().fmap(Name::pretty))
                 .run()
                 .take(100)
                 .forEach(System.out::println);
