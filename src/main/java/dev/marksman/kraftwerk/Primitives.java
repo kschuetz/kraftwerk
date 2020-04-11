@@ -197,6 +197,7 @@ class Primitives {
 
     }
 
+    // TODO: implement NaNs and infinities for DoubleGenerator
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class DoubleGenerator implements FloatingPointGenerator<Double> {
         private static Maybe<String> LABEL = Maybe.just("double");
@@ -234,6 +235,7 @@ class Primitives {
 
     }
 
+    // TODO: implement NaNs and infinities for FloatGenerator
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class FloatGenerator implements Generator<Float> {
         private static Maybe<String> LABEL = Maybe.just("float");
