@@ -20,6 +20,7 @@ import dev.marksman.enhancediterables.NonEmptyIterable;
 import dev.marksman.kraftwerk.aggregator.Aggregator;
 import dev.marksman.kraftwerk.choice.ChoiceBuilder1;
 import dev.marksman.kraftwerk.constraints.IntRange;
+import dev.marksman.kraftwerk.constraints.LongRange;
 import dev.marksman.kraftwerk.core.BuildingBlocks;
 import dev.marksman.kraftwerk.frequency.FrequencyMap;
 import dev.marksman.kraftwerk.weights.*;
@@ -102,16 +103,8 @@ public class Generators {
         return Primitives.generateLong();
     }
 
-    public static Generator<Long> generateLong(long min, long max) {
-        return Primitives.generateLong(min, max);
-    }
-
-    public static Generator<Long> generateLongExclusive(long bound) {
-        return Primitives.generateLongExclusive(bound);
-    }
-
-    public static Generator<Long> generateLongExclusive(long origin, long bound) {
-        return Primitives.generateLongExclusive(origin, bound);
+    public static Generator<Long> generateLong(LongRange range) {
+        return Primitives.generateLong(range);
     }
 
     public static Generator<Long> generateLongIndex(long bound) {

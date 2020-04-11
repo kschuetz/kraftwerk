@@ -1,6 +1,7 @@
 package dev.marksman.kraftwerk;
 
 import dev.marksman.kraftwerk.constraints.IntRange;
+import dev.marksman.kraftwerk.constraints.LongRange;
 import org.junit.jupiter.api.Test;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
@@ -56,38 +57,38 @@ class PrimitivesTest {
 
     @Test
     void testLongInclusiveInBounds() {
-        assertForAll(generateLong(0L, 0L), eq(0L));
-        assertForAll(generateLong(-256, 256), n -> n >= -256 && n <= 256);
-        assertForAll(generateLong(0, 1), n -> n == 0 || n == 1);
-        assertForAll(generateLong(-1, 1), n -> n >= -1 && n <= 1);
-        assertForAll(generateLong(-1, 1), n -> n >= -1 && n <= 1);
-        assertForAll(generateLong(Long.MIN_VALUE, 0L), lte(0L));
-        assertForAll(generateLong(Long.MIN_VALUE, -1), lt(0L));
-        assertForAll(generateLong(0, Long.MAX_VALUE), gte(0L));
-        assertForAll(generateLong(0, Long.MAX_VALUE), gte(0L));
+        assertForAll(generateLong(LongRange.inclusive(0L, 0L)), eq(0L));
+        assertForAll(generateLong(LongRange.inclusive(-256, 256)), n -> n >= -256 && n <= 256);
+        assertForAll(generateLong(LongRange.inclusive(0, 1)), n -> n == 0 || n == 1);
+        assertForAll(generateLong(LongRange.inclusive(-1, 1)), n -> n >= -1 && n <= 1);
+        assertForAll(generateLong(LongRange.inclusive(-1, 1)), n -> n >= -1 && n <= 1);
+        assertForAll(generateLong(LongRange.inclusive(Long.MIN_VALUE, 0L)), lte(0L));
+        assertForAll(generateLong(LongRange.inclusive(Long.MIN_VALUE, -1)), lt(0L));
+        assertForAll(generateLong(LongRange.inclusive(0, Long.MAX_VALUE)), gte(0L));
+        assertForAll(generateLong(LongRange.inclusive(0, Long.MAX_VALUE)), gte(0L));
         assertForAll(generateLong().flatMap(lowerBound ->
-                        generateLong(lowerBound, Long.MAX_VALUE)
-                                .flatMap(upperBound -> generateLong(lowerBound, upperBound)
+                        generateLong(LongRange.inclusive(lowerBound, Long.MAX_VALUE))
+                                .flatMap(upperBound -> generateLong(LongRange.inclusive(lowerBound, upperBound))
                                         .fmap(n -> n >= lowerBound && n <= upperBound))),
                 id());
 
     }
 
-    @Test
-    void testLongExclusiveInBounds() {
-        assertForAll(Generators.generateLongExclusive(Long.MAX_VALUE), gte(0L));
-        assertForAll(Generators.generateLongExclusive(Long.MAX_VALUE).flatMap(Generators::generateLongExclusive), gte(0L));
-        assertForAll(generateLong(Long.MIN_VALUE, Long.MAX_VALUE - 1)
-                        .flatMap(lowerBound -> generateLong(lowerBound + 1, Long.MAX_VALUE)
-                                .flatMap(upperBound -> Generators.generateLongExclusive(lowerBound, upperBound)
-                                        .fmap(n -> n >= lowerBound && n < upperBound))),
-                id());
-    }
+//    @Test
+//    void testLongExclusiveInBounds() {
+//        assertForAll(Generators.generateLong(LongRange.exclusive(Long.MAX_VALUE)), gte(0L));
+//        assertForAll(Generators.generateLong(LongRange.exclusive(Long.MAX_VALUE)).flatMap(Generators::generateLongExclusive), gte(0L));
+//        assertForAll(generateLong(Long.MIN_VALUE, Long.MAX_VALUE - 1)
+//                        .flatMap(lowerBound -> generateLong(lowerBound + 1, Long.MAX_VALUE)
+//                                .flatMap(upperBound -> Generators.generateLongExclusive(lowerBound, upperBound)
+//                                        .fmap(n -> n >= lowerBound && n < upperBound))),
+//                id());
+//    }
 
     @Test
     void testLongFullRange() {
         Seed initial = Seed.random();
-        assertEquals(sample(generateLong(Long.MIN_VALUE, Long.MAX_VALUE), initial),
+        assertEquals(sample(generateLong(LongRange.inclusive(Long.MIN_VALUE, Long.MAX_VALUE)), initial),
                 sample(generateLong(), initial));
     }
 
@@ -293,36 +294,11 @@ class PrimitivesTest {
         assertTrue(coversRange(f));
     }
 
-    @Test
-    void testLongExclusiveCoversRange1() {
-        int[] f = new int[256];
-        generateLongExclusive(256)
-                .run()
-                .take(2560)
-                .forEach(n -> {
-                    f[n.intValue()] += 1;
-                });
-
-        assertTrue(coversRange(f));
-    }
-
-    @Test
-    void testLongExclusiveCoversRange2() {
-        int[] f = new int[256];
-        generateLongExclusive(-128, 128)
-                .run()
-                .take(2560)
-                .forEach(n -> {
-                    f[n.intValue() + 128] += 1;
-                });
-
-        assertTrue(coversRange(f));
-    }
 
     @Test
     void testLongInclusiveCoversRange1() {
         int[] f = new int[256];
-        generateLong(0, 255)
+        generateLong(LongRange.inclusive(0, 255))
                 .run()
                 .take(2560)
                 .forEach(n -> {
@@ -335,7 +311,7 @@ class PrimitivesTest {
     @Test
     void testLongInclusiveCoversRange2() {
         int[] f = new int[256];
-        generateLong(-128, 127)
+        generateLong(LongRange.inclusive(-128, 127))
                 .run()
                 .take(2560)
                 .forEach(n -> {

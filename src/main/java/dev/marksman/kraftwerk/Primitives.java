@@ -5,6 +5,7 @@ import com.jnape.palatable.lambda.adt.Unit;
 import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.kraftwerk.bias.BiasSetting;
 import dev.marksman.kraftwerk.constraints.IntRange;
+import dev.marksman.kraftwerk.constraints.LongRange;
 import dev.marksman.kraftwerk.core.BuildingBlocks;
 import dev.marksman.kraftwerk.util.Labeling;
 import lombok.AccessLevel;
@@ -100,7 +101,11 @@ class Primitives {
         return LongGenerator.INSTANCE;
     }
 
-    static Generator<Long> generateLong(long min, long max) {
+    static Generator<Long> generateLong(LongRange range) {
+        return generateLong(range.min(), range.max());
+    }
+
+    private static Generator<Long> generateLong(long min, long max) {
         checkMinMax(min, max);
         if (max == Long.MAX_VALUE) {
             if (min == Long.MIN_VALUE) {
@@ -114,7 +119,7 @@ class Primitives {
         }
     }
 
-    static Generator<Long> generateLongExclusive(long bound) {
+    private static Generator<Long> generateLongExclusive(long bound) {
         checkBound(bound);
         if (bound <= Integer.MAX_VALUE) {
             return generateIntExclusive((int) bound).fmap(Integer::longValue);
@@ -133,7 +138,7 @@ class Primitives {
         }
     }
 
-    static Generator<Long> generateLongExclusive(long origin, long bound) {
+    private static Generator<Long> generateLongExclusive(long origin, long bound) {
         return generateLongExclusiveImpl(origin, bound, p -> p.getBiasSettings().longBias(origin, bound - 1));
     }
 

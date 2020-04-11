@@ -7,7 +7,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 import static dev.marksman.kraftwerk.FrequencyEntry.entry;
-import static dev.marksman.kraftwerk.Generators.generateLongExclusive;
+import static dev.marksman.kraftwerk.Generators.generateLongIndex;
 import static dev.marksman.kraftwerk.frequency.FrequencyMap1.checkMultiplier;
 import static dev.marksman.kraftwerk.frequency.FrequencyMapN.addLabel;
 import static dev.marksman.kraftwerk.frequency.FrequencyMapN.frequencyMapN;
@@ -25,7 +25,7 @@ class FrequencyMap3<A> implements FrequencyMap<A> {
     @Override
     public Generator<A> toGenerator() {
         long thresholdB = weightA + weightB;
-        return addLabel(generateLongExclusive(weightA + weightB + weightC)
+        return addLabel(generateLongIndex(weightA + weightB + weightC)
                 .flatMap(n -> n < weightA
                         ? generatorA
                         : n < thresholdB

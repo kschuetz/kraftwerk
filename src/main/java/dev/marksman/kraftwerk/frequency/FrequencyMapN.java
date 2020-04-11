@@ -10,7 +10,7 @@ import java.util.TreeMap;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Cons.cons;
 import static com.jnape.palatable.lambda.functions.builtin.fn3.FoldLeft.foldLeft;
 import static dev.marksman.kraftwerk.FrequencyEntry.entry;
-import static dev.marksman.kraftwerk.Generators.generateLongExclusive;
+import static dev.marksman.kraftwerk.Generators.generateLongIndex;
 import static dev.marksman.kraftwerk.frequency.FrequencyMap1.checkMultiplier;
 
 class FrequencyMapN<A> implements FrequencyMap<A> {
@@ -38,7 +38,7 @@ class FrequencyMapN<A> implements FrequencyMap<A> {
             tree.put(total, entry.getGenerate());
         }
 
-        return addLabel(generateLongExclusive(total)
+        return addLabel(generateLongIndex(total)
                 .flatMap(n -> tree.ceilingEntry(1 + n).getValue()));
     }
 

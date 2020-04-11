@@ -1,6 +1,7 @@
 package dev.marksman.kraftwerk;
 
 import dev.marksman.kraftwerk.constraints.IntRange;
+import dev.marksman.kraftwerk.constraints.LongRange;
 
 import java.time.*;
 
@@ -23,7 +24,7 @@ class Temporal {
         if (span <= 1) {
             return Generators.constant(origin);
         } else {
-            return Generators.generateLongExclusive(span).fmap(origin::plusDays);
+            return Generators.generateLong(LongRange.exclusive(span)).fmap(origin::plusDays);
         }
     }
 
@@ -37,7 +38,7 @@ class Temporal {
     }
 
     static Generator<LocalTime> generateLocalTime() {
-        return Generators.generateLongExclusive(NANOS_PER_DAY)
+        return Generators.generateLong(LongRange.exclusive(NANOS_PER_DAY))
                 .fmap(LocalTime::ofNanoOfDay);
     }
 
@@ -47,7 +48,7 @@ class Temporal {
         if (span <= 0) {
             return Generators.constant(min);
         } else {
-            return Generators.generateLong(0L, span)
+            return Generators.generateLong(LongRange.inclusive(0L, span))
                     .fmap(n -> LocalTime.ofNanoOfDay(t0 + n));
         }
     }
@@ -90,10 +91,10 @@ class Temporal {
             int extraNanos = max.getNano();
 
             if (maxSeconds <= 0) {
-                return Generators.generateLong(0, extraNanos)
+                return Generators.generateLong(LongRange.inclusive(0, extraNanos))
                         .fmap(Duration::ofNanos);
             } else {
-                return Generators.generateLong(0, maxSeconds)
+                return Generators.generateLong(LongRange.inclusive(0, maxSeconds))
                         .flatMap(s -> {
                             int maxNanos = s == maxSeconds ? extraNanos : 999_999_999;
                             return Generators.generateInt(IntRange.from(0).to(maxNanos))
