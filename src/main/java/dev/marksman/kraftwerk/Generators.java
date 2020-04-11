@@ -458,6 +458,10 @@ public class Generators {
         return CoProducts.generateThese(weights, generatorA, generatorB);
     }
 
+    public static <A extends Enum<A>> Generator<A> generateFromEnum(Class<A> enumType) {
+        return Enums.generateFromEnum(enumType);
+    }
+
     @SafeVarargs
     public static <A> Generator<A> chooseOneOf(Generator<A> first, Generator<? extends A>... more) {
         return Choose.chooseOneOf(first, more);
