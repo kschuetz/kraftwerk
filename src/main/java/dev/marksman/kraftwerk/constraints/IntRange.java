@@ -6,20 +6,24 @@ import static dev.marksman.kraftwerk.constraints.ConcreteIntRange.concreteIntRan
 import static dev.marksman.kraftwerk.constraints.ConcreteIntRange.concreteIntRangeInclusive;
 
 public interface IntRange {
-    int min();
+    int minInclusive();
 
-    int max();
+    int maxInclusive();
 
     default boolean contains(int n) {
-        return n >= min() && n <= max();
+        return n >= minInclusive() && n <= maxInclusive();
     }
 
     default IntRange withMin(int min) {
-        return concreteIntRangeInclusive(min, max());
+        return concreteIntRangeInclusive(min, maxInclusive());
     }
 
-    default IntRange withMax(int max) {
-        return concreteIntRangeInclusive(min(), max);
+    default IntRange withMaxInclusive(int max) {
+        return concreteIntRangeInclusive(minInclusive(), max);
+    }
+
+    default IntRange withMaxExclusive(int maxExclusive) {
+        return concreteIntRangeExclusive(minInclusive(), maxExclusive);
     }
 
     static IntRangeFrom from(int min) {

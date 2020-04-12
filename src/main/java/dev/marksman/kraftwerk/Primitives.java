@@ -44,7 +44,7 @@ class Primitives {
     }
 
     static Generator<Integer> generateInt(IntRange range) {
-        return generateInt(range.min(), range.max());
+        return generateInt(range.minInclusive(), range.maxInclusive());
     }
 
     private static Generator<Integer> generateInt(int min, int max) {
@@ -130,7 +130,7 @@ class Primitives {
     }
 
     static Generator<Long> generateLong(LongRange range) {
-        return generateLong(range.min(), range.max());
+        return generateLong(range.minInclusive(), range.maxInclusive());
     }
 
     private static Generator<Long> generateLong(long min, long max) {

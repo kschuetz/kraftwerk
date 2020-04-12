@@ -15,12 +15,12 @@ final class ConcreteShortRange implements ShortRange {
     }
 
     @Override
-    public short min() {
+    public short minInclusive() {
         return min;
     }
 
     @Override
-    public short max() {
+    public short maxInclusive() {
         return max;
     }
 

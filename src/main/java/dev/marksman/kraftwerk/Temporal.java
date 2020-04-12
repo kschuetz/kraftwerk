@@ -1,6 +1,10 @@
 package dev.marksman.kraftwerk;
 
+import dev.marksman.kraftwerk.constraints.DurationRange;
 import dev.marksman.kraftwerk.constraints.IntRange;
+import dev.marksman.kraftwerk.constraints.LocalDateRange;
+import dev.marksman.kraftwerk.constraints.LocalDateTimeRange;
+import dev.marksman.kraftwerk.constraints.LocalTimeRange;
 import dev.marksman.kraftwerk.constraints.LongRange;
 
 import java.time.Duration;
@@ -16,15 +20,9 @@ class Temporal {
 
     private static final long NANOS_PER_DAY = 60 * 60 * 24 * 1_000_000_000L;
 
-    static Generator<LocalDate> generateLocalDate(LocalDate min, LocalDate max) {
-        if (!max.isAfter(min)) {
-            return Generators.constant(min);
-        } else {
-            return generateLocalDateExclusive(min, max.plusDays(1));
-        }
-    }
-
-    static Generator<LocalDate> generateLocalDateExclusive(LocalDate origin, LocalDate bound) {
+    static Generator<LocalDate> generateLocalDate(LocalDateRange range) {
+        LocalDate origin = range.minInclusive();
+        LocalDate bound = range.maxInclusive().plusDays(1);
         long span = DAYS.between(origin, bound);
         if (span <= 1) {
             return Generators.constant(origin);
@@ -47,22 +45,26 @@ class Temporal {
                 .fmap(LocalTime::ofNanoOfDay);
     }
 
-    static Generator<LocalTime> generateLocalTime(LocalTime min, LocalTime max) {
-        long t0 = min.toNanoOfDay();
+    static Generator<LocalTime> generateLocalTime(LocalTimeRange range) {
+        LocalTime max = range.maxIncluded() ? range.max() : range.max().minusNanos(1);
+        long t0 = range.minInclusive().toNanoOfDay();
         long span = max.toNanoOfDay() - t0;
         if (span <= 0) {
-            return Generators.constant(min);
+            return Generators.constant(range.minInclusive());
         } else {
             return Generators.generateLong(LongRange.inclusive(0L, span))
                     .fmap(n -> LocalTime.ofNanoOfDay(t0 + n));
         }
     }
 
-    static Generator<LocalDateTime> generateLocalDateTime(LocalDate min, LocalDate max) {
-        return generateLocalDateTime(min.atStartOfDay(), max.atTime(LocalTime.MAX));
+    static Generator<LocalDateTime> generateLocalDateTime(LocalDateRange range) {
+        return generateLocalDateTime(LocalDateTimeRange.inclusive(range.minInclusive().atStartOfDay(),
+                range.maxInclusive().atTime(LocalTime.MAX)));
     }
 
-    static Generator<LocalDateTime> generateLocalDateTime(LocalDateTime min, LocalDateTime max) {
+    static Generator<LocalDateTime> generateLocalDateTime(LocalDateTimeRange range) {
+        LocalDateTime min = range.minInclusive();
+        LocalDateTime max = range.maxInclusive();
         if (max.isBefore(min)) {
             return Generators.constant(min);
         }
@@ -71,16 +73,16 @@ class Temporal {
         LocalTime timeOnFirstDay = min.toLocalTime();
         LocalTime timeOnLastDay = min.toLocalTime();
         if (firstDay.equals(lastDay)) {
-            return generateLocalTime(timeOnFirstDay, timeOnLastDay)
+            return generateLocalTime(LocalTimeRange.inclusive(timeOnFirstDay, timeOnLastDay))
                     .fmap(firstDay::atTime);
         }
-        return generateLocalDate(firstDay, lastDay)
+        return generateLocalDate(LocalDateRange.inclusive(firstDay, lastDay))
                 .flatMap(day -> {
                     Generator<LocalTime> ltg;
                     if (day.equals(firstDay)) {
-                        ltg = generateLocalTime(timeOnFirstDay, LocalTime.MAX);
+                        ltg = generateLocalTime(LocalTimeRange.inclusive(timeOnFirstDay, LocalTime.MAX));
                     } else if (day.equals(lastDay)) {
-                        ltg = generateLocalTime(LocalTime.MIN, timeOnLastDay);
+                        ltg = generateLocalTime(LocalTimeRange.inclusive(LocalTime.MIN, timeOnLastDay));
                     } else {
                         ltg = generateLocalTime();
                     }
@@ -88,7 +90,13 @@ class Temporal {
                 });
     }
 
-    static Generator<Duration> generateDuration(Duration max) {
+    static Generator<Duration> generateDuration(DurationRange range) {
+        Duration min = range.minInclusive();
+        Duration max = range.maxInclusive();
+        return generateDuration(max.minus(min)).fmap(min::plus);
+    }
+
+    private static Generator<Duration> generateDuration(Duration max) {
         if (max.isZero() || max.isNegative()) {
             return Generators.constant(Duration.ZERO);
         } else {
@@ -107,10 +115,6 @@ class Temporal {
                         });
             }
         }
-    }
-
-    static Generator<Duration> generateDuration(Duration min, Duration max) {
-        return generateDuration(max.minus(min)).fmap(min::plus);
     }
 
 }

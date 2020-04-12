@@ -6,20 +6,24 @@ import static dev.marksman.kraftwerk.constraints.ConcreteByteRange.concreteByteR
 import static dev.marksman.kraftwerk.constraints.ConcreteByteRange.concreteByteRangeInclusive;
 
 public interface ByteRange {
-    byte min();
+    byte minInclusive();
 
-    byte max();
+    byte maxInclusive();
 
     default boolean contains(byte n) {
-        return n >= min() && n <= max();
+        return n >= minInclusive() && n <= maxInclusive();
     }
 
     default ByteRange withMin(byte min) {
-        return concreteByteRangeInclusive(min, max());
+        return concreteByteRangeInclusive(min, maxInclusive());
     }
 
-    default ByteRange withMax(byte max) {
-        return concreteByteRangeInclusive(min(), max);
+    default ByteRange withMaxInclusive(byte max) {
+        return concreteByteRangeInclusive(minInclusive(), max);
+    }
+
+    default ByteRange withMaxExclusive(byte max) {
+        return concreteByteRangeExclusive(minInclusive(), max);
     }
 
     static ByteRangeFrom from(byte min) {

@@ -15,12 +15,12 @@ final class ConcreteByteRange implements ByteRange {
     }
 
     @Override
-    public byte min() {
+    public byte minInclusive() {
         return min;
     }
 
     @Override
-    public byte max() {
+    public byte maxInclusive() {
         return max;
     }
 

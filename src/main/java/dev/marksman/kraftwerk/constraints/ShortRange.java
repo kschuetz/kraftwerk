@@ -6,20 +6,24 @@ import static dev.marksman.kraftwerk.constraints.ConcreteShortRange.concreteShor
 import static dev.marksman.kraftwerk.constraints.ConcreteShortRange.concreteShortRangeInclusive;
 
 public interface ShortRange {
-    short min();
+    short minInclusive();
 
-    short max();
+    short maxInclusive();
 
     default boolean contains(short n) {
-        return n >= min() && n <= max();
+        return n >= minInclusive() && n <= maxInclusive();
     }
 
     default ShortRange withMin(short min) {
-        return concreteShortRangeInclusive(min, max());
+        return concreteShortRangeInclusive(min, maxInclusive());
     }
 
-    default ShortRange withMax(short max) {
-        return concreteShortRangeInclusive(min(), max);
+    default ShortRange withMaxInclusive(short max) {
+        return concreteShortRangeInclusive(minInclusive(), max);
+    }
+
+    default ShortRange withMaxExclusive(short maxExclusive) {
+        return concreteShortRangeExclusive(minInclusive(), maxExclusive);
     }
 
     static ShortRangeFrom from(short min) {

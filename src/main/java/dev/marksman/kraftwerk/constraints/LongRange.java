@@ -6,20 +6,24 @@ import static dev.marksman.kraftwerk.constraints.ConcreteLongRange.concreteLongR
 import static dev.marksman.kraftwerk.constraints.ConcreteLongRange.concreteLongRangeInclusive;
 
 public interface LongRange {
-    long min();
+    long minInclusive();
 
-    long max();
+    long maxInclusive();
 
     default boolean contains(long n) {
-        return n >= min() && n <= max();
+        return n >= minInclusive() && n <= maxInclusive();
     }
 
     default LongRange withMin(long min) {
-        return concreteLongRangeInclusive(min, max());
+        return concreteLongRangeInclusive(min, maxInclusive());
     }
 
-    default LongRange withMax(long max) {
-        return concreteLongRangeInclusive(min(), max);
+    default LongRange withMaxInclusive(long max) {
+        return concreteLongRangeInclusive(minInclusive(), max);
+    }
+
+    default LongRange withMaxExclusive(long maxExclusive) {
+        return concreteLongRangeInclusive(minInclusive(), maxExclusive);
     }
 
     static LongRangeFrom from(long min) {

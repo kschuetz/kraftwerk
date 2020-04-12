@@ -15,12 +15,12 @@ final class ConcreteLongRange implements LongRange {
     }
 
     @Override
-    public long min() {
+    public long minInclusive() {
         return min;
     }
 
     @Override
-    public long max() {
+    public long maxInclusive() {
         return max;
     }
 

@@ -20,7 +20,7 @@ public final class DefaultPropertyTestingBiasSettings implements BiasSettings {
     @Override
     public BiasSetting<Integer> intBias(IntRange range) {
         return BiasSetting.builder(range::contains)
-                .addSpecialValue(range.min())
+                .addSpecialValue(range.minInclusive())
                 .addSpecialValue(0)
                 .addSpecialValue(1)
                 .addSpecialValue(-1)
@@ -28,20 +28,20 @@ public final class DefaultPropertyTestingBiasSettings implements BiasSettings {
                 .addSpecialValue(-129)
                 .addSpecialValue(32768)
                 .addSpecialValue(-32769)
-                .addSpecialValue(range.max())
+                .addSpecialValue(range.maxInclusive())
                 .build();
     }
 
     @Override
     public BiasSetting<Long> longBias(LongRange range) {
         return BiasSetting.builder(range::contains)
-                .addSpecialValue(range.min())
+                .addSpecialValue(range.minInclusive())
                 .addSpecialValue(0L)
                 .addSpecialValue(1L)
                 .addSpecialValue(-1L)
                 .addSpecialValue(Integer.MAX_VALUE + 1L)
                 .addSpecialValue(-(Integer.MAX_VALUE + 1L))
-                .addSpecialValue(range.max())
+                .addSpecialValue(range.maxInclusive())
                 .build();
     }
 
@@ -76,24 +76,24 @@ public final class DefaultPropertyTestingBiasSettings implements BiasSettings {
     @Override
     public BiasSetting<Byte> byteBias(ByteRange range) {
         return BiasSetting.builder(range::contains)
-                .addSpecialValue(range.min())
+                .addSpecialValue(range.minInclusive())
                 .addSpecialValue((byte) -1)
                 .addSpecialValue((byte) 0)
                 .addSpecialValue((byte) 1)
-                .addSpecialValue(range.max())
+                .addSpecialValue(range.maxInclusive())
                 .build();
     }
 
     @Override
     public BiasSetting<Short> shortBias(ShortRange range) {
         return BiasSetting.builder(range::contains)
-                .addSpecialValue(range.min())
+                .addSpecialValue(range.minInclusive())
                 .addSpecialValue((short) -1)
                 .addSpecialValue((short) 0)
                 .addSpecialValue((short) 1)
                 .addSpecialValue((short) 128)
                 .addSpecialValue((short) -129)
-                .addSpecialValue(range.max())
+                .addSpecialValue(range.maxInclusive())
                 .build();
     }
 

@@ -19,6 +19,10 @@ public interface BigIntegerRange {
         return concreteBigIntegerRangeExclusive(min, maxExclusive());
     }
 
+    default BigIntegerRange withMaxInclusive(BigInteger max) {
+        return concreteBigIntegerRangeExclusive(min(), max.add(BigInteger.ONE));
+    }
+
     default BigIntegerRange withMaxExclusive(BigInteger maxExclusive) {
         return concreteBigIntegerRangeExclusive(min(), maxExclusive);
     }

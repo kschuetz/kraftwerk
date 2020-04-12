@@ -42,8 +42,12 @@ import dev.marksman.kraftwerk.choice.ChoiceBuilder1;
 import dev.marksman.kraftwerk.constraints.BigDecimalRange;
 import dev.marksman.kraftwerk.constraints.BigIntegerRange;
 import dev.marksman.kraftwerk.constraints.DoubleRange;
+import dev.marksman.kraftwerk.constraints.DurationRange;
 import dev.marksman.kraftwerk.constraints.FloatRange;
 import dev.marksman.kraftwerk.constraints.IntRange;
+import dev.marksman.kraftwerk.constraints.LocalDateRange;
+import dev.marksman.kraftwerk.constraints.LocalDateTimeRange;
+import dev.marksman.kraftwerk.constraints.LocalTimeRange;
 import dev.marksman.kraftwerk.constraints.LongRange;
 import dev.marksman.kraftwerk.core.BuildingBlocks;
 import dev.marksman.kraftwerk.frequency.FrequencyMap;
@@ -810,12 +814,8 @@ public class Generators {
         return BigNumbers.generateBigDecimal(decimalPlaces, range);
     }
 
-    public static Generator<LocalDate> generateLocalDate(LocalDate min, LocalDate max) {
-        return Temporal.generateLocalDate(min, max);
-    }
-
-    public static Generator<LocalDate> generateLocalDateExclusive(LocalDate origin, LocalDate bound) {
-        return Temporal.generateLocalDateExclusive(origin, bound);
+    public static Generator<LocalDate> generateLocalDate(LocalDateRange range) {
+        return Temporal.generateLocalDate(range);
     }
 
     public static Generator<LocalDate> generateLocalDateForYear(Year year) {
@@ -830,24 +830,20 @@ public class Generators {
         return Temporal.generateLocalTime();
     }
 
-    public static Generator<LocalTime> generateLocalTime(LocalTime min, LocalTime max) {
-        return Temporal.generateLocalTime(min, max);
+    public static Generator<LocalTime> generateLocalTime(LocalTimeRange range) {
+        return Temporal.generateLocalTime(range);
     }
 
-    public static Generator<LocalDateTime> generateLocalDateTime(LocalDate min, LocalDate max) {
-        return Temporal.generateLocalDateTime(min, max);
+    public static Generator<LocalDateTime> generateLocalDateTime(LocalDateRange dateRange) {
+        return Temporal.generateLocalDateTime(dateRange);
     }
 
-    public static Generator<LocalDateTime> generateLocalDateTime(LocalDateTime min, LocalDateTime max) {
-        return Temporal.generateLocalDateTime(min, max);
+    public static Generator<LocalDateTime> generateLocalDateTime(LocalDateTimeRange range) {
+        return Temporal.generateLocalDateTime(range);
     }
 
-    public static Generator<Duration> generateDuration(Duration max) {
-        return Temporal.generateDuration(max);
-    }
-
-    public static Generator<Duration> generateDuration(Duration min, Duration max) {
-        return Temporal.generateDuration(min, max);
+    public static Generator<Duration> generateDuration(DurationRange range) {
+        return Temporal.generateDuration(range);
     }
 
     public static <A> Generator<A> generateFromSemigroup(Semigroup<A> semigroup, Generator<A> gen) {

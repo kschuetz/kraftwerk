@@ -15,12 +15,12 @@ final class ConcreteIntRange implements IntRange {
     }
 
     @Override
-    public int min() {
+    public int minInclusive() {
         return min;
     }
 
     @Override
-    public int max() {
+    public int maxInclusive() {
         return max;
     }
 
