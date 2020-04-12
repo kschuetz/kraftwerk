@@ -7,6 +7,18 @@ public interface LongRange {
 
     long max();
 
+    default boolean contains(long n) {
+        return n >= min() && n <= max();
+    }
+
+    default LongRange withMin(long min) {
+        return concreteLongRangeInclusive(min, max());
+    }
+
+    default LongRange withMax(long max) {
+        return concreteLongRangeInclusive(min(), max);
+    }
+
     static LongRangeFrom from(long min) {
         return concreteLongRangeFrom(min);
     }
@@ -21,6 +33,10 @@ public interface LongRange {
 
     static LongRange exclusive(long maxExclusive) {
         return concreteLongRangeExclusive(0, maxExclusive);
+    }
+
+    static LongRange fullRange() {
+        return concreteLongRange();
     }
 
     interface LongRangeFrom {

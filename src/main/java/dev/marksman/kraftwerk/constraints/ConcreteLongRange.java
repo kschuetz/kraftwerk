@@ -1,6 +1,8 @@
 package dev.marksman.kraftwerk.constraints;
 
 final class ConcreteLongRange implements LongRange {
+    private static final LongRange FULL = new ConcreteLongRange(Long.MIN_VALUE, Long.MAX_VALUE);
+
     private final long min;
     private final long max;
 
@@ -17,6 +19,10 @@ final class ConcreteLongRange implements LongRange {
     @Override
     public long max() {
         return max;
+    }
+
+    static LongRange concreteLongRange() {
+        return FULL;
     }
 
     static LongRange concreteLongRangeInclusive(long min, long max) {

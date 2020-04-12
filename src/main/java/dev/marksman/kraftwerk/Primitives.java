@@ -4,6 +4,8 @@ import com.jnape.palatable.lambda.adt.Maybe;
 import com.jnape.palatable.lambda.adt.Unit;
 import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.kraftwerk.bias.BiasSetting;
+import dev.marksman.kraftwerk.constraints.DoubleRange;
+import dev.marksman.kraftwerk.constraints.FloatRange;
 import dev.marksman.kraftwerk.constraints.IntRange;
 import dev.marksman.kraftwerk.constraints.LongRange;
 import dev.marksman.kraftwerk.core.BuildingBlocks;
@@ -11,6 +13,7 @@ import dev.marksman.kraftwerk.util.Labeling;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
+import static com.jnape.palatable.lambda.adt.Maybe.just;
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Constantly.constantly;
 import static dev.marksman.kraftwerk.SizeSelectors.sizeSelector;
@@ -42,13 +45,13 @@ class Primitives {
     }
 
     private static Generator<Integer> generateIntExclusive(int bound) {
-        return generateIntExclusiveImpl(bound, p -> p.getBiasSettings().intBias(0, bound - 1));
+        return generateIntExclusiveImpl(bound, p -> p.getBiasSettings().intBias(IntRange.exclusive(bound)));
     }
 
     private static Generator<Integer> generateIntExclusiveImpl(int bound,
                                                                Fn1<GeneratorParameters, BiasSetting<Integer>> getBias) {
         checkBound(bound);
-        Maybe<String> label = Maybe.just(Labeling.intInterval(0, bound, true));
+        Maybe<String> label = just(Labeling.intInterval(0, bound, true));
 
         if ((bound & -bound) == bound) { // bound is a power of 2
             return simpleGenerator(label, getBias, input -> unsafeNextIntBoundedPowerOf2(bound, input));
@@ -59,7 +62,7 @@ class Primitives {
     }
 
     private static Generator<Integer> generateIntExclusive(int origin, int bound) {
-        return generateIntExclusiveImpl(origin, bound, p -> p.getBiasSettings().intBias(origin, bound - 1));
+        return generateIntExclusiveImpl(origin, bound, p -> p.getBiasSettings().intBias(IntRange.exclusive(origin, bound)));
     }
 
     private static Generator<Integer> generateIntExclusiveImpl(int origin, int bound,
@@ -91,6 +94,10 @@ class Primitives {
 
     static FloatingPointGenerator<Double> generateDouble() {
         return DoubleGenerator.BASIC;
+    }
+
+    static FloatingPointGenerator<Double> generateDouble(DoubleRange range) {
+        return new DoubleGenerator(just(range), false, false);
     }
 
     static Generator<Float> generateFloat() {
@@ -139,7 +146,7 @@ class Primitives {
     }
 
     private static Generator<Long> generateLongExclusive(long origin, long bound) {
-        return generateLongExclusiveImpl(origin, bound, p -> p.getBiasSettings().longBias(origin, bound - 1));
+        return generateLongExclusiveImpl(origin, bound, p -> p.getBiasSettings().longBias(LongRange.exclusive(origin, bound)));
     }
 
     private static Generator<Long> generateLongExclusiveImpl(long origin, long bound, Fn1<GeneratorParameters, BiasSetting<Long>> getBias) {
@@ -212,29 +219,32 @@ class Primitives {
     private static class DoubleGenerator implements FloatingPointGenerator<Double> {
         private static Maybe<String> LABEL = Maybe.just("double");
 
+        private final Maybe<DoubleRange> range;
         private final boolean includeNaNs;
         private final boolean includeInfinities;
 
-        private static final DoubleGenerator BASIC = new DoubleGenerator(false, false);
+        private static final DoubleGenerator BASIC = new DoubleGenerator(nothing(), false, false);
 
         @Override
         public Generate<Double> prepare(GeneratorParameters generatorParameters) {
+            // TODO: handle range
+
             return Bias.applyBiasSetting(generatorParameters.getBiasSettings()
-                            .doubleBias(Double.MIN_VALUE, Double.MAX_VALUE),
+                            .doubleBias(DoubleRange.fullRange()),
                     BuildingBlocks::nextDouble);
         }
 
         @Override
         public FloatingPointGenerator<Double> withNaNs(boolean enabled) {
             return (enabled != includeNaNs)
-                    ? new DoubleGenerator(enabled, includeInfinities)
+                    ? new DoubleGenerator(range, enabled, includeInfinities)
                     : this;
         }
 
         @Override
         public FloatingPointGenerator<Double> withInfinities(boolean enabled) {
             return (enabled != includeInfinities)
-                    ? new DoubleGenerator(includeNaNs, enabled)
+                    ? new DoubleGenerator(range, includeNaNs, enabled)
                     : this;
         }
 
@@ -247,16 +257,33 @@ class Primitives {
 
     // TODO: implement NaNs and infinities for FloatGenerator
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class FloatGenerator implements Generator<Float> {
+    private static class FloatGenerator implements FloatingPointGenerator<Float> {
         private static Maybe<String> LABEL = Maybe.just("float");
 
-        private static final FloatGenerator INSTANCE = new FloatGenerator();
+        private final boolean includeNaNs;
+        private final boolean includeInfinities;
+
+        private static final FloatGenerator INSTANCE = new FloatGenerator(false, false);
 
         @Override
         public Generate<Float> prepare(GeneratorParameters generatorParameters) {
             return Bias.applyBiasSetting(generatorParameters.getBiasSettings()
-                            .floatBias(Float.MIN_VALUE, Float.MAX_VALUE),
+                            .floatBias(FloatRange.fullRange()),
                     BuildingBlocks::nextFloat);
+        }
+
+        @Override
+        public FloatingPointGenerator<Float> withNaNs(boolean enabled) {
+            return (enabled != includeNaNs)
+                    ? new FloatGenerator(enabled, includeInfinities)
+                    : this;
+        }
+
+        @Override
+        public FloatingPointGenerator<Float> withInfinities(boolean enabled) {
+            return (enabled != includeInfinities)
+                    ? new FloatGenerator(includeNaNs, enabled)
+                    : this;
         }
 
         @Override
@@ -276,7 +303,7 @@ class Primitives {
         public Generate<Integer> prepare(GeneratorParameters generatorParameters) {
 
             return Bias.applyBiasSetting(generatorParameters.getBiasSettings()
-                            .intBias(Integer.MIN_VALUE, Integer.MAX_VALUE),
+                            .intBias(IntRange.fullRange()),
                     BuildingBlocks::nextInt);
         }
 
@@ -296,7 +323,7 @@ class Primitives {
         @Override
         public Generate<Long> prepare(GeneratorParameters generatorParameters) {
             return Bias.applyBiasSetting(generatorParameters.getBiasSettings()
-                            .longBias(Long.MIN_VALUE, Long.MAX_VALUE),
+                            .longBias(LongRange.fullRange()),
                     BuildingBlocks::nextLong);
         }
 

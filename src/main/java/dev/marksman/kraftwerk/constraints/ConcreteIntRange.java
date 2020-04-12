@@ -1,6 +1,8 @@
 package dev.marksman.kraftwerk.constraints;
 
 final class ConcreteIntRange implements IntRange {
+    private static final IntRange FULL = new ConcreteIntRange(Integer.MIN_VALUE, Integer.MAX_VALUE);
+
     private final int min;
     private final int max;
 
@@ -17,6 +19,10 @@ final class ConcreteIntRange implements IntRange {
     @Override
     public int max() {
         return max;
+    }
+
+    static IntRange concreteIntRange() {
+        return FULL;
     }
 
     static IntRange concreteIntRangeInclusive(int min, int max) {

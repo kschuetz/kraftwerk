@@ -1,6 +1,10 @@
 package dev.marksman.kraftwerk.bias;
 
 import dev.marksman.kraftwerk.SizeParameters;
+import dev.marksman.kraftwerk.constraints.DoubleRange;
+import dev.marksman.kraftwerk.constraints.FloatRange;
+import dev.marksman.kraftwerk.constraints.IntRange;
+import dev.marksman.kraftwerk.constraints.LongRange;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn3.Between.between;
 
@@ -12,9 +16,9 @@ public final class DefaultPropertyTestingBiasSettings implements BiasSettings {
     }
 
     @Override
-    public BiasSetting<Integer> intBias(int min, int max) {
-        return BiasSetting.builder(between(min, max))
-                .addSpecialValue(min)
+    public BiasSetting<Integer> intBias(IntRange range) {
+        return BiasSetting.builder(range::contains)
+                .addSpecialValue(range.min())
                 .addSpecialValue(0)
                 .addSpecialValue(1)
                 .addSpecialValue(-1)
@@ -22,48 +26,48 @@ public final class DefaultPropertyTestingBiasSettings implements BiasSettings {
                 .addSpecialValue(-129)
                 .addSpecialValue(32768)
                 .addSpecialValue(-32769)
-                .addSpecialValue(max)
+                .addSpecialValue(range.max())
                 .build();
     }
 
     @Override
-    public BiasSetting<Long> longBias(long min, long max) {
-        return BiasSetting.builder(between(min, max))
-                .addSpecialValue(min)
+    public BiasSetting<Long> longBias(LongRange range) {
+        return BiasSetting.builder(range::contains)
+                .addSpecialValue(range.min())
                 .addSpecialValue(0L)
                 .addSpecialValue(1L)
                 .addSpecialValue(-1L)
                 .addSpecialValue(Integer.MAX_VALUE + 1L)
                 .addSpecialValue(-(Integer.MAX_VALUE + 1L))
-                .addSpecialValue(max)
+                .addSpecialValue(range.max())
                 .build();
     }
 
     @Override
-    public BiasSetting<Float> floatBias(float min, float max) {
-        return BiasSetting.builder(between(min, max))
-                .addSpecialValue(min)
+    public BiasSetting<Float> floatBias(FloatRange range) {
+        return BiasSetting.builder(range::contains)
+                .addSpecialValue(range.minInclusive())
                 .addSpecialValue(0.0f)
                 .addSpecialValue(-0.0f)
                 .addSpecialValue(1.0f)
                 .addSpecialValue(-1.0f)
                 .addSpecialValue(Float.MIN_VALUE)
                 .addSpecialValue(-Float.MIN_VALUE)
-                .addSpecialValue(max)
+                .addSpecialValue(range.maxInclusive())
                 .build();
     }
 
     @Override
-    public BiasSetting<Double> doubleBias(double min, double max) {
-        return BiasSetting.builder(between(min, max))
-                .addSpecialValue(min)
+    public BiasSetting<Double> doubleBias(DoubleRange range) {
+        return BiasSetting.builder(range::contains)
+                .addSpecialValue(range.minInclusive())
                 .addSpecialValue(0.0)
                 .addSpecialValue(-0.0)
                 .addSpecialValue(1.0)
                 .addSpecialValue(-1.0)
                 .addSpecialValue(Double.MIN_VALUE)
                 .addSpecialValue(-Double.MIN_VALUE)
-                .addSpecialValue(max)
+                .addSpecialValue(range.maxInclusive())
                 .build();
     }
 

@@ -9,6 +9,14 @@ public interface BigIntegerRange {
 
     BigInteger maxExclusive();
 
+    default BigIntegerRange withMin(BigInteger min) {
+        return concreteBigIntegerRangeExclusive(min, maxExclusive());
+    }
+
+    default BigIntegerRange withMaxExclusive(BigInteger maxExclusive) {
+        return concreteBigIntegerRangeExclusive(min(), maxExclusive);
+    }
+
     static BigIntegerRangeFrom from(BigInteger min) {
         return concreteBigIntegerRangeFrom(min);
     }

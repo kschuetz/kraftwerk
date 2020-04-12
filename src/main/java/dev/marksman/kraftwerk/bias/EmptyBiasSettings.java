@@ -1,6 +1,10 @@
 package dev.marksman.kraftwerk.bias;
 
 import dev.marksman.kraftwerk.SizeParameters;
+import dev.marksman.kraftwerk.constraints.DoubleRange;
+import dev.marksman.kraftwerk.constraints.FloatRange;
+import dev.marksman.kraftwerk.constraints.IntRange;
+import dev.marksman.kraftwerk.constraints.LongRange;
 
 import static dev.marksman.kraftwerk.bias.BiasSetting.noBias;
 
@@ -12,22 +16,22 @@ public final class EmptyBiasSettings implements BiasSettings {
     }
 
     @Override
-    public BiasSetting<Integer> intBias(int min, int max) {
+    public BiasSetting<Integer> intBias(IntRange range) {
         return noBias();
     }
 
     @Override
-    public BiasSetting<Long> longBias(long min, long max) {
+    public BiasSetting<Long> longBias(LongRange range) {
         return noBias();
     }
 
     @Override
-    public BiasSetting<Float> floatBias(float min, float max) {
+    public BiasSetting<Float> floatBias(FloatRange range) {
         return noBias();
     }
 
     @Override
-    public BiasSetting<Double> doubleBias(double min, double max) {
+    public BiasSetting<Double> doubleBias(DoubleRange range) {
         return noBias();
     }
 

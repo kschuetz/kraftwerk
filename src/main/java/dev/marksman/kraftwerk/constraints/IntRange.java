@@ -7,6 +7,18 @@ public interface IntRange {
 
     int max();
 
+    default boolean contains(int n) {
+        return n >= min() && n <= max();
+    }
+
+    default IntRange withMin(int min) {
+        return concreteIntRangeInclusive(min, max());
+    }
+
+    default IntRange withMax(int max) {
+        return concreteIntRangeInclusive(min(), max);
+    }
+
     static IntRangeFrom from(int min) {
         return concreteIntRangeFrom(min);
     }
@@ -21,6 +33,10 @@ public interface IntRange {
 
     static IntRange exclusive(int maxExclusive) {
         return concreteIntRangeExclusive(0, maxExclusive);
+    }
+
+    static IntRange fullRange() {
+        return concreteIntRange();
     }
 
     interface IntRangeFrom {
