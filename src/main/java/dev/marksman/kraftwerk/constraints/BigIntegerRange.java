@@ -9,6 +9,10 @@ public interface BigIntegerRange {
 
     BigInteger maxExclusive();
 
+    default boolean contains(BigInteger n) {
+        return n.compareTo(min()) >= 0 && n.compareTo(maxExclusive()) < 0;
+    }
+
     default BigIntegerRange withMin(BigInteger min) {
         return concreteBigIntegerRangeExclusive(min, maxExclusive());
     }

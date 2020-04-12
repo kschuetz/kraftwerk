@@ -4,10 +4,7 @@ import com.jnape.palatable.lambda.adt.Maybe;
 import com.jnape.palatable.lambda.adt.Unit;
 import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.kraftwerk.bias.BiasSetting;
-import dev.marksman.kraftwerk.constraints.DoubleRange;
-import dev.marksman.kraftwerk.constraints.FloatRange;
-import dev.marksman.kraftwerk.constraints.IntRange;
-import dev.marksman.kraftwerk.constraints.LongRange;
+import dev.marksman.kraftwerk.constraints.*;
 import dev.marksman.kraftwerk.core.BuildingBlocks;
 import dev.marksman.kraftwerk.util.Labeling;
 import lombok.AccessLevel;
@@ -404,7 +401,7 @@ class Primitives {
 
         @Override
         public Generate<Byte> prepare(GeneratorParameters generatorParameters) {
-            return Bias.applyBiasSetting(generatorParameters.getBiasSettings().byteBias(Byte.MIN_VALUE, Byte.MAX_VALUE),
+            return Bias.applyBiasSetting(generatorParameters.getBiasSettings().byteBias(ByteRange.fullRange()),
                     input -> nextInt(input).fmap(Integer::byteValue));
         }
 
@@ -423,7 +420,7 @@ class Primitives {
 
         @Override
         public Generate<Short> prepare(GeneratorParameters generatorParameters) {
-            return Bias.applyBiasSetting(generatorParameters.getBiasSettings().shortBias(Short.MIN_VALUE, Short.MAX_VALUE),
+            return Bias.applyBiasSetting(generatorParameters.getBiasSettings().shortBias(ShortRange.fullRange()),
                     input -> nextInt(input).fmap(Integer::shortValue));
         }
 

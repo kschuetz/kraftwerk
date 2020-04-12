@@ -1,10 +1,7 @@
 package dev.marksman.kraftwerk.bias;
 
 import dev.marksman.kraftwerk.SizeParameters;
-import dev.marksman.kraftwerk.constraints.DoubleRange;
-import dev.marksman.kraftwerk.constraints.FloatRange;
-import dev.marksman.kraftwerk.constraints.IntRange;
-import dev.marksman.kraftwerk.constraints.LongRange;
+import dev.marksman.kraftwerk.constraints.*;
 
 import static dev.marksman.kraftwerk.bias.CompositeBiasSettings.compositeBiasSettings;
 
@@ -17,9 +14,9 @@ public interface BiasSettings {
 
     BiasSetting<Double> doubleBias(DoubleRange range);
 
-    BiasSetting<Byte> byteBias(byte min, byte max);
+    BiasSetting<Byte> byteBias(ByteRange range);
 
-    BiasSetting<Short> shortBias(short min, short max);
+    BiasSetting<Short> shortBias(ShortRange range);
 
     BiasSetting<Integer> sizeBias(SizeParameters sizeParameters);
 

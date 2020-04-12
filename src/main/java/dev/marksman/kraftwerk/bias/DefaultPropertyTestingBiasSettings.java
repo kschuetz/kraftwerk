@@ -1,10 +1,7 @@
 package dev.marksman.kraftwerk.bias;
 
 import dev.marksman.kraftwerk.SizeParameters;
-import dev.marksman.kraftwerk.constraints.DoubleRange;
-import dev.marksman.kraftwerk.constraints.FloatRange;
-import dev.marksman.kraftwerk.constraints.IntRange;
-import dev.marksman.kraftwerk.constraints.LongRange;
+import dev.marksman.kraftwerk.constraints.*;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn3.Between.between;
 
@@ -72,26 +69,26 @@ public final class DefaultPropertyTestingBiasSettings implements BiasSettings {
     }
 
     @Override
-    public BiasSetting<Byte> byteBias(byte min, byte max) {
-        return BiasSetting.builder(between(min, max))
-                .addSpecialValue(min)
+    public BiasSetting<Byte> byteBias(ByteRange range) {
+        return BiasSetting.builder(range::contains)
+                .addSpecialValue(range.min())
                 .addSpecialValue((byte) -1)
                 .addSpecialValue((byte) 0)
                 .addSpecialValue((byte) 1)
-                .addSpecialValue(max)
+                .addSpecialValue(range.max())
                 .build();
     }
 
     @Override
-    public BiasSetting<Short> shortBias(short min, short max) {
-        return BiasSetting.builder(between(min, max))
-                .addSpecialValue(min)
+    public BiasSetting<Short> shortBias(ShortRange range) {
+        return BiasSetting.builder(range::contains)
+                .addSpecialValue(range.min())
                 .addSpecialValue((short) -1)
                 .addSpecialValue((short) 0)
                 .addSpecialValue((short) 1)
                 .addSpecialValue((short) 128)
                 .addSpecialValue((short) -129)
-                .addSpecialValue(max)
+                .addSpecialValue(range.max())
                 .build();
     }
 

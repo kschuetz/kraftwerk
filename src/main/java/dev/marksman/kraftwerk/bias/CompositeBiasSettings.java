@@ -2,10 +2,7 @@ package dev.marksman.kraftwerk.bias;
 
 import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.kraftwerk.SizeParameters;
-import dev.marksman.kraftwerk.constraints.DoubleRange;
-import dev.marksman.kraftwerk.constraints.FloatRange;
-import dev.marksman.kraftwerk.constraints.IntRange;
-import dev.marksman.kraftwerk.constraints.LongRange;
+import dev.marksman.kraftwerk.constraints.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
@@ -37,13 +34,13 @@ final class CompositeBiasSettings implements BiasSettings {
     }
 
     @Override
-    public BiasSetting<Byte> byteBias(byte min, byte max) {
-        return compose(bs -> bs.byteBias(min, max));
+    public BiasSetting<Byte> byteBias(ByteRange range) {
+        return compose(bs -> bs.byteBias(range));
     }
 
     @Override
-    public BiasSetting<Short> shortBias(short min, short max) {
-        return compose(bs -> bs.shortBias(min, max));
+    public BiasSetting<Short> shortBias(ShortRange range) {
+        return compose(bs -> bs.shortBias(range));
     }
 
     @Override
