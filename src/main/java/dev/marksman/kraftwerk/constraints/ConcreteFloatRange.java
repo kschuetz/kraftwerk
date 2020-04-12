@@ -1,5 +1,9 @@
 package dev.marksman.kraftwerk.constraints;
 
+import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeExclusive;
+import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeInclusive;
+import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeWidth;
+
 final class ConcreteFloatRange implements FloatRange {
     private static final FloatRange FULL = new ConcreteFloatRange(Float.MIN_VALUE, true, Float.MAX_VALUE, true);
 
@@ -41,20 +45,12 @@ final class ConcreteFloatRange implements FloatRange {
 
     static FloatRange concreteFloatRange(float min, boolean minIncluded, float max, boolean maxIncluded) {
         if (minIncluded && maxIncluded) {
-            if (max < min) {
-                throw new IllegalArgumentException("max must be >= min");
-            }
+            validateRangeInclusive(min, max);
         } else {
-            if (max <= min) {
-                throw new IllegalArgumentException("max must be > min");
-            }
+            validateRangeExclusive(min, max);
 
             if (!(minIncluded || maxIncluded)) {
-                // if both min and max are excluded, we need to be sure at least one
-                // representable float exists between min and max
-                if (max == Math.nextAfter(min, Float.POSITIVE_INFINITY)) {
-                    throw new IllegalArgumentException("range is too narrow");
-                }
+                validateRangeWidth(min, max);
             }
         }
         return new ConcreteFloatRange(min, minIncluded, max, maxIncluded);

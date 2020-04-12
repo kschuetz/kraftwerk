@@ -1,5 +1,7 @@
 package dev.marksman.kraftwerk;
 
+import dev.marksman.kraftwerk.constraints.DoubleRange;
+import dev.marksman.kraftwerk.constraints.FloatRange;
 import dev.marksman.kraftwerk.constraints.IntRange;
 import dev.marksman.kraftwerk.constraints.LongRange;
 import org.junit.jupiter.api.Test;
@@ -105,8 +107,8 @@ class PrimitivesTest {
 
     @Test
     void testDoubleScaledInBounds() {
-        assertForAll(generateDouble(999.0d), n -> n >= 0.0d && n <= 999.0d);
-        assertForAll(generateDouble(-999.0d), n -> n >= -999.0d && n <= 0.0d);
+        assertForAll(generateDouble(DoubleRange.exclusive(999.0d)), n -> n >= 0.0d && n <= 999.0d);
+        assertForAll(generateDouble(DoubleRange.exclusive(999.0d).negate()), n -> n >= -999.0d && n <= 0.0d);
     }
 
     @Test
@@ -116,8 +118,8 @@ class PrimitivesTest {
 
     @Test
     void testFloatScaledInBounds() {
-        assertForAll(generateFloat(999.0f), n -> n >= 0.0f && n <= 999.0f);
-        assertForAll(generateFloat(-999.0f), n -> n >= -999.0f && n <= 0.0f);
+        assertForAll(generateFloat(FloatRange.exclusive(999.0f)), n -> n >= 0.0f && n <= 999.0f);
+        assertForAll(generateFloat(FloatRange.exclusive(999.0f).negate()), n -> n >= -999.0f && n <= 0.0f);
     }
 
     @Test

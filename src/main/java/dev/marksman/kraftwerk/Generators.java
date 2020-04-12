@@ -40,6 +40,8 @@ import dev.marksman.enhancediterables.NonEmptyIterable;
 import dev.marksman.kraftwerk.aggregator.Aggregator;
 import dev.marksman.kraftwerk.choice.ChoiceBuilder1;
 import dev.marksman.kraftwerk.constraints.BigIntegerRange;
+import dev.marksman.kraftwerk.constraints.DoubleRange;
+import dev.marksman.kraftwerk.constraints.FloatRange;
 import dev.marksman.kraftwerk.constraints.IntRange;
 import dev.marksman.kraftwerk.constraints.LongRange;
 import dev.marksman.kraftwerk.core.BuildingBlocks;
@@ -99,26 +101,16 @@ public class Generators {
         return Primitives.generateDouble();
     }
 
-    public static Generator<Double> generateDouble(double scale) {
-        return generateDouble().fmap(n -> n * scale);
-    }
-
-    public static Generator<Double> generateDouble(double min, double max) {
-        double scale = max - min;
-        return generateDouble().fmap(n -> min + n * scale);
+    public static Generator<Double> generateDouble(DoubleRange range) {
+        return Primitives.generateDouble(range);
     }
 
     public static Generator<Float> generateFloat() {
         return Primitives.generateFloat();
     }
 
-    public static Generator<Float> generateFloat(float scale) {
-        return generateFloat().fmap(n -> n * scale);
-    }
-
-    public static Generator<Float> generateFloat(float min, float max) {
-        float scale = max - min;
-        return generateFloat().fmap(n -> min + n * scale);
+    public static Generator<Float> generateFloat(FloatRange range) {
+        return Primitives.generateFloat(range);
     }
 
     public static Generator<Integer> generateInt() {

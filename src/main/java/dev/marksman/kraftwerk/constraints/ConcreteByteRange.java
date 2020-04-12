@@ -1,5 +1,8 @@
 package dev.marksman.kraftwerk.constraints;
 
+import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeExclusive;
+import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeInclusive;
+
 final class ConcreteByteRange implements ByteRange {
     private static final ByteRange FULL = new ConcreteByteRange(Byte.MIN_VALUE, Byte.MAX_VALUE);
 
@@ -26,16 +29,12 @@ final class ConcreteByteRange implements ByteRange {
     }
 
     static ByteRange concreteByteRangeInclusive(byte min, byte max) {
-        if (max < min) {
-            throw new IllegalArgumentException("max must be >= min");
-        }
+        validateRangeInclusive(min, max);
         return new ConcreteByteRange(min, max);
     }
 
     static ByteRange concreteByteRangeExclusive(byte min, byte maxExclusive) {
-        if (maxExclusive <= min) {
-            throw new IllegalArgumentException("max must be > min");
-        }
+        validateRangeExclusive(min, maxExclusive);
         return new ConcreteByteRange(min, (byte) (maxExclusive - 1));
     }
 

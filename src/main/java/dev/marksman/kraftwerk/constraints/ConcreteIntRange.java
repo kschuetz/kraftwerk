@@ -1,5 +1,8 @@
 package dev.marksman.kraftwerk.constraints;
 
+import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeExclusive;
+import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeInclusive;
+
 final class ConcreteIntRange implements IntRange {
     private static final IntRange FULL = new ConcreteIntRange(Integer.MIN_VALUE, Integer.MAX_VALUE);
 
@@ -26,16 +29,12 @@ final class ConcreteIntRange implements IntRange {
     }
 
     static IntRange concreteIntRangeInclusive(int min, int max) {
-        if (max < min) {
-            throw new IllegalArgumentException("max must be >= min");
-        }
+        validateRangeInclusive(min, max);
         return new ConcreteIntRange(min, max);
     }
 
     static IntRange concreteIntRangeExclusive(int min, int maxExclusive) {
-        if (maxExclusive <= min) {
-            throw new IllegalArgumentException("max must be > min");
-        }
+        validateRangeExclusive(min, maxExclusive);
         return new ConcreteIntRange(min, maxExclusive - 1);
     }
 

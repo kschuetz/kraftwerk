@@ -2,6 +2,9 @@ package dev.marksman.kraftwerk.constraints;
 
 import java.math.BigInteger;
 
+import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeExclusive;
+import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeInclusive;
+
 final class ConcreteBigIntegerRange implements BigIntegerRange {
     private final BigInteger min;
     private final BigInteger maxExclusive;
@@ -22,16 +25,12 @@ final class ConcreteBigIntegerRange implements BigIntegerRange {
     }
 
     static BigIntegerRange concreteBigIntegerRangeInclusive(BigInteger min, BigInteger max) {
-        if (max.compareTo(min) < 0) {
-            throw new IllegalArgumentException("max must be >= min");
-        }
+        validateRangeInclusive(min, max);
         return new ConcreteBigIntegerRange(min, max.add(BigInteger.ONE));
     }
 
     static BigIntegerRange concreteBigIntegerRangeExclusive(BigInteger min, BigInteger maxExclusive) {
-        if (maxExclusive.compareTo(min) <= 0) {
-            throw new IllegalArgumentException("max must be > min");
-        }
+        validateRangeExclusive(min, maxExclusive);
         return new ConcreteBigIntegerRange(min, maxExclusive);
     }
 

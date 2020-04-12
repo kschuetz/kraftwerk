@@ -1,5 +1,8 @@
 package dev.marksman.kraftwerk.constraints;
 
+import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeExclusive;
+import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeInclusive;
+
 final class ConcreteLongRange implements LongRange {
     private static final LongRange FULL = new ConcreteLongRange(Long.MIN_VALUE, Long.MAX_VALUE);
 
@@ -26,16 +29,12 @@ final class ConcreteLongRange implements LongRange {
     }
 
     static LongRange concreteLongRangeInclusive(long min, long max) {
-        if (max < min) {
-            throw new IllegalArgumentException("max must be >= min");
-        }
+        validateRangeInclusive(min, max);
         return new ConcreteLongRange(min, max);
     }
 
     static LongRange concreteLongRangeExclusive(long min, long maxExclusive) {
-        if (maxExclusive <= min) {
-            throw new IllegalArgumentException("max must be > min");
-        }
+        validateRangeExclusive(min, maxExclusive);
         return new ConcreteLongRange(min, maxExclusive - 1);
     }
 

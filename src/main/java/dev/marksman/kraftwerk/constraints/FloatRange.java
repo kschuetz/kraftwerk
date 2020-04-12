@@ -2,6 +2,7 @@ package dev.marksman.kraftwerk.constraints;
 
 import static dev.marksman.kraftwerk.constraints.ConcreteFloatRange.concreteFloatRange;
 import static dev.marksman.kraftwerk.constraints.ConcreteFloatRange.concreteFloatRangeFrom;
+import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateExclusiveBound;
 
 public interface FloatRange {
     float min();
@@ -28,6 +29,18 @@ public interface FloatRange {
         }
     }
 
+    default float maxExclusive() {
+        if (maxIncluded()) {
+            return Math.nextAfter(max(), Float.NEGATIVE_INFINITY);
+        } else {
+            return max();
+        }
+    }
+
+    default float width() {
+        return maxExclusive() - minInclusive();
+    }
+
     default boolean contains(float n) {
         return (minIncluded() ? n >= min() : n > min()) &&
                 (maxIncluded() ? n <= max() : n < max());
@@ -49,6 +62,10 @@ public interface FloatRange {
         return concreteFloatRange(min(), minIncluded(), maxExclusive, false);
     }
 
+    default FloatRange negate() {
+        return concreteFloatRange(-max(), maxIncluded(), -min(), minIncluded());
+    }
+
     static FloatRangeFrom from(float min) {
         return concreteFloatRangeFrom(min, true);
     }
@@ -66,6 +83,7 @@ public interface FloatRange {
     }
 
     static FloatRange exclusive(float maxExclusive) {
+        validateExclusiveBound(maxExclusive);
         return concreteFloatRange(0.0f, true, maxExclusive, false);
     }
 

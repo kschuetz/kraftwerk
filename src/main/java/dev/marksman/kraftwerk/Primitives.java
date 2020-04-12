@@ -248,11 +248,9 @@ class Primitives {
 
         @Override
         public Generate<Double> prepare(GeneratorParameters generatorParameters) {
-            DoubleRange actualRange = this.range.orElse(DEFAULT_RANGE);
-            BiasSetting<Double> bias = buildBiasSetting(generatorParameters, actualRange);
-            Generate<Double> generate = BuildingBlocks::nextDouble; // TODO: handle range for doubles
-
-            return Bias.applyBiasSetting(bias, generate);
+            return Bias.applyBiasSetting(buildBiasSetting(generatorParameters),
+                    range.match(__ -> defaultGenerate(),
+                            this::constrainedGenerate));
         }
 
         @Override
@@ -274,7 +272,8 @@ class Primitives {
             return LABEL;
         }
 
-        private BiasSetting<Double> buildBiasSetting(GeneratorParameters generatorParameters, DoubleRange range) {
+        private BiasSetting<Double> buildBiasSetting(GeneratorParameters generatorParameters) {
+            DoubleRange range = this.range.orElse(DEFAULT_RANGE);
             BiasSetting<Double> bias = generatorParameters.getBiasSettings().doubleBias(range);
             ArrayList<Double> specialValues = new ArrayList<>();
             if (includeNaNs) {
@@ -289,6 +288,16 @@ class Primitives {
                 }
             }
             return bias.addSpecialValues(specialValues);
+        }
+
+        private Generate<Double> defaultGenerate() {
+            return BuildingBlocks::nextDouble;
+        }
+
+        private Generate<Double> constrainedGenerate(DoubleRange range) {
+            double base = range.min();
+            double scale = range.width();
+            return input -> BuildingBlocks.nextDouble(input).fmap(n -> (base + n * scale));
         }
 
     }
@@ -306,11 +315,9 @@ class Primitives {
 
         @Override
         public Generate<Float> prepare(GeneratorParameters generatorParameters) {
-            FloatRange actualRange = this.range.orElse(DEFAULT_RANGE);
-            BiasSetting<Float> bias = buildBiasSetting(generatorParameters, actualRange);
-            Generate<Float> generate = BuildingBlocks::nextFloat; // TODO: handle range for floats
-
-            return Bias.applyBiasSetting(bias, generate);
+            return Bias.applyBiasSetting(buildBiasSetting(generatorParameters),
+                    range.match(__ -> defaultGenerate(),
+                            this::constrainedGenerate));
         }
 
         @Override
@@ -332,7 +339,8 @@ class Primitives {
             return LABEL;
         }
 
-        private BiasSetting<Float> buildBiasSetting(GeneratorParameters generatorParameters, FloatRange range) {
+        private BiasSetting<Float> buildBiasSetting(GeneratorParameters generatorParameters) {
+            FloatRange range = this.range.orElse(DEFAULT_RANGE);
             BiasSetting<Float> bias = generatorParameters.getBiasSettings().floatBias(range);
             ArrayList<Float> specialValues = new ArrayList<>();
             if (includeNaNs) {
@@ -347,6 +355,16 @@ class Primitives {
                 }
             }
             return bias.addSpecialValues(specialValues);
+        }
+
+        private Generate<Float> defaultGenerate() {
+            return BuildingBlocks::nextFloat;
+        }
+
+        private Generate<Float> constrainedGenerate(FloatRange range) {
+            float base = range.min();
+            float scale = range.width();
+            return input -> BuildingBlocks.nextFloat(input).fmap(n -> (base + n * scale));
         }
 
     }

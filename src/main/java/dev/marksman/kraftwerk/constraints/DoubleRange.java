@@ -2,6 +2,7 @@ package dev.marksman.kraftwerk.constraints;
 
 import static dev.marksman.kraftwerk.constraints.ConcreteDoubleRange.concreteDoubleRange;
 import static dev.marksman.kraftwerk.constraints.ConcreteDoubleRange.concreteDoubleRangeFrom;
+import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateExclusiveBound;
 
 public interface DoubleRange {
     double min();
@@ -28,6 +29,18 @@ public interface DoubleRange {
         }
     }
 
+    default double maxExclusive() {
+        if (maxIncluded()) {
+            return Math.nextAfter(max(), Double.NEGATIVE_INFINITY);
+        } else {
+            return max();
+        }
+    }
+
+    default double width() {
+        return maxExclusive() - minInclusive();
+    }
+
     default boolean contains(double n) {
         return (minIncluded() ? n >= min() : n > min()) &&
                 (maxIncluded() ? n <= max() : n < max());
@@ -49,6 +62,10 @@ public interface DoubleRange {
         return concreteDoubleRange(min(), minIncluded(), maxExclusive, false);
     }
 
+    default DoubleRange negate() {
+        return concreteDoubleRange(-max(), maxIncluded(), -min(), minIncluded());
+    }
+
     static DoubleRangeFrom from(double min) {
         return concreteDoubleRangeFrom(min, true);
     }
@@ -66,6 +83,7 @@ public interface DoubleRange {
     }
 
     static DoubleRange exclusive(double maxExclusive) {
+        validateExclusiveBound(maxExclusive);
         return concreteDoubleRange(0.0d, true, maxExclusive, false);
     }
 

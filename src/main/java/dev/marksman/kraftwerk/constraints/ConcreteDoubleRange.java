@@ -1,5 +1,9 @@
 package dev.marksman.kraftwerk.constraints;
 
+import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeExclusive;
+import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeInclusive;
+import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeWidth;
+
 final class ConcreteDoubleRange implements DoubleRange {
     private static final DoubleRange FULL = new ConcreteDoubleRange(Double.MIN_VALUE, true, Double.MAX_VALUE, true);
 
@@ -41,20 +45,12 @@ final class ConcreteDoubleRange implements DoubleRange {
 
     static DoubleRange concreteDoubleRange(double min, boolean minIncluded, double max, boolean maxIncluded) {
         if (minIncluded && maxIncluded) {
-            if (max < min) {
-                throw new IllegalArgumentException("max must be >= min");
-            }
+            validateRangeInclusive(min, max);
         } else {
-            if (max <= min) {
-                throw new IllegalArgumentException("max must be > min");
-            }
+            validateRangeExclusive(min, max);
 
             if (!(minIncluded || maxIncluded)) {
-                // if both min and max are excluded, we need to be sure at least one
-                // representable double exists between min and max
-                if (max == Math.nextAfter(min, Double.POSITIVE_INFINITY)) {
-                    throw new IllegalArgumentException("range is too narrow");
-                }
+                validateRangeWidth(min, max);
             }
         }
         return new ConcreteDoubleRange(min, minIncluded, max, maxIncluded);
