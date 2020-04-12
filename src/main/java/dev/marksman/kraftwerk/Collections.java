@@ -4,7 +4,11 @@ import dev.marksman.collectionviews.ImmutableNonEmptyVector;
 import dev.marksman.collectionviews.ImmutableVector;
 import dev.marksman.collectionviews.NonEmptyVector;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Zip.zip;
 
@@ -72,7 +76,7 @@ class Collections {
 
     static <K, V> Generator<Map<K, V>> generateMap(NonEmptyVector<K> keys,
                                                    Generator<V> generateValue) {
-        return generateMapImpl((int) keys.size(), keys, generateValue);
+        return generateMapImpl(keys.size(), keys, generateValue);
     }
 
     private static <A> Generator<ArrayList<A>> buildArrayList(int n, Generator<A> gen) {

@@ -14,7 +14,9 @@ import static dev.marksman.enhancediterables.EnhancedIterable.enhance;
 import static dev.marksman.kraftwerk.Generators.aggregate;
 import static dev.marksman.kraftwerk.Generators.constant;
 import static dev.marksman.kraftwerk.Sequence.sequence;
-import static dev.marksman.kraftwerk.aggregator.Aggregators.*;
+import static dev.marksman.kraftwerk.aggregator.Aggregators.charAggregator;
+import static dev.marksman.kraftwerk.aggregator.Aggregators.maybeStringAggregator;
+import static dev.marksman.kraftwerk.aggregator.Aggregators.stringAggregator;
 
 class Strings {
 

@@ -1,6 +1,9 @@
 package dev.marksman.kraftwerk.constraints;
 
-import static dev.marksman.kraftwerk.constraints.ConcreteByteRange.*;
+import static dev.marksman.kraftwerk.constraints.ConcreteByteRange.concreteByteRange;
+import static dev.marksman.kraftwerk.constraints.ConcreteByteRange.concreteByteRangeExclusive;
+import static dev.marksman.kraftwerk.constraints.ConcreteByteRange.concreteByteRangeFrom;
+import static dev.marksman.kraftwerk.constraints.ConcreteByteRange.concreteByteRangeInclusive;
 
 public interface ByteRange {
     byte min();

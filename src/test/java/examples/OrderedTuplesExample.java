@@ -2,7 +2,10 @@ package examples;
 
 import dev.marksman.kraftwerk.constraints.IntRange;
 
-import static dev.marksman.kraftwerk.Generators.*;
+import static dev.marksman.kraftwerk.Generators.generateIdentifier;
+import static dev.marksman.kraftwerk.Generators.generateInt;
+import static dev.marksman.kraftwerk.Generators.generateOrderedPair;
+import static dev.marksman.kraftwerk.Generators.tupled;
 
 public class OrderedTuplesExample {
 

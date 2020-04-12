@@ -1,7 +1,14 @@
 package dev.marksman.kraftwerk;
 
 import com.jnape.palatable.lambda.adt.Maybe;
-import com.jnape.palatable.lambda.functions.*;
+import com.jnape.palatable.lambda.functions.Fn1;
+import com.jnape.palatable.lambda.functions.Fn2;
+import com.jnape.palatable.lambda.functions.Fn3;
+import com.jnape.palatable.lambda.functions.Fn4;
+import com.jnape.palatable.lambda.functions.Fn5;
+import com.jnape.palatable.lambda.functions.Fn6;
+import com.jnape.palatable.lambda.functions.Fn7;
+import com.jnape.palatable.lambda.functions.Fn8;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 

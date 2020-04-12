@@ -1,7 +1,21 @@
 package dev.marksman.kraftwerk;
 
-import com.jnape.palatable.lambda.adt.product.*;
-import com.jnape.palatable.lambda.functions.*;
+import com.jnape.palatable.lambda.adt.product.Product2;
+import com.jnape.palatable.lambda.adt.product.Product3;
+import com.jnape.palatable.lambda.adt.product.Product4;
+import com.jnape.palatable.lambda.adt.product.Product5;
+import com.jnape.palatable.lambda.adt.product.Product6;
+import com.jnape.palatable.lambda.adt.product.Product7;
+import com.jnape.palatable.lambda.adt.product.Product8;
+import com.jnape.palatable.lambda.functions.Fn0;
+import com.jnape.palatable.lambda.functions.Fn1;
+import com.jnape.palatable.lambda.functions.Fn2;
+import com.jnape.palatable.lambda.functions.Fn3;
+import com.jnape.palatable.lambda.functions.Fn4;
+import com.jnape.palatable.lambda.functions.Fn5;
+import com.jnape.palatable.lambda.functions.Fn6;
+import com.jnape.palatable.lambda.functions.Fn7;
+import com.jnape.palatable.lambda.functions.Fn8;
 
 import static dev.marksman.kraftwerk.Generators.tap;
 

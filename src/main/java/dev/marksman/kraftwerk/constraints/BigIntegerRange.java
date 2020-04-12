@@ -2,7 +2,9 @@ package dev.marksman.kraftwerk.constraints;
 
 import java.math.BigInteger;
 
-import static dev.marksman.kraftwerk.constraints.ConcreteBigIntegerRange.*;
+import static dev.marksman.kraftwerk.constraints.ConcreteBigIntegerRange.concreteBigIntegerRangeExclusive;
+import static dev.marksman.kraftwerk.constraints.ConcreteBigIntegerRange.concreteBigIntegerRangeFrom;
+import static dev.marksman.kraftwerk.constraints.ConcreteBigIntegerRange.concreteBigIntegerRangeInclusive;
 
 public interface BigIntegerRange {
     BigInteger min();

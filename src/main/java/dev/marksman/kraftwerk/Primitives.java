@@ -4,7 +4,12 @@ import com.jnape.palatable.lambda.adt.Maybe;
 import com.jnape.palatable.lambda.adt.Unit;
 import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.kraftwerk.bias.BiasSetting;
-import dev.marksman.kraftwerk.constraints.*;
+import dev.marksman.kraftwerk.constraints.ByteRange;
+import dev.marksman.kraftwerk.constraints.DoubleRange;
+import dev.marksman.kraftwerk.constraints.FloatRange;
+import dev.marksman.kraftwerk.constraints.IntRange;
+import dev.marksman.kraftwerk.constraints.LongRange;
+import dev.marksman.kraftwerk.constraints.ShortRange;
 import dev.marksman.kraftwerk.core.BuildingBlocks;
 import dev.marksman.kraftwerk.util.Labeling;
 import lombok.AccessLevel;
@@ -17,7 +22,20 @@ import static com.jnape.palatable.lambda.adt.Maybe.nothing;
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Constantly.constantly;
 import static dev.marksman.kraftwerk.SizeSelectors.sizeSelector;
 import static dev.marksman.kraftwerk.bias.BiasSetting.noBias;
-import static dev.marksman.kraftwerk.core.BuildingBlocks.*;
+import static dev.marksman.kraftwerk.core.BuildingBlocks.checkBound;
+import static dev.marksman.kraftwerk.core.BuildingBlocks.checkCount;
+import static dev.marksman.kraftwerk.core.BuildingBlocks.checkMinMax;
+import static dev.marksman.kraftwerk.core.BuildingBlocks.checkOriginBound;
+import static dev.marksman.kraftwerk.core.BuildingBlocks.nextBytes;
+import static dev.marksman.kraftwerk.core.BuildingBlocks.nextInt;
+import static dev.marksman.kraftwerk.core.BuildingBlocks.unsafeNextIntBounded;
+import static dev.marksman.kraftwerk.core.BuildingBlocks.unsafeNextIntBoundedPowerOf2;
+import static dev.marksman.kraftwerk.core.BuildingBlocks.unsafeNextIntExclusive;
+import static dev.marksman.kraftwerk.core.BuildingBlocks.unsafeNextIntExclusivePowerOf2;
+import static dev.marksman.kraftwerk.core.BuildingBlocks.unsafeNextIntExclusiveWide;
+import static dev.marksman.kraftwerk.core.BuildingBlocks.unsafeNextLongExclusive;
+import static dev.marksman.kraftwerk.core.BuildingBlocks.unsafeNextLongExclusivePowerOf2;
+import static dev.marksman.kraftwerk.core.BuildingBlocks.unsafeNextLongExclusiveWithOverflow;
 
 class Primitives {
 

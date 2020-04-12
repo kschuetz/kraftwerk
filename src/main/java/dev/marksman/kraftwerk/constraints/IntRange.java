@@ -1,6 +1,9 @@
 package dev.marksman.kraftwerk.constraints;
 
-import static dev.marksman.kraftwerk.constraints.ConcreteIntRange.*;
+import static dev.marksman.kraftwerk.constraints.ConcreteIntRange.concreteIntRange;
+import static dev.marksman.kraftwerk.constraints.ConcreteIntRange.concreteIntRangeExclusive;
+import static dev.marksman.kraftwerk.constraints.ConcreteIntRange.concreteIntRangeFrom;
+import static dev.marksman.kraftwerk.constraints.ConcreteIntRange.concreteIntRangeInclusive;
 
 public interface IntRange {
     int min();

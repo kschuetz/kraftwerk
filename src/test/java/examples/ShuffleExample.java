@@ -7,8 +7,23 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into.into;
-import static examples.ShuffleExample.Rank.*;
-import static examples.ShuffleExample.Suit.*;
+import static examples.ShuffleExample.Rank.ACE;
+import static examples.ShuffleExample.Rank.EIGHT;
+import static examples.ShuffleExample.Rank.FIVE;
+import static examples.ShuffleExample.Rank.FOUR;
+import static examples.ShuffleExample.Rank.JACK;
+import static examples.ShuffleExample.Rank.KING;
+import static examples.ShuffleExample.Rank.NINE;
+import static examples.ShuffleExample.Rank.QUEEN;
+import static examples.ShuffleExample.Rank.SEVEN;
+import static examples.ShuffleExample.Rank.SIX;
+import static examples.ShuffleExample.Rank.TEN;
+import static examples.ShuffleExample.Rank.THREE;
+import static examples.ShuffleExample.Rank.TWO;
+import static examples.ShuffleExample.Suit.CLUBS;
+import static examples.ShuffleExample.Suit.DIAMONDS;
+import static examples.ShuffleExample.Suit.HEARTS;
+import static examples.ShuffleExample.Suit.SPADES;
 import static lombok.AccessLevel.PRIVATE;
 
 public class ShuffleExample {

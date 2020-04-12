@@ -1,6 +1,9 @@
 package dev.marksman.kraftwerk.constraints;
 
-import static dev.marksman.kraftwerk.constraints.ConcreteShortRange.*;
+import static dev.marksman.kraftwerk.constraints.ConcreteShortRange.concreteShortRange;
+import static dev.marksman.kraftwerk.constraints.ConcreteShortRange.concreteShortRangeExclusive;
+import static dev.marksman.kraftwerk.constraints.ConcreteShortRange.concreteShortRangeFrom;
+import static dev.marksman.kraftwerk.constraints.ConcreteShortRange.concreteShortRangeInclusive;
 
 public interface ShortRange {
     short min();

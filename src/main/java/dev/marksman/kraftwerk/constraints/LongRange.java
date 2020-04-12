@@ -1,6 +1,9 @@
 package dev.marksman.kraftwerk.constraints;
 
-import static dev.marksman.kraftwerk.constraints.ConcreteLongRange.*;
+import static dev.marksman.kraftwerk.constraints.ConcreteLongRange.concreteLongRange;
+import static dev.marksman.kraftwerk.constraints.ConcreteLongRange.concreteLongRangeExclusive;
+import static dev.marksman.kraftwerk.constraints.ConcreteLongRange.concreteLongRangeFrom;
+import static dev.marksman.kraftwerk.constraints.ConcreteLongRange.concreteLongRangeInclusive;
 
 public interface LongRange {
     long min();

@@ -1,7 +1,13 @@
 package dev.marksman.kraftwerk;
 
 import com.jnape.palatable.lambda.adt.Maybe;
-import com.jnape.palatable.lambda.adt.product.*;
+import com.jnape.palatable.lambda.adt.product.Product2;
+import com.jnape.palatable.lambda.adt.product.Product3;
+import com.jnape.palatable.lambda.adt.product.Product4;
+import com.jnape.palatable.lambda.adt.product.Product5;
+import com.jnape.palatable.lambda.adt.product.Product6;
+import com.jnape.palatable.lambda.adt.product.Product7;
+import com.jnape.palatable.lambda.adt.product.Product8;
 import com.jnape.palatable.lambda.functions.Fn1;
 import com.jnape.palatable.lambda.functions.Fn2;
 import com.jnape.palatable.lambda.functor.Contravariant;

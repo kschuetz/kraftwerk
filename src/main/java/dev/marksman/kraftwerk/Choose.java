@@ -1,7 +1,11 @@
 package dev.marksman.kraftwerk;
 
 import com.jnape.palatable.lambda.functions.builtin.fn3.FoldLeft;
-import dev.marksman.collectionviews.*;
+import dev.marksman.collectionviews.ImmutableNonEmptyVector;
+import dev.marksman.collectionviews.ImmutableVector;
+import dev.marksman.collectionviews.NonEmptyVector;
+import dev.marksman.collectionviews.Vector;
+import dev.marksman.collectionviews.VectorBuilder;
 import dev.marksman.kraftwerk.frequency.FrequencyMap;
 import dev.marksman.kraftwerk.frequency.FrequencyMapBuilder;
 

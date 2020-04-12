@@ -7,7 +7,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
-import static dev.marksman.kraftwerk.Generators.*;
+import static dev.marksman.kraftwerk.Generators.generateBoolean;
+import static dev.marksman.kraftwerk.Generators.generateByte;
+import static dev.marksman.kraftwerk.Generators.generateDouble;
+import static dev.marksman.kraftwerk.Generators.generateFloat;
+import static dev.marksman.kraftwerk.Generators.generateGaussian;
+import static dev.marksman.kraftwerk.Generators.generateInt;
+import static dev.marksman.kraftwerk.Generators.generateShort;
 import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
 import static visualization.ChartSuite.chartSuite;
 import static visualization.HistogramGenerator.histogram;

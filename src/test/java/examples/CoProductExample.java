@@ -4,7 +4,14 @@ import dev.marksman.kraftwerk.Generators;
 
 import java.time.Year;
 
-import static dev.marksman.kraftwerk.Generators.*;
+import static dev.marksman.kraftwerk.Generators.chooseOneOfValues;
+import static dev.marksman.kraftwerk.Generators.generateDouble;
+import static dev.marksman.kraftwerk.Generators.generateEither;
+import static dev.marksman.kraftwerk.Generators.generateInt;
+import static dev.marksman.kraftwerk.Generators.generateLocalDateForYear;
+import static dev.marksman.kraftwerk.Generators.generateLong;
+import static dev.marksman.kraftwerk.Generators.generateMaybe;
+import static dev.marksman.kraftwerk.Generators.generateThese;
 
 public class CoProductExample {
     public static void main(String[] args) {
