@@ -1,5 +1,9 @@
 package dev.marksman.kraftwerk.constraints;
 
+import com.jnape.palatable.lambda.functions.builtin.fn2.LTE;
+
+import java.math.BigDecimal;
+
 class RangeInputValidation {
 
     static <A extends Comparable<A>> void validateRangeInclusive(A min, A max) {
@@ -22,6 +26,12 @@ class RangeInputValidation {
 
     static void validateExclusiveBound(float bound) {
         if (bound <= 0.0f) {
+            throw new IllegalArgumentException("max must be > 0");
+        }
+    }
+
+    static void validateExclusiveBound(BigDecimal bound) {
+        if (LTE.lte(BigDecimal.ZERO, bound)) {
             throw new IllegalArgumentException("max must be > 0");
         }
     }

@@ -39,6 +39,7 @@ import dev.marksman.enhancediterables.NonEmptyFiniteIterable;
 import dev.marksman.enhancediterables.NonEmptyIterable;
 import dev.marksman.kraftwerk.aggregator.Aggregator;
 import dev.marksman.kraftwerk.choice.ChoiceBuilder1;
+import dev.marksman.kraftwerk.constraints.BigDecimalRange;
 import dev.marksman.kraftwerk.constraints.BigIntegerRange;
 import dev.marksman.kraftwerk.constraints.DoubleRange;
 import dev.marksman.kraftwerk.constraints.FloatRange;
@@ -805,16 +806,8 @@ public class Generators {
         return BigNumbers.generateBigInteger(range);
     }
 
-    public static Generator<BigDecimal> generateBigDecimalExclusive(int decimalPlaces, BigDecimal bound) {
-        return BigNumbers.generateBigDecimalExclusive(decimalPlaces, bound);
-    }
-
-    public static Generator<BigDecimal> generateBigDecimalExclusive(int decimalPlaces, BigDecimal origin, BigDecimal bound) {
-        return BigNumbers.generateBigDecimalExclusive(decimalPlaces, origin, bound);
-    }
-
-    public static Generator<BigDecimal> generateBigDecimal(int decimalPlaces, BigDecimal min, BigDecimal max) {
-        return BigNumbers.generateBigDecimal(decimalPlaces, min, max);
+    public static Generator<BigDecimal> generateBigDecimal(int decimalPlaces, BigDecimalRange range) {
+        return BigNumbers.generateBigDecimal(decimalPlaces, range);
     }
 
     public static Generator<LocalDate> generateLocalDate(LocalDate min, LocalDate max) {

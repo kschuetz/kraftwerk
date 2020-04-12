@@ -1,12 +1,12 @@
 package dev.marksman.kraftwerk;
 
+import dev.marksman.kraftwerk.constraints.BigDecimalRange;
 import dev.marksman.kraftwerk.constraints.BigIntegerRange;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Random;
 
-import static dev.marksman.kraftwerk.Generators.constant;
 import static dev.marksman.kraftwerk.Generators.generateLong;
 
 class BigNumbers {
@@ -18,6 +18,19 @@ class BigNumbers {
         } else {
             return generateBigIntegerExclusive(min, range.maxExclusive());
         }
+    }
+
+    static Generator<BigDecimal> generateBigDecimal(int decimalPlaces, BigDecimalRange range) {
+        BigInteger integerOrigin = makeMinInclusive(range.minIncluded(), movePointRight(decimalPlaces, range.min()));
+        BigInteger integerBound = makeMaxExclusive(range.maxIncluded(), movePointRight(decimalPlaces, range.max()));
+        BigInteger integerRange = integerBound.subtract(integerOrigin);
+
+        if (integerRange.signum() < 1) {
+            throw new IllegalArgumentException("range too narrow");
+        }
+
+        return generateBigIntegerExclusive(integerRange)
+                .fmap(n -> movePointLeft(decimalPlaces, integerOrigin.add(n)));
     }
 
     private static Generator<BigInteger> generateBigIntegerExclusive(BigInteger bound) {
@@ -41,48 +54,21 @@ class BigNumbers {
         return generateBigIntegerExclusive(range).fmap(origin::add);
     }
 
-    private static Generator<BigInteger> generateBigInteger(BigInteger min, BigInteger max) {
-        BigInteger range = max.subtract(min);
-        if (range.signum() < 0) throw new IllegalArgumentException("max must be >= min");
-        return generateBigIntegerExclusive(range.add(BigInteger.ONE));
+    private static BigInteger movePointRight(int decimalPlaces, BigDecimal input) {
+        return input.movePointRight(decimalPlaces).toBigInteger();
     }
 
-    static Generator<BigDecimal> generateBigDecimalExclusive(int decimalPlaces, BigDecimal bound) {
-        BigInteger integerBound = bound.movePointRight(decimalPlaces).toBigInteger();
-        if (integerBound.signum() < 0) {
-            throw new IllegalArgumentException("bound must be > 0");
-        }
-        return generateBigIntegerExclusive(integerBound)
-                .fmap(n -> new BigDecimal(n).movePointLeft(decimalPlaces));
+    private static BigDecimal movePointLeft(int decimalPlaces, BigInteger input) {
+        return new BigDecimal(input).movePointLeft(decimalPlaces);
     }
 
-    static Generator<BigDecimal> generateBigDecimalExclusive(int decimalPlaces, BigDecimal origin, BigDecimal bound) {
-        BigInteger integerOrigin = origin.movePointRight(decimalPlaces).toBigInteger();
-        BigInteger integerBound = bound.movePointRight(decimalPlaces).toBigInteger();
-        BigInteger range = integerBound.subtract(integerOrigin);
-        if (range.signum() < 1) {
-            throw new IllegalArgumentException("bound must be > origin");
-        }
-        return generateBigIntegerExclusive(range)
-                .fmap(n -> new BigDecimal(integerOrigin.add(n)).movePointLeft(decimalPlaces));
+    private static BigInteger makeMinInclusive(boolean minIncluded, BigInteger min) {
+        return minIncluded ? min : min.add(BigInteger.ONE);
     }
 
-
-    static Generator<BigDecimal> generateBigDecimal(int decimalPlaces, BigDecimal min, BigDecimal max) {
-        BigInteger integerOrigin = min.movePointRight(decimalPlaces).toBigInteger();
-        BigInteger integerBound = max.movePointRight(decimalPlaces).toBigInteger();
-        BigInteger range = integerBound.subtract(integerOrigin);
-        int signum = range.signum();
-        if (signum < 0) {
-            throw new IllegalArgumentException("max must be >= min");
-        } else if (signum == 0) {
-            return constant(new BigDecimal(integerOrigin).movePointLeft(decimalPlaces));
-        } else {
-            return generateBigInteger(BigInteger.ZERO, range)
-                    .fmap(n -> new BigDecimal(integerOrigin.add(n)).movePointLeft(decimalPlaces));
-        }
+    private static BigInteger makeMaxExclusive(boolean maxIncluded, BigInteger max) {
+        return maxIncluded ? max.add(BigInteger.ONE) : max;
     }
-
 
     /*
     public static BigDecimal generateRandomBigDecimalFromRange(BigDecimal min, BigDecimal max) {
