@@ -5,13 +5,14 @@ import static dev.marksman.kraftwerk.constraints.ConcreteByteRange.concreteByteR
 import static dev.marksman.kraftwerk.constraints.ConcreteByteRange.concreteByteRangeFrom;
 import static dev.marksman.kraftwerk.constraints.ConcreteByteRange.concreteByteRangeInclusive;
 
-public interface ByteRange {
+public interface ByteRange extends Constraint<Byte> {
     byte minInclusive();
 
     byte maxInclusive();
 
-    default boolean contains(byte n) {
-        return n >= minInclusive() && n <= maxInclusive();
+    @Override
+    default boolean includes(Byte value) {
+        return value >= minInclusive() && value <= maxInclusive();
     }
 
     default ByteRange withMin(byte min) {

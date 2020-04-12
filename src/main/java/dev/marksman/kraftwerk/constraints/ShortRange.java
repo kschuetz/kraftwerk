@@ -5,12 +5,13 @@ import static dev.marksman.kraftwerk.constraints.ConcreteShortRange.concreteShor
 import static dev.marksman.kraftwerk.constraints.ConcreteShortRange.concreteShortRangeFrom;
 import static dev.marksman.kraftwerk.constraints.ConcreteShortRange.concreteShortRangeInclusive;
 
-public interface ShortRange {
+public interface ShortRange extends Constraint<Short> {
     short minInclusive();
 
     short maxInclusive();
 
-    default boolean contains(short n) {
+    @Override
+    default boolean includes(Short n) {
         return n >= minInclusive() && n <= maxInclusive();
     }
 
@@ -51,4 +52,5 @@ public interface ShortRange {
 
         ShortRange until(short maxExclusive);
     }
+
 }

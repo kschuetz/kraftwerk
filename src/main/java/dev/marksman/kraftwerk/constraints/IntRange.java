@@ -5,13 +5,14 @@ import static dev.marksman.kraftwerk.constraints.ConcreteIntRange.concreteIntRan
 import static dev.marksman.kraftwerk.constraints.ConcreteIntRange.concreteIntRangeFrom;
 import static dev.marksman.kraftwerk.constraints.ConcreteIntRange.concreteIntRangeInclusive;
 
-public interface IntRange {
+public interface IntRange extends Constraint<Integer> {
     int minInclusive();
 
     int maxInclusive();
 
-    default boolean contains(int n) {
-        return n >= minInclusive() && n <= maxInclusive();
+    @Override
+    default boolean includes(Integer value) {
+        return value >= minInclusive() && value <= maxInclusive();
     }
 
     default IntRange withMin(int min) {

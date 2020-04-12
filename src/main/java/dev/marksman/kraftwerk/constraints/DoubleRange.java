@@ -4,7 +4,7 @@ import static dev.marksman.kraftwerk.constraints.ConcreteDoubleRange.concreteDou
 import static dev.marksman.kraftwerk.constraints.ConcreteDoubleRange.concreteDoubleRangeFrom;
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateExclusiveBound;
 
-public interface DoubleRange {
+public interface DoubleRange extends Constraint<Double> {
     double min();
 
     double max();
@@ -12,6 +12,12 @@ public interface DoubleRange {
     boolean minIncluded();
 
     boolean maxIncluded();
+
+    @Override
+    default boolean includes(Double value) {
+        return (minIncluded() ? value >= min() : value > min()) &&
+                (maxIncluded() ? value <= max() : value < max());
+    }
 
     default double minInclusive() {
         if (minIncluded()) {
@@ -39,11 +45,6 @@ public interface DoubleRange {
 
     default double width() {
         return maxExclusive() - minInclusive();
-    }
-
-    default boolean contains(double n) {
-        return (minIncluded() ? n >= min() : n > min()) &&
-                (maxIncluded() ? n <= max() : n < max());
     }
 
     default DoubleRange withMinInclusive(double min) {

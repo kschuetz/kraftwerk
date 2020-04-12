@@ -11,7 +11,7 @@ import dev.marksman.kraftwerk.constraints.ShortRange;
 import static com.jnape.palatable.lambda.functions.builtin.fn3.Between.between;
 
 public final class DefaultPropertyTestingBiasSettings implements BiasSettings {
-    private static DefaultPropertyTestingBiasSettings INSTANCE = new DefaultPropertyTestingBiasSettings();
+    private static final DefaultPropertyTestingBiasSettings INSTANCE = new DefaultPropertyTestingBiasSettings();
 
     private DefaultPropertyTestingBiasSettings() {
 
@@ -19,7 +19,7 @@ public final class DefaultPropertyTestingBiasSettings implements BiasSettings {
 
     @Override
     public BiasSetting<Integer> intBias(IntRange range) {
-        return BiasSetting.builder(range::contains)
+        return BiasSetting.builder(range::includes)
                 .addSpecialValue(range.minInclusive())
                 .addSpecialValue(0)
                 .addSpecialValue(1)
@@ -34,7 +34,7 @@ public final class DefaultPropertyTestingBiasSettings implements BiasSettings {
 
     @Override
     public BiasSetting<Long> longBias(LongRange range) {
-        return BiasSetting.builder(range::contains)
+        return BiasSetting.builder(range::includes)
                 .addSpecialValue(range.minInclusive())
                 .addSpecialValue(0L)
                 .addSpecialValue(1L)
@@ -47,7 +47,7 @@ public final class DefaultPropertyTestingBiasSettings implements BiasSettings {
 
     @Override
     public BiasSetting<Float> floatBias(FloatRange range) {
-        return BiasSetting.builder(range::contains)
+        return BiasSetting.builder(range::includes)
                 .addSpecialValue(range.minInclusive())
                 .addSpecialValue(0.0f)
                 .addSpecialValue(-0.0f)
@@ -61,7 +61,7 @@ public final class DefaultPropertyTestingBiasSettings implements BiasSettings {
 
     @Override
     public BiasSetting<Double> doubleBias(DoubleRange range) {
-        return BiasSetting.builder(range::contains)
+        return BiasSetting.builder(range::includes)
                 .addSpecialValue(range.minInclusive())
                 .addSpecialValue(0.0)
                 .addSpecialValue(-0.0)
@@ -75,7 +75,7 @@ public final class DefaultPropertyTestingBiasSettings implements BiasSettings {
 
     @Override
     public BiasSetting<Byte> byteBias(ByteRange range) {
-        return BiasSetting.builder(range::contains)
+        return BiasSetting.builder(range::includes)
                 .addSpecialValue(range.minInclusive())
                 .addSpecialValue((byte) -1)
                 .addSpecialValue((byte) 0)
@@ -86,7 +86,7 @@ public final class DefaultPropertyTestingBiasSettings implements BiasSettings {
 
     @Override
     public BiasSetting<Short> shortBias(ShortRange range) {
-        return BiasSetting.builder(range::contains)
+        return BiasSetting.builder(range::includes)
                 .addSpecialValue(range.minInclusive())
                 .addSpecialValue((short) -1)
                 .addSpecialValue((short) 0)

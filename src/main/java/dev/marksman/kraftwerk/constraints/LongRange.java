@@ -5,12 +5,13 @@ import static dev.marksman.kraftwerk.constraints.ConcreteLongRange.concreteLongR
 import static dev.marksman.kraftwerk.constraints.ConcreteLongRange.concreteLongRangeFrom;
 import static dev.marksman.kraftwerk.constraints.ConcreteLongRange.concreteLongRangeInclusive;
 
-public interface LongRange {
+public interface LongRange extends Constraint<Long> {
     long minInclusive();
 
     long maxInclusive();
 
-    default boolean contains(long n) {
+    @Override
+    default boolean includes(Long n) {
         return n >= minInclusive() && n <= maxInclusive();
     }
 

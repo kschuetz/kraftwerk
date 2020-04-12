@@ -4,7 +4,7 @@ import static dev.marksman.kraftwerk.constraints.ConcreteFloatRange.concreteFloa
 import static dev.marksman.kraftwerk.constraints.ConcreteFloatRange.concreteFloatRangeFrom;
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateExclusiveBound;
 
-public interface FloatRange {
+public interface FloatRange extends Constraint<Float> {
     float min();
 
     float max();
@@ -41,9 +41,10 @@ public interface FloatRange {
         return maxExclusive() - minInclusive();
     }
 
-    default boolean contains(float n) {
-        return (minIncluded() ? n >= min() : n > min()) &&
-                (maxIncluded() ? n <= max() : n < max());
+    @Override
+    default boolean includes(Float value) {
+        return (minIncluded() ? value >= min() : value > min()) &&
+                (maxIncluded() ? value <= max() : value < max());
     }
 
     default FloatRange withMinInclusive(float min) {

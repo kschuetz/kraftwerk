@@ -9,13 +9,14 @@ import static dev.marksman.kraftwerk.constraints.ConcreteDurationRange.concreteD
 import static dev.marksman.kraftwerk.constraints.ConcreteDurationRange.concreteDurationRangeFrom;
 import static dev.marksman.kraftwerk.constraints.ConcreteDurationRange.concreteDurationRangeInclusive;
 
-public interface DurationRange {
+public interface DurationRange extends Constraint<Duration> {
     Duration minInclusive();
 
     Duration maxInclusive();
 
-    default boolean contains(Duration duration) {
-        return GTE.gte(minInclusive(), duration) && LTE.lte(maxInclusive(), duration);
+    @Override
+    default boolean includes(Duration value) {
+        return GTE.gte(minInclusive(), value) && LTE.lte(maxInclusive(), value);
     }
 
     default DurationRange withMin(Duration min) {

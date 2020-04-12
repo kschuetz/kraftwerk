@@ -6,12 +6,13 @@ import static dev.marksman.kraftwerk.constraints.ConcreteLocalDateTimeRange.conc
 import static dev.marksman.kraftwerk.constraints.ConcreteLocalDateTimeRange.concreteLocalDateTimeRangeFrom;
 import static dev.marksman.kraftwerk.constraints.ConcreteLocalDateTimeRange.concreteLocalDateTimeRangeInclusive;
 
-public interface LocalDateTimeRange {
+public interface LocalDateTimeRange extends Constraint<LocalDateTime> {
     LocalDateTime minInclusive();
 
     LocalDateTime maxInclusive();
 
-    default boolean contains(LocalDateTime dateTime) {
+    @Override
+    default boolean includes(LocalDateTime dateTime) {
         return !(dateTime.isBefore(minInclusive()) || dateTime.isAfter(maxInclusive()));
     }
 

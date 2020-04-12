@@ -6,13 +6,14 @@ import static dev.marksman.kraftwerk.constraints.ConcreteBigIntegerRange.concret
 import static dev.marksman.kraftwerk.constraints.ConcreteBigIntegerRange.concreteBigIntegerRangeFrom;
 import static dev.marksman.kraftwerk.constraints.ConcreteBigIntegerRange.concreteBigIntegerRangeInclusive;
 
-public interface BigIntegerRange {
+public interface BigIntegerRange extends Constraint<BigInteger> {
     BigInteger min();
 
     BigInteger maxExclusive();
 
-    default boolean contains(BigInteger n) {
-        return n.compareTo(min()) >= 0 && n.compareTo(maxExclusive()) < 0;
+    @Override
+    default boolean includes(BigInteger value) {
+        return value.compareTo(min()) >= 0 && value.compareTo(maxExclusive()) < 0;
     }
 
     default BigIntegerRange withMin(BigInteger min) {

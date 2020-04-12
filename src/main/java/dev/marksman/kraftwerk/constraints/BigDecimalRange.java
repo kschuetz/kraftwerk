@@ -11,7 +11,7 @@ import static dev.marksman.kraftwerk.constraints.ConcreteBigDecimalRange.concret
 import static dev.marksman.kraftwerk.constraints.ConcreteBigDecimalRange.concreteBigDecimalRangeFrom;
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateExclusiveBound;
 
-public interface BigDecimalRange {
+public interface BigDecimalRange extends Constraint<BigDecimal> {
     BigDecimal min();
 
     BigDecimal max();
@@ -20,37 +20,10 @@ public interface BigDecimalRange {
 
     boolean maxIncluded();
 
-//    default BigDecimal minInclusive() {
-//        if (minIncluded()) {
-//            return min();
-//        } else {
-//            return Math.nextAfter(min(), Double.POSITIVE_INFINITY);
-//        }
-//    }
-//
-//    default BigDecimal maxInclusive() {
-//        if (maxIncluded()) {
-//            return max();
-//        } else {
-//            return Math.nextAfter(max(), Double.NEGATIVE_INFINITY);
-//        }
-//    }
-//
-//    default BigDecimal maxExclusive() {
-//        if (maxIncluded()) {
-//            return Math.nextAfter(max(), Double.NEGATIVE_INFINITY);
-//        } else {
-//            return max();
-//        }
-//    }
-//
-//    default BigDecimal width() {
-//        return maxExclusive() - minInclusive();
-//    }
-
-    default boolean contains(BigDecimal n) {
-        return (minIncluded() ? GTE.gte(min(), n) : GT.gt(min(), n)) &&
-                (maxIncluded() ? LTE.lte(max(), n) : LT.lt(max(), n));
+    @Override
+    default boolean includes(BigDecimal value) {
+        return (minIncluded() ? GTE.gte(min(), value) : GT.gt(min(), value)) &&
+                (maxIncluded() ? LTE.lte(max(), value) : LT.lt(max(), value));
     }
 
     default BigDecimalRange withMinInclusive(BigDecimal min) {

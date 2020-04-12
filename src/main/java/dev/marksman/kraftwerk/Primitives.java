@@ -288,10 +288,10 @@ class Primitives {
                 specialValues.add(Double.NaN);
             }
             if (includeInfinities) {
-                if (range.contains(Double.MIN_VALUE)) {
+                if (range.includes(Double.MIN_VALUE)) {
                     specialValues.add(Double.NEGATIVE_INFINITY);
                 }
-                if (range.contains(Double.MAX_VALUE)) {
+                if (range.includes(Double.MAX_VALUE)) {
                     specialValues.add(Double.POSITIVE_INFINITY);
                 }
             }
@@ -355,10 +355,10 @@ class Primitives {
                 specialValues.add(Float.NaN);
             }
             if (includeInfinities) {
-                if (range.contains(Float.MIN_VALUE)) {
+                if (range.includes(Float.MIN_VALUE)) {
                     specialValues.add(Float.NEGATIVE_INFINITY);
                 }
-                if (range.contains(Float.MAX_VALUE)) {
+                if (range.includes(Float.MAX_VALUE)) {
                     specialValues.add(Float.POSITIVE_INFINITY);
                 }
             }

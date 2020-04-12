@@ -5,14 +5,15 @@ import java.time.LocalTime;
 import static dev.marksman.kraftwerk.constraints.ConcreteLocalTimeRange.concreteLocalTimeRange;
 import static dev.marksman.kraftwerk.constraints.ConcreteLocalTimeRange.concreteLocalTimeRangeFrom;
 
-public interface LocalTimeRange {
+public interface LocalTimeRange extends Constraint<LocalTime> {
     LocalTime minInclusive();
 
     LocalTime max();
 
     boolean maxIncluded();
 
-    default boolean contains(LocalTime time) {
+    @Override
+    default boolean includes(LocalTime time) {
         return !(time.isBefore(minInclusive()) || time.isAfter(max()));
     }
 
