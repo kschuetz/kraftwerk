@@ -41,6 +41,7 @@ import dev.marksman.kraftwerk.aggregator.Aggregator;
 import dev.marksman.kraftwerk.choice.ChoiceBuilder1;
 import dev.marksman.kraftwerk.constraints.BigDecimalRange;
 import dev.marksman.kraftwerk.constraints.BigIntegerRange;
+import dev.marksman.kraftwerk.constraints.ByteRange;
 import dev.marksman.kraftwerk.constraints.DoubleRange;
 import dev.marksman.kraftwerk.constraints.DurationRange;
 import dev.marksman.kraftwerk.constraints.FloatRange;
@@ -49,6 +50,7 @@ import dev.marksman.kraftwerk.constraints.LocalDateRange;
 import dev.marksman.kraftwerk.constraints.LocalDateTimeRange;
 import dev.marksman.kraftwerk.constraints.LocalTimeRange;
 import dev.marksman.kraftwerk.constraints.LongRange;
+import dev.marksman.kraftwerk.constraints.ShortRange;
 import dev.marksman.kraftwerk.core.BuildingBlocks;
 import dev.marksman.kraftwerk.frequency.FrequencyMap;
 import dev.marksman.kraftwerk.weights.BooleanWeights;
@@ -146,8 +148,16 @@ public class Generators {
         return Primitives.generateByte();
     }
 
+    public static Generator<Byte> generateByte(ByteRange range) {
+        return Primitives.generateByte(range);
+    }
+
     public static Generator<Short> generateShort() {
         return Primitives.generateShort();
+    }
+
+    public static Generator<Short> generateShort(ShortRange range) {
+        return Primitives.generateShort(range);
     }
 
     public static Generator<Double> generateGaussian() {
@@ -173,7 +183,6 @@ public class Generators {
             return sized(n -> fn.apply(Math.min(n, minimum)));
         }
     }
-
 
     public static <A, Builder, Out> Generator<Out> aggregate(Aggregator<A, Builder, Out> aggregator,
                                                              Iterable<Generator<A>> elements) {
@@ -871,10 +880,73 @@ public class Generators {
         return Sequences.generateOrderedSequence(countForEachElement, orderedElems);
     }
 
-    public static <A> Generator<ImmutableVector<A>> generateOrderedSequence(int minCountEachElement,
-                                                                            int maxCountEachElement,
+    public static <A> Generator<ImmutableVector<A>> generateOrderedSequence(IntRange countForEachElementRange,
                                                                             ImmutableVector<A> orderedElems) {
-        return Sequences.generateOrderedSequence(minCountEachElement, maxCountEachElement, orderedElems);
+        return Sequences.generateOrderedSequence(countForEachElementRange, orderedElems);
+    }
+
+    public static Generator<IntRange> generateIntRange() {
+        return Ranges.generateIntRange();
+    }
+
+    public static Generator<IntRange> generateIntRange(IntRange parentRange) {
+        return Ranges.generateIntRange(parentRange);
+    }
+
+    public static Generator<LongRange> generateLongRange() {
+        return Ranges.generateLongRange();
+    }
+
+    public static Generator<LongRange> generateLongRange(LongRange parentRange) {
+        return Ranges.generateLongRange(parentRange);
+    }
+
+    public static Generator<ShortRange> generateShortRange() {
+        return Ranges.generateShortRange();
+    }
+
+    public static Generator<ShortRange> generateShortRange(ShortRange parentRange) {
+        return Ranges.generateShortRange(parentRange);
+    }
+
+    public static Generator<ByteRange> generateByteRange() {
+        return Ranges.generateByteRange();
+    }
+
+    public static Generator<ByteRange> generateByteRange(ByteRange parentRange) {
+        return Ranges.generateByteRange(parentRange);
+    }
+
+    public static Generator<DoubleRange> generateDoubleRange(DoubleRange parentRange) {
+        return Ranges.generateDoubleRange(parentRange);
+    }
+
+    public static Generator<FloatRange> generateFloatRange(FloatRange parentRange) {
+        return Ranges.generateFloatRange(parentRange);
+    }
+
+    public static Generator<BigIntegerRange> generateBigIntegerRange(BigIntegerRange parentRange) {
+        return Ranges.generateBigIntegerRange(parentRange);
+    }
+
+    public static Generator<LocalDateRange> generateLocalDateRange(LocalDateRange parentRange) {
+        return Ranges.generateLocalDateRange(parentRange);
+    }
+
+    public static Generator<LocalTimeRange> generateLocalTimeRange(LocalTimeRange parentRange) {
+        return Ranges.generateLocalTimeRange(parentRange);
+    }
+
+    public static Generator<LocalDateTimeRange> generateLocalDateTimeRange(LocalDateRange parentRange) {
+        return Ranges.generateLocalDateTimeRange(parentRange);
+    }
+
+    public static Generator<LocalDateTimeRange> generateLocalDateTimeRange(LocalDateTimeRange parentRange) {
+        return Ranges.generateLocalDateTimeRange(parentRange);
+    }
+
+    public static Generator<DurationRange> generateDurationRange(DurationRange parentRange) {
+        return Ranges.generateDurationRange(parentRange);
     }
 
 }

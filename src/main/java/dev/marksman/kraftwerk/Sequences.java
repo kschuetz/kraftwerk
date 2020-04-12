@@ -4,6 +4,7 @@ import com.jnape.palatable.lambda.traversable.LambdaIterable;
 import dev.marksman.collectionviews.ImmutableVector;
 import dev.marksman.collectionviews.Vector;
 import dev.marksman.collectionviews.VectorBuilder;
+import dev.marksman.kraftwerk.constraints.IntRange;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Replicate.replicate;
 import static dev.marksman.kraftwerk.Generators.constant;
@@ -34,9 +35,10 @@ class Sequences {
         }
     }
 
-    static <A> Generator<ImmutableVector<A>> generateOrderedSequence(int minCountEachElement,
-                                                                     int maxCountEachElement,
+    static <A> Generator<ImmutableVector<A>> generateOrderedSequence(IntRange countRangeForElements,
                                                                      ImmutableVector<A> orderedElems) {
+        int minCountEachElement = countRangeForElements.minInclusive();
+        int maxCountEachElement = countRangeForElements.maxInclusive();
         if (orderedElems.isEmpty() || maxCountEachElement < 1) {
             return constant(Vector.empty());
         } else {

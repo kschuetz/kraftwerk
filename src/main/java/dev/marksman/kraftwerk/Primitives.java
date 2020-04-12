@@ -193,11 +193,19 @@ class Primitives {
     }
 
     static ByteGenerator generateByte() {
-        return ByteGenerator.INSTANCE;
+        return ByteGenerator.DEFAULT_BYTE_GENERATOR;
+    }
+
+    static Generator<Byte> generateByte(ByteRange range) {
+        return new ByteGenerator(range);
     }
 
     static ShortGenerator generateShort() {
-        return ShortGenerator.INSTANCE;
+        return ShortGenerator.DEFAULT_SHORT_GENERATOR;
+    }
+
+    static ShortGenerator generateShort(ShortRange range) {
+        return new ShortGenerator(range);
     }
 
     static Generator<Double> generateGaussian() {
@@ -433,17 +441,29 @@ class Primitives {
     private static class ByteGenerator implements Generator<Byte> {
         private static final Maybe<String> LABEL = Maybe.just("byte");
 
-        private static final ByteGenerator INSTANCE = new ByteGenerator();
+        private static final ByteGenerator DEFAULT_BYTE_GENERATOR = new ByteGenerator(ByteRange.fullRange());
+
+        private final ByteRange range;
 
         @Override
         public Generate<Byte> prepare(GeneratorParameters generatorParameters) {
-            return Bias.applyBiasSetting(generatorParameters.getBiasSettings().byteBias(ByteRange.fullRange()),
-                    input -> nextInt(input).fmap(Integer::byteValue));
+            return Bias.applyBiasSetting(generatorParameters.getBiasSettings().byteBias(range),
+                    input -> nextInt(input).fmap(getMapper()));
         }
 
         @Override
         public Maybe<String> getLabel() {
             return LABEL;
+        }
+
+        private Fn1<Integer, Byte> getMapper() {
+            if (range.minInclusive() == Byte.MIN_VALUE && range.maxInclusive() == Byte.MAX_VALUE) {
+                return Integer::byteValue;
+            } else {
+                byte min = range.minInclusive();
+                int span = (range.maxInclusive() - min) + 1;
+                return i -> (byte) (min + (i % span));
+            }
         }
 
     }
@@ -452,17 +472,29 @@ class Primitives {
     private static class ShortGenerator implements Generator<Short> {
         private static final Maybe<String> LABEL = Maybe.just("short");
 
-        private static final ShortGenerator INSTANCE = new ShortGenerator();
+        private static final ShortGenerator DEFAULT_SHORT_GENERATOR = new ShortGenerator(ShortRange.fullRange());
+
+        private final ShortRange range;
 
         @Override
         public Generate<Short> prepare(GeneratorParameters generatorParameters) {
-            return Bias.applyBiasSetting(generatorParameters.getBiasSettings().shortBias(ShortRange.fullRange()),
-                    input -> nextInt(input).fmap(Integer::shortValue));
+            return Bias.applyBiasSetting(generatorParameters.getBiasSettings().shortBias(range),
+                    input -> nextInt(input).fmap(getMapper()));
         }
 
         @Override
         public Maybe<String> getLabel() {
             return LABEL;
+        }
+
+        private Fn1<Integer, Short> getMapper() {
+            if (range.minInclusive() == Short.MIN_VALUE && range.maxInclusive() == Short.MAX_VALUE) {
+                return Integer::shortValue;
+            } else {
+                short min = range.minInclusive();
+                int span = (range.maxInclusive() - min) + 1;
+                return i -> (short) (min + (i % span));
+            }
         }
 
     }
