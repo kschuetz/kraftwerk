@@ -3,7 +3,7 @@ package dev.marksman.kraftwerk.bias;
 import com.jnape.palatable.lambda.adt.coproduct.CoProduct2;
 import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.collectionviews.ImmutableNonEmptyVector;
-import dev.marksman.collectionviews.Vector;
+import dev.marksman.collectionviews.NonEmptyVector;
 import dev.marksman.collectionviews.VectorBuilder;
 import dev.marksman.enhancediterables.NonEmptyIterable;
 import lombok.AccessLevel;
@@ -13,11 +13,13 @@ import lombok.Value;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Constantly.constantly;
 
-public abstract class BiasSetting<A> implements CoProduct2<BiasSetting.NoBias,
+public abstract class BiasSetting<A> implements CoProduct2<BiasSetting.NoBias<A>,
         BiasSetting.InjectSpecialValues<A>, BiasSetting<A>> {
 
-    private static BiasSettingBuilder<?> SIMPLE_BUILDER = new BiasSettingBuilder<>(constantly(true),
+    private static final BiasSettingBuilder<?> SIMPLE_BUILDER = new BiasSettingBuilder<>(constantly(true),
             VectorBuilder.builder());
+
+    public abstract BiasSetting<A> addSpecialValues(Iterable<A> specialValues);
 
     @EqualsAndHashCode(callSuper = true)
     @Value
@@ -25,7 +27,13 @@ public abstract class BiasSetting<A> implements CoProduct2<BiasSetting.NoBias,
         private static NoBias<?> INSTANCE = new NoBias<>();
 
         @Override
-        public <R> R match(Fn1<? super NoBias, ? extends R> aFn, Fn1<? super InjectSpecialValues<A>, ? extends R> bFn) {
+        public BiasSetting<A> addSpecialValues(Iterable<A> specialValues) {
+            return NonEmptyVector.maybeCopyFrom(specialValues)
+                    .match(__ -> this, InjectSpecialValues::new);
+        }
+
+        @Override
+        public <R> R match(Fn1<? super NoBias<A>, ? extends R> aFn, Fn1<? super InjectSpecialValues<A>, ? extends R> bFn) {
             return aFn.apply(this);
         }
     }
@@ -34,10 +42,16 @@ public abstract class BiasSetting<A> implements CoProduct2<BiasSetting.NoBias,
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class InjectSpecialValues<A> extends BiasSetting<A> {
-        private final ImmutableNonEmptyVector<A> specialValues;
+        ImmutableNonEmptyVector<A> specialValues;
 
         @Override
-        public <R> R match(Fn1<? super NoBias, ? extends R> aFn, Fn1<? super InjectSpecialValues<A>, ? extends R> bFn) {
+        public BiasSetting<A> addSpecialValues(Iterable<A> specialValues) {
+            return NonEmptyVector.maybeCopyFrom(specialValues)
+                    .match(__ -> this, sv -> new InjectSpecialValues<>(NonEmptyVector.nonEmptyCopyFrom(this.specialValues.concat(sv))));
+        }
+
+        @Override
+        public <R> R match(Fn1<? super NoBias<A>, ? extends R> aFn, Fn1<? super InjectSpecialValues<A>, ? extends R> bFn) {
             return bFn.apply(this);
         }
     }
@@ -48,8 +62,7 @@ public abstract class BiasSetting<A> implements CoProduct2<BiasSetting.NoBias,
     }
 
     public static <A> BiasSetting<A> injectSpecialValues(NonEmptyIterable<A> specialValues) {
-        // TODO: non-empty copy from
-        return new InjectSpecialValues<>(Vector.copyFrom(specialValues).toNonEmptyOrThrow());
+        return new InjectSpecialValues<>(NonEmptyVector.nonEmptyCopyFrom(specialValues));
     }
 
     @SuppressWarnings("unchecked")

@@ -147,11 +147,11 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
     // mixing in edge cases
 
     default Generator<A> injectSpecialValues(NonEmptyFiniteIterable<A> values) {
-        return Bias.injectSpecialValues(values, this);
+        return Bias.injectsSpecialValues(values, this);
     }
 
     default Generator<A> injectSpecialValue(A specialValue) {
-        return Bias.injectSpecialValue(specialValue, this);
+        return Bias.injectsSpecialValue(specialValue, this);
     }
 
 }

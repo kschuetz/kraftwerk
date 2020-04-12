@@ -65,7 +65,7 @@ public interface FloatRange {
         return concreteFloatRange(min, true, maxExclusive, false);
     }
 
-    static FloatRange exclusive(int maxExclusive) {
+    static FloatRange exclusive(float maxExclusive) {
         return concreteFloatRange(0.0f, true, maxExclusive, false);
     }
 

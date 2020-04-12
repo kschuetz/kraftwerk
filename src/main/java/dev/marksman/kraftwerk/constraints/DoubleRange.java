@@ -65,7 +65,7 @@ public interface DoubleRange {
         return concreteDoubleRange(min, true, maxExclusive, false);
     }
 
-    static DoubleRange exclusive(int maxExclusive) {
+    static DoubleRange exclusive(double maxExclusive) {
         return concreteDoubleRange(0.0d, true, maxExclusive, false);
     }
 

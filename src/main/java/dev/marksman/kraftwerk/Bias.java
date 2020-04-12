@@ -21,26 +21,26 @@ class Bias {
                 isv -> injectSpecial(isv.getSpecialValues(), underlying));
     }
 
-    static <A> Generator<A> injectSpecialValues(NonEmptyFiniteIterable<A> specialValues, Generator<A> underlying) {
-        if (underlying instanceof InjectSpecialValues<?>) {
-            return ((InjectSpecialValues<A>) underlying).add(specialValues);
+    static <A> Generator<A> injectsSpecialValues(NonEmptyFiniteIterable<A> specialValues, Generator<A> underlying) {
+        if (underlying instanceof InjectsSpecialValues<?>) {
+            return ((InjectsSpecialValues<A>) underlying).add(specialValues);
         } else {
-            return new InjectSpecialValues<>(NonEmptyVector.nonEmptyCopyFrom(specialValues), underlying);
+            return new InjectsSpecialValues<>(NonEmptyVector.nonEmptyCopyFrom(specialValues), underlying);
         }
     }
 
-    static <A> Generator<A> injectSpecialValue(A specialValue, Generator<A> underlying) {
-        return injectSpecialValues(Vector.of(specialValue), underlying);
+    static <A> Generator<A> injectsSpecialValue(A specialValue, Generator<A> underlying) {
+        return injectsSpecialValues(Vector.of(specialValue), underlying);
     }
 
     @Value
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
-    private static class InjectSpecialValues<A> implements Generator<A> {
+    private static class InjectsSpecialValues<A> implements Generator<A> {
         ImmutableNonEmptyVector<A> specialValues;
         Generator<A> underlying;
 
-        InjectSpecialValues<A> add(NonEmptyFiniteIterable<A> newValues) {
-            return new InjectSpecialValues<>(Vector.copyFrom(specialValues.concat(newValues)).toNonEmptyOrThrow(),
+        InjectsSpecialValues<A> add(NonEmptyFiniteIterable<A> newValues) {
+            return new InjectsSpecialValues<>(NonEmptyVector.nonEmptyCopyFrom(specialValues.concat(newValues)),
                     underlying);
         }
 

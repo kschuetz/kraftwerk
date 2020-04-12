@@ -13,6 +13,8 @@ import dev.marksman.kraftwerk.util.Labeling;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
+import java.util.ArrayList;
+
 import static com.jnape.palatable.lambda.adt.Maybe.just;
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Constantly.constantly;
@@ -93,15 +95,19 @@ class Primitives {
     }
 
     static FloatingPointGenerator<Double> generateDouble() {
-        return DoubleGenerator.BASIC;
+        return DoubleGenerator.DEFAULT_DOUBLE_GENERATOR;
     }
 
     static FloatingPointGenerator<Double> generateDouble(DoubleRange range) {
         return new DoubleGenerator(just(range), false, false);
     }
 
-    static Generator<Float> generateFloat() {
-        return FloatGenerator.INSTANCE;
+    static FloatingPointGenerator<Float> generateFloat() {
+        return FloatGenerator.DEFAULT_FLOAT_GENERATOR;
+    }
+
+    static FloatingPointGenerator<Float> generateFloat(FloatRange range) {
+        return new FloatGenerator(just(range), false, false);
     }
 
     static Generator<Long> generateLong() {
@@ -198,7 +204,7 @@ class Primitives {
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class BooleanGenerator implements Generator<Boolean> {
-        private static Maybe<String> LABEL = Maybe.just("boolean");
+        private static final Maybe<String> LABEL = Maybe.just("boolean");
 
         private static final BooleanGenerator INSTANCE = new BooleanGenerator();
 
@@ -214,24 +220,24 @@ class Primitives {
 
     }
 
-    // TODO: implement NaNs and infinities for DoubleGenerator
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class DoubleGenerator implements FloatingPointGenerator<Double> {
-        private static Maybe<String> LABEL = Maybe.just("double");
+        private static final Maybe<String> LABEL = Maybe.just("double");
+        private static final DoubleRange DEFAULT_RANGE = DoubleRange.exclusive(1d);
 
         private final Maybe<DoubleRange> range;
         private final boolean includeNaNs;
         private final boolean includeInfinities;
 
-        private static final DoubleGenerator BASIC = new DoubleGenerator(nothing(), false, false);
+        private static final DoubleGenerator DEFAULT_DOUBLE_GENERATOR = new DoubleGenerator(nothing(), false, false);
 
         @Override
         public Generate<Double> prepare(GeneratorParameters generatorParameters) {
-            // TODO: handle range
+            DoubleRange actualRange = this.range.orElse(DEFAULT_RANGE);
+            BiasSetting<Double> bias = buildBiasSetting(generatorParameters, actualRange);
+            Generate<Double> generate = BuildingBlocks::nextDouble; // TODO: handle range for doubles
 
-            return Bias.applyBiasSetting(generatorParameters.getBiasSettings()
-                            .doubleBias(DoubleRange.fullRange()),
-                    BuildingBlocks::nextDouble);
+            return Bias.applyBiasSetting(bias, generate);
         }
 
         @Override
@@ -253,36 +259,56 @@ class Primitives {
             return LABEL;
         }
 
+        private BiasSetting<Double> buildBiasSetting(GeneratorParameters generatorParameters, DoubleRange range) {
+            BiasSetting<Double> bias = generatorParameters.getBiasSettings().doubleBias(range);
+            ArrayList<Double> specialValues = new ArrayList<>();
+            if (includeNaNs) {
+                specialValues.add(Double.NaN);
+            }
+            if (includeInfinities) {
+                if (range.contains(Double.MIN_VALUE)) {
+                    specialValues.add(Double.NEGATIVE_INFINITY);
+                }
+                if (range.contains(Double.MAX_VALUE)) {
+                    specialValues.add(Double.POSITIVE_INFINITY);
+                }
+            }
+            return bias.addSpecialValues(specialValues);
+        }
+
     }
 
-    // TODO: implement NaNs and infinities for FloatGenerator
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class FloatGenerator implements FloatingPointGenerator<Float> {
-        private static Maybe<String> LABEL = Maybe.just("float");
+        private static final Maybe<String> LABEL = Maybe.just("float");
+        private static final FloatRange DEFAULT_RANGE = FloatRange.exclusive(1f);
 
+        private final Maybe<FloatRange> range;
         private final boolean includeNaNs;
         private final boolean includeInfinities;
 
-        private static final FloatGenerator INSTANCE = new FloatGenerator(false, false);
+        private static final FloatGenerator DEFAULT_FLOAT_GENERATOR = new FloatGenerator(nothing(), false, false);
 
         @Override
         public Generate<Float> prepare(GeneratorParameters generatorParameters) {
-            return Bias.applyBiasSetting(generatorParameters.getBiasSettings()
-                            .floatBias(FloatRange.fullRange()),
-                    BuildingBlocks::nextFloat);
+            FloatRange actualRange = this.range.orElse(DEFAULT_RANGE);
+            BiasSetting<Float> bias = buildBiasSetting(generatorParameters, actualRange);
+            Generate<Float> generate = BuildingBlocks::nextFloat; // TODO: handle range for floats
+
+            return Bias.applyBiasSetting(bias, generate);
         }
 
         @Override
         public FloatingPointGenerator<Float> withNaNs(boolean enabled) {
             return (enabled != includeNaNs)
-                    ? new FloatGenerator(enabled, includeInfinities)
+                    ? new FloatGenerator(range, enabled, includeInfinities)
                     : this;
         }
 
         @Override
         public FloatingPointGenerator<Float> withInfinities(boolean enabled) {
             return (enabled != includeInfinities)
-                    ? new FloatGenerator(includeNaNs, enabled)
+                    ? new FloatGenerator(range, includeNaNs, enabled)
                     : this;
         }
 
@@ -291,11 +317,28 @@ class Primitives {
             return LABEL;
         }
 
+        private BiasSetting<Float> buildBiasSetting(GeneratorParameters generatorParameters, FloatRange range) {
+            BiasSetting<Float> bias = generatorParameters.getBiasSettings().floatBias(range);
+            ArrayList<Float> specialValues = new ArrayList<>();
+            if (includeNaNs) {
+                specialValues.add(Float.NaN);
+            }
+            if (includeInfinities) {
+                if (range.contains(Float.MIN_VALUE)) {
+                    specialValues.add(Float.NEGATIVE_INFINITY);
+                }
+                if (range.contains(Float.MAX_VALUE)) {
+                    specialValues.add(Float.POSITIVE_INFINITY);
+                }
+            }
+            return bias.addSpecialValues(specialValues);
+        }
+
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class IntGenerator implements Generator<Integer> {
-        private static Maybe<String> LABEL = Maybe.just("int");
+        private static final Maybe<String> LABEL = Maybe.just("int");
 
         private static final IntGenerator INSTANCE = new IntGenerator();
 
@@ -316,7 +359,7 @@ class Primitives {
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class LongGenerator implements Generator<Long> {
-        private static Maybe<String> LABEL = Maybe.just("long");
+        private static final Maybe<String> LABEL = Maybe.just("long");
 
         private static final LongGenerator INSTANCE = new LongGenerator();
 
@@ -336,7 +379,7 @@ class Primitives {
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class GaussianGenerator implements Generator<Double> {
-        private static Maybe<String> LABEL = Maybe.just("gaussian");
+        private static final Maybe<String> LABEL = Maybe.just("gaussian");
 
         private static final GaussianGenerator INSTANCE = new GaussianGenerator();
 
@@ -355,7 +398,7 @@ class Primitives {
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class ByteGenerator implements Generator<Byte> {
-        private static Maybe<String> LABEL = Maybe.just("byte");
+        private static final Maybe<String> LABEL = Maybe.just("byte");
 
         private static final ByteGenerator INSTANCE = new ByteGenerator();
 
@@ -374,7 +417,7 @@ class Primitives {
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class ShortGenerator implements Generator<Short> {
-        private static Maybe<String> LABEL = Maybe.just("short");
+        private static final Maybe<String> LABEL = Maybe.just("short");
 
         private static final ShortGenerator INSTANCE = new ShortGenerator();
 
@@ -418,7 +461,7 @@ class Primitives {
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class SizeGenerator implements Generator<Integer> {
-        private static Maybe<String> LABEL = Maybe.just("size");
+        private static final Maybe<String> LABEL = Maybe.just("size");
 
         private static SizeGenerator INSTANCE = new SizeGenerator();
 
