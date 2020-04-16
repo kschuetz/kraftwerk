@@ -1,103 +1,163 @@
 package dev.marksman.kraftwerk.constraints;
 
-import static dev.marksman.kraftwerk.constraints.ConcreteDoubleRange.concreteDoubleRange;
-import static dev.marksman.kraftwerk.constraints.ConcreteDoubleRange.concreteDoubleRangeFrom;
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateExclusiveBound;
+import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeExclusive;
+import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeInclusive;
+import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeWidth;
 
-public interface DoubleRange extends Constraint<Double> {
-    double min();
+public final class DoubleRange implements Constraint<Double> {
+    private static final DoubleRange FULL = new DoubleRange(Double.MIN_VALUE, true, Double.MAX_VALUE, true);
 
-    double max();
+    private final double min;
+    private final boolean minIncluded;
+    private final double max;
+    private final boolean maxIncluded;
 
-    boolean minIncluded();
+    private DoubleRange(double min, boolean minIncluded, double max, boolean maxIncluded) {
+        this.min = min;
+        this.max = max;
+        this.minIncluded = minIncluded;
+        this.maxIncluded = maxIncluded;
+    }
 
-    boolean maxIncluded();
+    public static DoubleRangeFrom from(double min) {
+        return new DoubleRangeFrom() {
+            @Override
+            public DoubleRange to(double maxInclusive) {
+                return doubleRange(min, true, maxInclusive, true);
+            }
+
+            @Override
+            public DoubleRange until(double maxExclusive) {
+                return doubleRange(min, true, maxExclusive, false);
+            }
+        };
+    }
+
+    public static DoubleRangeFrom fromExclusive(double min) {
+        return new DoubleRangeFrom() {
+            @Override
+            public DoubleRange to(double maxInclusive) {
+                return doubleRange(min, false, maxInclusive, true);
+            }
+
+            @Override
+            public DoubleRange until(double maxExclusive) {
+                return doubleRange(min, false, maxExclusive, false);
+            }
+        };
+    }
+
+    public static DoubleRange inclusive(double minInclusive, double maxInclusive) {
+        return doubleRange(minInclusive, true, maxInclusive, true);
+    }
+
+    public static DoubleRange exclusive(double minInclusive, double maxExclusive) {
+        return doubleRange(minInclusive, true, maxExclusive, false);
+    }
+
+    public static DoubleRange exclusive(double maxExclusive) {
+        validateExclusiveBound(maxExclusive);
+        return doubleRange(0.0d, true, maxExclusive, false);
+    }
+
+    public static DoubleRange fullRange() {
+        return FULL;
+    }
+
+    public static DoubleRange doubleRange(double min, boolean minIncluded, double max, boolean maxIncluded) {
+        if (minIncluded && maxIncluded) {
+            validateRangeInclusive(min, max);
+        } else {
+            validateRangeExclusive(min, max);
+
+            if (!(minIncluded || maxIncluded)) {
+                validateRangeWidth(min, max);
+            }
+        }
+        return new DoubleRange(min, minIncluded, max, maxIncluded);
+    }
+
+    public double min() {
+        return min;
+    }
+
+    public double max() {
+        return max;
+    }
+
+    public boolean minIncluded() {
+        return minIncluded;
+    }
+
+    public boolean maxIncluded() {
+        return maxIncluded;
+    }
 
     @Override
-    default boolean includes(Double value) {
-        return (minIncluded() ? value >= min() : value > min()) &&
-                (maxIncluded() ? value <= max() : value < max());
+    public boolean includes(Double value) {
+        return (minIncluded ? value >= min : value > min) &&
+                (maxIncluded ? value <= max : value < max);
     }
 
-    default double minInclusive() {
-        if (minIncluded()) {
-            return min();
+    public double minInclusive() {
+        if (minIncluded) {
+            return min;
         } else {
-            return Math.nextAfter(min(), Double.POSITIVE_INFINITY);
+            return Math.nextAfter(min, Double.POSITIVE_INFINITY);
         }
     }
 
-    default double maxInclusive() {
-        if (maxIncluded()) {
-            return max();
+    public double minExclusive() {
+        if (minIncluded) {
+            return Math.nextAfter(min, Double.POSITIVE_INFINITY);
         } else {
-            return Math.nextAfter(max(), Double.NEGATIVE_INFINITY);
+            return min;
         }
     }
 
-    default double maxExclusive() {
-        if (maxIncluded()) {
-            return Math.nextAfter(max(), Double.NEGATIVE_INFINITY);
+    public double maxInclusive() {
+        if (maxIncluded) {
+            return max;
         } else {
-            return max();
+            return Math.nextAfter(max, Double.NEGATIVE_INFINITY);
         }
     }
 
-    default double width() {
+    public double maxExclusive() {
+        if (maxIncluded) {
+            return Math.nextAfter(max, Double.NEGATIVE_INFINITY);
+        } else {
+            return max;
+        }
+    }
+
+    public double width() {
         return maxExclusive() - minInclusive();
     }
 
-    default DoubleRange withMinInclusive(double min) {
-        return concreteDoubleRange(min, true, max(), maxIncluded());
+    public DoubleRange withMinInclusive(double minInclusive) {
+        return doubleRange(minInclusive, true, max, maxIncluded);
     }
 
-    default DoubleRange withMaxInclusive(double max) {
-        return concreteDoubleRange(min(), minIncluded(), max, true);
+    public DoubleRange withMaxInclusive(double maxInclusive) {
+        return doubleRange(min, minIncluded, maxInclusive, true);
     }
 
-    default DoubleRange withMinExclusive(double minExclusive) {
-        return concreteDoubleRange(minExclusive, false, max(), maxIncluded());
+    public DoubleRange withMinExclusive(double minExclusive) {
+        return doubleRange(minExclusive, false, max, maxIncluded);
     }
 
-    default DoubleRange withMaxExclusive(double maxExclusive) {
-        return concreteDoubleRange(min(), minIncluded(), maxExclusive, false);
+    public DoubleRange withMaxExclusive(double maxExclusive) {
+        return doubleRange(min, minIncluded, maxExclusive, false);
     }
 
-    default DoubleRange negate() {
-        return concreteDoubleRange(-max(), maxIncluded(), -min(), minIncluded());
+    public DoubleRange negate() {
+        return doubleRange(-max, maxIncluded, -min, minIncluded);
     }
 
-    static DoubleRangeFrom from(double min) {
-        return concreteDoubleRangeFrom(min, true);
-    }
-
-    static DoubleRangeFrom fromExclusive(double min) {
-        return concreteDoubleRangeFrom(min, false);
-    }
-
-    static DoubleRange inclusive(double min, double max) {
-        return concreteDoubleRange(min, true, max, true);
-    }
-
-    static DoubleRange exclusive(double min, double maxExclusive) {
-        return concreteDoubleRange(min, true, maxExclusive, false);
-    }
-
-    static DoubleRange exclusive(double maxExclusive) {
-        validateExclusiveBound(maxExclusive);
-        return concreteDoubleRange(0.0d, true, maxExclusive, false);
-    }
-
-    static DoubleRange doubleRange(double min, boolean minIncluded, double max, boolean maxIncluded) {
-        return concreteDoubleRange(min, minIncluded, max, maxIncluded);
-    }
-
-    static DoubleRange fullRange() {
-        return concreteDoubleRange();
-    }
-
-    interface DoubleRangeFrom {
-        DoubleRange to(double max);
+    public interface DoubleRangeFrom {
+        DoubleRange to(double maxInclusive);
 
         DoubleRange until(double maxExclusive);
     }

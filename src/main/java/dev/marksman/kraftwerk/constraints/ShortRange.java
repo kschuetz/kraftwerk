@@ -1,54 +1,78 @@
 package dev.marksman.kraftwerk.constraints;
 
-import static dev.marksman.kraftwerk.constraints.ConcreteShortRange.concreteShortRange;
-import static dev.marksman.kraftwerk.constraints.ConcreteShortRange.concreteShortRangeExclusive;
-import static dev.marksman.kraftwerk.constraints.ConcreteShortRange.concreteShortRangeFrom;
-import static dev.marksman.kraftwerk.constraints.ConcreteShortRange.concreteShortRangeInclusive;
+import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeExclusive;
+import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeInclusive;
 
-public interface ShortRange extends Constraint<Short> {
-    short minInclusive();
+public final class ShortRange implements Constraint<Short> {
+    private static final ShortRange FULL = new ShortRange(Short.MIN_VALUE, Short.MAX_VALUE);
 
-    short maxInclusive();
+    private final short minInclusive;
+    private final short maxInclusive;
+
+    private ShortRange(short minInclusive, short maxInclusive) {
+        this.minInclusive = minInclusive;
+        this.maxInclusive = maxInclusive;
+    }
+
+    public static ShortRangeFrom from(short minInclusive) {
+        return new ShortRangeFrom() {
+            @Override
+            public ShortRange to(short maxInclusive) {
+                return inclusive(minInclusive, maxInclusive);
+            }
+
+            @Override
+            public ShortRange until(short maxExclusive) {
+                return exclusive(minInclusive, maxExclusive);
+            }
+        };
+    }
+
+    public static ShortRange inclusive(short minInclusive, short maxInclusive) {
+        validateRangeInclusive(minInclusive, maxInclusive);
+        return new ShortRange(minInclusive, maxInclusive);
+    }
+
+    public static ShortRange exclusive(short maxExclusive) {
+        return exclusive((short) 0, maxExclusive);
+    }
+
+    public static ShortRange exclusive(short minInclusive, short maxExclusive) {
+        validateRangeExclusive(minInclusive, maxExclusive);
+        return new ShortRange(minInclusive, (short) (maxExclusive - 1));
+    }
+
+    public static ShortRange fullRange() {
+        return FULL;
+    }
+
+    public short minInclusive() {
+        return minInclusive;
+    }
+
+    public short maxInclusive() {
+        return maxInclusive;
+    }
 
     @Override
-    default boolean includes(Short n) {
-        return n >= minInclusive() && n <= maxInclusive();
+    public boolean includes(Short n) {
+        return n >= minInclusive && n <= maxInclusive;
     }
 
-    default ShortRange withMin(short min) {
-        return concreteShortRangeInclusive(min, maxInclusive());
+    public ShortRange withMinInclusive(short minInclusive) {
+        return inclusive(minInclusive, maxInclusive);
     }
 
-    default ShortRange withMaxInclusive(short max) {
-        return concreteShortRangeInclusive(minInclusive(), max);
+    public ShortRange withMaxInclusive(short maxInclusive) {
+        return inclusive(minInclusive, maxInclusive);
     }
 
-    default ShortRange withMaxExclusive(short maxExclusive) {
-        return concreteShortRangeExclusive(minInclusive(), maxExclusive);
+    public ShortRange withMaxExclusive(short maxExclusive) {
+        return exclusive(minInclusive, maxExclusive);
     }
 
-    static ShortRangeFrom from(short min) {
-        return concreteShortRangeFrom(min);
-    }
-
-    static ShortRange inclusive(short min, short max) {
-        return concreteShortRangeInclusive(min, max);
-    }
-
-    static ShortRange exclusive(short min, short maxExclusive) {
-        return concreteShortRangeExclusive(min, maxExclusive);
-    }
-
-    static ShortRange exclusive(short maxExclusive) {
-        return concreteShortRangeExclusive((short) 0, maxExclusive);
-    }
-
-    static ShortRange fullRange() {
-        return concreteShortRange();
-    }
-
-    interface ShortRangeFrom {
-        ShortRange to(short max);
+    public interface ShortRangeFrom {
+        ShortRange to(short maxInclusive);
 
         ShortRange until(short maxExclusive);
     }

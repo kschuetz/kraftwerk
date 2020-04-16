@@ -1,55 +1,87 @@
 package dev.marksman.kraftwerk.constraints;
 
-import static dev.marksman.kraftwerk.constraints.ConcreteByteRange.concreteByteRange;
-import static dev.marksman.kraftwerk.constraints.ConcreteByteRange.concreteByteRangeExclusive;
-import static dev.marksman.kraftwerk.constraints.ConcreteByteRange.concreteByteRangeFrom;
-import static dev.marksman.kraftwerk.constraints.ConcreteByteRange.concreteByteRangeInclusive;
+import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeExclusive;
+import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeInclusive;
 
-public interface ByteRange extends Constraint<Byte> {
-    byte minInclusive();
+public final class ByteRange implements Constraint<Byte> {
+    private static final ByteRange FULL = new ByteRange(Byte.MIN_VALUE, Byte.MAX_VALUE);
 
-    byte maxInclusive();
+    private final byte minInclusive;
+    private final byte maxInclusive;
+
+    private ByteRange(byte minInclusive, byte maxInclusive) {
+        this.minInclusive = minInclusive;
+        this.maxInclusive = maxInclusive;
+    }
+
+    public static ByteRangeFrom from(byte minInclusive) {
+        return new ByteRangeFrom() {
+            @Override
+            public ByteRange to(byte maxInclusive) {
+                return inclusive(minInclusive, maxInclusive);
+            }
+
+            @Override
+            public ByteRange until(byte maxExclusive) {
+                return exclusive(minInclusive, maxExclusive);
+            }
+        };
+    }
+
+    public static ByteRange inclusive(byte minInclusive, byte maxInclusive) {
+        validateRangeInclusive(minInclusive, maxInclusive);
+        return new ByteRange(minInclusive, maxInclusive);
+    }
+
+    public static ByteRange exclusive(byte minInclusive, byte maxExclusive) {
+        validateRangeExclusive(minInclusive, maxExclusive);
+        return new ByteRange(minInclusive, (byte) (maxExclusive - 1));
+    }
+
+    public static ByteRange exclusive(byte maxExclusive) {
+        validateRangeExclusive((byte) 0, maxExclusive);
+        return new ByteRange((byte) 0, (byte) (maxExclusive - 1));
+    }
+
+    public static ByteRange fullRange() {
+        return FULL;
+    }
+
+    public byte minInclusive() {
+        return minInclusive;
+    }
+
+    public byte maxInclusive() {
+        return maxInclusive;
+    }
 
     @Override
-    default boolean includes(Byte value) {
-        return value >= minInclusive() && value <= maxInclusive();
+    public boolean includes(Byte value) {
+        return value >= minInclusive && value <= maxInclusive;
     }
 
-    default ByteRange withMin(byte min) {
-        return concreteByteRangeInclusive(min, maxInclusive());
+    public ByteRange withMinInclusive(byte minInclusive) {
+        byte max = maxInclusive;
+        validateRangeInclusive(minInclusive, max);
+        return new ByteRange(minInclusive, max);
     }
 
-    default ByteRange withMaxInclusive(byte max) {
-        return concreteByteRangeInclusive(minInclusive(), max);
+    public ByteRange withMaxInclusive(byte maxInclusive) {
+        byte min = minInclusive;
+        validateRangeInclusive(min, maxInclusive);
+        return new ByteRange(min, maxInclusive);
     }
 
-    default ByteRange withMaxExclusive(byte max) {
-        return concreteByteRangeExclusive(minInclusive(), max);
+    public ByteRange withMaxExclusive(byte maxExclusive) {
+        byte min = minInclusive;
+        validateRangeExclusive(min, maxExclusive);
+        return new ByteRange(min, (byte) (maxExclusive - 1));
     }
 
-    static ByteRangeFrom from(byte min) {
-        return concreteByteRangeFrom(min);
-    }
-
-    static ByteRange inclusive(byte min, byte max) {
-        return concreteByteRangeInclusive(min, max);
-    }
-
-    static ByteRange exclusive(byte min, byte maxExclusive) {
-        return concreteByteRangeExclusive(min, maxExclusive);
-    }
-
-    static ByteRange exclusive(byte maxExclusive) {
-        return concreteByteRangeExclusive((byte) 0, maxExclusive);
-    }
-
-    static ByteRange fullRange() {
-        return concreteByteRange();
-    }
-
-    interface ByteRangeFrom {
-        ByteRange to(byte max);
+    public interface ByteRangeFrom {
+        ByteRange to(byte maxInclusive);
 
         ByteRange until(byte maxExclusive);
     }
+
 }

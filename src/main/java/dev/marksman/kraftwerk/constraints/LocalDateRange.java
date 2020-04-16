@@ -2,47 +2,71 @@ package dev.marksman.kraftwerk.constraints;
 
 import java.time.LocalDate;
 
-import static dev.marksman.kraftwerk.constraints.ConcreteLocalDateRange.concreteLocalDateRangeExclusive;
-import static dev.marksman.kraftwerk.constraints.ConcreteLocalDateRange.concreteLocalDateRangeFrom;
-import static dev.marksman.kraftwerk.constraints.ConcreteLocalDateRange.concreteLocalDateRangeInclusive;
+import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeExclusive;
+import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeInclusive;
 
-public interface LocalDateRange extends Constraint<LocalDate> {
-    LocalDate minInclusive();
+public final class LocalDateRange implements Constraint<LocalDate> {
+    private final LocalDate minInclusive;
+    private final LocalDate maxInclusive;
 
-    LocalDate maxInclusive();
+    private LocalDateRange(LocalDate minInclusive, LocalDate maxInclusive) {
+        this.minInclusive = minInclusive;
+        this.maxInclusive = maxInclusive;
+    }
+
+    public static LocalDateRangeFrom from(LocalDate minInclusive) {
+        return new LocalDateRangeFrom() {
+            @Override
+            public LocalDateRange to(LocalDate maxInclusive) {
+                return inclusive(minInclusive, maxInclusive);
+            }
+
+            @Override
+            public LocalDateRange until(LocalDate maxExclusive) {
+                return exclusive(minInclusive, maxExclusive);
+            }
+        };
+    }
+
+    public static LocalDateRange inclusive(LocalDate minInclusive, LocalDate maxInclusive) {
+        validateRangeInclusive(minInclusive, maxInclusive);
+        return new LocalDateRange(minInclusive, maxInclusive);
+    }
+
+    public static LocalDateRange exclusive(LocalDate minInclusive, LocalDate maxExclusive) {
+        validateRangeExclusive(minInclusive, maxExclusive);
+        return new LocalDateRange(minInclusive, maxExclusive.minusDays(1));
+    }
+
+    public LocalDate minInclusive() {
+        return minInclusive;
+    }
+
+    public LocalDate maxInclusive() {
+        return maxInclusive;
+    }
 
     @Override
-    default boolean includes(LocalDate date) {
-        return !(date.isBefore(minInclusive()) || date.isAfter(maxInclusive()));
+    public boolean includes(LocalDate date) {
+        return !(date.isBefore(minInclusive) || date.isAfter(maxInclusive));
     }
 
-    default LocalDateRange withMin(LocalDate min) {
-        return concreteLocalDateRangeInclusive(min, maxInclusive());
+    public LocalDateRange withMinInclusive(LocalDate min) {
+        return inclusive(min, maxInclusive);
     }
 
-    default LocalDateRange withMaxInclusive(LocalDate max) {
-        return concreteLocalDateRangeInclusive(minInclusive(), max);
+    public LocalDateRange withMaxInclusive(LocalDate max) {
+        return inclusive(minInclusive, max);
     }
 
-    default LocalDateRange withMaxExclusive(LocalDate max) {
-        return concreteLocalDateRangeExclusive(minInclusive(), max);
+    public LocalDateRange withMaxExclusive(LocalDate max) {
+        return exclusive(minInclusive, max);
     }
 
-    static LocalDateRangeFrom from(LocalDate min) {
-        return concreteLocalDateRangeFrom(min);
-    }
-
-    static LocalDateRange inclusive(LocalDate min, LocalDate max) {
-        return concreteLocalDateRangeInclusive(min, max);
-    }
-
-    static LocalDateRange exclusive(LocalDate min, LocalDate maxExclusive) {
-        return concreteLocalDateRangeExclusive(min, maxExclusive);
-    }
-
-    interface LocalDateRangeFrom {
-        LocalDateRange to(LocalDate max);
+    public interface LocalDateRangeFrom {
+        LocalDateRange to(LocalDate maxInclusive);
 
         LocalDateRange until(LocalDate maxExclusive);
     }
+
 }

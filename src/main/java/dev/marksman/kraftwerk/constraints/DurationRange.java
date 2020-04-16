@@ -5,54 +5,77 @@ import com.jnape.palatable.lambda.functions.builtin.fn2.LTE;
 
 import java.time.Duration;
 
-import static dev.marksman.kraftwerk.constraints.ConcreteDurationRange.concreteDurationRangeExclusive;
-import static dev.marksman.kraftwerk.constraints.ConcreteDurationRange.concreteDurationRangeFrom;
-import static dev.marksman.kraftwerk.constraints.ConcreteDurationRange.concreteDurationRangeInclusive;
+import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeExclusive;
+import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeInclusive;
 
-public interface DurationRange extends Constraint<Duration> {
-    Duration minInclusive();
+public final class DurationRange implements Constraint<Duration> {
+    private final Duration minInclusive;
+    private final Duration maxInclusive;
 
-    Duration maxInclusive();
+    private DurationRange(Duration minInclusive, Duration maxInclusive) {
+        this.minInclusive = minInclusive;
+        this.maxInclusive = maxInclusive;
+    }
+
+    public static DurationFrom from(Duration minInclusive) {
+        return new DurationFrom() {
+            @Override
+            public DurationRange to(Duration maxInclusive) {
+                return inclusive(minInclusive, maxInclusive);
+            }
+
+            @Override
+            public DurationRange until(Duration maxExclusive) {
+                return exclusive(minInclusive, maxExclusive);
+            }
+        };
+    }
+
+    public static DurationRange inclusive(Duration minInclusive, Duration maxInclusive) {
+        validateRangeInclusive(minInclusive, maxInclusive);
+        return new DurationRange(minInclusive, maxInclusive);
+    }
+
+    public static DurationRange inclusive(Duration maxInclusive) {
+        return inclusive(Duration.ZERO, maxInclusive);
+    }
+
+    public static DurationRange exclusive(Duration minInclusive, Duration maxExclusive) {
+        validateRangeExclusive(minInclusive, maxExclusive);
+        return new DurationRange(minInclusive, maxExclusive.minusDays(1));
+    }
+
+    public static DurationRange exclusive(Duration maxExclusive) {
+        return exclusive(Duration.ZERO, maxExclusive);
+    }
+
+    public Duration minInclusive() {
+        return minInclusive;
+    }
+
+    public Duration maxInclusive() {
+        return maxInclusive;
+    }
 
     @Override
-    default boolean includes(Duration value) {
-        return GTE.gte(minInclusive(), value) && LTE.lte(maxInclusive(), value);
+    public boolean includes(Duration value) {
+        return GTE.gte(minInclusive, value) && LTE.lte(maxInclusive).apply(value);
     }
 
-    default DurationRange withMin(Duration min) {
-        return concreteDurationRangeInclusive(min, maxInclusive());
+    public DurationRange withMinInclusive(Duration minInclusive) {
+        return inclusive(minInclusive, maxInclusive);
     }
 
-    default DurationRange withMaxInclusive(Duration max) {
-        return concreteDurationRangeInclusive(minInclusive(), max);
+    public DurationRange withMaxInclusive(Duration maxInclusive) {
+        return inclusive(minInclusive, maxInclusive);
     }
 
-    default DurationRange withMaxExclusive(Duration max) {
-        return concreteDurationRangeExclusive(minInclusive(), max);
+    public DurationRange withMaxExclusive(Duration maxExclusive) {
+        return exclusive(minInclusive, maxExclusive);
     }
 
-    static DurationFrom from(Duration min) {
-        return concreteDurationRangeFrom(min);
-    }
-
-    static DurationRange inclusive(Duration min, Duration max) {
-        return concreteDurationRangeInclusive(min, max);
-    }
-
-    static DurationRange inclusive(Duration max) {
-        return concreteDurationRangeInclusive(Duration.ZERO, max);
-    }
-
-    static DurationRange exclusive(Duration min, Duration maxExclusive) {
-        return concreteDurationRangeExclusive(min, maxExclusive);
-    }
-
-    static DurationRange exclusive(Duration maxExclusive) {
-        return concreteDurationRangeExclusive(Duration.ZERO, maxExclusive);
-    }
-
-    interface DurationFrom {
-        DurationRange to(Duration max);
+    public interface DurationFrom {
+        DurationRange to(Duration maxInclusive);
 
         DurationRange until(Duration maxExclusive);
     }

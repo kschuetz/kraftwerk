@@ -12,7 +12,7 @@ import static dev.marksman.kraftwerk.Generators.generateLong;
 class BigNumbers {
 
     static Generator<BigInteger> generateBigInteger(BigIntegerRange range) {
-        BigInteger min = range.min();
+        BigInteger min = range.minInclusive();
         if (min.signum() == 0) {
             return generateBigIntegerExclusive(range.maxExclusive());
         } else {
