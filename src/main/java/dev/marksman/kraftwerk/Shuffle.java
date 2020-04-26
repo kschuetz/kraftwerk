@@ -95,9 +95,8 @@ class Shuffle {
             // No changes
             return inputState;
         } else {
-            int n = target.size();
             Seed state = inputState;
-            for (int i = 1; i < size - 1; i++) {
+            for (int i = 1; i < size; i++) {
                 Result<? extends Seed, Integer> next = BuildingBlocks.nextIntBounded(i, state);
                 int j = next.getValue();
                 if (i != j) {
