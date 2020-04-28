@@ -108,15 +108,15 @@ public class Generators {
         return Primitives.generateDouble();
     }
 
-    public static Generator<Double> generateDouble(DoubleRange range) {
+    public static FloatingPointGenerator<Double> generateDouble(DoubleRange range) {
         return Primitives.generateDouble(range);
     }
 
-    public static Generator<Float> generateFloat() {
+    public static FloatingPointGenerator<Float> generateFloat() {
         return Primitives.generateFloat();
     }
 
-    public static Generator<Float> generateFloat(FloatRange range) {
+    public static FloatingPointGenerator<Float> generateFloat(FloatRange range) {
         return Primitives.generateFloat(range);
     }
 
