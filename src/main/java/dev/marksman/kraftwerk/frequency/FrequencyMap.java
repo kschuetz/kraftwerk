@@ -44,7 +44,7 @@ public interface FrequencyMap<A> extends ToGenerator<A> {
         return add(weight, constant(value));
     }
 
-    static <A> FrequencyMap<A> frequencyMap(int weight1, Generator<A> gen1) {
+    static <A> FrequencyMap<A> frequencyMap(int weight1, Generator<? extends A> gen1) {
         return frequencyMap1(weight1, gen1);
     }
 
@@ -52,7 +52,7 @@ public interface FrequencyMap<A> extends ToGenerator<A> {
         return frequencyMap1(weight1, constant(value1));
     }
 
-    static <A> FrequencyMap<A> frequencyMap(Generator<A> gen1) {
+    static <A> FrequencyMap<A> frequencyMap(Generator<? extends A> gen1) {
         return frequencyMap1(1, gen1);
     }
 

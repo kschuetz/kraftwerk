@@ -3,8 +3,6 @@ package dev.marksman.kraftwerk.frequency;
 import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.kraftwerk.FrequencyEntry;
 import dev.marksman.kraftwerk.Generator;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 
 import static dev.marksman.kraftwerk.FrequencyEntry.entry;
 import static dev.marksman.kraftwerk.Generators.generateLongIndex;
@@ -13,14 +11,31 @@ import static dev.marksman.kraftwerk.frequency.FrequencyMapN.addLabel;
 import static dev.marksman.kraftwerk.frequency.FrequencyMapN.frequencyMapN;
 import static java.util.Arrays.asList;
 
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-class FrequencyMap3<A> implements FrequencyMap<A> {
+final class FrequencyMap3<A> implements FrequencyMap<A> {
     private final int weightA;
     private final Generator<A> generatorA;
     private final int weightB;
     private final Generator<A> generatorB;
     private final int weightC;
     private final Generator<A> generatorC;
+
+    @SuppressWarnings("unchecked")
+    private FrequencyMap3(int weightA, Generator<? extends A> generatorA,
+                          int weightB, Generator<? extends A> generatorB,
+                          int weightC, Generator<? extends A> generatorC) {
+        this.weightA = weightA;
+        this.generatorA = (Generator<A>) generatorA;
+        this.weightB = weightB;
+        this.generatorB = (Generator<A>) generatorB;
+        this.weightC = weightC;
+        this.generatorC = (Generator<A>) generatorC;
+    }
+
+    static <A> FrequencyMap3<A> frequencyMap3(int weightA, Generator<? extends A> generatorA,
+                                              int weightB, Generator<? extends A> generatorB,
+                                              int weightC, Generator<? extends A> generatorC) {
+        return new FrequencyMap3<>(weightA, generatorA, weightB, generatorB, weightC, generatorC);
+    }
 
     @Override
     public Generator<A> toGenerator() {
@@ -65,11 +80,5 @@ class FrequencyMap3<A> implements FrequencyMap<A> {
         return frequencyMap3(weightA, generatorA.fmap(fn),
                 weightB, generatorB.fmap(fn),
                 weightC, generatorC.fmap(fn));
-    }
-
-    static <A> FrequencyMap3<A> frequencyMap3(int weightA, Generator<A> generatorA,
-                                              int weightB, Generator<A> generatorB,
-                                              int weightC, Generator<A> generatorC) {
-        return new FrequencyMap3<>(weightA, generatorA, weightB, generatorB, weightC, generatorC);
     }
 }
