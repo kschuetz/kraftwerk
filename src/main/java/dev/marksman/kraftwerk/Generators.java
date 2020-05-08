@@ -42,6 +42,7 @@ import dev.marksman.kraftwerk.choice.ChoiceBuilder1;
 import dev.marksman.kraftwerk.constraints.BigDecimalRange;
 import dev.marksman.kraftwerk.constraints.BigIntegerRange;
 import dev.marksman.kraftwerk.constraints.ByteRange;
+import dev.marksman.kraftwerk.constraints.CharRange;
 import dev.marksman.kraftwerk.constraints.DoubleRange;
 import dev.marksman.kraftwerk.constraints.DurationRange;
 import dev.marksman.kraftwerk.constraints.FloatRange;
@@ -158,6 +159,14 @@ public class Generators {
 
     public static Generator<Short> generateShort(ShortRange range) {
         return Primitives.generateShort(range);
+    }
+
+    public static Generator<Character> generateChar() {
+        return Primitives.generateChar();
+    }
+
+    public static Generator<Character> generateChar(CharRange range) {
+        return Primitives.generateChar(range);
     }
 
     public static Generator<Double> generateGaussian() {

@@ -5,6 +5,7 @@ import com.jnape.palatable.lambda.adt.Unit;
 import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.kraftwerk.bias.BiasSetting;
 import dev.marksman.kraftwerk.constraints.ByteRange;
+import dev.marksman.kraftwerk.constraints.CharRange;
 import dev.marksman.kraftwerk.constraints.DoubleRange;
 import dev.marksman.kraftwerk.constraints.FloatRange;
 import dev.marksman.kraftwerk.constraints.IntRange;
@@ -206,6 +207,14 @@ class Primitives {
 
     static ShortGenerator generateShort(ShortRange range) {
         return new ShortGenerator(range);
+    }
+
+    static CharGenerator generateChar() {
+        return CharGenerator.DEFAULT_CHAR_GENERATOR;
+    }
+
+    static CharGenerator generateChar(CharRange range) {
+        return new CharGenerator(range);
     }
 
     static Generator<Double> generateGaussian() {
@@ -496,8 +505,34 @@ class Primitives {
                 return i -> (short) (min + (i % span));
             }
         }
-
     }
+
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    private static class CharGenerator implements Generator<Character> {
+        private static final Maybe<String> LABEL = Maybe.just("char");
+
+        private static final CharGenerator DEFAULT_CHAR_GENERATOR = new CharGenerator(CharRange.fullRange());
+
+        private final CharRange range;
+
+        @Override
+        public Generate<Character> prepare(GeneratorParameters generatorParameters) {
+            return Bias.applyBiasSetting(generatorParameters.getBiasSettings().charBias(range),
+                    input -> nextInt(input).fmap(getMapper()));
+        }
+
+        @Override
+        public Maybe<String> getLabel() {
+            return LABEL;
+        }
+
+        private Fn1<Integer, Character> getMapper() {
+            int min = range.minInclusive();
+            int span = (range.maxInclusive() - min) + 1;
+            return i -> (char) (min + (i % span));
+        }
+    }
+
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class BytesGenerator implements Generator<Byte[]> {

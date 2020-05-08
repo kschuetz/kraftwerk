@@ -2,6 +2,7 @@ package dev.marksman.kraftwerk.bias;
 
 import dev.marksman.kraftwerk.SizeParameters;
 import dev.marksman.kraftwerk.constraints.ByteRange;
+import dev.marksman.kraftwerk.constraints.CharRange;
 import dev.marksman.kraftwerk.constraints.DoubleRange;
 import dev.marksman.kraftwerk.constraints.FloatRange;
 import dev.marksman.kraftwerk.constraints.IntRange;
@@ -44,6 +45,11 @@ public final class EmptyBiasSettings implements BiasSettings {
 
     @Override
     public BiasSetting<Short> shortBias(ShortRange range) {
+        return noBias();
+    }
+
+    @Override
+    public BiasSetting<Character> charBias(CharRange range) {
         return noBias();
     }
 

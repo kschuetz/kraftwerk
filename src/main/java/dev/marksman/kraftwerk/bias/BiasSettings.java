@@ -2,6 +2,7 @@ package dev.marksman.kraftwerk.bias;
 
 import dev.marksman.kraftwerk.SizeParameters;
 import dev.marksman.kraftwerk.constraints.ByteRange;
+import dev.marksman.kraftwerk.constraints.CharRange;
 import dev.marksman.kraftwerk.constraints.DoubleRange;
 import dev.marksman.kraftwerk.constraints.FloatRange;
 import dev.marksman.kraftwerk.constraints.IntRange;
@@ -22,6 +23,8 @@ public interface BiasSettings {
     BiasSetting<Byte> byteBias(ByteRange range);
 
     BiasSetting<Short> shortBias(ShortRange range);
+
+    BiasSetting<Character> charBias(CharRange range);
 
     BiasSetting<Integer> sizeBias(SizeParameters sizeParameters);
 

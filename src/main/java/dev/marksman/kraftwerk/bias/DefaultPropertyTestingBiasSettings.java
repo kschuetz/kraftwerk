@@ -2,6 +2,7 @@ package dev.marksman.kraftwerk.bias;
 
 import dev.marksman.kraftwerk.SizeParameters;
 import dev.marksman.kraftwerk.constraints.ByteRange;
+import dev.marksman.kraftwerk.constraints.CharRange;
 import dev.marksman.kraftwerk.constraints.DoubleRange;
 import dev.marksman.kraftwerk.constraints.FloatRange;
 import dev.marksman.kraftwerk.constraints.IntRange;
@@ -93,6 +94,21 @@ public final class DefaultPropertyTestingBiasSettings implements BiasSettings {
                 .addSpecialValue((short) 1)
                 .addSpecialValue((short) 128)
                 .addSpecialValue((short) -129)
+                .addSpecialValue(range.maxInclusive())
+                .build();
+    }
+
+    @Override
+    public BiasSetting<Character> charBias(CharRange range) {
+        return BiasSetting.builder(range::includes)
+                .addSpecialValue(range.minInclusive())
+                .addSpecialValue((char) 0)
+                .addSpecialValue((char) 127)
+                .addSpecialValue((char) 128)
+                .addSpecialValue((char) 255)
+                .addSpecialValue((char) 256)
+                .addSpecialValue(' ')
+                .addSpecialValue('\n')
                 .addSpecialValue(range.maxInclusive())
                 .build();
     }

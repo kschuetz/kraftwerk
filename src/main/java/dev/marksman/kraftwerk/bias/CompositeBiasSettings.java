@@ -3,6 +3,7 @@ package dev.marksman.kraftwerk.bias;
 import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.kraftwerk.SizeParameters;
 import dev.marksman.kraftwerk.constraints.ByteRange;
+import dev.marksman.kraftwerk.constraints.CharRange;
 import dev.marksman.kraftwerk.constraints.DoubleRange;
 import dev.marksman.kraftwerk.constraints.FloatRange;
 import dev.marksman.kraftwerk.constraints.IntRange;
@@ -46,6 +47,11 @@ final class CompositeBiasSettings implements BiasSettings {
     @Override
     public BiasSetting<Short> shortBias(ShortRange range) {
         return compose(bs -> bs.shortBias(range));
+    }
+
+    @Override
+    public BiasSetting<Character> charBias(CharRange range) {
+        return compose(bs -> bs.charBias(range));
     }
 
     @Override
