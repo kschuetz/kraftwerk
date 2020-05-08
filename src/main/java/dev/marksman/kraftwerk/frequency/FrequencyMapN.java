@@ -2,24 +2,22 @@ package dev.marksman.kraftwerk.frequency;
 
 import com.jnape.palatable.lambda.functions.Fn1;
 import com.jnape.palatable.lambda.functions.builtin.fn2.Map;
-import dev.marksman.kraftwerk.FrequencyEntry;
 import dev.marksman.kraftwerk.Generator;
+import dev.marksman.kraftwerk.Weighted;
 
 import java.util.TreeMap;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Cons.cons;
 import static com.jnape.palatable.lambda.functions.builtin.fn3.FoldLeft.foldLeft;
-import static dev.marksman.kraftwerk.FrequencyEntry.entry;
 import static dev.marksman.kraftwerk.Generators.generateLongIndex;
-import static dev.marksman.kraftwerk.frequency.FrequencyMap1.checkMultiplier;
 
 class FrequencyMapN<A> implements FrequencyMap<A> {
-    private final Iterable<FrequencyEntry<A>> entries;
-
+    private final Iterable<Weighted<Generator<A>>> entries;
     private Generator<A> cachedGenerator;
 
-    private FrequencyMapN(Iterable<FrequencyEntry<A>> entries) {
-        this.entries = entries;
+    @SuppressWarnings("unchecked")
+    private FrequencyMapN(Iterable<? extends Weighted<? extends Generator<? extends A>>> entries) {
+        this.entries = (Iterable<Weighted<Generator<A>>>) entries;
     }
 
     @Override
@@ -33,43 +31,47 @@ class FrequencyMapN<A> implements FrequencyMap<A> {
     private Generator<A> buildGenerator() {
         long total = 0L;
         TreeMap<Long, Generator<A>> tree = new TreeMap<>();
-        for (FrequencyEntry<A> entry : entries) {
+        for (Weighted<Generator<A>> entry : entries) {
             total += entry.getWeight();
-            tree.put(total, entry.getGenerate());
+            tree.put(total, entry.getValue());
         }
 
         return addLabel(generateLongIndex(total)
                 .flatMap(n -> tree.ceilingEntry(1 + n).getValue()));
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public FrequencyMap<A> add(int weight, Generator<? extends A> gen) {
-        if (weight < 1) return this;
-        else {
-            @SuppressWarnings("unchecked")
-            Iterable<FrequencyEntry<A>> newEntries = cons(entry(weight, (Generator<A>) gen), entries);
-            return new FrequencyMapN<>(newEntries);
+    public FrequencyMap<A> add(Weighted<? extends Generator<? extends A>> weightedGenerator) {
+        if (weightedGenerator.getWeight() < 1) {
+            return this;
+        } else {
+            return new FrequencyMapN<>(cons((Weighted<Generator<A>>) weightedGenerator, entries));
         }
     }
 
     @Override
     public FrequencyMap<A> combine(FrequencyMap<A> other) {
-        return foldLeft((acc, entry) -> acc.add(entry._1(), entry._2()), other, entries);
+        return foldLeft(FrequencyMap::add, other, entries);
     }
 
     @Override
     public <B> FrequencyMap<B> fmap(Fn1<? super A, ? extends B> fn) {
-        return new FrequencyMapN<>(Map.map(t -> entry(t._1(), t._2().fmap(fn)), entries));
+        Iterable<Weighted<Generator<B>>> mapped = Map.map(entry -> entry.fmap(gen -> gen.fmap(fn)), entries);
+        return new FrequencyMapN<>(mapped);
     }
 
     @Override
     public FrequencyMap<A> multiply(int positiveFactor) {
-        checkMultiplier(positiveFactor);
-        if (positiveFactor == 1) return this;
-        else return new FrequencyMapN<>(Map.map(t -> entry(positiveFactor * t._1(), t._2()), entries));
+        if (positiveFactor == 1) {
+            return this;
+        } else {
+            return new FrequencyMapN<>(Map.map(entry -> entry.multiplyBy(positiveFactor), entries));
+        }
     }
 
-    static <A> FrequencyMapN<A> frequencyMapN(FrequencyEntry<A> first, Iterable<FrequencyEntry<A>> rest) {
+    static <A> FrequencyMapN<A> frequencyMapN(Weighted<? extends Generator<? extends A>> first,
+                                              Iterable<Weighted<? extends Generator<? extends A>>> rest) {
         return new FrequencyMapN<>(cons(first, rest));
     }
 

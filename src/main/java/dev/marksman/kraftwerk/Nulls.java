@@ -1,12 +1,11 @@
 package dev.marksman.kraftwerk;
 
-import dev.marksman.kraftwerk.frequency.FrequencyMapBuilder;
+import dev.marksman.kraftwerk.frequency.FrequencyMap;
 import dev.marksman.kraftwerk.weights.NullWeights;
 
 import static dev.marksman.kraftwerk.weights.NullWeights.nonNulls;
 
-class Nulls {
-
+final class Nulls {
     private static final NullWeights DEFAULT_NULL_WEIGHTS = nonNulls(9).toNulls(1);
 
     static <A> Generator<A> generateNull() {
@@ -14,16 +13,12 @@ class Nulls {
     }
 
     static <A> Generator<A> generateWithNulls(NullWeights weights, Generator<A> g) {
-        return FrequencyMapBuilder.<A>frequencyMapBuilder()
-                .add(weights.getNonNullWeight(), g)
-                .add(weights.getNullWeight(), generateNull())
-                .build()
+        return FrequencyMap.frequencyMap(g.weighted(weights.getNonNullWeight()))
+                .add(Nulls.<A>generateNull().weighted(weights.getNullWeight()))
                 .toGenerator();
     }
 
     static <A> Generator<A> generateWithNulls(Generator<A> g) {
         return generateWithNulls(DEFAULT_NULL_WEIGHTS, g);
-
     }
-
 }

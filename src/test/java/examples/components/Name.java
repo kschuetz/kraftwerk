@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into4.into4;
-import static dev.marksman.kraftwerk.FrequencyEntry.entry;
 import static dev.marksman.kraftwerk.weights.MaybeWeights.nothings;
 import static java.util.Arrays.asList;
 
@@ -42,12 +41,12 @@ public class Name {
                         "Maggie", "Marcia", "Marge", "Mary", "Mike", "Oliver", "Patricia", "Peter", "Stan");
 
         static final Generator<String> first =
-                Generators.frequency(entry(15, givenNames),
-                        entry(1, initial));
+                Generators.frequency(givenNames.weighted(15),
+                        initial.weighted(1));
 
         static final Generator<String> middle =
-                Generators.frequency(entry(1, givenNames),
-                        entry(5, initial));
+                Generators.frequency(givenNames.weighted(1),
+                        initial.weighted(5));
 
         static final Generator<String> last =
                 Generators.chooseOneFromCollection(asList(

@@ -27,8 +27,8 @@ public class ZipCode {
         static Generator<String> fourDigits = Generators.generateStringFromCharacters(4, numeric());
 
         static Generator<ZipCode> zipCode =
-                frequencyMap(7, fiveDigits)
-                        .add(1, Generators.generateString(fiveDigits, Generators.constant("-"), fourDigits))
+                frequencyMap(fiveDigits.weighted(7))
+                        .add(Generators.generateString(fiveDigits, Generators.constant("-"), fourDigits))
                         .toGenerator()
                         .fmap(ZipCode::zipCode);
     }

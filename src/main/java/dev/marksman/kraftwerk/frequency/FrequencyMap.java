@@ -1,9 +1,10 @@
 package dev.marksman.kraftwerk.frequency;
 
 import com.jnape.palatable.lambda.functions.Fn1;
-import dev.marksman.kraftwerk.FrequencyEntry;
 import dev.marksman.kraftwerk.Generator;
+import dev.marksman.kraftwerk.Generators;
 import dev.marksman.kraftwerk.ToGenerator;
+import dev.marksman.kraftwerk.Weighted;
 
 import static dev.marksman.kraftwerk.Generators.constant;
 import static dev.marksman.kraftwerk.frequency.FrequencyMap1.frequencyMap1;
@@ -12,7 +13,7 @@ public interface FrequencyMap<A> extends ToGenerator<A> {
 
     Generator<A> toGenerator();
 
-    FrequencyMap<A> add(int weight, Generator<? extends A> gen);
+    FrequencyMap<A> add(Weighted<? extends Generator<? extends A>> weightedGenerator);
 
     FrequencyMap<A> combine(FrequencyMap<A> other);
 
@@ -29,35 +30,31 @@ public interface FrequencyMap<A> extends ToGenerator<A> {
     FrequencyMap<A> multiply(int positiveFactor);
 
     default FrequencyMap<A> add(Generator<? extends A> gen) {
-        return add(1, gen);
-    }
-
-    default FrequencyMap<A> add(FrequencyEntry<A> entry) {
-        return add(entry._1(), entry._2());
+        return add(gen.weighted());
     }
 
     default FrequencyMap<A> addValue(A value) {
-        return add(1, constant(value));
+        return add(constant(value).weighted());
     }
 
-    default FrequencyMap<A> addValue(int weight, A value) {
-        return add(weight, constant(value));
+    default FrequencyMap<A> addValue(Weighted<? extends A> weightedValue) {
+        return add(weightedValue.fmap(Generators::constant));
     }
 
-    static <A> FrequencyMap<A> frequencyMap(int weight1, Generator<? extends A> gen1) {
-        return frequencyMap1(weight1, gen1);
+    static <A> FrequencyMap<A> frequencyMapValue(Weighted<? extends A> weightedValue) {
+        return frequencyMap1(weightedValue.fmap(Generators::constant));
     }
 
-    static <A> FrequencyMap<A> frequencyMap(int weight1, A value1) {
-        return frequencyMap1(weight1, constant(value1));
+    static <A> FrequencyMap<A> frequencyMapValue(A value) {
+        return frequencyMap1(constant(value).weighted());
     }
 
     static <A> FrequencyMap<A> frequencyMap(Generator<? extends A> gen1) {
-        return frequencyMap1(1, gen1);
+        return frequencyMap1(gen1.weighted());
     }
 
-    static <A> FrequencyMap<A> frequencyMap(FrequencyEntry<A> entry) {
-        return frequencyMap1(entry._1(), entry._2());
+    static <A> FrequencyMap<A> frequencyMap(Weighted<? extends Generator<? extends A>> weightedGenerator) {
+        return frequencyMap1(weightedGenerator);
     }
 
 }

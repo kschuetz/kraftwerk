@@ -568,11 +568,18 @@ public class Generators {
     }
 
     @SafeVarargs
-    public static <A> Generator<A> frequency(FrequencyEntry<A> first, FrequencyEntry<A>... more) {
+    public static <A> Generator<A> frequency(Weighted<? extends Generator<? extends A>> first,
+                                             Weighted<? extends Generator<? extends A>>... more) {
         return Choose.frequency(first, more);
     }
 
-    public static <A> Generator<A> frequency(Collection<FrequencyEntry<A>> entries) {
+    @SafeVarargs
+    public static <A> Generator<A> frequencyValues(Weighted<? extends A> first,
+                                                   Weighted<? extends A>... more) {
+        return Choose.frequencyValues(first, more);
+    }
+
+    public static <A> Generator<A> frequency(Collection<Weighted<? extends Generator<? extends A>>> entries) {
         return Choose.frequency(entries);
     }
 
@@ -672,79 +679,75 @@ public class Generators {
         return Shuffle.generateShuffled(input);
     }
 
-    public static <A> ChoiceBuilder1<A> choiceBuilder(int weight, Generator<A> firstChoice) {
-        return ChoiceBuilder1.choiceBuilder(weight, firstChoice);
-    }
-
-    public static <A> ChoiceBuilder1<A> choiceBuilder(Generator<A> firstChoice) {
+    public static <A> ChoiceBuilder1<A> choiceBuilder(Weighted<? extends Generator<? extends A>> firstChoice) {
         return ChoiceBuilder1.choiceBuilder(firstChoice);
     }
 
-    public static <A> ChoiceBuilder1<A> choiceBuilder(FrequencyEntry<A> firstChoice) {
+    public static <A> ChoiceBuilder1<A> choiceBuilder(Generator<? extends A> firstChoice) {
         return ChoiceBuilder1.choiceBuilder(firstChoice);
     }
 
-    public static <A> ChoiceBuilder1<A> choiceBuilderValue(int weight, A firstChoice) {
-        return ChoiceBuilder1.choiceBuilderValue(weight, firstChoice);
+    public static <A> ChoiceBuilder1<A> choiceBuilderValue(Weighted<? extends A> firstChoice) {
+        return ChoiceBuilder1.choiceBuilderValue(firstChoice);
     }
 
     public static <A> ChoiceBuilder1<A> choiceBuilderValue(A firstChoice) {
         return ChoiceBuilder1.choiceBuilderValue(firstChoice);
     }
 
-    public static <A, B> Generator<Choice2<A, B>> generateChoice(FrequencyEntry<A> a,
-                                                                 FrequencyEntry<B> b) {
+    public static <A, B> Generator<Choice2<A, B>> generateChoice(Weighted<? extends Generator<? extends A>> a,
+                                                                 Weighted<? extends Generator<? extends B>> b) {
         return choiceBuilder(a).or(b).toGenerator();
     }
 
-    public static <A, B, C> Generator<Choice3<A, B, C>> generateChoice(FrequencyEntry<A> a,
-                                                                       FrequencyEntry<B> b,
-                                                                       FrequencyEntry<C> c) {
+    public static <A, B, C> Generator<Choice3<A, B, C>> generateChoice(Weighted<? extends Generator<? extends A>> a,
+                                                                       Weighted<? extends Generator<? extends B>> b,
+                                                                       Weighted<? extends Generator<? extends C>> c) {
         return choiceBuilder(a).or(b).or(c).toGenerator();
     }
 
-    public static <A, B, C, D> Generator<Choice4<A, B, C, D>> generateChoice(FrequencyEntry<A> a,
-                                                                             FrequencyEntry<B> b,
-                                                                             FrequencyEntry<C> c,
-                                                                             FrequencyEntry<D> d) {
+    public static <A, B, C, D> Generator<Choice4<A, B, C, D>> generateChoice(Weighted<? extends Generator<? extends A>> a,
+                                                                             Weighted<? extends Generator<? extends B>> b,
+                                                                             Weighted<? extends Generator<? extends C>> c,
+                                                                             Weighted<? extends Generator<? extends D>> d) {
         return choiceBuilder(a).or(b).or(c).or(d).toGenerator();
     }
 
-    public static <A, B, C, D, E> Generator<Choice5<A, B, C, D, E>> generateChoice(FrequencyEntry<A> a,
-                                                                                   FrequencyEntry<B> b,
-                                                                                   FrequencyEntry<C> c,
-                                                                                   FrequencyEntry<D> d,
-                                                                                   FrequencyEntry<E> e) {
+    public static <A, B, C, D, E> Generator<Choice5<A, B, C, D, E>> generateChoice(Weighted<? extends Generator<? extends A>> a,
+                                                                                   Weighted<? extends Generator<? extends B>> b,
+                                                                                   Weighted<? extends Generator<? extends C>> c,
+                                                                                   Weighted<? extends Generator<? extends D>> d,
+                                                                                   Weighted<? extends Generator<? extends E>> e) {
         return choiceBuilder(a).or(b).or(c).or(d).or(e).toGenerator();
     }
 
-    public static <A, B, C, D, E, F> Generator<Choice6<A, B, C, D, E, F>> generateChoice(FrequencyEntry<A> a,
-                                                                                         FrequencyEntry<B> b,
-                                                                                         FrequencyEntry<C> c,
-                                                                                         FrequencyEntry<D> d,
-                                                                                         FrequencyEntry<E> e,
-                                                                                         FrequencyEntry<F> f) {
+    public static <A, B, C, D, E, F> Generator<Choice6<A, B, C, D, E, F>> generateChoice(Weighted<? extends Generator<? extends A>> a,
+                                                                                         Weighted<? extends Generator<? extends B>> b,
+                                                                                         Weighted<? extends Generator<? extends C>> c,
+                                                                                         Weighted<? extends Generator<? extends D>> d,
+                                                                                         Weighted<? extends Generator<? extends E>> e,
+                                                                                         Weighted<? extends Generator<? extends F>> f) {
         return choiceBuilder(a).or(b).or(c).or(d).or(e).or(f).toGenerator();
     }
 
-    public static <A, B, C, D, E, F, G> Generator<Choice7<A, B, C, D, E, F, G>> generateChoice(FrequencyEntry<A> a,
-                                                                                               FrequencyEntry<B> b,
-                                                                                               FrequencyEntry<C> c,
-                                                                                               FrequencyEntry<D> d,
-                                                                                               FrequencyEntry<E> e,
-                                                                                               FrequencyEntry<F> f,
-                                                                                               FrequencyEntry<G> g) {
+    public static <A, B, C, D, E, F, G> Generator<Choice7<A, B, C, D, E, F, G>> generateChoice(Weighted<? extends Generator<? extends A>> a,
+                                                                                               Weighted<? extends Generator<? extends B>> b,
+                                                                                               Weighted<? extends Generator<? extends C>> c,
+                                                                                               Weighted<? extends Generator<? extends D>> d,
+                                                                                               Weighted<? extends Generator<? extends E>> e,
+                                                                                               Weighted<? extends Generator<? extends F>> f,
+                                                                                               Weighted<? extends Generator<? extends G>> g) {
         return choiceBuilder(a).or(b).or(c).or(d).or(e).or(f).or(g).toGenerator();
     }
 
-    public static <A, B, C, D, E, F, G, H> Generator<Choice8<A, B, C, D, E, F, G, H>> generateChoice(FrequencyEntry<A> a,
-                                                                                                     FrequencyEntry<B> b,
-                                                                                                     FrequencyEntry<C> c,
-                                                                                                     FrequencyEntry<D> d,
-                                                                                                     FrequencyEntry<E> e,
-                                                                                                     FrequencyEntry<F> f,
-                                                                                                     FrequencyEntry<G> g,
-                                                                                                     FrequencyEntry<H> h) {
+    public static <A, B, C, D, E, F, G, H> Generator<Choice8<A, B, C, D, E, F, G, H>> generateChoice(Weighted<? extends Generator<? extends A>> a,
+                                                                                                     Weighted<? extends Generator<? extends B>> b,
+                                                                                                     Weighted<? extends Generator<? extends C>> c,
+                                                                                                     Weighted<? extends Generator<? extends D>> d,
+                                                                                                     Weighted<? extends Generator<? extends E>> e,
+                                                                                                     Weighted<? extends Generator<? extends F>> f,
+                                                                                                     Weighted<? extends Generator<? extends G>> g,
+                                                                                                     Weighted<? extends Generator<? extends H>> h) {
         return choiceBuilder(a).or(b).or(c).or(d).or(e).or(f).or(g).or(h).toGenerator();
     }
 

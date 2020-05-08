@@ -2,6 +2,7 @@ package dev.marksman.kraftwerk.frequency;
 
 import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.kraftwerk.Generator;
+import dev.marksman.kraftwerk.Weighted;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
@@ -11,14 +12,23 @@ import static dev.marksman.kraftwerk.frequency.FrequencyMapBuilderN.frequencyMap
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 class FrequencyMapBuilder0<A> implements FrequencyMapBuilder<A> {
     @Override
-    public FrequencyMapBuilder<A> add(int weight, Generator<? extends A> gen) {
-        if (weight > 0) {
-            FrequencyMap<? extends A> frequencyMap = frequencyMap(weight, gen);
+    public FrequencyMapBuilder<A> add(Weighted<? extends Generator<? extends A>> weightedGenerator) {
+        if (weightedGenerator.getWeight() > 0) {
+            FrequencyMap<? extends A> frequencyMap = frequencyMap(weightedGenerator);
             return frequencyMapBuilderN(frequencyMap);
         } else {
             return this;
         }
     }
+    //    @Override
+//    public FrequencyMapBuilder<A> add(int weight, Generator<? extends A> gen) {
+//        if (weight > 0) {
+//            FrequencyMap<? extends A> frequencyMap = frequencyMap(weight, gen);
+//            return frequencyMapBuilderN(frequencyMap);
+//        } else {
+//            return this;
+//        }
+//    }
 
     @Override
     public FrequencyMapBuilder<A> combine(FrequencyMap<A> other) {

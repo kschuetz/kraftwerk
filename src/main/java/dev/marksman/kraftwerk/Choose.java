@@ -111,16 +111,24 @@ class Choose {
     }
 
     @SafeVarargs
-    static <A> Generator<A> frequency(FrequencyEntry<A> first, FrequencyEntry<A>... more) {
+    static <A> Generator<A> frequency(Weighted<? extends Generator<? extends A>> first,
+                                      Weighted<? extends Generator<? extends A>>... more) {
         return frequencyImpl(cons(first, asList(more)));
     }
 
-    static <A> Generator<A> frequency(Collection<FrequencyEntry<A>> entries) {
+    @SafeVarargs
+    public static <A> Generator<A> frequencyValues(Weighted<? extends A> first,
+                                                   Weighted<? extends A>... more) {
+        return frequencyImpl(cons(first.fmap(Generators::constant),
+                com.jnape.palatable.lambda.functions.builtin.fn2.Map.map(w -> w.fmap(Generators::constant), asList(more))));
+    }
+
+    static <A> Generator<A> frequency(Collection<Weighted<? extends Generator<? extends A>>> entries) {
         return frequencyImpl(entries);
     }
 
-    private static <A> Generator<A> frequencyImpl(Iterable<FrequencyEntry<A>> entries) {
-        return FoldLeft.<FrequencyEntry<A>, FrequencyMapBuilder<A>>foldLeft(
+    private static <A> Generator<A> frequencyImpl(Iterable<Weighted<? extends Generator<? extends A>>> entries) {
+        return FoldLeft.<Weighted<? extends Generator<? extends A>>, FrequencyMapBuilder<A>>foldLeft(
                 FrequencyMapBuilder::add,
                 frequencyMapBuilder(), entries)
                 .build()

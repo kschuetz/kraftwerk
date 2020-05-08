@@ -83,6 +83,14 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
         return Generators.tupled(this, this, this);
     }
 
+    default Weighted<Generator<A>> weighted() {
+        return Weighted.weighted(1, this);
+    }
+
+    default Weighted<Generator<A>> weighted(int weight) {
+        return Weighted.weighted(weight, this);
+    }
+
     default Generator<Maybe<A>> just() {
         return Generators.generateJust(this);
     }

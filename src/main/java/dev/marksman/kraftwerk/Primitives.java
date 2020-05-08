@@ -12,6 +12,7 @@ import dev.marksman.kraftwerk.constraints.IntRange;
 import dev.marksman.kraftwerk.constraints.LongRange;
 import dev.marksman.kraftwerk.constraints.ShortRange;
 import dev.marksman.kraftwerk.core.BuildingBlocks;
+import dev.marksman.kraftwerk.frequency.FrequencyMap;
 import dev.marksman.kraftwerk.util.Labeling;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -215,6 +216,18 @@ class Primitives {
 
     static CharGenerator generateChar(CharRange range) {
         return new CharGenerator(range);
+    }
+
+    static Generator<Object> generateBoxedPrimitive() {
+        return FrequencyMap.<Object>frequencyMap(generateInt())
+                .add(generateLong())
+                .add(generateShort())
+                .add(generateByte())
+                .add(generateDouble())
+                .add(generateFloat())
+                .add(generateBoolean())
+                .add(generateChar())
+                .toGenerator();
     }
 
     static Generator<Double> generateGaussian() {

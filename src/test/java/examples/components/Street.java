@@ -9,8 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into3.into3;
-import static dev.marksman.kraftwerk.FrequencyEntry.entry;
-import static dev.marksman.kraftwerk.FrequencyEntry.entryForValue;
+import static dev.marksman.kraftwerk.Weighted.weighted;
 import static dev.marksman.kraftwerk.weights.MaybeWeights.nothings;
 import static examples.components.City.generateCityRootName;
 
@@ -33,8 +32,8 @@ public class Street {
 
     private static class generators {
         static final Generator<String> compass =
-                Generators.frequency(entry(8, Generators.chooseOneOfValues("N.", "S.", "W.", "E.")),
-                        entry(1, Generators.chooseOneOfValues("NW", "NE", "SW", "SE")));
+                Generators.frequency(Generators.chooseOneOfValues("N.", "S.", "W.", "E.").weighted(8),
+                        Generators.chooseOneOfValues("NW", "NE", "SW", "SE").weighted(1));
 
         static final Generator<String> ordinal =
                 Generators.generateInt(IntRange.from(1).to(99)).fmap(n -> {
@@ -52,19 +51,19 @@ public class Street {
                 Generators.chooseOneOfValues("Oak", "Maple", "Elm", "Pine", "Spruce", "Sycamore", "Birch", "Apple", "Peach");
 
         static final Generator<String> suffix =
-                Generators.frequency(entryForValue(10, "St."),
-                        entryForValue(7, "Ave."),
-                        entryForValue(5, "Rd."),
-                        entryForValue(3, "Dr."),
-                        entryForValue(3, "La."),
-                        entryForValue(2, "Blvd."),
-                        entryForValue(1, "Ct."));
+                Generators.frequencyValues(weighted(10, "St."),
+                        weighted(7, "Ave."),
+                        weighted(5, "Rd."),
+                        weighted(3, "Dr."),
+                        weighted(3, "La."),
+                        weighted(2, "Blvd."),
+                        weighted(1, "Ct."));
 
         static final Generator<String> name =
-                Generators.frequency(entry(3, ordinal),
-                        entry(2, tree),
-                        entry(2, president),
-                        entry(2, generateCityRootName()));
+                Generators.frequency(weighted(3, ordinal),
+                        weighted(2, tree),
+                        weighted(2, president),
+                        weighted(2, generateCityRootName()));
 
         static final Generator<Street> street = Generators.tupled(
                 compass.maybe(nothings(3).toJusts(1)),

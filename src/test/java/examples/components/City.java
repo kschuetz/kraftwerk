@@ -44,9 +44,9 @@ public class City {
                         "ville", "wich", "wick", "win", "wood", "worth");
 
         static Generator<String> part2 =
-                frequencyMap(10, part2Component)
-                        .add(4, generateString(2, part2Component))
-                        .add(1, generateString(3, part2Component))
+                frequencyMap(part2Component.weighted(10))
+                        .add(generateString(2, part2Component).weighted(4))
+                        .add(generateString(3, part2Component).weighted(1))
                         .toGenerator();
 
         static Generator<String> suffix =

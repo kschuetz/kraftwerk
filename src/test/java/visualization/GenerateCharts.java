@@ -14,7 +14,8 @@ import static dev.marksman.kraftwerk.Generators.generateFloat;
 import static dev.marksman.kraftwerk.Generators.generateGaussian;
 import static dev.marksman.kraftwerk.Generators.generateInt;
 import static dev.marksman.kraftwerk.Generators.generateShort;
-import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
+import static dev.marksman.kraftwerk.Weighted.weighted;
+import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMapValue;
 import static visualization.ChartSuite.chartSuite;
 import static visualization.HistogramGenerator.histogram;
 
@@ -51,16 +52,16 @@ public class GenerateCharts {
 
     private static Fn1<ChartSuite, ChartSuite> freqMaps() {
         return cs -> cs
-                .add("freqmap1", histogram(frequencyMap(1, 0)
-                        .addValue(2, 1)
-                        .addValue(3, 2)
-                        .addValue(4, 3)
-                        .addValue(5, 4)
-                        .addValue(6, 5)
-                        .addValue(7, 6)
-                        .addValue(8, 7)
-                        .addValue(9, 8)
-                        .addValue(10, 9)
+                .add("freqmap1", histogram(frequencyMapValue(weighted(1, 0))
+                        .addValue(weighted(2, 1))
+                        .addValue(weighted(3, 2))
+                        .addValue(weighted(4, 3))
+                        .addValue(weighted(5, 4))
+                        .addValue(weighted(6, 5))
+                        .addValue(weighted(7, 6))
+                        .addValue(weighted(8, 7))
+                        .addValue(weighted(9, 8))
+                        .addValue(weighted(10, 9))
                         .toGenerator(), 10, id()));
     }
 

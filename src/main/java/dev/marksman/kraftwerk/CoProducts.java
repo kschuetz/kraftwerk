@@ -4,7 +4,7 @@ import com.jnape.palatable.lambda.adt.Either;
 import com.jnape.palatable.lambda.adt.Maybe;
 import com.jnape.palatable.lambda.adt.These;
 import com.jnape.palatable.lambda.adt.Unit;
-import dev.marksman.kraftwerk.frequency.FrequencyMapBuilder;
+import dev.marksman.kraftwerk.frequency.FrequencyMap;
 import dev.marksman.kraftwerk.weights.BooleanWeights;
 import dev.marksman.kraftwerk.weights.EitherWeights;
 import dev.marksman.kraftwerk.weights.MaybeWeights;
@@ -36,10 +36,8 @@ class CoProducts {
         if (trueWeight == falseWeight) {
             return Generators.generateBoolean();
         } else {
-            return FrequencyMapBuilder.<Boolean>frequencyMapBuilder()
-                    .add(falseWeight, generateFalse())
-                    .add(trueWeight, generateTrue())
-                    .build()
+            return FrequencyMap.frequencyMap(generateFalse().weighted(falseWeight))
+                    .add(generateTrue().weighted(trueWeight))
                     .toGenerator();
         }
     }
@@ -53,10 +51,8 @@ class CoProducts {
     }
 
     static <A> Generator<Maybe<A>> generateMaybe(MaybeWeights weights, Generator<A> g) {
-        return FrequencyMapBuilder.<Maybe<A>>frequencyMapBuilder()
-                .add(weights.getJustWeight(), generateJust(g))
-                .add(weights.getNothingWeight(), generateNothing())
-                .build()
+        return FrequencyMap.frequencyMap(generateJust(g).weighted(weights.getJustWeight()))
+                .add(CoProducts.<A>generateNothing().weighted(weights.getNothingWeight()))
                 .toGenerator();
     }
 
@@ -73,10 +69,8 @@ class CoProducts {
     }
 
     static <L, R> Generator<Either<L, R>> generateEither(EitherWeights weights, Generator<L> leftGenerator, Generator<R> rightGenerator) {
-        return FrequencyMapBuilder.<Either<L, R>>frequencyMapBuilder()
-                .add(weights.getLeftWeight(), CoProducts.generateLeft(leftGenerator))
-                .add(weights.getRightWeight(), generateRight(rightGenerator))
-                .build()
+        return FrequencyMap.frequencyMap(CoProducts.<L, R>generateLeft(leftGenerator).weighted(weights.getLeftWeight()))
+                .add(CoProducts.<L, R>generateRight(rightGenerator).weighted(weights.getRightWeight()))
                 .toGenerator();
     }
 
@@ -97,11 +91,9 @@ class CoProducts {
     }
 
     static <A, B> Generator<These<A, B>> generateThese(TernaryWeights weights, Generator<A> generatorA, Generator<B> generatorB) {
-        return FrequencyMapBuilder.<These<A, B>>frequencyMapBuilder()
-                .add(weights.getWeightA(), generatorA.fmap(These::a))
-                .add(weights.getWeightB(), generatorB.fmap(These::b))
-                .add(weights.getWeightC(), generatorA.zipWith(These::both, generatorB))
-                .build()
+        return FrequencyMap.frequencyMap(generatorA.fmap(These::<A, B>a).weighted(weights.getWeightA()))
+                .add(generatorB.fmap(These::<A, B>b).weighted(weights.getWeightB()))
+                .add(generatorA.zipWith(These::both, generatorB).weighted(weights.getWeightC()))
                 .toGenerator();
     }
 

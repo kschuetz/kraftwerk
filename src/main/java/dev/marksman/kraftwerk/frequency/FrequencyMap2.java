@@ -2,30 +2,30 @@ package dev.marksman.kraftwerk.frequency;
 
 import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.kraftwerk.Generator;
+import dev.marksman.kraftwerk.Weighted;
 
 import static dev.marksman.kraftwerk.Generators.generateLongIndex;
-import static dev.marksman.kraftwerk.frequency.FrequencyMap1.checkMultiplier;
 import static dev.marksman.kraftwerk.frequency.FrequencyMap3.frequencyMap3;
 import static dev.marksman.kraftwerk.frequency.FrequencyMapN.addLabel;
 
 final class FrequencyMap2<A> implements FrequencyMap<A> {
-    private final int weightA;
-    private final Generator<A> generatorA;
-    private final int weightB;
-    private final Generator<A> generatorB;
+    private final Weighted<Generator<A>> weightedGeneratorA;
+    private final Weighted<Generator<A>> weightedGeneratorB;
 
     @SuppressWarnings("unchecked")
-    private FrequencyMap2(int weightA, Generator<? extends A> generatorA, int weightB, Generator<? extends A> generatorB) {
-        this.weightA = weightA;
-        this.generatorA = (Generator<A>) generatorA;
-        this.weightB = weightB;
-        this.generatorB = (Generator<A>) generatorB;
+    private FrequencyMap2(Weighted<? extends Generator<? extends A>> weightedGeneratorA,
+                          Weighted<? extends Generator<? extends A>> weightedGeneratorB) {
+        this.weightedGeneratorA = (Weighted<Generator<A>>) weightedGeneratorA;
+        this.weightedGeneratorB = (Weighted<Generator<A>>) weightedGeneratorB;
     }
 
     @Override
     public Generator<A> toGenerator() {
+        int weightA = weightedGeneratorA.getWeight();
+        int weightB = weightedGeneratorB.getWeight();
+        Generator<A> generatorA = weightedGeneratorA.getValue();
+        Generator<A> generatorB = weightedGeneratorB.getValue();
         long total = weightA + weightB;
-
         return addLabel(generateLongIndex(total)
                 .flatMap(n -> n < weightA
                         ? generatorA
@@ -33,35 +33,38 @@ final class FrequencyMap2<A> implements FrequencyMap<A> {
     }
 
     @Override
-    public FrequencyMap<A> add(int weight, Generator<? extends A> gen) {
-        if (weight < 1) {
+    public FrequencyMap<A> add(Weighted<? extends Generator<? extends A>> weightedGenerator) {
+        if (weightedGenerator.getWeight() < 1) {
             return this;
         } else {
-            return frequencyMap3(weightA, generatorA, weightB, generatorB, weight, gen);
+            return frequencyMap3(weightedGeneratorA, weightedGeneratorB, weightedGenerator);
         }
     }
 
     @Override
     public FrequencyMap<A> combine(FrequencyMap<A> other) {
-        return other.add(weightA, generatorA).add(weightB, generatorB);
+        return other.add(weightedGeneratorA).add(weightedGeneratorB);
     }
 
     @Override
     public FrequencyMap<A> multiply(int positiveFactor) {
-        checkMultiplier(positiveFactor);
-        if (positiveFactor == 1) return this;
-        else return frequencyMap2(positiveFactor * weightA, generatorA,
-                positiveFactor * weightB, generatorB);
+        if (positiveFactor == 1) {
+            return this;
+        } else {
+            return frequencyMap2(weightedGeneratorA.multiplyBy(positiveFactor),
+                    weightedGeneratorB.multiplyBy(positiveFactor));
+        }
     }
 
     @Override
     public <B> FrequencyMap<B> fmap(Fn1<? super A, ? extends B> fn) {
-        return frequencyMap2(weightA, generatorA.fmap(fn),
-                weightB, generatorB.fmap(fn));
+        Fn1<Generator<A>, ? extends Generator<? extends B>> mapGenerator = gen -> gen.fmap(fn);
+        return frequencyMap2(weightedGeneratorA.fmap(mapGenerator),
+                weightedGeneratorB.fmap(mapGenerator));
     }
 
-    static <A> FrequencyMap2<A> frequencyMap2(int weightA, Generator<? extends A> generatorA,
-                                              int weightB, Generator<? extends A> generatorB) {
-        return new FrequencyMap2<>(weightA, generatorA, weightB, generatorB);
+    static <A> FrequencyMap2<A> frequencyMap2(Weighted<? extends Generator<? extends A>> weightedGeneratorA,
+                                              Weighted<? extends Generator<? extends A>> weightedGeneratorB) {
+        return new FrequencyMap2<>(weightedGeneratorA, weightedGeneratorB);
     }
 }

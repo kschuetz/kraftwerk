@@ -26,8 +26,8 @@ class GeneratorTest {
     private static final Generator<Integer> gen1 = Generators.generateInt();
     private static final Generator<Double> gen2 = Generators.generateGaussian();
     private static final Generator<Integer> gen3 = Generators.generateInt(IntRange.from(1).until(10));
-    private static final Generator<String> gen4 = Generators.frequency(FrequencyEntry.entryForValue(3, "foo"),
-            FrequencyEntry.entryForValue(7, "bar"));
+    private static final Generator<String> gen4 = Generators.frequencyValues(Weighted.weighted(3, "foo"),
+            Weighted.weighted(7, "bar"));
 
     @Test
     void functorIdentity() {

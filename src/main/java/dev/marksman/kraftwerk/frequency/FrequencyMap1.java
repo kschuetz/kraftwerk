@@ -2,53 +2,54 @@ package dev.marksman.kraftwerk.frequency;
 
 import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.kraftwerk.Generator;
+import dev.marksman.kraftwerk.Weighted;
 
 import static dev.marksman.kraftwerk.frequency.FrequencyMap2.frequencyMap2;
 
 final class FrequencyMap1<A> implements FrequencyMap<A> {
-    private final int weight;
-    private final Generator<A> generator;
+    private final Weighted<Generator<A>> weightedGenerator;
 
     @SuppressWarnings("unchecked")
-    private FrequencyMap1(int weight, Generator<? extends A> generator) {
-        this.weight = weight;
-        this.generator = (Generator<A>) generator;
+    private FrequencyMap1(Weighted<? extends Generator<? extends A>> weightedGenerator) {
+        this.weightedGenerator = (Weighted<Generator<A>>) weightedGenerator;
     }
 
     @Override
     public Generator<A> toGenerator() {
-        return generator;
+        return weightedGenerator.getValue();
     }
 
     @Override
-    public FrequencyMap<A> add(int weight, Generator<? extends A> gen) {
-        if (weight < 1) {
+    public FrequencyMap<A> add(Weighted<? extends Generator<? extends A>> weightedGenerator) {
+        if (weightedGenerator.getWeight() < 1) {
             return this;
         } else {
-            return frequencyMap2(this.weight, this.generator, weight, gen);
+            return frequencyMap2(this.weightedGenerator, weightedGenerator);
         }
     }
 
     @Override
     public FrequencyMap<A> combine(FrequencyMap<A> other) {
-        return other.add(weight, generator);
+        return other.add(weightedGenerator);
     }
 
     @Override
     public FrequencyMap<A> multiply(int positiveFactor) {
-        checkMultiplier(positiveFactor);
-        if (positiveFactor == 1) return this;
-        else return frequencyMap1(positiveFactor * weight, generator);
+        if (positiveFactor == 1) {
+            return this;
+        } else {
+            return frequencyMap1(weightedGenerator.multiplyBy(positiveFactor));
+        }
     }
 
     @Override
     public <B> FrequencyMap<B> fmap(Fn1<? super A, ? extends B> fn) {
-        return frequencyMap1(weight, generator.fmap(fn));
+        return frequencyMap1(weightedGenerator.fmap(gen -> gen.fmap(fn)));
     }
 
-    static <A> FrequencyMap1<A> frequencyMap1(int weight, Generator<? extends A> gen) {
-        if (weight < 1) throw new IllegalArgumentException("initial weight must be >= 1");
-        return new FrequencyMap1<>(weight, gen);
+    static <A> FrequencyMap1<A> frequencyMap1(Weighted<? extends Generator<? extends A>> weightedGenerator) {
+        if (weightedGenerator.getWeight() < 1) throw new IllegalArgumentException("initial weight must be >= 1");
+        return new FrequencyMap1<>(weightedGenerator);
     }
 
     static void checkMultiplier(int factor) {

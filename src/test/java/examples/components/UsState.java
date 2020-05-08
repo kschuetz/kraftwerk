@@ -5,8 +5,8 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
-import static dev.marksman.kraftwerk.FrequencyEntry.entryForValue;
-import static dev.marksman.kraftwerk.Generators.frequency;
+import static dev.marksman.kraftwerk.Generators.frequencyValues;
+import static dev.marksman.kraftwerk.Weighted.weighted;
 
 @Value
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -22,24 +22,24 @@ public class UsState {
     }
 
     private static class generators {
-        private static final Generator<UsState> usState = frequency(
-                entryForValue(39, "CA"), entryForValue(28, "TX"), entryForValue(21, "FL"),
-                entryForValue(19, "NY"), entryForValue(12, "PA"), entryForValue(12, "IL"),
-                entryForValue(11, "OH"), entryForValue(10, "GA"), entryForValue(10, "NC"),
-                entryForValue(9, "MI"), entryForValue(8, "NJ"), entryForValue(8, "VA"),
-                entryForValue(7, "WA"), entryForValue(7, "AZ"), entryForValue(6, "MA"),
-                entryForValue(6, "TN"), entryForValue(6, "IN"), entryForValue(6, "MO"),
-                entryForValue(6, "MD"), entryForValue(5, "WI"), entryForValue(5, "CO"),
-                entryForValue(5, "MN"), entryForValue(5, "SC"), entryForValue(4, "AL"),
-                entryForValue(4, "LA"), entryForValue(4, "KY"), entryForValue(4, "OR"),
-                entryForValue(3, "OK"), entryForValue(3, "CT"), entryForValue(3, "UT"),
-                entryForValue(3, "IA"), entryForValue(3, "NV"), entryForValue(3, "AR"),
-                entryForValue(2, "MS"), entryForValue(2, "KS"), entryForValue(2, "NM"),
-                entryForValue(1, "WV"), entryForValue(1, "NE"), entryForValue(1, "ID"),
-                entryForValue(1, "HI"), entryForValue(1, "NH"), entryForValue(1, "ME"),
-                entryForValue(1, "MO"), entryForValue(1, "RI"), entryForValue(1, "DE"),
-                entryForValue(1, "SD"), entryForValue(1, "ND"), entryForValue(1, "AK"),
-                entryForValue(1, "VT"), entryForValue(1, "WY"))
+        private static final Generator<UsState> usState = frequencyValues(
+                weighted(39, "CA"), weighted(28, "TX"), weighted(21, "FL"),
+                weighted(19, "NY"), weighted(12, "PA"), weighted(12, "IL"),
+                weighted(11, "OH"), weighted(10, "GA"), weighted(10, "NC"),
+                weighted(9, "MI"), weighted(8, "NJ"), weighted(8, "VA"),
+                weighted(7, "WA"), weighted(7, "AZ"), weighted(6, "MA"),
+                weighted(6, "TN"), weighted(6, "IN"), weighted(6, "MO"),
+                weighted(6, "MD"), weighted(5, "WI"), weighted(5, "CO"),
+                weighted(5, "MN"), weighted(5, "SC"), weighted(4, "AL"),
+                weighted(4, "LA"), weighted(4, "KY"), weighted(4, "OR"),
+                weighted(3, "OK"), weighted(3, "CT"), weighted(3, "UT"),
+                weighted(3, "IA"), weighted(3, "NV"), weighted(3, "AR"),
+                weighted(2, "MS"), weighted(2, "KS"), weighted(2, "NM"),
+                weighted(1, "WV"), weighted(1, "NE"), weighted(1, "ID"),
+                weighted(1, "HI"), weighted(1, "NH"), weighted(1, "ME"),
+                weighted(1, "MO"), weighted(1, "RI"), weighted(1, "DE"),
+                weighted(1, "SD"), weighted(1, "ND"), weighted(1, "AK"),
+                weighted(1, "VT"), weighted(1, "WY"))
                 .fmap(UsState::usState);
     }
 

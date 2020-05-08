@@ -49,9 +49,9 @@ public class Address {
 
     private static class generators {
         static Generator<String> number =
-                frequencyMap(3, Generators.generateInt(IntRange.from(0).to(990)).fmap(n -> 100 + 10 * n))
-                        .add(3, Generators.generateInt(IntRange.from(0).to(990)).fmap(n -> 101 + 10 * n))
-                        .add(4, Generators.generateInt(IntRange.from(10).to(999)))
+                frequencyMap(Generators.generateInt(IntRange.from(0).to(990)).fmap(n -> 100 + 10 * n).weighted(3))
+                        .add(Generators.generateInt(IntRange.from(0).to(990)).fmap(n -> 101 + 10 * n).weighted(3))
+                        .add(Generators.generateInt(IntRange.from(10).to(999)).weighted(4))
                         .toGenerator()
                         .fmap(Object::toString);
 
