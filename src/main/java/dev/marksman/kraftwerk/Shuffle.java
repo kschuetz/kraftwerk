@@ -16,7 +16,6 @@ import static com.jnape.palatable.lambda.functions.builtin.fn1.Upcast.upcast;
 import static dev.marksman.kraftwerk.Result.result;
 
 class Shuffle {
-
     static Generator<Vector<Integer>> generateShuffled(int count) {
         return generateShuffled(count, id());
     }
@@ -96,8 +95,8 @@ class Shuffle {
             return inputState;
         } else {
             Seed state = inputState;
-            for (int i = 1; i < size; i++) {
-                Result<? extends Seed, Integer> next = BuildingBlocks.nextIntBounded(i, state);
+            for (int i = size - 1; i > 0; i--) {
+                Result<? extends Seed, Integer> next = BuildingBlocks.nextIntBounded(i + 1, state);
                 int j = next.getValue();
                 if (i != j) {
                     A temp = target.get(i);
@@ -109,5 +108,4 @@ class Shuffle {
             return state;
         }
     }
-
 }
