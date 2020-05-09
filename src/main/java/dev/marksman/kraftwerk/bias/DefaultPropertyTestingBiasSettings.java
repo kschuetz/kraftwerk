@@ -1,6 +1,7 @@
 package dev.marksman.kraftwerk.bias;
 
 import dev.marksman.kraftwerk.SizeParameters;
+import dev.marksman.kraftwerk.constraints.BigDecimalRange;
 import dev.marksman.kraftwerk.constraints.BigIntegerRange;
 import dev.marksman.kraftwerk.constraints.ByteRange;
 import dev.marksman.kraftwerk.constraints.CharRange;
@@ -10,12 +11,14 @@ import dev.marksman.kraftwerk.constraints.IntRange;
 import dev.marksman.kraftwerk.constraints.LongRange;
 import dev.marksman.kraftwerk.constraints.ShortRange;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn3.Between.between;
 
 public final class DefaultPropertyTestingBiasSettings implements BiasSettings {
     private static final DefaultPropertyTestingBiasSettings INSTANCE = new DefaultPropertyTestingBiasSettings();
+    public static final BigDecimal SMALL_BIG_DECIMAL = BigDecimal.valueOf(0.000001);
 
     private DefaultPropertyTestingBiasSettings() {
 
@@ -128,6 +131,25 @@ public final class DefaultPropertyTestingBiasSettings implements BiasSettings {
                 .addSpecialValue(BigInteger.valueOf(Long.MAX_VALUE).add(BigInteger.ONE))
                 .addSpecialValue(BigInteger.valueOf(Long.MIN_VALUE).subtract(BigInteger.ONE))
                 .addSpecialValue(range.maxExclusive().subtract(BigInteger.ONE))
+                .build();
+    }
+
+    @Override
+    public BiasSetting<BigDecimal> bigDecimalBias(BigDecimalRange range) {
+        return BiasSetting.builder(range::includes)
+                .addSpecialValue(range.min())
+                .addSpecialValue(range.min().add(SMALL_BIG_DECIMAL))
+                .addSpecialValue(SMALL_BIG_DECIMAL.negate())
+                .addSpecialValue(BigDecimal.ZERO)
+                .addSpecialValue(SMALL_BIG_DECIMAL)
+                .addSpecialValue(BigDecimal.ONE)
+                .addSpecialValue(BigDecimal.ONE.negate())
+                .addSpecialValue(BigDecimal.valueOf(Long.MAX_VALUE))
+                .addSpecialValue(BigDecimal.valueOf(Long.MIN_VALUE))
+                .addSpecialValue(BigDecimal.valueOf(Long.MAX_VALUE).add(BigDecimal.ONE))
+                .addSpecialValue(BigDecimal.valueOf(Long.MIN_VALUE).subtract(BigDecimal.ONE))
+                .addSpecialValue(range.max().subtract(SMALL_BIG_DECIMAL))
+                .addSpecialValue(range.max())
                 .build();
     }
 

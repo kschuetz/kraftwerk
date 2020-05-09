@@ -2,6 +2,7 @@ package dev.marksman.kraftwerk.bias;
 
 import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.kraftwerk.SizeParameters;
+import dev.marksman.kraftwerk.constraints.BigDecimalRange;
 import dev.marksman.kraftwerk.constraints.BigIntegerRange;
 import dev.marksman.kraftwerk.constraints.ByteRange;
 import dev.marksman.kraftwerk.constraints.CharRange;
@@ -13,6 +14,7 @@ import dev.marksman.kraftwerk.constraints.ShortRange;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
@@ -60,6 +62,11 @@ final class CompositeBiasSettings implements BiasSettings {
     @Override
     public BiasSetting<BigInteger> bigIntegerBias(BigIntegerRange range) {
         return compose(bs -> bs.bigIntegerBias(range));
+    }
+
+    @Override
+    public BiasSetting<BigDecimal> bigDecimalBias(BigDecimalRange range) {
+        return compose(bs -> bs.bigDecimalBias(range));
     }
 
     @Override

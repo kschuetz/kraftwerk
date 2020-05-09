@@ -55,7 +55,6 @@ public class Address {
                         .toGenerator()
                         .fmap(Object::toString);
 
-
         static Generator<String> unit =
                 Generators.tupled(Generators.chooseOneOfValues(" #", ", Apt. ", ", Suite "),
                         Generators.chooseOneOf(Generators.generateInt(IntRange.from(100).to(3000)), Generators.generateInt(IntRange.from(1).to(99))))

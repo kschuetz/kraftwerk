@@ -843,6 +843,18 @@ public class Generators {
         return BigNumbers.generateBigInteger(range);
     }
 
+    public static Generator<BigDecimal> generateBigDecimal() {
+        return BigNumbers.generateBigDecimal();
+    }
+
+    public static Generator<BigDecimal> generateBigDecimal(BigDecimalRange range) {
+        return BigNumbers.generateBigDecimal(range);
+    }
+
+    public static Generator<BigDecimal> generateBigDecimal(Generator<Integer> generateDecimalPlaces, BigDecimalRange range) {
+        return BigNumbers.generateBigDecimal(generateDecimalPlaces, range);
+    }
+
     public static Generator<BigDecimal> generateBigDecimal(int decimalPlaces, BigDecimalRange range) {
         return BigNumbers.generateBigDecimal(decimalPlaces, range);
     }
