@@ -16,9 +16,9 @@
     <url>https://github.com/kschuetz/kraftwerk</url>
 
     <properties>
-        <lambda.version>5.1.0</lambda.version>
-        <collection-views.version>1.1.1</collection-views.version>
-        <junit.version>5.4.0</junit.version>
+        <lambda.version>5.2.0</lambda.version>
+        <collection-views.version>1.2.2</collection-views.version>
+        <junit.version>5.5.0</junit.version>
         <hamcrest.version>2.2</hamcrest.version>
         <commons-math.version>3.6.1</commons-math.version>
         <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
