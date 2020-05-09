@@ -1,6 +1,7 @@
 package dev.marksman.kraftwerk.constraints;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -51,6 +52,10 @@ public final class LocalDateRange implements Constraint<LocalDate>, Iterable<Loc
 
     public LocalDate maxInclusive() {
         return maxInclusive;
+    }
+
+    public Period toPeriod() {
+        return Period.between(minInclusive, maxInclusive.plusDays(1));
     }
 
     @Override
