@@ -181,6 +181,10 @@ public class Generators {
         return Primitives.generateByteArray(count);
     }
 
+    public static Generator<Object> generateBoxedPrimitive() {
+        return Primitives.generateBoxedPrimitive();
+    }
+
     public static Generator<Integer> generateSize() {
         return Primitives.generateSize();
     }
