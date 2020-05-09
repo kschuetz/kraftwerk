@@ -1,9 +1,12 @@
 package dev.marksman.kraftwerk.constraints;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeExclusive;
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeInclusive;
 
-public final class CharRange implements Constraint<Character> {
+public final class CharRange implements Constraint<Character>, Iterable<Character> {
     private static final CharRange FULL = new CharRange(Character.MIN_VALUE, Character.MAX_VALUE);
 
     private final char minInclusive;
@@ -42,6 +45,11 @@ public final class CharRange implements Constraint<Character> {
         return FULL;
     }
 
+    @Override
+    public Iterator<Character> iterator() {
+        return new CharRangeIterator(minInclusive, maxInclusive);
+    }
+
     public char minInclusive() {
         return minInclusive;
     }
@@ -73,9 +81,56 @@ public final class CharRange implements Constraint<Character> {
         return new CharRange(min, (char) (maxExclusive - 1));
     }
 
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof CharRange)) return false;
+        final CharRange other = (CharRange) o;
+        if (this.minInclusive != other.minInclusive) return false;
+        return this.maxInclusive == other.maxInclusive;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        result = result * PRIME + this.minInclusive;
+        result = result * PRIME + this.maxInclusive;
+        return result;
+    }
+
     public interface CharRangeFrom {
         CharRange to(char maxInclusive);
 
         CharRange until(char maxExclusive);
+    }
+
+    private static class CharRangeIterator implements Iterator<Character> {
+        private final char max;
+        private char current;
+        private boolean exhausted;
+
+        public CharRangeIterator(char current, char max) {
+            this.current = current;
+            this.max = max;
+            exhausted = current > max;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return !exhausted;
+        }
+
+        @Override
+        public Character next() {
+            if (exhausted) {
+                throw new NoSuchElementException();
+            }
+            char result = current;
+            if (current >= max) {
+                exhausted = true;
+            } else {
+                current += 1;
+            }
+            return result;
+        }
     }
 }

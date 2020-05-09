@@ -1,9 +1,12 @@
 package dev.marksman.kraftwerk.constraints;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeExclusive;
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeInclusive;
 
-public final class LongRange implements Constraint<Long> {
+public final class LongRange implements Constraint<Long>, Iterable<Long> {
     private static final LongRange FULL = new LongRange(Long.MIN_VALUE, Long.MAX_VALUE);
 
     private final long minInclusive;
@@ -46,6 +49,11 @@ public final class LongRange implements Constraint<Long> {
         return FULL;
     }
 
+    @Override
+    public Iterator<Long> iterator() {
+        return new LongRangeIterator(minInclusive, maxInclusive);
+    }
+
     public long minInclusive() {
         return minInclusive;
     }
@@ -71,10 +79,58 @@ public final class LongRange implements Constraint<Long> {
         return inclusive(minInclusive, maxExclusive);
     }
 
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof LongRange)) return false;
+        final LongRange other = (LongRange) o;
+        if (this.minInclusive != other.minInclusive) return false;
+        return this.maxInclusive == other.maxInclusive;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final long $minInclusive = this.minInclusive;
+        result = result * PRIME + (int) ($minInclusive >>> 32 ^ $minInclusive);
+        final long $maxInclusive = this.maxInclusive;
+        result = result * PRIME + (int) ($maxInclusive >>> 32 ^ $maxInclusive);
+        return result;
+    }
+
     public interface LongRangeFrom {
         LongRange to(long maxInclusive);
 
         LongRange until(long maxExclusive);
     }
 
+    private static class LongRangeIterator implements Iterator<Long> {
+        private final long max;
+        private long current;
+        private boolean exhausted;
+
+        public LongRangeIterator(long current, long max) {
+            this.current = current;
+            this.max = max;
+            exhausted = current > max;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return !exhausted;
+        }
+
+        @Override
+        public Long next() {
+            if (exhausted) {
+                throw new NoSuchElementException();
+            }
+            long result = current;
+            if (current >= max) {
+                exhausted = true;
+            } else {
+                current += 1;
+            }
+            return result;
+        }
+    }
 }

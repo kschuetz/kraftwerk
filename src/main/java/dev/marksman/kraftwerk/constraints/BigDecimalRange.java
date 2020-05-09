@@ -6,6 +6,7 @@ import com.jnape.palatable.lambda.functions.builtin.fn2.LT;
 import com.jnape.palatable.lambda.functions.builtin.fn2.LTE;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateExclusiveBound;
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeExclusive;
@@ -116,10 +117,31 @@ public final class BigDecimalRange implements Constraint<BigDecimal> {
         return bigDecimalRange(max.negate(), maxIncluded, min.negate(), minIncluded);
     }
 
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof BigDecimalRange)) return false;
+        final BigDecimalRange other = (BigDecimalRange) o;
+        if (!Objects.equals(this.min, other.min)) return false;
+        if (this.minIncluded != other.minIncluded) return false;
+        if (!Objects.equals(this.max, other.max)) return false;
+        return this.maxIncluded == other.maxIncluded;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $min = this.min;
+        result = result * PRIME + ($min == null ? 43 : $min.hashCode());
+        result = result * PRIME + (this.minIncluded ? 79 : 97);
+        final Object $max = this.max;
+        result = result * PRIME + ($max == null ? 43 : $max.hashCode());
+        result = result * PRIME + (this.maxIncluded ? 79 : 97);
+        return result;
+    }
+
     public interface BigDecimalRangeFrom {
         BigDecimalRange to(BigDecimal maxInclusive);
 
         BigDecimalRange until(BigDecimal maxExclusive);
     }
-
 }

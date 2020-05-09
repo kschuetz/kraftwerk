@@ -156,6 +156,28 @@ public final class DoubleRange implements Constraint<Double> {
         return doubleRange(-max, maxIncluded, -min, minIncluded);
     }
 
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof DoubleRange)) return false;
+        final DoubleRange other = (DoubleRange) o;
+        if (Double.compare(this.min, other.min) != 0) return false;
+        if (this.minIncluded != other.minIncluded) return false;
+        if (Double.compare(this.max, other.max) != 0) return false;
+        return this.maxIncluded == other.maxIncluded;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final long $min = Double.doubleToLongBits(this.min);
+        result = result * PRIME + (int) ($min >>> 32 ^ $min);
+        result = result * PRIME + (this.minIncluded ? 79 : 97);
+        final long $max = Double.doubleToLongBits(this.max);
+        result = result * PRIME + (int) ($max >>> 32 ^ $max);
+        result = result * PRIME + (this.maxIncluded ? 79 : 97);
+        return result;
+    }
+
     public interface DoubleRangeFrom {
         DoubleRange to(double maxInclusive);
 

@@ -156,6 +156,26 @@ public final class FloatRange implements Constraint<Float> {
         return floatRange(-max, maxIncluded, -min, minIncluded);
     }
 
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof FloatRange)) return false;
+        final FloatRange other = (FloatRange) o;
+        if (Float.compare(this.min, other.min) != 0) return false;
+        if (this.minIncluded != other.minIncluded) return false;
+        if (Float.compare(this.max, other.max) != 0) return false;
+        return this.maxIncluded == other.maxIncluded;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        result = result * PRIME + Float.floatToIntBits(this.min);
+        result = result * PRIME + (this.minIncluded ? 79 : 97);
+        result = result * PRIME + Float.floatToIntBits(this.max);
+        result = result * PRIME + (this.maxIncluded ? 79 : 97);
+        return result;
+    }
+
     public interface FloatRangeFrom {
         FloatRange to(float maxInclusive);
 

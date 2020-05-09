@@ -1,9 +1,12 @@
 package dev.marksman.kraftwerk.constraints;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeExclusive;
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeInclusive;
 
-public final class ByteRange implements Constraint<Byte> {
+public final class ByteRange implements Constraint<Byte>, Iterable<Byte> {
     private static final ByteRange FULL = new ByteRange(Byte.MIN_VALUE, Byte.MAX_VALUE);
 
     private final byte minInclusive;
@@ -47,6 +50,11 @@ public final class ByteRange implements Constraint<Byte> {
         return FULL;
     }
 
+    @Override
+    public Iterator<Byte> iterator() {
+        return new ByteRangeIterator(minInclusive, maxInclusive);
+    }
+
     public byte minInclusive() {
         return minInclusive;
     }
@@ -78,10 +86,56 @@ public final class ByteRange implements Constraint<Byte> {
         return new ByteRange(min, (byte) (maxExclusive - 1));
     }
 
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof ByteRange)) return false;
+        final ByteRange other = (ByteRange) o;
+        if (this.minInclusive != other.minInclusive) return false;
+        return this.maxInclusive == other.maxInclusive;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        result = result * PRIME + this.minInclusive;
+        result = result * PRIME + this.maxInclusive;
+        return result;
+    }
+
     public interface ByteRangeFrom {
         ByteRange to(byte maxInclusive);
 
         ByteRange until(byte maxExclusive);
     }
 
+    private static class ByteRangeIterator implements Iterator<Byte> {
+        private final byte max;
+        private byte current;
+        private boolean exhausted;
+
+        public ByteRangeIterator(byte current, byte max) {
+            this.current = current;
+            this.max = max;
+            exhausted = current > max;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return !exhausted;
+        }
+
+        @Override
+        public Byte next() {
+            if (exhausted) {
+                throw new NoSuchElementException();
+            }
+            byte result = current;
+            if (current >= max) {
+                exhausted = true;
+            } else {
+                current += 1;
+            }
+            return result;
+        }
+    }
 }
