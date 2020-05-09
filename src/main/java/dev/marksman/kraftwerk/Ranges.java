@@ -2,6 +2,7 @@ package dev.marksman.kraftwerk;
 
 import com.jnape.palatable.lambda.adt.hlist.Tuple2;
 import com.jnape.palatable.lambda.functions.builtin.fn2.GTE;
+import dev.marksman.kraftwerk.constraints.BigDecimalRange;
 import dev.marksman.kraftwerk.constraints.BigIntegerRange;
 import dev.marksman.kraftwerk.constraints.ByteRange;
 import dev.marksman.kraftwerk.constraints.DoubleRange;
@@ -19,6 +20,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into.into;
+import static dev.marksman.kraftwerk.BigNumbers.DEFAULT_BIG_DECIMAL_RANGE;
+import static dev.marksman.kraftwerk.BigNumbers.DEFAULT_BIG_INTEGER_RANGE;
+import static dev.marksman.kraftwerk.BigNumbers.generateBigDecimal;
 import static dev.marksman.kraftwerk.BigNumbers.generateBigInteger;
 import static dev.marksman.kraftwerk.Generators.generateOrderedPair;
 import static dev.marksman.kraftwerk.Primitives.generateByte;
@@ -27,6 +31,8 @@ import static dev.marksman.kraftwerk.Primitives.generateFloat;
 import static dev.marksman.kraftwerk.Primitives.generateInt;
 import static dev.marksman.kraftwerk.Primitives.generateLong;
 import static dev.marksman.kraftwerk.Primitives.generateShort;
+import static dev.marksman.kraftwerk.Temporal.DEFAULT_DURATION_RANGE;
+import static dev.marksman.kraftwerk.Temporal.DEFAULT_LOCAL_DATE_RANGE;
 import static dev.marksman.kraftwerk.Temporal.generateDuration;
 import static dev.marksman.kraftwerk.Temporal.generateLocalDate;
 import static dev.marksman.kraftwerk.Temporal.generateLocalDateTime;
@@ -70,9 +76,17 @@ public class Ranges {
                 .fmap(into(ByteRange::inclusive));
     }
 
+    static Generator<DoubleRange> generateDoubleRange() {
+        return generateDoubleRange(DoubleRange.fullRange());
+    }
+
     static Generator<DoubleRange> generateDoubleRange(DoubleRange parentRange) {
         return generateOrderedPair(generateDouble(parentRange))
                 .fmap(into(DoubleRange::inclusive));
+    }
+
+    static Generator<FloatRange> generateFloatRange() {
+        return generateFloatRange(FloatRange.fullRange());
     }
 
     static Generator<FloatRange> generateFloatRange(FloatRange parentRange) {
@@ -80,17 +94,42 @@ public class Ranges {
                 .fmap(into(FloatRange::inclusive));
     }
 
+    static Generator<BigIntegerRange> generateBigIntegerRange() {
+        return generateBigIntegerRange(DEFAULT_BIG_INTEGER_RANGE);
+    }
+
     static Generator<BigIntegerRange> generateBigIntegerRange(BigIntegerRange parentRange) {
         return generateOrderedPair(generateBigInteger(parentRange))
                 .fmap(into(BigIntegerRange::inclusive));
+    }
+
+    static Generator<BigDecimalRange> generateBigDecimalRange() {
+        return generateBigDecimalRange(DEFAULT_BIG_DECIMAL_RANGE);
+    }
+
+    static Generator<BigDecimalRange> generateBigDecimalRange(BigDecimalRange parentRange) {
+        return generateOrderedPair(generateBigDecimal(parentRange))
+                .fmap(into(BigDecimalRange::inclusive));
+    }
+
+    static Generator<LocalDateRange> generateLocalDateRange() {
+        return generateLocalDateRange(DEFAULT_LOCAL_DATE_RANGE);
     }
 
     static Generator<LocalDateRange> generateLocalDateRange(LocalDateRange parentRange) {
         return generateLocalDate(parentRange).pair().fmap(Ranges::createLocalDateRange);
     }
 
+    static Generator<LocalTimeRange> generateLocalTimeRange() {
+        return generateLocalTimeRange(LocalTimeRange.fullRange());
+    }
+
     static Generator<LocalTimeRange> generateLocalTimeRange(LocalTimeRange parentRange) {
         return generateLocalTime(parentRange).pair().fmap(Ranges::createLocalTimeRange);
+    }
+
+    static Generator<LocalDateTimeRange> generateLocalDateTimeRange() {
+        return generateLocalDateTimeRange(DEFAULT_LOCAL_DATE_RANGE);
     }
 
     static Generator<LocalDateTimeRange> generateLocalDateTimeRange(LocalDateRange parentRange) {
@@ -99,6 +138,10 @@ public class Ranges {
 
     static Generator<LocalDateTimeRange> generateLocalDateTimeRange(LocalDateTimeRange parentRange) {
         return generateLocalDateTime(parentRange).pair().fmap(Ranges::createLocalDateTimeRange);
+    }
+
+    static Generator<DurationRange> generateDurationRange() {
+        return generateDurationRange(DEFAULT_DURATION_RANGE);
     }
 
     static Generator<DurationRange> generateDurationRange(DurationRange parentRange) {

@@ -8,10 +8,8 @@ import static dev.marksman.kraftwerk.aggregator.Aggregator.aggregator;
 import static dev.marksman.kraftwerk.aggregator.Aggregators.monoidAggregator;
 
 class Lambda {
-
     static <A> Generator<A> generateFromSemigroup(Semigroup<A> semigroup, Generator<A> gen) {
         return Generators.sized(size -> generateNFromSemigroup(semigroup, gen, Math.max(0, size)));
-
     }
 
     static <A> Generator<A> generateNFromSemigroup(Semigroup<A> semigroup, Generator<A> gen, int count) {
@@ -44,5 +42,4 @@ class Lambda {
             return Generators.aggregate(monoidAggregator(monoid), count, gen);
         }
     }
-
 }

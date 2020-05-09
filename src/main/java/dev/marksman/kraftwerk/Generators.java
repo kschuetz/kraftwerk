@@ -975,24 +975,56 @@ public class Generators {
         return Ranges.generateByteRange(parentRange);
     }
 
+    public static Generator<DoubleRange> generateDoubleRange() {
+        return Ranges.generateDoubleRange();
+    }
+
     public static Generator<DoubleRange> generateDoubleRange(DoubleRange parentRange) {
         return Ranges.generateDoubleRange(parentRange);
+    }
+
+    public static Generator<FloatRange> generateFloatRange() {
+        return Ranges.generateFloatRange();
     }
 
     public static Generator<FloatRange> generateFloatRange(FloatRange parentRange) {
         return Ranges.generateFloatRange(parentRange);
     }
 
+    public static Generator<BigIntegerRange> generateBigIntegerRange() {
+        return Ranges.generateBigIntegerRange();
+    }
+
     public static Generator<BigIntegerRange> generateBigIntegerRange(BigIntegerRange parentRange) {
         return Ranges.generateBigIntegerRange(parentRange);
+    }
+
+    public static Generator<BigDecimalRange> generateBigDecimalRange() {
+        return Ranges.generateBigDecimalRange();
+    }
+
+    public static Generator<BigDecimalRange> generateBigDecimalRange(BigDecimalRange parentRange) {
+        return Ranges.generateBigDecimalRange(parentRange);
+    }
+
+    public static Generator<LocalDateRange> generateLocalDateRange() {
+        return Ranges.generateLocalDateRange();
     }
 
     public static Generator<LocalDateRange> generateLocalDateRange(LocalDateRange parentRange) {
         return Ranges.generateLocalDateRange(parentRange);
     }
 
+    public static Generator<LocalTimeRange> generateLocalTimeRange() {
+        return Ranges.generateLocalTimeRange();
+    }
+
     public static Generator<LocalTimeRange> generateLocalTimeRange(LocalTimeRange parentRange) {
         return Ranges.generateLocalTimeRange(parentRange);
+    }
+
+    public static Generator<LocalDateTimeRange> generateLocalDateTimeRange() {
+        return Ranges.generateLocalDateTimeRange();
     }
 
     public static Generator<LocalDateTimeRange> generateLocalDateTimeRange(LocalDateRange parentRange) {
@@ -1001,6 +1033,10 @@ public class Generators {
 
     public static Generator<LocalDateTimeRange> generateLocalDateTimeRange(LocalDateTimeRange parentRange) {
         return Ranges.generateLocalDateTimeRange(parentRange);
+    }
+
+    public static Generator<DurationRange> generateDurationRange() {
+        return Ranges.generateDurationRange();
     }
 
     public static Generator<DurationRange> generateDurationRange(DurationRange parentRange) {

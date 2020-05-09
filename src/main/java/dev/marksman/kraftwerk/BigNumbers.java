@@ -13,15 +13,13 @@ import static dev.marksman.kraftwerk.Generators.generateInt;
 import static dev.marksman.kraftwerk.Generators.generateLong;
 
 class BigNumbers {
-    private static final BigIntegerRange DEFAULT_BIG_INTEGER_RANGE =
+    static final BigIntegerRange DEFAULT_BIG_INTEGER_RANGE =
             BigIntegerRange.from(BigInteger.valueOf(Long.MIN_VALUE).subtract(BigInteger.ONE))
                     .to(BigInteger.valueOf(Long.MAX_VALUE).add(BigInteger.ONE));
-
-    private static final Generator<Integer> DEFAULT_GENERATE_DECIMAL_PLACES = generateInt(IntRange.from(-1).to(20));
-
-    private static final BigDecimalRange DEFAULT_BIG_DECIMAL_RANGE =
+    static final BigDecimalRange DEFAULT_BIG_DECIMAL_RANGE =
             BigDecimalRange.from(BigDecimal.valueOf(Long.MIN_VALUE, 0).subtract(BigDecimal.ONE))
                     .to(BigDecimal.valueOf(Long.MAX_VALUE).add(BigDecimal.ONE));
+    private static final Generator<Integer> DEFAULT_GENERATE_DECIMAL_PLACES = generateInt(IntRange.from(-1).to(20));
 
     static Generator<BigInteger> generateBigInteger() {
         return generateBigInteger(DEFAULT_BIG_INTEGER_RANGE);
