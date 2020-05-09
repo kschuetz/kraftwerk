@@ -5,7 +5,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 class Meta {
-
     static <A> Generator<A> withMetadata(Maybe<String> label, Maybe<Object> applicationData, Generator<A> underlying) {
         while (underlying instanceof WithMetadata<?>) {
             underlying = ((WithMetadata<A>) underlying).getUnderlying();
@@ -37,7 +36,5 @@ class Meta {
         public Generate<A> prepare(GeneratorParameters generatorParameters) {
             return underlying.prepare(generatorParameters);
         }
-
     }
-
 }
