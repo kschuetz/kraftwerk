@@ -102,7 +102,7 @@ class PrimitivesTest {
 
     @Test
     void testDoubleBetween0and1() {
-        assertForAll(generateDouble(), n -> n >= 0.0d && n <= 1.0d);
+        assertForAll(Generators.generateDoubleFractional(), n -> n >= 0.0d && n <= 1.0d);
     }
 
     @Test
@@ -113,7 +113,7 @@ class PrimitivesTest {
 
     @Test
     void testFloatBetween0and1() {
-        assertForAll(generateFloat(), n -> n >= 0.0f && n <= 1.0f);
+        assertForAll(Generators.generateFloatFractional(), n -> n >= 0.0f && n <= 1.0f);
     }
 
     @Test
@@ -182,7 +182,7 @@ class PrimitivesTest {
     void testDoubleCoversRange() {
         int partitions = 512;
         int[] f = new int[partitions];
-        generateDouble()
+        Generators.generateDoubleFractional()
                 .run()
                 .take(10 * partitions)
                 .forEach(n -> {
@@ -197,7 +197,7 @@ class PrimitivesTest {
     void testFloatCoversRange() {
         int partitions = 512;
         int[] f = new int[partitions];
-        generateFloat()
+        Generators.generateFloatFractional()
                 .run()
                 .take(10 * partitions)
                 .forEach(n -> {
@@ -214,9 +214,7 @@ class PrimitivesTest {
         generateBoolean()
                 .run()
                 .take(20)
-                .forEach(b -> {
-                    f[b ? 0 : 1] += 1;
-                });
+                .forEach(b -> f[b ? 0 : 1] += 1);
 
         assertTrue(coversRange(f));
     }
@@ -243,9 +241,7 @@ class PrimitivesTest {
         generateByte()
                 .run()
                 .take(2560)
-                .forEach(n -> {
-                    f[n & 255] += 1;
-                });
+                .forEach(n -> f[n & 255] += 1);
 
         assertTrue(coversRange(f));
     }
@@ -282,9 +278,7 @@ class PrimitivesTest {
         generateInt(IntRange.from(0).to(255))
                 .run()
                 .take(2560)
-                .forEach(n -> {
-                    f[n] += 1;
-                });
+                .forEach(n -> f[n] += 1);
 
         assertTrue(coversRange(f));
     }
@@ -295,9 +289,7 @@ class PrimitivesTest {
         generateInt(IntRange.from(-128).to(127))
                 .run()
                 .take(2560)
-                .forEach(n -> {
-                    f[n + 128] += 1;
-                });
+                .forEach(n -> f[n + 128] += 1);
 
         assertTrue(coversRange(f));
     }
@@ -309,9 +301,7 @@ class PrimitivesTest {
         generateLong(LongRange.inclusive(0, 255))
                 .run()
                 .take(2560)
-                .forEach(n -> {
-                    f[n.intValue()] += 1;
-                });
+                .forEach(n -> f[n.intValue()] += 1);
 
         assertTrue(coversRange(f));
     }
@@ -322,9 +312,7 @@ class PrimitivesTest {
         generateLong(LongRange.inclusive(-128, 127))
                 .run()
                 .take(2560)
-                .forEach(n -> {
-                    f[n.intValue() + 128] += 1;
-                });
+                .forEach(n -> f[n.intValue() + 128] += 1);
 
         assertTrue(coversRange(f));
     }

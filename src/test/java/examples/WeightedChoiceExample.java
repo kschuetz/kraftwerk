@@ -10,8 +10,8 @@ public class WeightedChoiceExample {
     private static void example1() {
         Generator<Choice8<Integer, Double, Float, Boolean, Long, Byte, Short, Character>> primitiveGenerator =
                 Generators.choiceBuilder(Generators.generateInt())
-                        .or(Generators.generateDouble())
-                        .or(Generators.generateFloat())
+                        .or(Generators.generateDoubleFractional())
+                        .or(Generators.generateFloatFractional())
                         .or(Generators.generateBoolean())
                         .or(Generators.generateLong())
                         .or(Generators.generateByte())

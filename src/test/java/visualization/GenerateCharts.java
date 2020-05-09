@@ -1,6 +1,7 @@
 package visualization;
 
 import com.jnape.palatable.lambda.functions.Fn1;
+import dev.marksman.kraftwerk.Generators;
 import dev.marksman.kraftwerk.constraints.IntRange;
 
 import java.nio.file.Path;
@@ -9,8 +10,6 @@ import java.nio.file.Paths;
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
 import static dev.marksman.kraftwerk.Generators.generateBoolean;
 import static dev.marksman.kraftwerk.Generators.generateByte;
-import static dev.marksman.kraftwerk.Generators.generateDouble;
-import static dev.marksman.kraftwerk.Generators.generateFloat;
 import static dev.marksman.kraftwerk.Generators.generateGaussian;
 import static dev.marksman.kraftwerk.Generators.generateInt;
 import static dev.marksman.kraftwerk.Generators.generateShort;
@@ -45,8 +44,8 @@ public class GenerateCharts {
                 .add("byte", histogram(generateByte(), 256, n -> 128 + n))
                 .add("short", histogram(generateShort(), 256, n -> (n >> 8) & 255))
                 .add("boolean", histogram(generateBoolean(), 2, b -> b ? 0 : 1))
-                .add("double", histogram(generateDouble(), 256, n -> (int) (n * 256)))
-                .add("float", histogram(generateFloat(), 256, n -> (int) (n * 256)))
+                .add("double", histogram(Generators.generateDoubleFractional(), 256, n -> (int) (n * 256)))
+                .add("float", histogram(Generators.generateFloatFractional(), 256, n -> (int) (n * 256)))
                 .add("gaussian", histogram(generateGaussian(), 512, n -> 256 + (int) (90 * n)));
     }
 

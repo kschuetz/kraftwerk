@@ -107,18 +107,44 @@ public class Generators {
         return CoProducts.generateBoolean(weights);
     }
 
+    /**
+     * Generates a {@link Double} within the full range of {@code Double}s (between {@link Double#MIN_VALUE} and {@link Double#MAX_VALUE}, inclusive)
+     */
     public static FloatingPointGenerator<Double> generateDouble() {
         return Primitives.generateDouble();
     }
 
+    /**
+     * Generates a {@link Double} between 0 (inclusive) and 1 (exclusive)
+     */
+    public static FloatingPointGenerator<Double> generateDoubleFractional() {
+        return Primitives.generateDoubleFractional();
+    }
+
+    /**
+     * Generates a {@link Double} within specified range
+     */
     public static FloatingPointGenerator<Double> generateDouble(DoubleRange range) {
         return Primitives.generateDouble(range);
     }
 
+    /**
+     * Generates a {@link Float} within the full range of {@code Float}s (between {@link Float#MIN_VALUE} and {@link Float#MAX_VALUE}, inclusive)
+     */
     public static FloatingPointGenerator<Float> generateFloat() {
         return Primitives.generateFloat();
     }
 
+    /**
+     * Generates a {@link Float} between 0 (inclusive) and 1 (exclusive)
+     */
+    public static FloatingPointGenerator<Float> generateFloatFractional() {
+        return Primitives.generateFloatFractional();
+    }
+
+    /**
+     * Generates a {@link Float} within specified range
+     */
     public static FloatingPointGenerator<Float> generateFloat(FloatRange range) {
         return Primitives.generateFloat(range);
     }

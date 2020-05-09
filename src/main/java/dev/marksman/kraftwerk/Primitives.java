@@ -115,6 +115,10 @@ class Primitives {
     }
 
     static FloatingPointGenerator<Double> generateDouble() {
+        return new DoubleGenerator(just(DoubleRange.fullRange()), false, false);
+    }
+
+    static FloatingPointGenerator<Double> generateDoubleFractional() {
         return DoubleGenerator.DEFAULT_DOUBLE_GENERATOR;
     }
 
@@ -123,6 +127,10 @@ class Primitives {
     }
 
     static FloatingPointGenerator<Float> generateFloat() {
+        return new FloatGenerator(just(FloatRange.fullRange()), false, false);
+    }
+
+    static FloatingPointGenerator<Float> generateFloatFractional() {
         return FloatGenerator.DEFAULT_FLOAT_GENERATOR;
     }
 
@@ -228,8 +236,8 @@ class Primitives {
                 .add(generateLong())
                 .add(generateShort())
                 .add(generateByte())
-                .add(generateDouble())
-                .add(generateFloat())
+                .add(generateDoubleFractional())
+                .add(generateFloatFractional())
                 .add(generateBoolean())
                 .add(generateChar())
                 .toGenerator();
