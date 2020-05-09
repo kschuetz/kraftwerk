@@ -498,7 +498,7 @@ public class Generators {
     }
 
     @SafeVarargs
-    public static <A> Generator<A> chooseOneOf(Generator<A> first, Generator<? extends A>... more) {
+    public static <A> Generator<A> chooseOneOf(Generator<? extends A> first, Generator<? extends A>... more) {
         return Choose.chooseOneOf(first, more);
     }
 

@@ -19,7 +19,6 @@ import static com.jnape.palatable.lambda.functions.builtin.fn3.FoldLeft.foldLeft
 import static dev.marksman.kraftwerk.Generators.buildVector;
 import static dev.marksman.kraftwerk.Generators.constant;
 import static dev.marksman.kraftwerk.ReservoirSample.reservoirSample;
-import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
 import static dev.marksman.kraftwerk.frequency.FrequencyMapBuilder.frequencyMapBuilder;
 import static java.util.Arrays.asList;
 
@@ -31,8 +30,8 @@ class Choose {
     }
 
     @SafeVarargs
-    static <A> Generator<A> chooseOneOf(Generator<A> first, Generator<? extends A>... more) {
-        return foldLeft(FrequencyMap::add, frequencyMap(first), asList(more)).toGenerator();
+    static <A> Generator<A> chooseOneOf(Generator<? extends A> first, Generator<? extends A>... more) {
+        return foldLeft(FrequencyMap::add, FrequencyMap.<A>frequencyMap(first), asList(more)).toGenerator();
     }
 
     @SafeVarargs
