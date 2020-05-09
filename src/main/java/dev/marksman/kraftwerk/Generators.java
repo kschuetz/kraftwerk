@@ -905,6 +905,10 @@ public class Generators {
         return Temporal.generateLocalDateTime(range);
     }
 
+    public static Generator<Duration> generateDuration() {
+        return Temporal.generateDuration();
+    }
+
     public static Generator<Duration> generateDuration(DurationRange range) {
         return Temporal.generateDuration(range);
     }
@@ -1002,5 +1006,4 @@ public class Generators {
     public static Generator<DurationRange> generateDurationRange(DurationRange parentRange) {
         return Ranges.generateDurationRange(parentRange);
     }
-
 }

@@ -23,6 +23,8 @@ class Temporal {
             LocalDateRange.from(LocalDate.of(1899, 1, 1))
                     .to(LocalDate.of(2199, 12, 31));
 
+    private static final Duration DEFAULT_MAX_DURATION = Duration.ofDays(1000);
+
     private static final Generator<Month> MONTH_GENERATOR = Enums.generateFromEnum(Month.class);
     private static final Generator<DayOfWeek> DAY_OF_WEEK_GENERATOR = Generators.generateFromEnum(DayOfWeek.class);
 
@@ -116,6 +118,10 @@ class Temporal {
                 });
     }
 
+    static Generator<Duration> generateDuration() {
+        return generateDuration(DEFAULT_MAX_DURATION);
+    }
+
     static Generator<Duration> generateDuration(DurationRange range) {
         Duration min = range.minInclusive();
         Duration max = range.maxInclusive();
@@ -142,5 +148,4 @@ class Temporal {
             }
         }
     }
-
 }
