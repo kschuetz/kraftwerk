@@ -62,10 +62,12 @@ import dev.marksman.kraftwerk.weights.TernaryWeights;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
 import java.time.Year;
 import java.time.YearMonth;
 import java.util.ArrayList;
@@ -857,6 +859,18 @@ public class Generators {
 
     public static Generator<BigDecimal> generateBigDecimal(int decimalPlaces, BigDecimalRange range) {
         return BigNumbers.generateBigDecimal(decimalPlaces, range);
+    }
+
+    public static Generator<Month> generateMonth() {
+        return Temporal.generateMonth();
+    }
+
+    public static Generator<DayOfWeek> generateDayOfWeek() {
+        return Temporal.generateDayOfWeek();
+    }
+
+    public static Generator<LocalDate> generateLocalDate() {
+        return Temporal.generateLocalDate();
     }
 
     public static Generator<LocalDate> generateLocalDate(LocalDateRange range) {

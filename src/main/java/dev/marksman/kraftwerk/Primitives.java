@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import static com.jnape.palatable.lambda.adt.Maybe.just;
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Constantly.constantly;
+import static dev.marksman.kraftwerk.Generators.constant;
 import static dev.marksman.kraftwerk.SizeSelectors.sizeSelector;
 import static dev.marksman.kraftwerk.bias.BiasSetting.noBias;
 import static dev.marksman.kraftwerk.core.BuildingBlocks.checkBound;
@@ -51,7 +52,9 @@ class Primitives {
 
     private static Generator<Integer> generateInt(int min, int max) {
         checkMinMax(min, max);
-        if (max == Integer.MAX_VALUE) {
+        if (min == max) {
+            return constant(min).labeled(Labeling.intInterval(min, max, false));
+        } else if (max == Integer.MAX_VALUE) {
             if (min == Integer.MIN_VALUE) {
                 return generateInt();
             } else {
@@ -137,7 +140,9 @@ class Primitives {
 
     private static Generator<Long> generateLong(long min, long max) {
         checkMinMax(min, max);
-        if (max == Long.MAX_VALUE) {
+        if (min == max) {
+            return constant(min).labeled(Labeling.longInterval(min, max, false));
+        } else if (max == Long.MAX_VALUE) {
             if (min == Long.MIN_VALUE) {
                 return generateLong();
             } else {

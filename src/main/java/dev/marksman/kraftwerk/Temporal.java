@@ -7,18 +7,38 @@ import dev.marksman.kraftwerk.constraints.LocalDateTimeRange;
 import dev.marksman.kraftwerk.constraints.LocalTimeRange;
 import dev.marksman.kraftwerk.constraints.LongRange;
 
+import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
 import java.time.Year;
 import java.time.YearMonth;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
 class Temporal {
+    private static final LocalDateRange DEFAULT_LOCAL_DATE_RANGE =
+            LocalDateRange.from(LocalDate.of(1899, 1, 1))
+                    .to(LocalDate.of(2199, 12, 31));
+
+    private static final Generator<Month> MONTH_GENERATOR = Enums.generateFromEnum(Month.class);
+    private static final Generator<DayOfWeek> DAY_OF_WEEK_GENERATOR = Generators.generateFromEnum(DayOfWeek.class);
 
     private static final long NANOS_PER_DAY = 60 * 60 * 24 * 1_000_000_000L;
+
+    static Generator<Month> generateMonth() {
+        return MONTH_GENERATOR;
+    }
+
+    static Generator<DayOfWeek> generateDayOfWeek() {
+        return DAY_OF_WEEK_GENERATOR;
+    }
+
+    static Generator<LocalDate> generateLocalDate() {
+        return generateLocalDate(DEFAULT_LOCAL_DATE_RANGE);
+    }
 
     static Generator<LocalDate> generateLocalDate(LocalDateRange range) {
         LocalDate origin = range.minInclusive();
@@ -32,7 +52,9 @@ class Temporal {
     }
 
     static Generator<LocalDate> generateLocalDateForYear(Year year) {
-        return Generators.generateInt(IntRange.from(1).to(year.length())).fmap(year::atDay);
+        // Choosing a month, then a day for that month, rather than just choosing a day of the year.
+        // This is to allow bias towards the first and last days of each month, if bias is enabled.
+        return generateMonth().flatMap(month -> generateLocalDateForMonth(YearMonth.of(year.getValue(), month)));
     }
 
     static Generator<LocalDate> generateLocalDateForMonth(YearMonth yearMonth) {
