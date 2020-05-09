@@ -79,6 +79,10 @@ class Temporal {
         }
     }
 
+    static Generator<LocalDateTime> generateLocalDateTime() {
+        return generateLocalDateTime(DEFAULT_LOCAL_DATE_RANGE);
+    }
+
     static Generator<LocalDateTime> generateLocalDateTime(LocalDateRange range) {
         return generateLocalDateTime(LocalDateTimeRange.inclusive(range.minInclusive().atStartOfDay(),
                 range.maxInclusive().atTime(LocalTime.MAX)));

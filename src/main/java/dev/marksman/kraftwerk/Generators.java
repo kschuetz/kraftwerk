@@ -893,6 +893,10 @@ public class Generators {
         return Temporal.generateLocalTime(range);
     }
 
+    public static Generator<LocalDateTime> generateLocalDateTime() {
+        return Temporal.generateLocalDateTime();
+    }
+
     public static Generator<LocalDateTime> generateLocalDateTime(LocalDateRange dateRange) {
         return Temporal.generateLocalDateTime(dateRange);
     }
