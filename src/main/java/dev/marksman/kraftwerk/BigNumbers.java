@@ -7,9 +7,17 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Random;
 
+import static dev.marksman.kraftwerk.Bias.applyBiasSetting;
 import static dev.marksman.kraftwerk.Generators.generateLong;
 
 class BigNumbers {
+    private static final BigIntegerRange DEFAULT_BIG_INTEGER_RANGE =
+            BigIntegerRange.from(BigInteger.valueOf(Long.MIN_VALUE).subtract(BigInteger.ONE))
+                    .to(BigInteger.valueOf(Long.MAX_VALUE).add(BigInteger.ONE));
+
+    static Generator<BigInteger> generateBigInteger() {
+        return generateBigInteger(DEFAULT_BIG_INTEGER_RANGE);
+    }
 
     static Generator<BigInteger> generateBigInteger(BigIntegerRange range) {
         BigInteger min = range.minInclusive();
@@ -34,18 +42,17 @@ class BigNumbers {
     }
 
     private static Generator<BigInteger> generateBigIntegerExclusive(BigInteger bound) {
-
-        return generateLong().fmap(s -> {
-            int bitLength = bound.bitLength();
-            Random rnd = new Random();
-            rnd.setSeed(s);
-            BigInteger result;
-            do {
-                result = new BigInteger(bitLength, rnd);
-            } while (result.compareTo(bound) >= 0);
-            return result;
-        });
-
+        return applyBiasSetting(bs -> bs.bigIntegerBias(BigIntegerRange.exclusive(bound)),
+                generateLong().fmap(s -> {
+                    int bitLength = bound.bitLength();
+                    Random rnd = new Random();
+                    rnd.setSeed(s);
+                    BigInteger result;
+                    do {
+                        result = new BigInteger(bitLength, rnd);
+                    } while (result.compareTo(bound) >= 0);
+                    return result;
+                }));
     }
 
     private static Generator<BigInteger> generateBigIntegerExclusive(BigInteger origin, BigInteger bound) {
@@ -69,12 +76,5 @@ class BigNumbers {
     private static BigInteger makeMaxExclusive(boolean maxIncluded, BigInteger max) {
         return maxIncluded ? max.add(BigInteger.ONE) : max;
     }
-
-    /*
-    public static BigDecimal generateRandomBigDecimalFromRange(BigDecimal min, BigDecimal max) {
-    BigDecimal randomBigDecimal = min.add(new BigDecimal(Math.random()).multiply(max.subtract(min)));
-    return randomBigDecimal.setScale(2,BigDecimal.ROUND_HALF_UP);
-}
-     */
 
 }

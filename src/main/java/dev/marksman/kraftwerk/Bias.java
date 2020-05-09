@@ -1,11 +1,13 @@
 package dev.marksman.kraftwerk;
 
 import com.jnape.palatable.lambda.adt.Maybe;
+import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.collectionviews.ImmutableNonEmptyVector;
 import dev.marksman.collectionviews.NonEmptyVector;
 import dev.marksman.collectionviews.Vector;
 import dev.marksman.enhancediterables.NonEmptyFiniteIterable;
 import dev.marksman.kraftwerk.bias.BiasSetting;
+import dev.marksman.kraftwerk.bias.BiasSettings;
 import dev.marksman.kraftwerk.core.BuildingBlocks;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -19,6 +21,12 @@ class Bias {
                                             Generate<A> underlying) {
         return biasSetting.match(__ -> underlying,
                 isv -> injectSpecial(isv.getSpecialValues(), underlying));
+    }
+
+    static <A> Generator<A> applyBiasSetting(Fn1<BiasSettings, BiasSetting<A>> getBiasSetting,
+                                             Generator<A> underlying) {
+        return generatorParameters -> applyBiasSetting(getBiasSetting.apply(generatorParameters.getBiasSettings()),
+                underlying.prepare(generatorParameters));
     }
 
     static <A> Generator<A> injectsSpecialValues(NonEmptyFiniteIterable<A> specialValues, Generator<A> underlying) {

@@ -835,6 +835,10 @@ public class Generators {
         return UUIDs.generateUUID();
     }
 
+    public static Generator<BigInteger> generateBigInteger() {
+        return BigNumbers.generateBigInteger();
+    }
+
     public static Generator<BigInteger> generateBigInteger(BigIntegerRange range) {
         return BigNumbers.generateBigInteger(range);
     }

@@ -1,6 +1,7 @@
 package dev.marksman.kraftwerk.bias;
 
 import dev.marksman.kraftwerk.SizeParameters;
+import dev.marksman.kraftwerk.constraints.BigIntegerRange;
 import dev.marksman.kraftwerk.constraints.ByteRange;
 import dev.marksman.kraftwerk.constraints.CharRange;
 import dev.marksman.kraftwerk.constraints.DoubleRange;
@@ -8,6 +9,8 @@ import dev.marksman.kraftwerk.constraints.FloatRange;
 import dev.marksman.kraftwerk.constraints.IntRange;
 import dev.marksman.kraftwerk.constraints.LongRange;
 import dev.marksman.kraftwerk.constraints.ShortRange;
+
+import java.math.BigInteger;
 
 import static dev.marksman.kraftwerk.bias.CompositeBiasSettings.compositeBiasSettings;
 
@@ -25,6 +28,8 @@ public interface BiasSettings {
     BiasSetting<Short> shortBias(ShortRange range);
 
     BiasSetting<Character> charBias(CharRange range);
+
+    BiasSetting<BigInteger> bigIntegerBias(BigIntegerRange range);
 
     BiasSetting<Integer> sizeBias(SizeParameters sizeParameters);
 

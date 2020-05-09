@@ -1,6 +1,7 @@
 package dev.marksman.kraftwerk.bias;
 
 import dev.marksman.kraftwerk.SizeParameters;
+import dev.marksman.kraftwerk.constraints.BigIntegerRange;
 import dev.marksman.kraftwerk.constraints.ByteRange;
 import dev.marksman.kraftwerk.constraints.CharRange;
 import dev.marksman.kraftwerk.constraints.DoubleRange;
@@ -8,6 +9,8 @@ import dev.marksman.kraftwerk.constraints.FloatRange;
 import dev.marksman.kraftwerk.constraints.IntRange;
 import dev.marksman.kraftwerk.constraints.LongRange;
 import dev.marksman.kraftwerk.constraints.ShortRange;
+
+import java.math.BigInteger;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn3.Between.between;
 
@@ -110,6 +113,21 @@ public final class DefaultPropertyTestingBiasSettings implements BiasSettings {
                 .addSpecialValue(' ')
                 .addSpecialValue('\n')
                 .addSpecialValue(range.maxInclusive())
+                .build();
+    }
+
+    @Override
+    public BiasSetting<BigInteger> bigIntegerBias(BigIntegerRange range) {
+        return BiasSetting.builder(range::includes)
+                .addSpecialValue(range.minInclusive())
+                .addSpecialValue(BigInteger.ZERO)
+                .addSpecialValue(BigInteger.ONE)
+                .addSpecialValue(BigInteger.ONE.negate())
+                .addSpecialValue(BigInteger.valueOf(Long.MAX_VALUE))
+                .addSpecialValue(BigInteger.valueOf(Long.MIN_VALUE))
+                .addSpecialValue(BigInteger.valueOf(Long.MAX_VALUE).add(BigInteger.ONE))
+                .addSpecialValue(BigInteger.valueOf(Long.MIN_VALUE).subtract(BigInteger.ONE))
+                .addSpecialValue(range.maxExclusive().subtract(BigInteger.ONE))
                 .build();
     }
 
