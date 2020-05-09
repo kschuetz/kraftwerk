@@ -234,7 +234,11 @@ class Primitives {
         return GaussianGenerator.INSTANCE;
     }
 
-    static Generator<Byte[]> generateBytes(int count) {
+    static Generator<Byte[]> generateByteArray() {
+        return sized(Primitives::generateByteArray);
+    }
+
+    static Generator<Byte[]> generateByteArray(int count) {
         checkCount(count);
         return new BytesGenerator(count);
     }

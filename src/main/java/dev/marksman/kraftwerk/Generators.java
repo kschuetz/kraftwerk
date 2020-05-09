@@ -173,8 +173,12 @@ public class Generators {
         return Primitives.generateGaussian();
     }
 
-    public static Generator<Byte[]> generateBytes(int count) {
-        return Primitives.generateBytes(count);
+    public static Generator<Byte[]> generateByteArray() {
+        return Primitives.generateByteArray();
+    }
+
+    public static Generator<Byte[]> generateByteArray(int count) {
+        return Primitives.generateByteArray(count);
     }
 
     public static Generator<Integer> generateSize() {
