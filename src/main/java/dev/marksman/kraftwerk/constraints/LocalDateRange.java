@@ -7,6 +7,7 @@ import java.util.NoSuchElementException;
 
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeExclusive;
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeInclusive;
+import static dev.marksman.kraftwerk.constraints.RangeToString.rangeToString;
 
 public final class LocalDateRange implements Constraint<LocalDate>, Iterable<LocalDate> {
     private final LocalDate minInclusive;
@@ -75,27 +76,27 @@ public final class LocalDateRange implements Constraint<LocalDate>, Iterable<Loc
         return exclusive(minInclusive, max);
     }
 
-    public boolean equals(final Object o) {
-        if (o == this) return true;
-        if (!(o instanceof LocalDateRange)) return false;
-        final LocalDateRange other = (LocalDateRange) o;
-        final Object this$minInclusive = this.minInclusive;
-        final Object other$minInclusive = other.minInclusive;
-        if (this$minInclusive == null ? other$minInclusive != null : !this$minInclusive.equals(other$minInclusive))
-            return false;
-        final Object this$maxInclusive = this.maxInclusive;
-        final Object other$maxInclusive = other.maxInclusive;
-        return this$maxInclusive == null ? other$maxInclusive == null : this$maxInclusive.equals(other$maxInclusive);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        LocalDateRange that = (LocalDateRange) o;
+
+        if (!minInclusive.equals(that.minInclusive)) return false;
+        return maxInclusive.equals(that.maxInclusive);
     }
 
+    @Override
     public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $minInclusive = this.minInclusive;
-        result = result * PRIME + ($minInclusive == null ? 43 : $minInclusive.hashCode());
-        final Object $maxInclusive = this.maxInclusive;
-        result = result * PRIME + ($maxInclusive == null ? 43 : $maxInclusive.hashCode());
+        int result = minInclusive.hashCode();
+        result = 31 * result + maxInclusive.hashCode();
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return rangeToString(getClass().getSimpleName(), minInclusive, true, maxInclusive, true);
     }
 
     public interface LocalDateRangeFrom {

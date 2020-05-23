@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeExclusive;
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeInclusive;
+import static dev.marksman.kraftwerk.constraints.RangeToString.rangeToString;
 
 public final class ByteRange implements Constraint<Byte>, Iterable<Byte> {
     private static final ByteRange FULL = new ByteRange(Byte.MIN_VALUE, Byte.MAX_VALUE);
@@ -86,20 +87,27 @@ public final class ByteRange implements Constraint<Byte>, Iterable<Byte> {
         return new ByteRange(min, (byte) (maxExclusive - 1));
     }
 
-    public boolean equals(final Object o) {
-        if (o == this) return true;
-        if (!(o instanceof ByteRange)) return false;
-        final ByteRange other = (ByteRange) o;
-        if (this.minInclusive != other.minInclusive) return false;
-        return this.maxInclusive == other.maxInclusive;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ByteRange bytes = (ByteRange) o;
+
+        if (minInclusive != bytes.minInclusive) return false;
+        return maxInclusive == bytes.maxInclusive;
     }
 
+    @Override
     public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        result = result * PRIME + this.minInclusive;
-        result = result * PRIME + this.maxInclusive;
+        int result = minInclusive;
+        result = 31 * result + (int) maxInclusive;
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return rangeToString(getClass().getSimpleName(), minInclusive, true, maxInclusive, true);
     }
 
     public interface ByteRangeFrom {

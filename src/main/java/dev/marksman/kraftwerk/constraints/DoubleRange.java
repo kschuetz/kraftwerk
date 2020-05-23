@@ -4,6 +4,7 @@ import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateEx
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeExclusive;
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeInclusive;
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeWidth;
+import static dev.marksman.kraftwerk.constraints.RangeToString.rangeToString;
 
 public final class DoubleRange implements Constraint<Double> {
     private static final DoubleRange FULL = new DoubleRange(Double.MIN_VALUE, true, Double.MAX_VALUE, true);
@@ -156,26 +157,35 @@ public final class DoubleRange implements Constraint<Double> {
         return doubleRange(-max, maxIncluded, -min, minIncluded);
     }
 
-    public boolean equals(final Object o) {
-        if (o == this) return true;
-        if (!(o instanceof DoubleRange)) return false;
-        final DoubleRange other = (DoubleRange) o;
-        if (Double.compare(this.min, other.min) != 0) return false;
-        if (this.minIncluded != other.minIncluded) return false;
-        if (Double.compare(this.max, other.max) != 0) return false;
-        return this.maxIncluded == other.maxIncluded;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DoubleRange that = (DoubleRange) o;
+
+        if (Double.compare(that.min, min) != 0) return false;
+        if (minIncluded != that.minIncluded) return false;
+        if (Double.compare(that.max, max) != 0) return false;
+        return maxIncluded == that.maxIncluded;
     }
 
+    @Override
     public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final long $min = Double.doubleToLongBits(this.min);
-        result = result * PRIME + (int) ($min >>> 32 ^ $min);
-        result = result * PRIME + (this.minIncluded ? 79 : 97);
-        final long $max = Double.doubleToLongBits(this.max);
-        result = result * PRIME + (int) ($max >>> 32 ^ $max);
-        result = result * PRIME + (this.maxIncluded ? 79 : 97);
+        int result;
+        long temp;
+        temp = Double.doubleToLongBits(min);
+        result = (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (minIncluded ? 1 : 0);
+        temp = Double.doubleToLongBits(max);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (maxIncluded ? 1 : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return rangeToString(getClass().getSimpleName(), min, minIncluded, max, maxIncluded);
     }
 
     public interface DoubleRangeFrom {

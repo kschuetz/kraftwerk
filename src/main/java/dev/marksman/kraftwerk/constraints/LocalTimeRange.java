@@ -4,6 +4,7 @@ import java.time.LocalTime;
 
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeExclusive;
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeInclusive;
+import static dev.marksman.kraftwerk.constraints.RangeToString.rangeToString;
 
 public final class LocalTimeRange implements Constraint<LocalTime> {
     private static final LocalTimeRange FULL = new LocalTimeRange(LocalTime.MIN, LocalTime.MAX, true);
@@ -85,6 +86,31 @@ public final class LocalTimeRange implements Constraint<LocalTime> {
 
     public LocalTimeRange withMaxExclusive(LocalTime maxExclusive) {
         return localTimeRange(minInclusive, maxExclusive, false);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        LocalTimeRange that = (LocalTimeRange) o;
+
+        if (maxIncluded != that.maxIncluded) return false;
+        if (!minInclusive.equals(that.minInclusive)) return false;
+        return max.equals(that.max);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = minInclusive.hashCode();
+        result = 31 * result + max.hashCode();
+        result = 31 * result + (maxIncluded ? 1 : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return rangeToString(getClass().getSimpleName(), minInclusive, true, max, maxIncluded);
     }
 
     public interface LocalTimeRangeFrom {

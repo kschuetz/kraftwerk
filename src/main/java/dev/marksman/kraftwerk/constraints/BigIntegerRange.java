@@ -6,10 +6,10 @@ import com.jnape.palatable.lambda.functions.builtin.fn2.LT;
 import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeExclusive;
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeInclusive;
+import static dev.marksman.kraftwerk.constraints.RangeToString.rangeToString;
 
 public final class BigIntegerRange implements Constraint<BigInteger>, Iterable<BigInteger> {
     private final BigInteger minInclusive;
@@ -78,23 +78,27 @@ public final class BigIntegerRange implements Constraint<BigInteger>, Iterable<B
         return exclusive(minInclusive, maxExclusive);
     }
 
-    public boolean equals(final Object o) {
-        if (o == this) return true;
-        if (!(o instanceof BigIntegerRange)) return false;
-        final BigIntegerRange other = (BigIntegerRange) o;
-        if (!Objects.equals(this.minInclusive, other.minInclusive))
-            return false;
-        return Objects.equals(this.maxExclusive, other.maxExclusive);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BigIntegerRange that = (BigIntegerRange) o;
+
+        if (!minInclusive.equals(that.minInclusive)) return false;
+        return maxExclusive.equals(that.maxExclusive);
     }
 
+    @Override
     public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $minInclusive = this.minInclusive;
-        result = result * PRIME + ($minInclusive == null ? 43 : $minInclusive.hashCode());
-        final Object $maxExclusive = this.maxExclusive;
-        result = result * PRIME + ($maxExclusive == null ? 43 : $maxExclusive.hashCode());
+        int result = minInclusive.hashCode();
+        result = 31 * result + maxExclusive.hashCode();
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return rangeToString(getClass().getSimpleName(), minInclusive, true, maxExclusive, false);
     }
 
     public interface BigIntegerRangeFrom {

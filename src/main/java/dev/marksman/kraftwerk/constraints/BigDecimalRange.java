@@ -6,11 +6,11 @@ import com.jnape.palatable.lambda.functions.builtin.fn2.LT;
 import com.jnape.palatable.lambda.functions.builtin.fn2.LTE;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateExclusiveBound;
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeExclusive;
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeInclusive;
+import static dev.marksman.kraftwerk.constraints.RangeToString.rangeToString;
 
 public final class BigDecimalRange implements Constraint<BigDecimal> {
     private final BigDecimal min;
@@ -117,26 +117,31 @@ public final class BigDecimalRange implements Constraint<BigDecimal> {
         return bigDecimalRange(max.negate(), maxIncluded, min.negate(), minIncluded);
     }
 
-    public boolean equals(final Object o) {
-        if (o == this) return true;
-        if (!(o instanceof BigDecimalRange)) return false;
-        final BigDecimalRange other = (BigDecimalRange) o;
-        if (!Objects.equals(this.min, other.min)) return false;
-        if (this.minIncluded != other.minIncluded) return false;
-        if (!Objects.equals(this.max, other.max)) return false;
-        return this.maxIncluded == other.maxIncluded;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BigDecimalRange that = (BigDecimalRange) o;
+
+        if (minIncluded != that.minIncluded) return false;
+        if (maxIncluded != that.maxIncluded) return false;
+        if (!min.equals(that.min)) return false;
+        return max.equals(that.max);
     }
 
+    @Override
     public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $min = this.min;
-        result = result * PRIME + ($min == null ? 43 : $min.hashCode());
-        result = result * PRIME + (this.minIncluded ? 79 : 97);
-        final Object $max = this.max;
-        result = result * PRIME + ($max == null ? 43 : $max.hashCode());
-        result = result * PRIME + (this.maxIncluded ? 79 : 97);
+        int result = min.hashCode();
+        result = 31 * result + (minIncluded ? 1 : 0);
+        result = 31 * result + max.hashCode();
+        result = 31 * result + (maxIncluded ? 1 : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return rangeToString(getClass().getSimpleName(), min, minIncluded, max, maxIncluded);
     }
 
     public interface BigDecimalRangeFrom {

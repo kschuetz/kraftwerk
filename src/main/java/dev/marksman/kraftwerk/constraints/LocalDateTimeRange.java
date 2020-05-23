@@ -1,10 +1,10 @@
 package dev.marksman.kraftwerk.constraints;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeExclusive;
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeInclusive;
+import static dev.marksman.kraftwerk.constraints.RangeToString.rangeToString;
 
 public final class LocalDateTimeRange implements Constraint<LocalDateTime> {
     private final LocalDateTime minInclusive;
@@ -64,23 +64,27 @@ public final class LocalDateTimeRange implements Constraint<LocalDateTime> {
         return exclusive(minInclusive, maxExclusive);
     }
 
-    public boolean equals(final Object o) {
-        if (o == this) return true;
-        if (!(o instanceof LocalDateTimeRange)) return false;
-        final LocalDateTimeRange other = (LocalDateTimeRange) o;
-        if (!Objects.equals(this.minInclusive, other.minInclusive))
-            return false;
-        return Objects.equals(this.maxInclusive, other.maxInclusive);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        LocalDateTimeRange that = (LocalDateTimeRange) o;
+
+        if (!minInclusive.equals(that.minInclusive)) return false;
+        return maxInclusive.equals(that.maxInclusive);
     }
 
+    @Override
     public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $minInclusive = this.minInclusive;
-        result = result * PRIME + ($minInclusive == null ? 43 : $minInclusive.hashCode());
-        final Object $maxInclusive = this.maxInclusive;
-        result = result * PRIME + ($maxInclusive == null ? 43 : $maxInclusive.hashCode());
+        int result = minInclusive.hashCode();
+        result = 31 * result + maxInclusive.hashCode();
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return rangeToString(getClass().getSimpleName(), minInclusive, true, maxInclusive, true);
     }
 
     public interface LocalDateTimeRangeFrom {

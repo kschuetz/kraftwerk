@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeExclusive;
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeInclusive;
+import static dev.marksman.kraftwerk.constraints.RangeToString.rangeToString;
 
 public final class LongRange implements Constraint<Long>, Iterable<Long> {
     private static final LongRange FULL = new LongRange(Long.MIN_VALUE, Long.MAX_VALUE);
@@ -79,22 +80,27 @@ public final class LongRange implements Constraint<Long>, Iterable<Long> {
         return inclusive(minInclusive, maxExclusive);
     }
 
-    public boolean equals(final Object o) {
-        if (o == this) return true;
-        if (!(o instanceof LongRange)) return false;
-        final LongRange other = (LongRange) o;
-        if (this.minInclusive != other.minInclusive) return false;
-        return this.maxInclusive == other.maxInclusive;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        LongRange longs = (LongRange) o;
+
+        if (minInclusive != longs.minInclusive) return false;
+        return maxInclusive == longs.maxInclusive;
     }
 
+    @Override
     public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final long $minInclusive = this.minInclusive;
-        result = result * PRIME + (int) ($minInclusive >>> 32 ^ $minInclusive);
-        final long $maxInclusive = this.maxInclusive;
-        result = result * PRIME + (int) ($maxInclusive >>> 32 ^ $maxInclusive);
+        int result = (int) (minInclusive ^ (minInclusive >>> 32));
+        result = 31 * result + (int) (maxInclusive ^ (maxInclusive >>> 32));
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return rangeToString(getClass().getSimpleName(), minInclusive, true, maxInclusive, true);
     }
 
     public interface LongRangeFrom {

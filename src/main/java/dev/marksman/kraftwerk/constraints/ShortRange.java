@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeExclusive;
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeInclusive;
+import static dev.marksman.kraftwerk.constraints.RangeToString.rangeToString;
 
 public final class ShortRange implements Constraint<Short>, Iterable<Short> {
     private static final ShortRange FULL = new ShortRange(Short.MIN_VALUE, Short.MAX_VALUE);
@@ -79,20 +80,27 @@ public final class ShortRange implements Constraint<Short>, Iterable<Short> {
         return exclusive(minInclusive, maxExclusive);
     }
 
-    public boolean equals(final Object o) {
-        if (o == this) return true;
-        if (!(o instanceof ShortRange)) return false;
-        final ShortRange other = (ShortRange) o;
-        if (this.minInclusive != other.minInclusive) return false;
-        return this.maxInclusive == other.maxInclusive;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ShortRange shorts = (ShortRange) o;
+
+        if (minInclusive != shorts.minInclusive) return false;
+        return maxInclusive == shorts.maxInclusive;
     }
 
+    @Override
     public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        result = result * PRIME + this.minInclusive;
-        result = result * PRIME + this.maxInclusive;
+        int result = minInclusive;
+        result = 31 * result + (int) maxInclusive;
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return rangeToString(getClass().getSimpleName(), minInclusive, true, maxInclusive, true);
     }
 
     public interface ShortRangeFrom {

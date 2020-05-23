@@ -4,6 +4,7 @@ import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateEx
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeExclusive;
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeInclusive;
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeWidth;
+import static dev.marksman.kraftwerk.constraints.RangeToString.rangeToString;
 
 public final class FloatRange implements Constraint<Float> {
     private static final FloatRange FULL = new FloatRange(Float.MIN_VALUE, true, Float.MAX_VALUE, true);
@@ -156,24 +157,31 @@ public final class FloatRange implements Constraint<Float> {
         return floatRange(-max, maxIncluded, -min, minIncluded);
     }
 
-    public boolean equals(final Object o) {
-        if (o == this) return true;
-        if (!(o instanceof FloatRange)) return false;
-        final FloatRange other = (FloatRange) o;
-        if (Float.compare(this.min, other.min) != 0) return false;
-        if (this.minIncluded != other.minIncluded) return false;
-        if (Float.compare(this.max, other.max) != 0) return false;
-        return this.maxIncluded == other.maxIncluded;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        FloatRange that = (FloatRange) o;
+
+        if (Float.compare(that.min, min) != 0) return false;
+        if (minIncluded != that.minIncluded) return false;
+        if (Float.compare(that.max, max) != 0) return false;
+        return maxIncluded == that.maxIncluded;
     }
 
+    @Override
     public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        result = result * PRIME + Float.floatToIntBits(this.min);
-        result = result * PRIME + (this.minIncluded ? 79 : 97);
-        result = result * PRIME + Float.floatToIntBits(this.max);
-        result = result * PRIME + (this.maxIncluded ? 79 : 97);
+        int result = (min != +0.0f ? Float.floatToIntBits(min) : 0);
+        result = 31 * result + (minIncluded ? 1 : 0);
+        result = 31 * result + (max != +0.0f ? Float.floatToIntBits(max) : 0);
+        result = 31 * result + (maxIncluded ? 1 : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return rangeToString(getClass().getSimpleName(), min, minIncluded, max, maxIncluded);
     }
 
     public interface FloatRangeFrom {
