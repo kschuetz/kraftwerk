@@ -40,6 +40,9 @@ import static dev.marksman.kraftwerk.Temporal.generateLocalTime;
 
 public class Ranges {
 
+    private static final DoubleRange FULL_DOUBLE_RANGE = DoubleRange.inclusive(Double.MIN_VALUE, Double.MAX_VALUE);
+    private static final FloatRange FULL_FLOAT_RANGE = FloatRange.inclusive(-Float.MAX_VALUE, Float.MAX_VALUE);
+
     static Generator<IntRange> generateIntRange() {
         return generateIntRange(IntRange.fullRange());
     }
@@ -77,7 +80,7 @@ public class Ranges {
     }
 
     static Generator<DoubleRange> generateDoubleRange() {
-        return generateDoubleRange(DoubleRange.fullRange());
+        return generateDoubleRange(FULL_DOUBLE_RANGE);
     }
 
     static Generator<DoubleRange> generateDoubleRange(DoubleRange parentRange) {
@@ -86,7 +89,7 @@ public class Ranges {
     }
 
     static Generator<FloatRange> generateFloatRange() {
-        return generateFloatRange(FloatRange.fullRange());
+        return generateFloatRange(FULL_FLOAT_RANGE);
     }
 
     static Generator<FloatRange> generateFloatRange(FloatRange parentRange) {

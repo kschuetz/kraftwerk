@@ -39,12 +39,12 @@ class BuildingBlocksTest {
 
     @Test
     void nextDouble() {
-        testAgainstUtilRandom(Random::nextDouble, BuildingBlocks::nextDouble);
+        testAgainstUtilRandom(Random::nextDouble, BuildingBlocks::nextDoubleFractional);
     }
 
     @Test
     void nextFloat() {
-        testAgainstUtilRandom(Random::nextFloat, BuildingBlocks::nextFloat);
+        testAgainstUtilRandom(Random::nextFloat, BuildingBlocks::nextFloatFractional);
     }
 
     @Test
@@ -76,8 +76,8 @@ class BuildingBlocksTest {
         GeneratorPair gp = newRandomGeneratorPair();
         gp = testAgainstUtilRandom(gp, 1, Random::nextInt, BuildingBlocks::nextInt);
         gp = testAgainstUtilRandom(gp, 1, r -> r.nextInt(10), r -> BuildingBlocks.nextIntBounded(10, r));
-        gp = testAgainstUtilRandom(gp, 1, Random::nextDouble, BuildingBlocks::nextDouble);
-        gp = testAgainstUtilRandom(gp, 1, Random::nextFloat, BuildingBlocks::nextFloat);
+        gp = testAgainstUtilRandom(gp, 1, Random::nextDouble, BuildingBlocks::nextDoubleFractional);
+        gp = testAgainstUtilRandom(gp, 1, Random::nextFloat, BuildingBlocks::nextFloatFractional);
         gp = testAgainstUtilRandom(gp, 1, Random::nextLong, BuildingBlocks::nextLong);
         gp = testAgainstUtilRandom(gp, 1, Random::nextBoolean, BuildingBlocks::nextBoolean);
         testAgainstUtilRandom(gp, 1, Random::nextGaussian, BuildingBlocks::nextGaussian);
@@ -89,8 +89,8 @@ class BuildingBlocksTest {
         gp = testAgainstUtilRandom(gp, 1, Random::nextGaussian, BuildingBlocks::nextGaussian);
         gp = testAgainstUtilRandom(gp, 1, Random::nextInt, BuildingBlocks::nextInt);
         gp = testAgainstUtilRandom(gp, 1, r -> r.nextInt(10), r -> BuildingBlocks.nextIntBounded(10, r));
-        gp = testAgainstUtilRandom(gp, 1, Random::nextDouble, BuildingBlocks::nextDouble);
-        gp = testAgainstUtilRandom(gp, 1, Random::nextFloat, BuildingBlocks::nextFloat);
+        gp = testAgainstUtilRandom(gp, 1, Random::nextDouble, BuildingBlocks::nextDoubleFractional);
+        gp = testAgainstUtilRandom(gp, 1, Random::nextFloat, BuildingBlocks::nextFloatFractional);
         gp = testAgainstUtilRandom(gp, 1, Random::nextLong, BuildingBlocks::nextLong);
         gp = testAgainstUtilRandom(gp, 1, Random::nextBoolean, BuildingBlocks::nextBoolean);
         gp = testAgainstUtilRandom(gp, 1, Random::nextGaussian, BuildingBlocks::nextGaussian);
@@ -115,10 +115,10 @@ class BuildingBlocksTest {
         BuildingBlocks.nextIntBounded(10, seed);
         assertEquals(seedValue, seed.getSeedValue());
 
-        BuildingBlocks.nextDouble(seed);
+        BuildingBlocks.nextDoubleFractional(seed);
         assertEquals(seedValue, seed.getSeedValue());
 
-        BuildingBlocks.nextFloat(seed);
+        BuildingBlocks.nextFloatFractional(seed);
         assertEquals(seedValue, seed.getSeedValue());
 
         BuildingBlocks.nextLong(seed);

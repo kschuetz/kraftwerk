@@ -11,6 +11,9 @@ import static dev.marksman.kraftwerk.core.StandardSeedCacheGaussian.standardSeed
 
 public final class BuildingBlocks {
 
+    private static final double DOUBLE_UNIT = 0x1.0p-53;  // 1.0  / (1L << 53)
+    private static final float FLOAT_UNIT = 0x1.0p-24f; // 1.0f / (1 << 24)
+
     private BuildingBlocks() {
 
     }
@@ -104,7 +107,7 @@ public final class BuildingBlocks {
         }
     }
 
-    public static Result<Seed, Double> nextDouble(Seed input) {
+    public static Result<Seed, Double> nextDoubleFractional(Seed input) {
         long s1 = getNextSeed(input.getSeedValue());
         long s2 = getNextSeed(s1);
         int i1 = bitsFrom(26, s1);
@@ -113,11 +116,21 @@ public final class BuildingBlocks {
         return result(input.setNextSeedValue(s2), result);
     }
 
-    public static Result<Seed, Float> nextFloat(Seed input) {
+    public static Result<Seed, Float> nextFloatFractional(Seed input) {
         long s1 = getNextSeed(input.getSeedValue());
         int n = bitsFrom(24, s1);
         float result = (n / ((float) (1 << 24)));
         return result(input.setNextSeedValue(s1), result);
+    }
+
+    public static Result<Seed, Double> unsafeNextDoubleBetween(double origin, double bound, Seed input) {
+        Result<Seed, Long> l = nextLong(input);
+        double r = (l.getValue() >>> 11) * DOUBLE_UNIT;
+        r = r * (bound - origin) + origin;
+        if (r >= bound) {
+            r = Double.longBitsToDouble(Double.doubleToLongBits(bound) - 1);
+        }
+        return result(l.getNextState(), r);
     }
 
     public static Result<Seed, Long> nextLong(Seed input) {
@@ -247,8 +260,8 @@ public final class BuildingBlocks {
         Seed newSeed = input;
         double v1, v2, s;
         do {
-            Result<Seed, Double> d1 = nextDouble(newSeed);
-            Result<Seed, Double> d2 = nextDouble(d1._1());
+            Result<Seed, Double> d1 = nextDoubleFractional(newSeed);
+            Result<Seed, Double> d2 = nextDoubleFractional(d1._1());
             newSeed = d2._1();
             v1 = 2 * d1._2() - 1;
             v2 = 2 * d2._2() - 1;

@@ -17,11 +17,15 @@ import java.math.BigInteger;
 import static com.jnape.palatable.lambda.functions.builtin.fn3.Between.between;
 
 public final class DefaultPropertyTestingBiasSettings implements BiasSettings {
-    private static final DefaultPropertyTestingBiasSettings INSTANCE = new DefaultPropertyTestingBiasSettings();
     public static final BigDecimal SMALL_BIG_DECIMAL = BigDecimal.valueOf(0.000001);
+    private static final DefaultPropertyTestingBiasSettings INSTANCE = new DefaultPropertyTestingBiasSettings();
 
     private DefaultPropertyTestingBiasSettings() {
 
+    }
+
+    public static DefaultPropertyTestingBiasSettings defaultPropertyTestBiasSettings() {
+        return INSTANCE;
     }
 
     @Override
@@ -161,10 +165,6 @@ public final class DefaultPropertyTestingBiasSettings implements BiasSettings {
                 .addSpecialValue(0)
                 .addSpecialValue(1)
                 .build();
-    }
-
-    public static DefaultPropertyTestingBiasSettings defaultPropertyTestBiasSettings() {
-        return INSTANCE;
     }
 
 }

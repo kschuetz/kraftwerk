@@ -23,6 +23,7 @@ import static com.jnape.palatable.lambda.adt.Maybe.just;
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Constantly.constantly;
 import static dev.marksman.kraftwerk.Generators.constant;
+import static dev.marksman.kraftwerk.Result.result;
 import static dev.marksman.kraftwerk.SizeSelectors.sizeSelector;
 import static dev.marksman.kraftwerk.bias.BiasSetting.noBias;
 import static dev.marksman.kraftwerk.core.BuildingBlocks.checkBound;
@@ -31,6 +32,7 @@ import static dev.marksman.kraftwerk.core.BuildingBlocks.checkMinMax;
 import static dev.marksman.kraftwerk.core.BuildingBlocks.checkOriginBound;
 import static dev.marksman.kraftwerk.core.BuildingBlocks.nextBytes;
 import static dev.marksman.kraftwerk.core.BuildingBlocks.nextInt;
+import static dev.marksman.kraftwerk.core.BuildingBlocks.unsafeNextDoubleBetween;
 import static dev.marksman.kraftwerk.core.BuildingBlocks.unsafeNextIntBounded;
 import static dev.marksman.kraftwerk.core.BuildingBlocks.unsafeNextIntBoundedPowerOf2;
 import static dev.marksman.kraftwerk.core.BuildingBlocks.unsafeNextIntExclusive;
@@ -41,6 +43,9 @@ import static dev.marksman.kraftwerk.core.BuildingBlocks.unsafeNextLongExclusive
 import static dev.marksman.kraftwerk.core.BuildingBlocks.unsafeNextLongExclusiveWithOverflow;
 
 class Primitives {
+
+    private static final DoubleRange DEFAULT_DOUBLE_RANGE = DoubleRange.inclusive(-1E16, 1E16);
+    private static final FloatRange DEFAULT_FLOAT_RANGE = FloatRange.inclusive(-1E7f, 1E7f);
 
     static Generator<Integer> generateInt() {
         return IntGenerator.INSTANCE;
@@ -115,7 +120,7 @@ class Primitives {
     }
 
     static FloatingPointGenerator<Double> generateDouble() {
-        return new DoubleGenerator(just(DoubleRange.fullRange()), false, false);
+        return new DoubleGenerator(just(DEFAULT_DOUBLE_RANGE), false, false);
     }
 
     static FloatingPointGenerator<Double> generateDoubleFractional() {
@@ -127,7 +132,7 @@ class Primitives {
     }
 
     static FloatingPointGenerator<Float> generateFloat() {
-        return new FloatGenerator(just(FloatRange.fullRange()), false, false);
+        return new FloatGenerator(just(DEFAULT_FLOAT_RANGE), false, false);
     }
 
     static FloatingPointGenerator<Float> generateFloatFractional() {
@@ -207,7 +212,7 @@ class Primitives {
         return generateLongExclusiveImpl(bound, constantly(noBias()));
     }
 
-    static ByteGenerator generateByte() {
+    static Generator<Byte> generateByte() {
         return ByteGenerator.DEFAULT_BYTE_GENERATOR;
     }
 
@@ -215,19 +220,19 @@ class Primitives {
         return new ByteGenerator(range);
     }
 
-    static ShortGenerator generateShort() {
+    static Generator<Short> generateShort() {
         return ShortGenerator.DEFAULT_SHORT_GENERATOR;
     }
 
-    static ShortGenerator generateShort(ShortRange range) {
+    static Generator<Short> generateShort(ShortRange range) {
         return new ShortGenerator(range);
     }
 
-    static CharGenerator generateChar() {
+    static Generator<Character> generateChar() {
         return CharGenerator.DEFAULT_CHAR_GENERATOR;
     }
 
-    static CharGenerator generateChar(CharRange range) {
+    static Generator<Character> generateChar(CharRange range) {
         return new CharGenerator(range);
     }
 
@@ -338,15 +343,20 @@ class Primitives {
         }
 
         private Generate<Double> defaultGenerate() {
-            return BuildingBlocks::nextDouble;
+            return BuildingBlocks::nextDoubleFractional;
         }
 
         private Generate<Double> constrainedGenerate(DoubleRange range) {
-            double base = range.min();
-            double scale = range.width();
-            return input -> BuildingBlocks.nextDouble(input).fmap(n -> (base + n * scale));
+            double min = range.minInclusive();
+            double max = range.maxInclusive();
+            if (min == max) {
+                return input -> result(input, min);
+            } else {
+                double maxExclusive = range.maxExclusive();
+                double bound = maxExclusive == Double.POSITIVE_INFINITY ? max : maxExclusive;
+                return input -> unsafeNextDoubleBetween(min, bound, input);
+            }
         }
-
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -405,13 +415,22 @@ class Primitives {
         }
 
         private Generate<Float> defaultGenerate() {
-            return BuildingBlocks::nextFloat;
+            return BuildingBlocks::nextFloatFractional;
         }
 
         private Generate<Float> constrainedGenerate(FloatRange range) {
-            float base = range.min();
-            float scale = range.width();
-            return input -> BuildingBlocks.nextFloat(input).fmap(n -> (base + n * scale));
+            float min = range.minInclusive();
+            float max = range.maxInclusive();
+            if (min == max) {
+                return input -> result(input, min);
+            } else {
+                double bound = Math.nextAfter(max, Double.POSITIVE_INFINITY);
+                return input -> {
+                    Result<Seed, Double> doubleResult = unsafeNextDoubleBetween(min, bound, input);
+                    double doubleValue = doubleResult.getValue();
+                    return result(doubleResult.getNextState(), (float) doubleValue);
+                };
+            }
         }
 
     }
@@ -475,7 +494,6 @@ class Primitives {
 
     }
 
-
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class ByteGenerator implements Generator<Byte> {
         private static final Maybe<String> LABEL = Maybe.just("byte");
@@ -487,7 +505,7 @@ class Primitives {
         @Override
         public Generate<Byte> prepare(GeneratorParameters generatorParameters) {
             return Bias.applyBiasSetting(generatorParameters.getBiasSettings().byteBias(range),
-                    input -> nextInt(input).fmap(getMapper()));
+                    input -> unsafeNextIntExclusive(0, 256, input).fmap(getMapper()));
         }
 
         @Override
@@ -518,7 +536,7 @@ class Primitives {
         @Override
         public Generate<Short> prepare(GeneratorParameters generatorParameters) {
             return Bias.applyBiasSetting(generatorParameters.getBiasSettings().shortBias(range),
-                    input -> nextInt(input).fmap(getMapper()));
+                    input -> unsafeNextIntExclusive(0, 65536, input).fmap(getMapper()));
         }
 
         @Override
@@ -562,7 +580,6 @@ class Primitives {
             return i -> (char) (min + (i % span));
         }
     }
-
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class BytesGenerator implements Generator<Byte[]> {
@@ -623,5 +640,4 @@ class Primitives {
             }
         };
     }
-
 }

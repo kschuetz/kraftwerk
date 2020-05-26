@@ -7,8 +7,6 @@ import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRa
 import static dev.marksman.kraftwerk.constraints.RangeToString.rangeToString;
 
 public final class DoubleRange implements Constraint<Double> {
-    private static final DoubleRange FULL = new DoubleRange(Double.MIN_VALUE, true, Double.MAX_VALUE, true);
-
     private final double min;
     private final boolean minIncluded;
     private final double max;
@@ -62,10 +60,6 @@ public final class DoubleRange implements Constraint<Double> {
         return doubleRange(0.0d, true, maxExclusive, false);
     }
 
-    public static DoubleRange fullRange() {
-        return FULL;
-    }
-
     public static DoubleRange doubleRange(double min, boolean minIncluded, double max, boolean maxIncluded) {
         if (minIncluded && maxIncluded) {
             validateRangeInclusive(min, max);
@@ -111,7 +105,7 @@ public final class DoubleRange implements Constraint<Double> {
 
     public double minExclusive() {
         if (minIncluded) {
-            return Math.nextAfter(min, Double.POSITIVE_INFINITY);
+            return Math.nextAfter(min, Double.NEGATIVE_INFINITY);
         } else {
             return min;
         }
@@ -127,14 +121,10 @@ public final class DoubleRange implements Constraint<Double> {
 
     public double maxExclusive() {
         if (maxIncluded) {
-            return Math.nextAfter(max, Double.NEGATIVE_INFINITY);
+            return Math.nextAfter(max, Double.POSITIVE_INFINITY);
         } else {
             return max;
         }
-    }
-
-    public double width() {
-        return maxExclusive() - minInclusive();
     }
 
     public DoubleRange withMinInclusive(double minInclusive) {

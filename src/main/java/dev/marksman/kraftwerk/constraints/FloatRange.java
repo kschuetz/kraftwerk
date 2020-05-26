@@ -7,8 +7,6 @@ import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRa
 import static dev.marksman.kraftwerk.constraints.RangeToString.rangeToString;
 
 public final class FloatRange implements Constraint<Float> {
-    private static final FloatRange FULL = new FloatRange(Float.MIN_VALUE, true, Float.MAX_VALUE, true);
-
     private final float min;
     private final boolean minIncluded;
     private final float max;
@@ -75,10 +73,6 @@ public final class FloatRange implements Constraint<Float> {
         return new FloatRange(min, minIncluded, max, maxIncluded);
     }
 
-    public static FloatRange fullRange() {
-        return FULL;
-    }
-
     public float min() {
         return min;
     }
@@ -105,7 +99,7 @@ public final class FloatRange implements Constraint<Float> {
 
     public double minExclusive() {
         if (minIncluded) {
-            return Math.nextAfter(min, Double.POSITIVE_INFINITY);
+            return Math.nextAfter(min, Float.NEGATIVE_INFINITY);
         } else {
             return min;
         }
@@ -121,14 +115,10 @@ public final class FloatRange implements Constraint<Float> {
 
     public float maxExclusive() {
         if (maxIncluded) {
-            return Math.nextAfter(max, Float.NEGATIVE_INFINITY);
+            return Math.nextAfter(max, Float.POSITIVE_INFINITY);
         } else {
             return max;
         }
-    }
-
-    public float width() {
-        return maxExclusive() - minInclusive();
     }
 
     @Override
