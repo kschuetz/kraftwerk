@@ -70,8 +70,8 @@ public final class LocalTimeRange implements Constraint<LocalTime> {
     public boolean includes(LocalTime time) {
         boolean beforeMin = time.isBefore(minInclusive);
         boolean afterMax = maxIncluded
-                ? !(time.isBefore(max))
-                : time.isAfter(max);
+                ? time.isAfter(max)
+                : !(time.isBefore(max));
 
         return !(beforeMin || afterMax);
     }
@@ -118,5 +118,4 @@ public final class LocalTimeRange implements Constraint<LocalTime> {
 
         LocalTimeRange until(LocalTime maxExclusive);
     }
-
 }

@@ -99,7 +99,7 @@ class Temporal {
         LocalDate firstDay = min.toLocalDate();
         LocalDate lastDay = max.toLocalDate();
         LocalTime timeOnFirstDay = min.toLocalTime();
-        LocalTime timeOnLastDay = min.toLocalTime();
+        LocalTime timeOnLastDay = max.toLocalTime();
         if (firstDay.equals(lastDay)) {
             return generateLocalTime(LocalTimeRange.inclusive(timeOnFirstDay, timeOnLastDay))
                     .fmap(firstDay::atTime);
