@@ -6,7 +6,7 @@
 
     <groupId>dev.marksman</groupId>
     <artifactId>kraftwerk</artifactId>
-    <version>0.8.2-SNAPSHOT</version>
+    <version>0.8.2</version>
 
     <name>kraftwerk</name>
     <description>
