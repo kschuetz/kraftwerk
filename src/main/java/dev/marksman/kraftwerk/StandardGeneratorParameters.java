@@ -1,24 +1,30 @@
 package dev.marksman.kraftwerk;
 
 import dev.marksman.kraftwerk.bias.BiasSettings;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 
 import static dev.marksman.kraftwerk.SizeParameters.noSizeLimits;
 import static dev.marksman.kraftwerk.bias.EmptyBiasSettings.emptyBiasSettings;
 
 
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class StandardGeneratorParameters implements GeneratorParameters {
-
     private static final StandardGeneratorParameters DEFAULT_PARAMETERS = standardGeneratorParameters(noSizeLimits(),
             emptyBiasSettings());
 
-    @Getter
     private final SizeParameters sizeParameters;
-    @Getter
     private final BiasSettings biasSettings;
+
+    private StandardGeneratorParameters(SizeParameters sizeParameters, BiasSettings biasSettings) {
+        this.sizeParameters = sizeParameters;
+        this.biasSettings = biasSettings;
+    }
+
+    private static StandardGeneratorParameters standardGeneratorParameters(SizeParameters sizeParameters, BiasSettings biasSettings) {
+        return new StandardGeneratorParameters(sizeParameters, biasSettings);
+    }
+
+    public static StandardGeneratorParameters defaultGeneratorParameters() {
+        return DEFAULT_PARAMETERS;
+    }
 
     @Override
     public GeneratorParameters withSizeParameters(SizeParameters sizeParameters) {
@@ -30,11 +36,16 @@ public class StandardGeneratorParameters implements GeneratorParameters {
         return standardGeneratorParameters(sizeParameters, biasSettings);
     }
 
-    private static StandardGeneratorParameters standardGeneratorParameters(SizeParameters sizeParameters, BiasSettings biasSettings) {
-        return new StandardGeneratorParameters(sizeParameters, biasSettings);
+    @Override
+    public GeneratorParameters withNoBias() {
+        return standardGeneratorParameters(sizeParameters, emptyBiasSettings());
     }
 
-    public static StandardGeneratorParameters defaultGeneratorParameters() {
-        return DEFAULT_PARAMETERS;
+    public SizeParameters getSizeParameters() {
+        return this.sizeParameters;
+    }
+
+    public BiasSettings getBiasSettings() {
+        return this.biasSettings;
     }
 }

@@ -11,6 +11,8 @@ public interface GeneratorParameters {
 
     GeneratorParameters withBiasSettings(BiasSettings biasSettings);
 
+    GeneratorParameters withNoBias();
+
     static GeneratorParameters parameters() {
         return StandardGeneratorParameters.defaultGeneratorParameters();
     }
