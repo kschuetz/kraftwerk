@@ -213,6 +213,10 @@ public class Generators {
         return Primitives.generateBoxedPrimitive();
     }
 
+    public static Generator<Seed> generateSeed() {
+        return Primitives.generateSeed();
+    }
+
     public static Generator<Integer> generateSize() {
         return Primitives.generateSize();
     }

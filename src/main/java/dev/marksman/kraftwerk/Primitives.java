@@ -261,6 +261,10 @@ class Primitives {
         return new BytesGenerator(count);
     }
 
+    static Generator<Seed> generateSeed() {
+        return SeedGenerator.INSTANCE;
+    }
+
     static Generator<Integer> generateSize() {
         return SizeGenerator.INSTANCE;
     }
@@ -606,11 +610,30 @@ class Primitives {
 
     }
 
+    private static class SeedGenerator implements Generator<Seed> {
+        private static final Maybe<String> LABEL = Maybe.just("seed");
+
+        private static final SeedGenerator INSTANCE = new SeedGenerator();
+
+        @Override
+        public Generate<Seed> prepare(GeneratorParameters generatorParameters) {
+            return seed -> {
+                Result<Seed, Long> longResult = BuildingBlocks.nextLong(seed);
+                return result(longResult.getNextState(), Seed.create(longResult.getValue()));
+            };
+        }
+
+        @Override
+        public Maybe<String> getLabel() {
+            return LABEL;
+        }
+    }
+
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class SizeGenerator implements Generator<Integer> {
         private static final Maybe<String> LABEL = Maybe.just("size");
 
-        private static SizeGenerator INSTANCE = new SizeGenerator();
+        private static final SizeGenerator INSTANCE = new SizeGenerator();
 
         @Override
         public Generate<Integer> prepare(GeneratorParameters generatorParameters) {
