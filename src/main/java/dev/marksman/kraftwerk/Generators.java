@@ -81,7 +81,10 @@ import static dev.marksman.kraftwerk.Result.result;
 import static dev.marksman.kraftwerk.aggregator.Aggregators.collectionAggregator;
 import static dev.marksman.kraftwerk.aggregator.Aggregators.vectorAggregator;
 
-public class Generators {
+public final class Generators {
+    private Generators() {
+
+    }
 
     public static <A> Generator<A> constant(A a) {
         return Constant.constant(a);
