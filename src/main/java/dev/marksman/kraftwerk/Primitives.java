@@ -355,6 +355,13 @@ class Primitives {
             double max = range.maxInclusive();
             if (min == max) {
                 return input -> result(input, min);
+            } else if (max == Math.nextAfter(min, Double.POSITIVE_INFINITY)) {
+                return input -> {
+                    Result<Seed, Boolean> booleanResult = BuildingBlocks.nextBoolean(input);
+                    return booleanResult.getValue()
+                            ? result(booleanResult.getNextState(), min)
+                            : result(booleanResult.getNextState(), max);
+                };
             } else {
                 double maxExclusive = range.maxExclusive();
                 double bound = maxExclusive == Double.POSITIVE_INFINITY ? max : maxExclusive;
@@ -427,8 +434,15 @@ class Primitives {
             float max = range.maxInclusive();
             if (min == max) {
                 return input -> result(input, min);
+            } else if (max == Math.nextAfter(min, Float.POSITIVE_INFINITY)) {
+                return input -> {
+                    Result<Seed, Boolean> booleanResult = BuildingBlocks.nextBoolean(input);
+                    return booleanResult.getValue()
+                            ? result(booleanResult.getNextState(), min)
+                            : result(booleanResult.getNextState(), max);
+                };
             } else {
-                double bound = Math.nextAfter(max, Double.POSITIVE_INFINITY);
+                double bound = Math.nextAfter((double) max, Double.POSITIVE_INFINITY);
                 return input -> {
                     Result<Seed, Double> doubleResult = unsafeNextDoubleBetween(min, bound, input);
                     double doubleValue = doubleResult.getValue();
