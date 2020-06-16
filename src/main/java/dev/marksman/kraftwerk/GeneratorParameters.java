@@ -13,7 +13,7 @@ public interface GeneratorParameters {
 
     GeneratorParameters withNoBias();
 
-    static GeneratorParameters parameters() {
+    static GeneratorParameters generatorParameters() {
         return StandardGeneratorParameters.defaultGeneratorParameters();
     }
 }

@@ -47,8 +47,14 @@ class BigNumbers {
     }
 
     static Generator<BigDecimal> generateBigDecimal(int decimalPlaces, BigDecimalRange range) {
-        BigInteger integerOrigin = makeMinInclusive(range.minIncluded(), movePointRight(decimalPlaces, range.min()));
-        BigInteger integerBound = makeMaxExclusive(range.maxIncluded(), movePointRight(decimalPlaces, range.max()));
+        BigDecimal min = range.min();
+        BigDecimal max = range.max();
+        int minScale = min.scale();
+        int maxScale = max.scale();
+        int shift = Math.max(decimalPlaces, Math.max(minScale, maxScale));
+
+        BigInteger integerOrigin = makeMinInclusive(range.minIncluded(), movePointRight(shift, min));
+        BigInteger integerBound = makeMaxExclusive(range.maxIncluded(), movePointRight(shift, max));
         BigInteger integerRange = integerBound.subtract(integerOrigin);
 
         if (integerRange.signum() < 1) {
@@ -57,7 +63,7 @@ class BigNumbers {
 
         return applyBiasSetting(bs -> bs.bigDecimalBias(range),
                 generateBigIntegerExclusive(integerRange)
-                        .fmap(n -> movePointLeft(decimalPlaces, integerOrigin.add(n))));
+                        .fmap(n -> movePointLeft(shift, integerOrigin.add(n))));
     }
 
     private static Generator<BigInteger> generateBigIntegerExclusive(BigInteger bound) {
@@ -95,5 +101,4 @@ class BigNumbers {
     private static BigInteger makeMaxExclusive(boolean maxIncluded, BigInteger max) {
         return maxIncluded ? max.add(BigInteger.ONE) : max;
     }
-
 }
