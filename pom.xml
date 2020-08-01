@@ -6,7 +6,7 @@
 
     <groupId>dev.marksman</groupId>
     <artifactId>kraftwerk</artifactId>
-    <version>0.8.5-SNAPSHOT</version>
+    <version>0.8.5</version>
 
     <name>kraftwerk</name>
     <description>
@@ -17,7 +17,7 @@
 
     <properties>
         <lambda.version>5.2.0</lambda.version>
-        <collection-views.version>1.2.2</collection-views.version>
+        <collection-views.version>1.2.3</collection-views.version>
         <junit.version>5.5.0</junit.version>
         <hamcrest.version>2.2</hamcrest.version>
         <commons-math.version>3.6.1</commons-math.version>
