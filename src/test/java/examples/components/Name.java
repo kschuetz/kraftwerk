@@ -5,21 +5,38 @@ import dev.marksman.kraftwerk.Generator;
 import dev.marksman.kraftwerk.Generators;
 import dev.marksman.kraftwerk.constraints.IntRange;
 import dev.marksman.kraftwerk.domain.Characters;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Value;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into4.into4;
 import static dev.marksman.kraftwerk.weights.MaybeWeights.nothings;
 import static java.util.Arrays.asList;
 
-@Value
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Name {
-    String first;
-    Maybe<String> middle;
-    String last;
-    Maybe<String> suffix;
+public final class Name {
+    private final String first;
+    private final Maybe<String> middle;
+    private final String last;
+    private final Maybe<String> suffix;
+
+    private Name(String first, Maybe<String> middle, String last, Maybe<String> suffix) {
+        this.first = first;
+        this.middle = middle;
+        this.last = last;
+        this.suffix = suffix;
+    }
+
+    public static Name name(String first, Maybe<String> middle, String last, Maybe<String> suffix) {
+        return new Name(first, middle, last, suffix);
+    }
+
+    public static Generator<Name> generateName() {
+        return generators.name;
+    }
+
+    public static void main(String[] args) {
+        Generators.generateNonEmptyMap(Generators.generateInt(IntRange.from(0).to(255)), generateName().fmap(Name::pretty))
+                .run()
+                .take(100)
+                .forEach(System.out::println);
+    }
 
     public String pretty() {
         return first +
@@ -28,8 +45,52 @@ public class Name {
                 + suffix.match(__ -> "", s -> ", " + s);
     }
 
-    public static Name name(String first, Maybe<String> middle, String last, Maybe<String> suffix) {
-        return new Name(first, middle, last, suffix);
+    public String getFirst() {
+        return this.first;
+    }
+
+    public Maybe<String> getMiddle() {
+        return this.middle;
+    }
+
+    public String getLast() {
+        return this.last;
+    }
+
+    public Maybe<String> getSuffix() {
+        return this.suffix;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Name name = (Name) o;
+
+        if (!first.equals(name.first)) return false;
+        if (!middle.equals(name.middle)) return false;
+        if (!last.equals(name.last)) return false;
+        return suffix.equals(name.suffix);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = first.hashCode();
+        result = 31 * result + middle.hashCode();
+        result = 31 * result + last.hashCode();
+        result = 31 * result + suffix.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Name{" +
+                "first='" + first + '\'' +
+                ", middle=" + middle +
+                ", last='" + last + '\'' +
+                ", suffix=" + suffix +
+                '}';
     }
 
     private static class generators {
@@ -65,17 +126,6 @@ public class Name {
                 suffix.maybe(nothings(19).toJusts(1))
         ).fmap(into4(Name::name));
 
-    }
-
-    public static Generator<Name> generateName() {
-        return generators.name;
-    }
-
-    public static void main(String[] args) {
-        Generators.generateNonEmptyMap(Generators.generateInt(IntRange.from(0).to(255)), generateName().fmap(Name::pretty))
-                .run()
-                .take(100)
-                .forEach(System.out::println);
     }
 
 }

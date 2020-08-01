@@ -14,8 +14,6 @@ import dev.marksman.kraftwerk.constraints.ShortRange;
 import dev.marksman.kraftwerk.core.BuildingBlocks;
 import dev.marksman.kraftwerk.frequency.FrequencyMap;
 import dev.marksman.kraftwerk.util.Labeling;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 
 import java.util.ArrayList;
 
@@ -42,10 +40,13 @@ import static dev.marksman.kraftwerk.core.BuildingBlocks.unsafeNextLongExclusive
 import static dev.marksman.kraftwerk.core.BuildingBlocks.unsafeNextLongExclusivePowerOf2;
 import static dev.marksman.kraftwerk.core.BuildingBlocks.unsafeNextLongExclusiveWithOverflow;
 
-class Primitives {
-
+final class Primitives {
     private static final DoubleRange DEFAULT_DOUBLE_RANGE = DoubleRange.inclusive(-1E16, 1E16);
     private static final FloatRange DEFAULT_FLOAT_RANGE = FloatRange.inclusive(-1E7f, 1E7f);
+
+    private Primitives() {
+
+    }
 
     static Generator<Integer> generateInt() {
         return IntGenerator.INSTANCE;
@@ -273,11 +274,29 @@ class Primitives {
         return generateSize().flatMap(fn);
     }
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    private static <A> Generator<A> simpleGenerator(Maybe<String> label,
+                                                    Fn1<GeneratorParameters, BiasSetting<A>> getBias,
+                                                    Generate<A> runFn) {
+        return new Generator<A>() {
+            @Override
+            public Generate<A> prepare(GeneratorParameters generatorParameters) {
+                return Bias.applyBiasSetting(getBias.apply(generatorParameters), runFn);
+            }
+
+            @Override
+            public Maybe<String> getLabel() {
+                return label;
+            }
+        };
+    }
+
     private static class BooleanGenerator implements Generator<Boolean> {
         private static final Maybe<String> LABEL = Maybe.just("boolean");
 
         private static final BooleanGenerator INSTANCE = new BooleanGenerator();
+
+        private BooleanGenerator() {
+        }
 
         @Override
         public Generate<Boolean> prepare(GeneratorParameters generatorParameters) {
@@ -291,16 +310,19 @@ class Primitives {
 
     }
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class DoubleGenerator implements FloatingPointGenerator<Double> {
         private static final Maybe<String> LABEL = Maybe.just("double");
         private static final DoubleRange DEFAULT_RANGE = DoubleRange.exclusive(1d);
-
+        private static final DoubleGenerator DEFAULT_DOUBLE_GENERATOR = new DoubleGenerator(nothing(), false, false);
         private final Maybe<DoubleRange> range;
         private final boolean includeNaNs;
         private final boolean includeInfinities;
 
-        private static final DoubleGenerator DEFAULT_DOUBLE_GENERATOR = new DoubleGenerator(nothing(), false, false);
+        private DoubleGenerator(Maybe<DoubleRange> range, boolean includeNaNs, boolean includeInfinities) {
+            this.range = range;
+            this.includeNaNs = includeNaNs;
+            this.includeInfinities = includeInfinities;
+        }
 
         @Override
         public Generate<Double> prepare(GeneratorParameters generatorParameters) {
@@ -370,16 +392,19 @@ class Primitives {
         }
     }
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class FloatGenerator implements FloatingPointGenerator<Float> {
         private static final Maybe<String> LABEL = Maybe.just("float");
         private static final FloatRange DEFAULT_RANGE = FloatRange.exclusive(1f);
-
+        private static final FloatGenerator DEFAULT_FLOAT_GENERATOR = new FloatGenerator(nothing(), false, false);
         private final Maybe<FloatRange> range;
         private final boolean includeNaNs;
         private final boolean includeInfinities;
 
-        private static final FloatGenerator DEFAULT_FLOAT_GENERATOR = new FloatGenerator(nothing(), false, false);
+        private FloatGenerator(Maybe<FloatRange> range, boolean includeNaNs, boolean includeInfinities) {
+            this.range = range;
+            this.includeNaNs = includeNaNs;
+            this.includeInfinities = includeInfinities;
+        }
 
         @Override
         public Generate<Float> prepare(GeneratorParameters generatorParameters) {
@@ -453,11 +478,13 @@ class Primitives {
 
     }
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class IntGenerator implements Generator<Integer> {
         private static final Maybe<String> LABEL = Maybe.just("int");
 
         private static final IntGenerator INSTANCE = new IntGenerator();
+
+        private IntGenerator() {
+        }
 
         @Override
         public Generate<Integer> prepare(GeneratorParameters generatorParameters) {
@@ -471,14 +498,15 @@ class Primitives {
         public Maybe<String> getLabel() {
             return LABEL;
         }
-
     }
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class LongGenerator implements Generator<Long> {
         private static final Maybe<String> LABEL = Maybe.just("long");
 
         private static final LongGenerator INSTANCE = new LongGenerator();
+
+        private LongGenerator() {
+        }
 
         @Override
         public Generate<Long> prepare(GeneratorParameters generatorParameters) {
@@ -491,14 +519,15 @@ class Primitives {
         public Maybe<String> getLabel() {
             return LABEL;
         }
-
     }
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class GaussianGenerator implements Generator<Double> {
         private static final Maybe<String> LABEL = Maybe.just("gaussian");
 
         private static final GaussianGenerator INSTANCE = new GaussianGenerator();
+
+        private GaussianGenerator() {
+        }
 
         @Override
         public Generate<Double> prepare(GeneratorParameters generatorParameters) {
@@ -509,16 +538,18 @@ class Primitives {
         public Maybe<String> getLabel() {
             return LABEL;
         }
-
     }
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class ByteGenerator implements Generator<Byte> {
         private static final Maybe<String> LABEL = Maybe.just("byte");
 
         private static final ByteGenerator DEFAULT_BYTE_GENERATOR = new ByteGenerator(ByteRange.fullRange());
 
         private final ByteRange range;
+
+        private ByteGenerator(ByteRange range) {
+            this.range = range;
+        }
 
         @Override
         public Generate<Byte> prepare(GeneratorParameters generatorParameters) {
@@ -543,13 +574,16 @@ class Primitives {
 
     }
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class ShortGenerator implements Generator<Short> {
         private static final Maybe<String> LABEL = Maybe.just("short");
 
         private static final ShortGenerator DEFAULT_SHORT_GENERATOR = new ShortGenerator(ShortRange.fullRange());
 
         private final ShortRange range;
+
+        private ShortGenerator(ShortRange range) {
+            this.range = range;
+        }
 
         @Override
         public Generate<Short> prepare(GeneratorParameters generatorParameters) {
@@ -573,13 +607,16 @@ class Primitives {
         }
     }
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class CharGenerator implements Generator<Character> {
         private static final Maybe<String> LABEL = Maybe.just("char");
 
         private static final CharGenerator DEFAULT_CHAR_GENERATOR = new CharGenerator(CharRange.fullRange());
 
         private final CharRange range;
+
+        private CharGenerator(CharRange range) {
+            this.range = range;
+        }
 
         @Override
         public Generate<Character> prepare(GeneratorParameters generatorParameters) {
@@ -599,9 +636,12 @@ class Primitives {
         }
     }
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class BytesGenerator implements Generator<Byte[]> {
         private final int count;
+
+        private BytesGenerator(int count) {
+            this.count = count;
+        }
 
         @Override
         public Generate<Byte[]> prepare(GeneratorParameters generatorParameters) {
@@ -621,7 +661,6 @@ class Primitives {
         public Maybe<String> getLabel() {
             return Maybe.just("bytes[" + count + "]");
         }
-
     }
 
     private static class SeedGenerator implements Generator<Seed> {
@@ -643,11 +682,13 @@ class Primitives {
         }
     }
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class SizeGenerator implements Generator<Integer> {
         private static final Maybe<String> LABEL = Maybe.just("size");
 
         private static final SizeGenerator INSTANCE = new SizeGenerator();
+
+        private SizeGenerator() {
+        }
 
         @Override
         public Generate<Integer> prepare(GeneratorParameters generatorParameters) {
@@ -659,22 +700,5 @@ class Primitives {
         public Maybe<String> getLabel() {
             return LABEL;
         }
-
-    }
-
-    private static <A> Generator<A> simpleGenerator(Maybe<String> label,
-                                                    Fn1<GeneratorParameters, BiasSetting<A>> getBias,
-                                                    Generate<A> runFn) {
-        return new Generator<A>() {
-            @Override
-            public Generate<A> prepare(GeneratorParameters generatorParameters) {
-                return Bias.applyBiasSetting(getBias.apply(generatorParameters), runFn);
-            }
-
-            @Override
-            public Maybe<String> getLabel() {
-                return label;
-            }
-        };
     }
 }

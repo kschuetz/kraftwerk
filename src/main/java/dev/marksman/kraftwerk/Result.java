@@ -4,15 +4,23 @@ import com.jnape.palatable.lambda.adt.product.Product2;
 import com.jnape.palatable.lambda.functions.Fn1;
 import com.jnape.palatable.lambda.functor.Bifunctor;
 import com.jnape.palatable.lambda.functor.Functor;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Value;
 
-@Value
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Result<S, A> implements Product2<S, A>, Functor<A, Result<?, ?>>, Bifunctor<S, A, Result<?, ?>> {
+public final class Result<S, A> implements Product2<S, A>, Functor<A, Result<?, ?>>, Bifunctor<S, A, Result<?, ?>> {
     private final S nextState;
     private final A value;
+
+    private Result(S nextState, A value) {
+        this.nextState = nextState;
+        this.value = value;
+    }
+
+    public static <S, A> Result<S, A> result(S nextState, A value) {
+        return new Result<>(nextState, value);
+    }
+
+    public static <S, A> Result<S, A> result(Product2<S, A> p) {
+        return new Result<>(p._1(), p._2());
+    }
 
     @Override
     public S _1() {
@@ -42,12 +50,37 @@ public class Result<S, A> implements Product2<S, A>, Functor<A, Result<?, ?>>, B
         return result(lFn.apply(nextState), rFn.apply(value));
     }
 
-    public static <S, A> Result<S, A> result(S nextState, A value) {
-        return new Result<>(nextState, value);
+    public S getNextState() {
+        return this.nextState;
     }
 
-    public static <S, A> Result<S, A> result(Product2<S, A> p) {
-        return new Result<>(p._1(), p._2());
+    public A getValue() {
+        return this.value;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Result<?, ?> result = (Result<?, ?>) o;
+
+        if (!nextState.equals(result.nextState)) return false;
+        return value != null ? value.equals(result.value) : result.value == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = nextState.hashCode();
+        result = 31 * result + (value != null ? value.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Result{" +
+                "nextState=" + nextState +
+                ", value=" + value +
+                '}';
+    }
 }

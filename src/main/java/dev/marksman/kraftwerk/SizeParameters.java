@@ -2,21 +2,49 @@ package dev.marksman.kraftwerk;
 
 import com.jnape.palatable.lambda.adt.Maybe;
 import com.jnape.palatable.lambda.functions.Fn1;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Value;
 
 import static com.jnape.palatable.lambda.adt.Maybe.just;
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
 
-@Value
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class SizeParameters {
+public final class SizeParameters {
     private static final SizeParameters NO_SIZE_LIMITS = new SizeParameters(nothing(), nothing(), nothing());
 
     private final Maybe<Integer> minSize;
     private final Maybe<Integer> maxSize;
     private final Maybe<Integer> preferredSize;
+
+    private SizeParameters(Maybe<Integer> minSize, Maybe<Integer> maxSize, Maybe<Integer> preferredSize) {
+        this.minSize = minSize;
+        this.maxSize = maxSize;
+        this.preferredSize = preferredSize;
+    }
+
+    // TODO: normalize parameters
+    public static SizeParameters sizeParameters(Maybe<Integer> minSize, Maybe<Integer> maxSize, Maybe<Integer> preferredSize) {
+        return new SizeParameters(minSize, maxSize, preferredSize);
+    }
+
+    public static SizeParameters sizeParameters(int minSize, int maxSize, int preferredSize) {
+        if (minSize == maxSize) return exactSize(minSize);
+        else return sizeParameters(just(minSize), just(maxSize), just(preferredSize));
+    }
+
+    public static SizeParameters exactSize(int size) {
+        Maybe<Integer> n = just(size);
+        return sizeParameters(n, n, n);
+    }
+
+    public static SizeParameters noSizeLimits() {
+        return NO_SIZE_LIMITS;
+    }
+
+    private static Fn1<Integer, Integer> clampToCeiling(int max) {
+        return n -> Math.min(n, max);
+    }
+
+    private static Fn1<Integer, Integer> clampToFloor(int min) {
+        return n -> Math.max(n, min);
+    }
 
     public SizeParameters withMinSize(int size) {
         int min = Math.max(size, 0);
@@ -51,31 +79,44 @@ public class SizeParameters {
                 s -> sizeParameters(minSize, maxSize, nothing()));
     }
 
-    // TODO: normalize parameters
-    public static SizeParameters sizeParameters(Maybe<Integer> minSize, Maybe<Integer> maxSize, Maybe<Integer> preferredSize) {
-        return new SizeParameters(minSize, maxSize, preferredSize);
+    public Maybe<Integer> getMinSize() {
+        return this.minSize;
     }
 
-    public static SizeParameters sizeParameters(int minSize, int maxSize, int preferredSize) {
-        if (minSize == maxSize) return exactSize(minSize);
-        else return sizeParameters(just(minSize), just(maxSize), just(preferredSize));
+    public Maybe<Integer> getMaxSize() {
+        return this.maxSize;
     }
 
-    public static SizeParameters exactSize(int size) {
-        Maybe<Integer> n = just(size);
-        return sizeParameters(n, n, n);
+    public Maybe<Integer> getPreferredSize() {
+        return this.preferredSize;
     }
 
-    public static SizeParameters noSizeLimits() {
-        return NO_SIZE_LIMITS;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SizeParameters that = (SizeParameters) o;
+
+        if (!minSize.equals(that.minSize)) return false;
+        if (!maxSize.equals(that.maxSize)) return false;
+        return preferredSize.equals(that.preferredSize);
     }
 
-    private static Fn1<Integer, Integer> clampToCeiling(int max) {
-        return n -> Math.min(n, max);
+    @Override
+    public int hashCode() {
+        int result = minSize.hashCode();
+        result = 31 * result + maxSize.hashCode();
+        result = 31 * result + preferredSize.hashCode();
+        return result;
     }
 
-    private static Fn1<Integer, Integer> clampToFloor(int min) {
-        return n -> Math.max(n, min);
+    @Override
+    public String toString() {
+        return "SizeParameters{" +
+                "minSize=" + minSize +
+                ", maxSize=" + maxSize +
+                ", preferredSize=" + preferredSize +
+                '}';
     }
-
 }

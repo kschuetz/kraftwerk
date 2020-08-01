@@ -3,8 +3,6 @@ package dev.marksman.kraftwerk;
 import com.jnape.palatable.lambda.adt.Maybe;
 import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.collectionviews.Vector;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.function.Function;
@@ -14,18 +12,25 @@ import static com.jnape.palatable.lambda.functions.builtin.fn2.Cons.cons;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.ToCollection.toCollection;
 import static com.jnape.palatable.lambda.functions.builtin.fn3.FoldLeft.foldLeft;
 
-class Mapping {
+final class Mapping {
+    private Mapping() {
+
+    }
 
     static <A, B> Generator<B> mapped(Fn1<? super A, ? extends B> fn, Generator<A> source) {
         return new Mapped<>(source, fn::apply);
     }
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class Mapped<In, A> implements Generator<A> {
-        private static Maybe<String> LABEL = Maybe.just("fmap");
+        private static final Maybe<String> LABEL = Maybe.just("fmap");
 
         private final Generator<In> source;
         private final Fn1<In, A> fn;
+
+        private Mapped(Generator<In> source, Fn1<In, A> fn) {
+            this.source = source;
+            this.fn = fn;
+        }
 
         @Override
         public Generate<A> prepare(GeneratorParameters generatorParameters) {
@@ -45,15 +50,18 @@ class Mapping {
         public Maybe<String> getLabel() {
             return LABEL;
         }
-
     }
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class ManyMapped<In, A> implements Generator<A> {
-        private static Maybe<String> LABEL = Maybe.just("fmap");
+        private static final Maybe<String> LABEL = Maybe.just("fmap");
 
         private final Generator<In> source;
         private final Iterable<Function<Object, Object>> functions;
+
+        private ManyMapped(Generator<In> source, Iterable<Function<Object, Object>> functions) {
+            this.source = source;
+            this.functions = functions;
+        }
 
         @SuppressWarnings("unchecked")
         @Override
@@ -78,6 +86,5 @@ class Mapping {
             ArrayList<Function<Object, Object>> fnChain = toCollection(ArrayList::new, reverse(functions));
             return o -> foldLeft((x, fn) -> fn.apply(x), o, fnChain);
         }
-
     }
 }

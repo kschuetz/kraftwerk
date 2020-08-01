@@ -1,22 +1,12 @@
 package dev.marksman.kraftwerk.weights;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Value;
-
 import static dev.marksman.kraftwerk.weights.BinaryWeights.binaryWeights;
 
-@Value
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class NullWeights {
-    BinaryWeights weights;
+public final class NullWeights {
+    private final BinaryWeights weights;
 
-    public int getNullWeight() {
-        return weights.getWeightA();
-    }
-
-    public int getNonNullWeight() {
-        return weights.getWeightB();
+    private NullWeights(BinaryWeights weights) {
+        this.weights = weights;
     }
 
     public static NullWeightsBuilderNonNull nonNulls(int weight) {
@@ -31,22 +21,61 @@ public class NullWeights {
         return new NullWeights(binaryWeights(nullWeight, nonNullWeight));
     }
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public int getNullWeight() {
+        return weights.getWeightA();
+    }
+
+    public int getNonNullWeight() {
+        return weights.getWeightB();
+    }
+
+    public BinaryWeights getWeights() {
+        return this.weights;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        NullWeights that = (NullWeights) o;
+
+        return weights.equals(that.weights);
+    }
+
+    @Override
+    public int hashCode() {
+        return weights.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "NullWeights{" +
+                "weights=" + weights +
+                '}';
+    }
+
     public static final class NullWeightsBuilderNulls {
         BinaryWeights weights;
+
+        private NullWeightsBuilderNulls(BinaryWeights weights) {
+            this.weights = weights;
+        }
 
         public NullWeights toNonNulls(int weight) {
             return new NullWeights(weights.toB(weight));
         }
     }
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static final class NullWeightsBuilderNonNull {
         BinaryWeights weights;
+
+        private NullWeightsBuilderNonNull(BinaryWeights weights) {
+            this.weights = weights;
+        }
 
         public NullWeights toNulls(int weight) {
             return new NullWeights(weights.toA(weight));
         }
     }
-
 }

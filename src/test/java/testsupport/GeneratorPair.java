@@ -3,18 +3,32 @@ package testsupport;
 import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.kraftwerk.Seed;
 import dev.marksman.kraftwerk.core.StandardSeed;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 
 import java.util.Random;
 
 import static dev.marksman.kraftwerk.core.StandardSeed.initStandardSeed;
 
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class GeneratorPair {
+public final class GeneratorPair {
     private final long initialSeedValue;
     private final Random random;
     private final Seed seed;
+
+    private GeneratorPair(long initialSeedValue, Random random, Seed seed) {
+        this.initialSeedValue = initialSeedValue;
+        this.random = random;
+        this.seed = seed;
+    }
+
+    public static GeneratorPair generatorPair(long initialSeedValue) {
+        Random random = new Random();
+        random.setSeed(initialSeedValue);
+        StandardSeed standardSeed = initStandardSeed(initialSeedValue);
+        return new GeneratorPair(initialSeedValue, random, standardSeed);
+    }
+
+    public static GeneratorPair newRandomGeneratorPair() {
+        return generatorPair(new Random().nextLong());
+    }
 
     public long getInitialSeedValue() {
         return initialSeedValue;
@@ -39,16 +53,4 @@ public class GeneratorPair {
     public String info() {
         return "initial seed = " + initialSeedValue;
     }
-
-    public static GeneratorPair generatorPair(long initialSeedValue) {
-        Random random = new Random();
-        random.setSeed(initialSeedValue);
-        StandardSeed standardSeed = initStandardSeed(initialSeedValue);
-        return new GeneratorPair(initialSeedValue, random, standardSeed);
-    }
-
-    public static GeneratorPair newRandomGeneratorPair() {
-        return generatorPair(new Random().nextLong());
-    }
-
 }

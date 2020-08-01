@@ -3,9 +3,6 @@ package examples.components;
 
 import dev.marksman.kraftwerk.Generator;
 import dev.marksman.kraftwerk.Generators;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Value;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into3.into3;
 import static dev.marksman.kraftwerk.Generators.chooseOneOfValues;
@@ -13,17 +10,60 @@ import static dev.marksman.kraftwerk.Generators.generateString;
 import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
 import static dev.marksman.kraftwerk.weights.MaybeWeights.nothings;
 
-@Value
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class City {
-    String name;
+public final class City {
+    private final String name;
+
+    private City(String name) {
+        this.name = name;
+    }
 
     public static City city(String name) {
         return new City(name);
     }
 
+    public static Generator<String> generateCityRootName() {
+        return generators.rootName;
+    }
+
+    public static Generator<City> generateCity() {
+        return generators.city;
+    }
+
+    public static void main(String[] args) {
+        generateCity()
+                .run()
+                .take(100)
+                .forEach(System.out::println);
+    }
+
     public String pretty() {
         return name;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        City city = (City) o;
+
+        return name.equals(city.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "City{" +
+                "name='" + name + '\'' +
+                '}';
     }
 
     private static class generators {
@@ -61,20 +101,5 @@ public class City {
                         suffix.maybe(nothings(5).toJusts(1))
                                 .fmap(s -> s.orElse("")))
                         .fmap(into3((prefix, root, suffix) -> city(prefix + root + suffix)));
-    }
-
-    public static Generator<String> generateCityRootName() {
-        return generators.rootName;
-    }
-
-    public static Generator<City> generateCity() {
-        return generators.city;
-    }
-
-    public static void main(String[] args) {
-        generateCity()
-                .run()
-                .take(100)
-                .forEach(System.out::println);
     }
 }

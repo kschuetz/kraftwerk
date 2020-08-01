@@ -9,12 +9,13 @@ import com.jnape.palatable.lambda.functions.Fn5;
 import com.jnape.palatable.lambda.functions.Fn6;
 import com.jnape.palatable.lambda.functions.Fn7;
 import com.jnape.palatable.lambda.functions.Fn8;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 
 import static dev.marksman.kraftwerk.Result.result;
 
-class Products {
+final class Products {
+    private Products() {
+
+    }
 
     static <A, B, Out> Generator<Out> product(Generator<A> a,
                                               Generator<B> b,
@@ -79,13 +80,18 @@ class Products {
         return new Product8<>(a, b, c, d, e, f, g, h, combine);
     }
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class Product2<A, B, Out> implements Generator<Out> {
-        private static Maybe<String> LABEL = Maybe.just("product2");
+        private static final Maybe<String> LABEL = Maybe.just("product2");
 
         private final Generator<A> a;
         private final Generator<B> b;
         private final Fn2<A, B, Out> combine;
+
+        private Product2(Generator<A> a, Generator<B> b, Fn2<A, B, Out> combine) {
+            this.a = a;
+            this.b = b;
+            this.combine = combine;
+        }
 
         @Override
         public Generate<Out> prepare(GeneratorParameters generatorParameters) {
@@ -107,14 +113,20 @@ class Products {
 
     }
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class Product3<A, B, C, Out> implements Generator<Out> {
-        private static Maybe<String> LABEL = Maybe.just("product3");
+        private static final Maybe<String> LABEL = Maybe.just("product3");
 
         private final Generator<A> a;
         private final Generator<B> b;
         private final Generator<C> c;
         private final Fn3<A, B, C, Out> combine;
+
+        private Product3(Generator<A> a, Generator<B> b, Generator<C> c, Fn3<A, B, C, Out> combine) {
+            this.a = a;
+            this.b = b;
+            this.c = c;
+            this.combine = combine;
+        }
 
         @Override
         public Generate<Out> prepare(GeneratorParameters generatorParameters) {
@@ -139,15 +151,22 @@ class Products {
 
     }
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class Product4<A, B, C, D, Out> implements Generator<Out> {
-        private static Maybe<String> LABEL = Maybe.just("product4");
+        private static final Maybe<String> LABEL = Maybe.just("product4");
 
         private final Generator<A> a;
         private final Generator<B> b;
         private final Generator<C> c;
         private final Generator<D> d;
         private final Fn4<A, B, C, D, Out> combine;
+
+        private Product4(Generator<A> a, Generator<B> b, Generator<C> c, Generator<D> d, Fn4<A, B, C, D, Out> combine) {
+            this.a = a;
+            this.b = b;
+            this.c = c;
+            this.d = d;
+            this.combine = combine;
+        }
 
         @Override
         public Generate<Out> prepare(GeneratorParameters generatorParameters) {
@@ -175,9 +194,8 @@ class Products {
 
     }
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class Product5<A, B, C, D, E, Out> implements Generator<Out> {
-        private static Maybe<String> LABEL = Maybe.just("product5");
+        private static final Maybe<String> LABEL = Maybe.just("product5");
 
         private final Generator<A> a;
         private final Generator<B> b;
@@ -185,6 +203,15 @@ class Products {
         private final Generator<D> d;
         private final Generator<E> e;
         private final Fn5<A, B, C, D, E, Out> combine;
+
+        private Product5(Generator<A> a, Generator<B> b, Generator<C> c, Generator<D> d, Generator<E> e, Fn5<A, B, C, D, E, Out> combine) {
+            this.a = a;
+            this.b = b;
+            this.c = c;
+            this.d = d;
+            this.e = e;
+            this.combine = combine;
+        }
 
         @Override
         public Generate<Out> prepare(GeneratorParameters generatorParameters) {
@@ -215,9 +242,8 @@ class Products {
 
     }
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class Product6<A, B, C, D, E, F, Out> implements Generator<Out> {
-        private static Maybe<String> LABEL = Maybe.just("product6");
+        private static final Maybe<String> LABEL = Maybe.just("product6");
 
         private final Generator<A> a;
         private final Generator<B> b;
@@ -226,6 +252,16 @@ class Products {
         private final Generator<E> e;
         private final Generator<F> f;
         private final Fn6<A, B, C, D, E, F, Out> combine;
+
+        private Product6(Generator<A> a, Generator<B> b, Generator<C> c, Generator<D> d, Generator<E> e, Generator<F> f, Fn6<A, B, C, D, E, F, Out> combine) {
+            this.a = a;
+            this.b = b;
+            this.c = c;
+            this.d = d;
+            this.e = e;
+            this.f = f;
+            this.combine = combine;
+        }
 
         @Override
         public Generate<Out> prepare(GeneratorParameters generatorParameters) {
@@ -259,9 +295,8 @@ class Products {
 
     }
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class Product7<A, B, C, D, E, F, G, Out> implements Generator<Out> {
-        private static Maybe<String> LABEL = Maybe.just("product7");
+        private static final Maybe<String> LABEL = Maybe.just("product7");
 
         private final Generator<A> a;
         private final Generator<B> b;
@@ -271,6 +306,17 @@ class Products {
         private final Generator<F> f;
         private final Generator<G> g;
         private final Fn7<A, B, C, D, E, F, G, Out> combine;
+
+        private Product7(Generator<A> a, Generator<B> b, Generator<C> c, Generator<D> d, Generator<E> e, Generator<F> f, Generator<G> g, Fn7<A, B, C, D, E, F, G, Out> combine) {
+            this.a = a;
+            this.b = b;
+            this.c = c;
+            this.d = d;
+            this.e = e;
+            this.f = f;
+            this.g = g;
+            this.combine = combine;
+        }
 
         @Override
         public Generate<Out> prepare(GeneratorParameters generatorParameters) {
@@ -307,9 +353,8 @@ class Products {
 
     }
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class Product8<A, B, C, D, E, F, G, H, Out> implements Generator<Out> {
-        private static Maybe<String> LABEL = Maybe.just("product8");
+        private static final Maybe<String> LABEL = Maybe.just("product8");
 
         private final Generator<A> a;
         private final Generator<B> b;
@@ -320,6 +365,18 @@ class Products {
         private final Generator<G> g;
         private final Generator<H> h;
         private final Fn8<A, B, C, D, E, F, G, H, Out> combine;
+
+        private Product8(Generator<A> a, Generator<B> b, Generator<C> c, Generator<D> d, Generator<E> e, Generator<F> f, Generator<G> g, Generator<H> h, Fn8<A, B, C, D, E, F, G, H, Out> combine) {
+            this.a = a;
+            this.b = b;
+            this.c = c;
+            this.d = d;
+            this.e = e;
+            this.f = f;
+            this.g = g;
+            this.h = h;
+            this.combine = combine;
+        }
 
         @Override
         public Generate<Out> prepare(GeneratorParameters generatorParameters) {

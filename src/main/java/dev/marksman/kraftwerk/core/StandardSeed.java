@@ -1,16 +1,15 @@
 package dev.marksman.kraftwerk.core;
 
 import dev.marksman.kraftwerk.Seed;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Value;
 
 import java.util.Random;
 
-@Value
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class StandardSeed implements Seed {
+public final class StandardSeed implements Seed {
     private final long seedValue;
+
+    private StandardSeed(long seedValue) {
+        this.seedValue = seedValue;
+    }
 
     @Override
     public Seed perturb(long value) {
@@ -35,4 +34,29 @@ public class StandardSeed implements Seed {
         return standardSeed(random.nextLong());
     }
 
+    public long getSeedValue() {
+        return this.seedValue;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        StandardSeed that = (StandardSeed) o;
+
+        return seedValue == that.seedValue;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (seedValue ^ (seedValue >>> 32));
+    }
+
+    @Override
+    public String toString() {
+        return "StandardSeed{" +
+                "seedValue=" + seedValue +
+                '}';
+    }
 }

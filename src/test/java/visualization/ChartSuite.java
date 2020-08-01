@@ -5,7 +5,6 @@ import com.jnape.palatable.lambda.adt.hlist.Tuple2;
 import com.jnape.palatable.lambda.functions.builtin.fn2.Sequence;
 import com.jnape.palatable.lambda.io.IO;
 import dev.marksman.enhancediterables.ImmutableFiniteIterable;
-import lombok.AllArgsConstructor;
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.internal.chartpart.Chart;
 
@@ -16,12 +15,19 @@ import static com.jnape.palatable.lambda.adt.Unit.UNIT;
 import static com.jnape.palatable.lambda.adt.hlist.HList.tuple;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into.into;
 import static dev.marksman.enhancediterables.ImmutableFiniteIterable.emptyImmutableFiniteIterable;
-import static lombok.AccessLevel.PRIVATE;
 
-@AllArgsConstructor(access = PRIVATE)
 public class ChartSuite {
     private final ImmutableFiniteIterable<Tuple2<ChartGenerator, String>> items;
-    private Path outputDir;
+    private final Path outputDir;
+
+    private ChartSuite(ImmutableFiniteIterable<Tuple2<ChartGenerator, String>> items, Path outputDir) {
+        this.items = items;
+        this.outputDir = outputDir;
+    }
+
+    public static ChartSuite chartSuite(Path outputDir) {
+        return new ChartSuite(emptyImmutableFiniteIterable(), outputDir);
+    }
 
     public ChartSuite add(String fileBaseName, ChartGenerator chartGenerator) {
         return new ChartSuite(items.append(tuple(chartGenerator, fileBaseName)), outputDir);
@@ -58,10 +64,6 @@ public class ChartSuite {
                 .append(generateIndex());
         IO<Iterable<Unit>> sequence = Sequence.sequence(fmap, IO::io);
         return sequence.fmap(__ -> UNIT);
-    }
-
-    public static ChartSuite chartSuite(Path outputDir) {
-        return new ChartSuite(emptyImmutableFiniteIterable(), outputDir);
     }
 
 }

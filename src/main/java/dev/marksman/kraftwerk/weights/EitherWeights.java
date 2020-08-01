@@ -1,22 +1,12 @@
 package dev.marksman.kraftwerk.weights;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Value;
-
 import static dev.marksman.kraftwerk.weights.BinaryWeights.binaryWeights;
 
-@Value
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class EitherWeights {
-    BinaryWeights weights;
+public final class EitherWeights {
+    private final BinaryWeights weights;
 
-    public int getLeftWeight() {
-        return weights.getWeightA();
-    }
-
-    public int getRightWeight() {
-        return weights.getWeightB();
+    private EitherWeights(BinaryWeights weights) {
+        this.weights = weights;
     }
 
     public static EitherWeightsBuilderLefts lefts(int weight) {
@@ -31,18 +21,58 @@ public class EitherWeights {
         return new EitherWeights(binaryWeights(falseWeight, trueWeight));
     }
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public int getLeftWeight() {
+        return weights.getWeightA();
+    }
+
+    public int getRightWeight() {
+        return weights.getWeightB();
+    }
+
+    public BinaryWeights getWeights() {
+        return this.weights;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        EitherWeights that = (EitherWeights) o;
+
+        return weights.equals(that.weights);
+    }
+
+    @Override
+    public int hashCode() {
+        return weights.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "EitherWeights{" +
+                "weights=" + weights +
+                '}';
+    }
+
     public static final class EitherWeightsBuilderLefts {
         BinaryWeights weights;
+
+        private EitherWeightsBuilderLefts(BinaryWeights weights) {
+            this.weights = weights;
+        }
 
         public EitherWeights toRights(int weight) {
             return new EitherWeights(weights.toB(weight));
         }
     }
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static final class EitherWeightsBuilderRights {
         BinaryWeights weights;
+
+        private EitherWeightsBuilderRights(BinaryWeights weights) {
+            this.weights = weights;
+        }
 
         public EitherWeights toLefts(int weight) {
             return new EitherWeights(weights.toA(weight));

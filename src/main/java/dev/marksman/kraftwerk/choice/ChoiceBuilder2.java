@@ -7,15 +7,16 @@ import dev.marksman.kraftwerk.Generators;
 import dev.marksman.kraftwerk.ToGenerator;
 import dev.marksman.kraftwerk.Weighted;
 import dev.marksman.kraftwerk.frequency.FrequencyMap;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 
 import static dev.marksman.kraftwerk.Generators.constant;
 import static dev.marksman.kraftwerk.choice.ChoiceBuilder3.choiceBuilder3;
 
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class ChoiceBuilder2<A, B> implements ToGenerator<Choice2<A, B>> {
+public final class ChoiceBuilder2<A, B> implements ToGenerator<Choice2<A, B>> {
     private final FrequencyMap<Choice2<A, B>> frequencyMap;
+
+    private ChoiceBuilder2(FrequencyMap<Choice2<A, B>> frequencyMap) {
+        this.frequencyMap = frequencyMap;
+    }
 
     public static <A, B> ChoiceBuilder2<A, B> choiceBuilder2(FrequencyMap<Choice2<A, B>> frequencyMap) {
         return new ChoiceBuilder2<>(frequencyMap);

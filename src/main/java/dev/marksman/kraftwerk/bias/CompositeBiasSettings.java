@@ -11,18 +11,25 @@ import dev.marksman.kraftwerk.constraints.FloatRange;
 import dev.marksman.kraftwerk.constraints.IntRange;
 import dev.marksman.kraftwerk.constraints.LongRange;
 import dev.marksman.kraftwerk.constraints.ShortRange;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
 
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 final class CompositeBiasSettings implements BiasSettings {
     private final BiasSettings first;
     private final BiasSettings second;
+
+    private CompositeBiasSettings(BiasSettings first, BiasSettings second) {
+        this.first = first;
+        this.second = second;
+    }
+
+    static BiasSettings compositeBiasSettings(BiasSettings first,
+                                              BiasSettings second) {
+        return new CompositeBiasSettings(first, second);
+    }
 
     @Override
     public BiasSetting<Integer> intBias(IntRange range) {
@@ -78,10 +85,5 @@ final class CompositeBiasSettings implements BiasSettings {
         return f.apply(first)
                 .match(__ -> f.apply(second),
                         id());
-    }
-
-    static BiasSettings compositeBiasSettings(BiasSettings first,
-                                              BiasSettings second) {
-        return new CompositeBiasSettings(first, second);
     }
 }

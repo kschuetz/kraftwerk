@@ -2,21 +2,22 @@ package dev.marksman.kraftwerk;
 
 import com.jnape.palatable.lambda.adt.Maybe;
 import com.jnape.palatable.lambda.functions.Fn1;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 
-class Composition {
-
+final class Composition {
     static <A, B> Generator<B> flatMapped(Fn1<? super A, ? extends Generator<B>> fn, Generator<A> operand) {
         return new FlatMapped<>(operand, fn::apply);
     }
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     private static class FlatMapped<In, A> implements Generator<A> {
-        private static Maybe<String> LABEL = Maybe.just("flatMap");
+        private static final Maybe<String> LABEL = Maybe.just("flatMap");
 
         private final Generator<In> operand;
         private final Fn1<? super In, ? extends Generator<A>> fn;
+
+        private FlatMapped(Generator<In> operand, Fn1<? super In, ? extends Generator<A>> fn) {
+            this.operand = operand;
+            this.fn = fn;
+        }
 
         @Override
         public Generate<A> prepare(GeneratorParameters generatorParameters) {
@@ -32,6 +33,5 @@ class Composition {
         public Maybe<String> getLabel() {
             return LABEL;
         }
-
     }
 }

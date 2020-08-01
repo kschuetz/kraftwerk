@@ -4,9 +4,6 @@ import com.jnape.palatable.lambda.adt.Maybe;
 import dev.marksman.kraftwerk.Generator;
 import dev.marksman.kraftwerk.Generators;
 import dev.marksman.kraftwerk.constraints.IntRange;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Value;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into.into;
 import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
@@ -16,15 +13,31 @@ import static examples.components.Street.generateStreet;
 import static examples.components.UsState.generateUsState;
 import static examples.components.ZipCode.generateZipCode;
 
-@Value
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Address {
-    String number;
-    Street street;
-    Maybe<String> unit;
-    City city;
-    UsState state;
-    ZipCode zipCode;
+public final class Address {
+    private final String number;
+    private final Street street;
+    private final Maybe<String> unit;
+    private final City city;
+    private final UsState state;
+    private final ZipCode zipCode;
+
+    private Address(String number, Street street, Maybe<String> unit, City city, UsState state, ZipCode zipCode) {
+        this.number = number;
+        this.street = street;
+        this.unit = unit;
+        this.city = city;
+        this.state = state;
+        this.zipCode = zipCode;
+    }
+
+    public static Generator<Address> generateAddress() {
+        return generators.address;
+    }
+
+    public static Address address(String number, Street street, Maybe<String> unit,
+                                  City city, UsState state, ZipCode zipCode) {
+        return new Address(number, street, unit, city, state, zipCode);
+    }
 
     public String prettyMultiLine() {
         return renderPretty(true);
@@ -45,6 +58,68 @@ public class Address {
                 state.pretty() +
                 " " +
                 zipCode.pretty();
+    }
+
+    public String getNumber() {
+        return this.number;
+    }
+
+    public Street getStreet() {
+        return this.street;
+    }
+
+    public Maybe<String> getUnit() {
+        return this.unit;
+    }
+
+    public City getCity() {
+        return this.city;
+    }
+
+    public UsState getState() {
+        return this.state;
+    }
+
+    public ZipCode getZipCode() {
+        return this.zipCode;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Address address = (Address) o;
+
+        if (!number.equals(address.number)) return false;
+        if (!street.equals(address.street)) return false;
+        if (!unit.equals(address.unit)) return false;
+        if (!city.equals(address.city)) return false;
+        if (!state.equals(address.state)) return false;
+        return zipCode.equals(address.zipCode);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = number.hashCode();
+        result = 31 * result + street.hashCode();
+        result = 31 * result + unit.hashCode();
+        result = 31 * result + city.hashCode();
+        result = 31 * result + state.hashCode();
+        result = 31 * result + zipCode.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Address{" +
+                "number='" + number + '\'' +
+                ", street=" + street +
+                ", unit=" + unit +
+                ", city=" + city +
+                ", state=" + state +
+                ", zipCode=" + zipCode +
+                '}';
     }
 
     private static class generators {
@@ -68,14 +143,5 @@ public class Address {
                         generateUsState(),
                         generateZipCode(),
                         Address::address);
-    }
-
-    public static Generator<Address> generateAddress() {
-        return generators.address;
-    }
-
-    public static Address address(String number, Street street, Maybe<String> unit,
-                                  City city, UsState state, ZipCode zipCode) {
-        return new Address(number, street, unit, city, state, zipCode);
     }
 }

@@ -1,16 +1,19 @@
 package dev.marksman.kraftwerk.core;
 
 import dev.marksman.kraftwerk.Seed;
-import lombok.AllArgsConstructor;
-import lombok.Value;
 
-import static lombok.AccessLevel.PRIVATE;
-
-@Value
-@AllArgsConstructor(access = PRIVATE)
-class StandardSeedCacheGaussian implements Seed {
+final class StandardSeedCacheGaussian implements Seed {
     private final Seed underlying;
     private final double nextGaussian;
+
+    private StandardSeedCacheGaussian(Seed underlying, double nextGaussian) {
+        this.underlying = underlying;
+        this.nextGaussian = nextGaussian;
+    }
+
+    static StandardSeedCacheGaussian standardSeedCacheGaussian(Seed underlying, double nextGaussian) {
+        return new StandardSeedCacheGaussian(underlying, nextGaussian);
+    }
 
     public long getSeedValue() {
         return underlying.getSeedValue();
@@ -27,7 +30,40 @@ class StandardSeedCacheGaussian implements Seed {
                 nextGaussian);
     }
 
-    static StandardSeedCacheGaussian standardSeedCacheGaussian(Seed underlying, double nextGaussian) {
-        return new StandardSeedCacheGaussian(underlying, nextGaussian);
+    public Seed getUnderlying() {
+        return this.underlying;
+    }
+
+    public double getNextGaussian() {
+        return this.nextGaussian;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        StandardSeedCacheGaussian that = (StandardSeedCacheGaussian) o;
+
+        if (Double.compare(that.nextGaussian, nextGaussian) != 0) return false;
+        return underlying.equals(that.underlying);
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = underlying.hashCode();
+        temp = Double.doubleToLongBits(nextGaussian);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "StandardSeedCacheGaussian{" +
+                "underlying=" + underlying +
+                ", nextGaussian=" + nextGaussian +
+                '}';
     }
 }

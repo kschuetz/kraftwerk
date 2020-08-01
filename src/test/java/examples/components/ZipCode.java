@@ -2,24 +2,53 @@ package examples.components;
 
 import dev.marksman.kraftwerk.Generator;
 import dev.marksman.kraftwerk.Generators;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Value;
 
 import static dev.marksman.kraftwerk.domain.Characters.numeric;
 import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
 
-@Value
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class ZipCode {
+public final class ZipCode {
     private final String value;
+
+    private ZipCode(String value) {
+        this.value = value;
+    }
 
     public static ZipCode zipCode(String value) {
         return new ZipCode(value);
     }
 
+    public static Generator<ZipCode> generateZipCode() {
+        return generators.zipCode;
+    }
+
     public String pretty() {
         return value;
+    }
+
+    public String getValue() {
+        return this.value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ZipCode zipCode = (ZipCode) o;
+
+        return value.equals(zipCode.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return value.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "ZipCode{" +
+                "value='" + value + '\'' +
+                '}';
     }
 
     private static class generators {
@@ -31,9 +60,5 @@ public class ZipCode {
                         .add(Generators.generateString(fiveDigits, Generators.constant("-"), fourDigits))
                         .toGenerator()
                         .fmap(ZipCode::zipCode);
-    }
-
-    public static Generator<ZipCode> generateZipCode() {
-        return generators.zipCode;
     }
 }

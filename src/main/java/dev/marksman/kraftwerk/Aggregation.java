@@ -3,14 +3,11 @@ package dev.marksman.kraftwerk;
 import com.jnape.palatable.lambda.adt.Maybe;
 import com.jnape.palatable.lambda.functions.builtin.fn2.Map;
 import dev.marksman.kraftwerk.aggregator.Aggregator;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Replicate.replicate;
 import static dev.marksman.kraftwerk.Result.result;
 
-class Aggregation {
-
+final class Aggregation {
     static <A, Builder, Out> Generator<Out> aggregate(Aggregator<A, Builder, Out> aggregator,
                                                       Iterable<Generator<A>> elements) {
         return new Aggregate<>(aggregator, elements);
@@ -22,12 +19,16 @@ class Aggregation {
         return new Aggregate<>(aggregator, replicate(size, gen));
     }
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     static class Aggregate<Elem, Builder, Out> implements Generator<Out> {
-        private static Maybe<String> LABEL = Maybe.just("aggregate");
+        private static final Maybe<String> LABEL = Maybe.just("aggregate");
 
         private final Aggregator<Elem, Builder, Out> aggregator;
         private final Iterable<Generator<Elem>> elements;
+
+        private Aggregate(Aggregator<Elem, Builder, Out> aggregator, Iterable<Generator<Elem>> elements) {
+            this.aggregator = aggregator;
+            this.elements = elements;
+        }
 
         @Override
         public Generate<Out> prepare(GeneratorParameters generatorParameters) {
@@ -50,6 +51,5 @@ class Aggregation {
         public Maybe<String> getLabel() {
             return LABEL;
         }
-
     }
 }

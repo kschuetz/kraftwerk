@@ -1,22 +1,12 @@
 package dev.marksman.kraftwerk.weights;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Value;
-
 import static dev.marksman.kraftwerk.weights.BinaryWeights.binaryWeights;
 
-@Value
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class MaybeWeights {
-    BinaryWeights weights;
+public final class MaybeWeights {
+    private final BinaryWeights weights;
 
-    public int getNothingWeight() {
-        return weights.getWeightA();
-    }
-
-    public int getJustWeight() {
-        return weights.getWeightB();
+    private MaybeWeights(BinaryWeights weights) {
+        this.weights = weights;
     }
 
     public static MaybeWeightsBuilderJusts justs(int weight) {
@@ -31,18 +21,58 @@ public class MaybeWeights {
         return new MaybeWeights(binaryWeights(nothingWeight, justWeight));
     }
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    public int getNothingWeight() {
+        return weights.getWeightA();
+    }
+
+    public int getJustWeight() {
+        return weights.getWeightB();
+    }
+
+    public BinaryWeights getWeights() {
+        return this.weights;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        MaybeWeights that = (MaybeWeights) o;
+
+        return weights.equals(that.weights);
+    }
+
+    @Override
+    public int hashCode() {
+        return weights.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "MaybeWeights{" +
+                "weights=" + weights +
+                '}';
+    }
+
     public static final class MaybeWeightsBuilderNothings {
         BinaryWeights weights;
+
+        private MaybeWeightsBuilderNothings(BinaryWeights weights) {
+            this.weights = weights;
+        }
 
         public MaybeWeights toJusts(int weight) {
             return new MaybeWeights(weights.toB(weight));
         }
     }
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static final class MaybeWeightsBuilderJusts {
         BinaryWeights weights;
+
+        private MaybeWeightsBuilderJusts(BinaryWeights weights) {
+            this.weights = weights;
+        }
 
         public MaybeWeights toNothings(int weight) {
             return new MaybeWeights(weights.toA(weight));

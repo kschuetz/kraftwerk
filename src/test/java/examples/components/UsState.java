@@ -1,24 +1,61 @@
 package examples.components;
 
 import dev.marksman.kraftwerk.Generator;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Value;
 
 import static dev.marksman.kraftwerk.Generators.frequencyValues;
 import static dev.marksman.kraftwerk.Weighted.weighted;
 
-@Value
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class UsState {
+public final class UsState {
     private final String code;
+
+    private UsState(String code) {
+        this.code = code;
+    }
 
     public static UsState usState(String code) {
         return new UsState(code);
     }
 
+    public static Generator<UsState> generateUsState() {
+        return generators.usState;
+    }
+
+    public static void main(String[] args) {
+        generateUsState()
+                .fmap(UsState::getCode)
+                .run()
+                .take(100)
+                .forEach(System.out::println);
+    }
+
     public String pretty() {
         return code;
+    }
+
+    public String getCode() {
+        return this.code;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        UsState usState = (UsState) o;
+
+        return code.equals(usState.code);
+    }
+
+    @Override
+    public int hashCode() {
+        return code.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "UsState{" +
+                "code='" + code + '\'' +
+                '}';
     }
 
     private static class generators {
@@ -41,17 +78,5 @@ public class UsState {
                 weighted(1, "SD"), weighted(1, "ND"), weighted(1, "AK"),
                 weighted(1, "VT"), weighted(1, "WY"))
                 .fmap(UsState::usState);
-    }
-
-    public static Generator<UsState> generateUsState() {
-        return generators.usState;
-    }
-
-    public static void main(String[] args) {
-        generateUsState()
-                .fmap(UsState::getCode)
-                .run()
-                .take(100)
-                .forEach(System.out::println);
     }
 }
