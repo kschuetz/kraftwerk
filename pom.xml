@@ -47,8 +47,7 @@
         </snapshotRepository>
         <repository>
             <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/
-            </url>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
 
@@ -59,7 +58,6 @@
             <email>schuetzk@gmail.com</email>
         </developer>
     </developers>
-
 
     <dependencies>
         <dependency>
@@ -97,7 +95,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
 
     <build>
         <plugins>
@@ -229,5 +226,4 @@
             </build>
         </profile>
     </profiles>
-
 </project>
