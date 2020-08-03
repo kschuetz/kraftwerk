@@ -8,6 +8,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
+import static dev.marksman.kraftwerk.Distributions.linearRampDown;
+import static dev.marksman.kraftwerk.Distributions.linearRampUp;
+import static dev.marksman.kraftwerk.Distributions.triangularInt;
 import static dev.marksman.kraftwerk.Generators.generateBoolean;
 import static dev.marksman.kraftwerk.Generators.generateByte;
 import static dev.marksman.kraftwerk.Generators.generateGaussian;
@@ -26,7 +29,8 @@ public class GenerateCharts {
 
         Fn1<ChartSuite, ChartSuite> builder =
                 primitives()
-                        .fmap(freqMaps());
+                        .fmap(freqMaps())
+                        .fmap(distributions());
 
         builder.apply(chartSuite(outputDir))
                 .run()
@@ -64,4 +68,11 @@ public class GenerateCharts {
                         .toGenerator(), 10, id()));
     }
 
+    private static Fn1<ChartSuite, ChartSuite> distributions() {
+        return cs -> cs
+                .add("linear-ramp-up-int", histogram(linearRampUp(generateInt(IntRange.from(0).to(255))), 256, id()))
+                .add("linear-ramp-down-int", histogram(linearRampDown(generateInt(IntRange.from(0).to(255))), 256, id()))
+                .add("linear-ramp-up-down-int", histogram(linearRampUp(linearRampDown(generateInt(IntRange.from(0).to(255)))), 256, id()))
+                .add("triangular-int", histogram(triangularInt(generateInt(IntRange.from(0).to(255))), 256, id()));
+    }
 }
