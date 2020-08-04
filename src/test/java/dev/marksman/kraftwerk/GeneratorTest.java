@@ -117,8 +117,8 @@ class GeneratorTest {
     private static <A> void testEquivalent(Generator<A> gen1, Generator<A> gen2) {
         Seed initial = initStandardSeed();
 
-        Result<Seed, ArrayList<A>> result1 = run(Generators.generateArrayListOfN(SEQUENCE_LENGTH, gen1), initial);
-        Result<Seed, ArrayList<A>> result2 = run(Generators.generateArrayListOfN(SEQUENCE_LENGTH, gen2), initial);
+        Result<Seed, ArrayList<A>> result1 = run(Generators.generateArrayListOfSize(SEQUENCE_LENGTH, gen1), initial);
+        Result<Seed, ArrayList<A>> result2 = run(Generators.generateArrayListOfSize(SEQUENCE_LENGTH, gen2), initial);
 
         assertEquals(result1.getNextState(),
                 result2.getNextState(), "outbound RandomGens don't match");

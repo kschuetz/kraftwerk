@@ -22,11 +22,11 @@ class Collections {
         return Generators.sized(n -> buildArrayList(Math.max(1, n), gen));
     }
 
-    static <A> Generator<ArrayList<A>> generateArrayListOfN(int n, Generator<A> gen) {
-        if (n < 0) {
-            throw new IllegalArgumentException("n must be >= 0");
+    static <A> Generator<ArrayList<A>> generateArrayListOfSize(int size, Generator<A> gen) {
+        if (size < 0) {
+            throw new IllegalArgumentException("size must be >= 0");
         }
-        return buildArrayList(n, gen);
+        return buildArrayList(size, gen);
     }
 
     static <A> Generator<HashSet<A>> generateHashSet(Generator<A> gen) {
@@ -45,28 +45,28 @@ class Collections {
         return Generators.sized(n -> Generators.buildNonEmptyVector(Math.max(1, n), gen));
     }
 
-    static <A> Generator<ImmutableVector<A>> generateVectorOfN(int n, Generator<A> gen) {
-        if (n < 0) {
-            throw new IllegalArgumentException("n must be >= 0");
+    static <A> Generator<ImmutableVector<A>> generateVectorOfSize(int size, Generator<A> gen) {
+        if (size < 0) {
+            throw new IllegalArgumentException("size must be >= 0");
         }
-        return Generators.buildVector(n, gen);
+        return Generators.buildVector(size, gen);
     }
 
-    static <A> Generator<ImmutableNonEmptyVector<A>> generateNonEmptyVectorOfN(int n, Generator<A> gen) {
-        if (n < 1) {
-            throw new IllegalArgumentException("n must be >= 1");
+    static <A> Generator<ImmutableNonEmptyVector<A>> generateNonEmptyVectorOfSize(int size, Generator<A> gen) {
+        if (size < 1) {
+            throw new IllegalArgumentException("size must be >= 1");
         }
-        return Generators.buildNonEmptyVector(n, gen);
+        return Generators.buildNonEmptyVector(size, gen);
     }
 
     static <K, V> Generator<Map<K, V>> generateMap(Generator<K> generateKey,
                                                    Generator<V> generateValue) {
-        return Generators.sized(n -> generateMapOfN(n, generateKey, generateValue));
+        return Generators.sized(n -> generateMapOfSize(n, generateKey, generateValue));
     }
 
     static <K, V> Generator<Map<K, V>> generateNonEmptyMap(Generator<K> generateKey,
                                                            Generator<V> generateValue) {
-        return Generators.sized(n -> generateMapOfN(Math.max(1, n), generateKey, generateValue));
+        return Generators.sized(n -> generateMapOfSize(Math.max(1, n), generateKey, generateValue));
     }
 
     static <K, V> Generator<Map<K, V>> generateMap(Collection<K> keys,
@@ -90,7 +90,7 @@ class Collections {
     private static <K, V> Generator<Map<K, V>> generateMapImpl(int size,
                                                                Iterable<K> keys,
                                                                Generator<V> generateValue) {
-        return generateArrayListOfN(size, generateValue)
+        return generateArrayListOfSize(size, generateValue)
                 .fmap(values -> {
                     HashMap<K, V> result = new HashMap<>();
                     zip(keys, values)
@@ -99,8 +99,8 @@ class Collections {
                 });
     }
 
-    private static <K, V> Generator<Map<K, V>> generateMapOfN(int n, Generator<K> generateKey, Generator<V> generateValue) {
-        return generateArrayListOfN(n, generateKey)
+    private static <K, V> Generator<Map<K, V>> generateMapOfSize(int size, Generator<K> generateKey, Generator<V> generateValue) {
+        return generateArrayListOfSize(size, generateKey)
                 .flatMap(keys -> generateMapImpl(keys.size(), keys, generateValue));
     }
 

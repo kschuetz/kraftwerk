@@ -20,7 +20,7 @@ class Sequences {
             return constant(Vector.empty());
         } else {
             return countForEachElement
-                    .vectorOfN(size)
+                    .vectorOfSize(size)
                     .fmap(counts -> {
                         VectorBuilder<A> result = Vector.builder();
                         for (int i = 0; i < size; i++) {

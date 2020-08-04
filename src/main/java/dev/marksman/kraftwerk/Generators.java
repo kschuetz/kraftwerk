@@ -634,8 +634,8 @@ public final class Generators {
         return Collections.generateNonEmptyArrayList(g);
     }
 
-    public static <A> Generator<ArrayList<A>> generateArrayListOfN(int n, Generator<A> g) {
-        return Collections.generateArrayListOfN(n, g);
+    public static <A> Generator<ArrayList<A>> generateArrayListOfSize(int n, Generator<A> g) {
+        return Collections.generateArrayListOfSize(n, g);
     }
 
     public static <A> Generator<HashSet<A>> generateHashSet(Generator<A> g) {
@@ -654,12 +654,12 @@ public final class Generators {
         return Collections.generateNonEmptyVector(g);
     }
 
-    public static <A> Generator<ImmutableVector<A>> generateVectorOfN(int n, Generator<A> g) {
-        return Collections.generateVectorOfN(n, g);
+    public static <A> Generator<ImmutableVector<A>> generateVectorOfSize(int size, Generator<A> g) {
+        return Collections.generateVectorOfSize(size, g);
     }
 
-    public static <A> Generator<ImmutableNonEmptyVector<A>> generateNonEmptyVectorOfN(int n, Generator<A> g) {
-        return Collections.generateNonEmptyVectorOfN(n, g);
+    public static <A> Generator<ImmutableNonEmptyVector<A>> generateNonEmptyVectorOfSize(int size, Generator<A> g) {
+        return Collections.generateNonEmptyVectorOfSize(size, g);
     }
 
     public static <K, V> Generator<Map<K, V>> generateMap(Generator<K> generateKey,

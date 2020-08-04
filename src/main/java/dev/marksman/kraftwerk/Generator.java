@@ -127,24 +127,24 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
         return Generators.generateNonEmptyArrayList(this);
     }
 
-    default Generator<ArrayList<A>> arrayListOfN(int count) {
-        return Generators.generateArrayListOfN(count, this);
+    default Generator<ArrayList<A>> arrayListOfSize(int count) {
+        return Generators.generateArrayListOfSize(count, this);
     }
 
     default Generator<ImmutableVector<A>> vector() {
         return Generators.generateVector(this);
     }
 
-    default Generator<ImmutableVector<A>> vectorOfN(int count) {
-        return Generators.generateVectorOfN(count, this);
+    default Generator<ImmutableVector<A>> vectorOfSize(int count) {
+        return Generators.generateVectorOfSize(count, this);
     }
 
     default Generator<ImmutableNonEmptyVector<A>> nonEmptyVector() {
         return Generators.generateNonEmptyVector(this);
     }
 
-    default Generator<ImmutableNonEmptyVector<A>> nonEmptyVectorOfN(int count) {
-        return Generators.generateNonEmptyVectorOfN(count, this);
+    default Generator<ImmutableNonEmptyVector<A>> nonEmptyVectorOfSize(int count) {
+        return Generators.generateNonEmptyVectorOfSize(count, this);
     }
 
     default <B, C> Generator<C> zipWith(Fn2<A, B, C> fn, Generator<B> other) {
