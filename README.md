@@ -51,8 +51,8 @@ public static class IntegerWithinRangeExample {
 }
 ```
 
-The `run` method we used previously randomly generates a new seed each time it is called.  If we have a specific
-initial seed value we would like to use, we pass it in as a parameter:
+The `run` method we used previously randomly generates a new seed each time it is called. If we have a specific
+initial seed value we would like to use, we can pass it in as a parameter:
 
 ```java
 public static class InitialSeedExample {
@@ -74,7 +74,7 @@ public static class InitialSeedExample {
 }
 ```                          
 
-A generator can be "mapped" using `fmap`.  `fmap` maps the output of a generator to a function, and yields a new generator.
+A generator can be "mapped" using `fmap`. `fmap` maps the output of a generator to new value using function, and yields a new generator.
 The following example multiplies the initial generator's output by 1000:
 
 ```java
@@ -96,7 +96,7 @@ public static class MappingExample {
 }
 ```    
 
-The function passed to `fmap` does not need to return the same type as the input.  The following example converts a generator
+The function passed to `fmap` does not need to return the same type as the input. The following example converts a generator
 of `Integer`s to a generator of `LocalDate`s:
 
 ```java
@@ -130,7 +130,6 @@ public static class CombiningTwoGenerators {
         generator.run()
                 .take(5)
                 .forEach(System.out::println);
-
     }  
 
 // sample output:
@@ -165,7 +164,7 @@ public static class CombiningThreeGenerators {
 }
 ```        
 
-If you would prefer a product type other than `Tuple`, you can use `Generators.product`.  This takes the component generators,
+If you would prefer a product type other than `Tuple`, you can use `Generators.product`. This takes the component generators,
 and a function to apply to all of the generated components in order to create the desired type.  Here is an example that
 generates values of a custom type `RGB`:
                                        
