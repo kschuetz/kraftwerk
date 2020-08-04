@@ -1,0 +1,11 @@
+dev.marksman.kraftwerk
+dev.marksman.kraftwerk.aggregator
+dev.marksman.kraftwerk.bias
+dev.marksman.kraftwerk.choice
+dev.marksman.kraftwerk.constraints
+dev.marksman.kraftwerk.core
+dev.marksman.kraftwerk.domain
+dev.marksman.kraftwerk.frequency
+dev.marksman.kraftwerk.optics
+dev.marksman.kraftwerk.util
+dev.marksman.kraftwerk.weights
