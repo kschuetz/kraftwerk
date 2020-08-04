@@ -3,6 +3,7 @@ package dev.marksman.kraftwerk;
 import dev.marksman.collectionviews.ImmutableNonEmptyVector;
 import dev.marksman.collectionviews.ImmutableVector;
 import dev.marksman.collectionviews.NonEmptyVector;
+import dev.marksman.kraftwerk.constraints.IntRange;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,10 +24,13 @@ class Collections {
     }
 
     static <A> Generator<ArrayList<A>> generateArrayListOfSize(int size, Generator<A> gen) {
-        if (size < 0) {
-            throw new IllegalArgumentException("size must be >= 0");
-        }
+        Preconditions.requireNaturalSize(size);
         return buildArrayList(size, gen);
+    }
+
+    static <A> Generator<ArrayList<A>> generateArrayListOfSize(IntRange sizeRange, Generator<A> gen) {
+        Preconditions.requireNaturalSize(sizeRange);
+        return generateCollectionSize(sizeRange).flatMap(size -> buildArrayList(size, gen));
     }
 
     static <A> Generator<HashSet<A>> generateHashSet(Generator<A> gen) {
@@ -41,22 +45,24 @@ class Collections {
         return Generators.sized(n -> Generators.buildVector(n, gen));
     }
 
+    static <A> Generator<ImmutableVector<A>> generateVectorOfSize(int size, Generator<A> gen) {
+        return Generators.buildVector(size, gen);
+    }
+
+    static <A> Generator<ImmutableVector<A>> generateVectorOfSize(IntRange sizeRange, Generator<A> gen) {
+        return Generators.buildVector(sizeRange, gen);
+    }
+
     static <A> Generator<ImmutableNonEmptyVector<A>> generateNonEmptyVector(Generator<A> gen) {
         return Generators.sized(n -> Generators.buildNonEmptyVector(Math.max(1, n), gen));
     }
 
-    static <A> Generator<ImmutableVector<A>> generateVectorOfSize(int size, Generator<A> gen) {
-        if (size < 0) {
-            throw new IllegalArgumentException("size must be >= 0");
-        }
-        return Generators.buildVector(size, gen);
+    static <A> Generator<ImmutableNonEmptyVector<A>> generateNonEmptyVectorOfSize(int size, Generator<A> gen) {
+        return Generators.buildNonEmptyVector(size, gen);
     }
 
-    static <A> Generator<ImmutableNonEmptyVector<A>> generateNonEmptyVectorOfSize(int size, Generator<A> gen) {
-        if (size < 1) {
-            throw new IllegalArgumentException("size must be >= 1");
-        }
-        return Generators.buildNonEmptyVector(size, gen);
+    static <A> Generator<ImmutableNonEmptyVector<A>> generateNonEmptyVectorOfSize(IntRange sizeRange, Generator<A> gen) {
+        return Generators.buildNonEmptyVector(sizeRange, gen);
     }
 
     static <K, V> Generator<Map<K, V>> generateMap(Generator<K> generateKey,
@@ -79,12 +85,17 @@ class Collections {
         return generateMapImpl(keys.size(), keys, generateValue);
     }
 
-    private static <A> Generator<ArrayList<A>> buildArrayList(int n, Generator<A> gen) {
-        return Generators.buildCollection(ArrayList::new, n, gen);
+    static Generator<Integer> generateCollectionSize(IntRange sizeRange) {
+        return Generators.generateInt(sizeRange);
     }
 
-    private static <A> Generator<HashSet<A>> buildHashSet(int n, Generator<A> gen) {
-        return Generators.buildCollection(HashSet::new, n, gen);
+    private static <A> Generator<ArrayList<A>> buildArrayList(int size, Generator<A> gen) {
+        Preconditions.requireNaturalSize(size);
+        return Generators.buildCollection(ArrayList::new, size, gen);
+    }
+
+    private static <A> Generator<HashSet<A>> buildHashSet(int size, Generator<A> gen) {
+        return Generators.buildCollection(HashSet::new, size, gen);
     }
 
     private static <K, V> Generator<Map<K, V>> generateMapImpl(int size,

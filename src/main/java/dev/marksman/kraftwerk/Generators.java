@@ -77,6 +77,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Replicate.replicate;
+import static dev.marksman.kraftwerk.Collections.generateCollectionSize;
 import static dev.marksman.kraftwerk.Result.result;
 import static dev.marksman.kraftwerk.aggregator.Aggregators.collectionAggregator;
 import static dev.marksman.kraftwerk.aggregator.Aggregators.vectorAggregator;
@@ -244,7 +245,15 @@ public final class Generators {
     public static <A, Builder, Out> Generator<Out> aggregate(Aggregator<A, Builder, Out> aggregator,
                                                              int size,
                                                              Generator<A> gen) {
+        Preconditions.requireNaturalSize(size);
         return Aggregation.aggregate(aggregator, size, gen);
+    }
+
+    public static <A, Builder, Out> Generator<Out> aggregate(Aggregator<A, Builder, Out> aggregator,
+                                                             IntRange sizeRange,
+                                                             Generator<A> gen) {
+        Preconditions.requireNaturalSize(sizeRange);
+        return generateCollectionSize(sizeRange).flatMap(size -> aggregate(aggregator, size, gen));
     }
 
     public static <A, C extends Collection<A>> Generator<C> buildCollection(Fn0<C> constructCollection,
@@ -255,7 +264,15 @@ public final class Generators {
     public static <A, C extends Collection<A>> Generator<C> buildCollection(Fn0<C> constructCollection,
                                                                             int size,
                                                                             Generator<A> gen) {
+        Preconditions.requireNaturalSize(size);
         return buildCollection(constructCollection, replicate(size, gen));
+    }
+
+    public static <A, C extends Collection<A>> Generator<C> buildCollection(Fn0<C> constructCollection,
+                                                                            IntRange sizeRange,
+                                                                            Generator<A> gen) {
+        Preconditions.requireNaturalSize(sizeRange);
+        return generateCollectionSize(sizeRange).flatMap(size -> buildCollection(constructCollection, size, gen));
     }
 
     public static <A> Generator<ImmutableVector<A>> buildVector(Iterable<Generator<A>> elements) {
@@ -263,7 +280,13 @@ public final class Generators {
     }
 
     public static <A> Generator<ImmutableVector<A>> buildVector(int size, Generator<A> gen) {
+        Preconditions.requireNaturalSize(size);
         return Aggregation.aggregate(vectorAggregator(size), replicate(size, gen));
+    }
+
+    public static <A> Generator<ImmutableVector<A>> buildVector(IntRange sizeRange, Generator<A> gen) {
+        Preconditions.requireNaturalSize(sizeRange);
+        return generateCollectionSize(sizeRange).flatMap(size -> buildVector(size, gen));
     }
 
     public static <A> Generator<ImmutableNonEmptyVector<A>> buildNonEmptyVector(NonEmptyIterable<Generator<A>> elements) {
@@ -272,12 +295,14 @@ public final class Generators {
     }
 
     public static <A> Generator<ImmutableNonEmptyVector<A>> buildNonEmptyVector(int size, Generator<A> gen) {
-        if (size < 1) {
-            throw new IllegalArgumentException("size must be >= 1");
-
-        }
+        Preconditions.requirePositiveSize(size);
         return Aggregation.aggregate(vectorAggregator(), replicate(size, gen))
                 .fmap(ImmutableVector::toNonEmptyOrThrow);
+    }
+
+    public static <A> Generator<ImmutableNonEmptyVector<A>> buildNonEmptyVector(IntRange sizeRange, Generator<A> gen) {
+        Preconditions.requirePositiveSize(sizeRange);
+        return generateCollectionSize(sizeRange).flatMap(size -> buildNonEmptyVector(size, gen));
     }
 
     public static <A, B, Out> Generator<Out> product(Generator<A> a,
@@ -634,8 +659,12 @@ public final class Generators {
         return Collections.generateNonEmptyArrayList(g);
     }
 
-    public static <A> Generator<ArrayList<A>> generateArrayListOfSize(int n, Generator<A> g) {
-        return Collections.generateArrayListOfSize(n, g);
+    public static <A> Generator<ArrayList<A>> generateArrayListOfSize(int size, Generator<A> g) {
+        return Collections.generateArrayListOfSize(size, g);
+    }
+
+    public static <A> Generator<ArrayList<A>> generateArrayListOfSize(IntRange sizeRange, Generator<A> g) {
+        return Collections.generateArrayListOfSize(sizeRange, g);
     }
 
     public static <A> Generator<HashSet<A>> generateHashSet(Generator<A> g) {
@@ -650,16 +679,24 @@ public final class Generators {
         return Collections.generateVector(g);
     }
 
-    public static <A> Generator<ImmutableNonEmptyVector<A>> generateNonEmptyVector(Generator<A> g) {
-        return Collections.generateNonEmptyVector(g);
-    }
-
     public static <A> Generator<ImmutableVector<A>> generateVectorOfSize(int size, Generator<A> g) {
         return Collections.generateVectorOfSize(size, g);
     }
 
+    public static <A> Generator<ImmutableVector<A>> generateVectorOfSize(IntRange sizeRange, Generator<A> g) {
+        return Collections.generateVectorOfSize(sizeRange, g);
+    }
+
+    public static <A> Generator<ImmutableNonEmptyVector<A>> generateNonEmptyVector(Generator<A> g) {
+        return Collections.generateNonEmptyVector(g);
+    }
+
     public static <A> Generator<ImmutableNonEmptyVector<A>> generateNonEmptyVectorOfSize(int size, Generator<A> g) {
         return Collections.generateNonEmptyVectorOfSize(size, g);
+    }
+
+    public static <A> Generator<ImmutableNonEmptyVector<A>> generateNonEmptyVectorOfSize(IntRange sizeRange, Generator<A> g) {
+        return Collections.generateNonEmptyVectorOfSize(sizeRange, g);
     }
 
     public static <K, V> Generator<Map<K, V>> generateMap(Generator<K> generateKey,

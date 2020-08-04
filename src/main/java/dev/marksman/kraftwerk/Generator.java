@@ -10,6 +10,7 @@ import com.jnape.palatable.lambda.monad.Monad;
 import dev.marksman.collectionviews.ImmutableNonEmptyVector;
 import dev.marksman.collectionviews.ImmutableVector;
 import dev.marksman.enhancediterables.NonEmptyFiniteIterable;
+import dev.marksman.kraftwerk.constraints.IntRange;
 import dev.marksman.kraftwerk.weights.MaybeWeights;
 import dev.marksman.kraftwerk.weights.NullWeights;
 
@@ -127,24 +128,36 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
         return Generators.generateNonEmptyArrayList(this);
     }
 
-    default Generator<ArrayList<A>> arrayListOfSize(int count) {
-        return Generators.generateArrayListOfSize(count, this);
+    default Generator<ArrayList<A>> arrayListOfSize(int size) {
+        return Generators.generateArrayListOfSize(size, this);
+    }
+
+    default Generator<ArrayList<A>> arrayListOfSize(IntRange sizeRange) {
+        return Generators.generateArrayListOfSize(sizeRange, this);
     }
 
     default Generator<ImmutableVector<A>> vector() {
         return Generators.generateVector(this);
     }
 
-    default Generator<ImmutableVector<A>> vectorOfSize(int count) {
-        return Generators.generateVectorOfSize(count, this);
+    default Generator<ImmutableVector<A>> vectorOfSize(int size) {
+        return Generators.generateVectorOfSize(size, this);
+    }
+
+    default Generator<ImmutableVector<A>> vectorOfSize(IntRange sizeRange) {
+        return Generators.generateVectorOfSize(sizeRange, this);
     }
 
     default Generator<ImmutableNonEmptyVector<A>> nonEmptyVector() {
         return Generators.generateNonEmptyVector(this);
     }
 
-    default Generator<ImmutableNonEmptyVector<A>> nonEmptyVectorOfSize(int count) {
-        return Generators.generateNonEmptyVectorOfSize(count, this);
+    default Generator<ImmutableNonEmptyVector<A>> nonEmptyVectorOfSize(int size) {
+        return Generators.generateNonEmptyVectorOfSize(size, this);
+    }
+
+    default Generator<ImmutableNonEmptyVector<A>> nonEmptyVectorOfSize(IntRange sizeRange) {
+        return Generators.generateNonEmptyVectorOfSize(sizeRange, this);
     }
 
     default <B, C> Generator<C> zipWith(Fn2<A, B, C> fn, Generator<B> other) {
