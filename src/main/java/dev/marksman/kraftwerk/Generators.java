@@ -87,6 +87,13 @@ public final class Generators {
 
     }
 
+    /**
+     * Creates a {@link Generator} that yields the same value whenever invoked.
+     *
+     * @param a   the value to return when the {@code Generator} is invoked
+     * @param <A> the type of the value
+     * @return a {@code Generator<A>}
+     */
     public static <A> Generator<A> constant(A a) {
         return Constant.constant(a);
     }
@@ -103,132 +110,288 @@ public final class Generators {
         };
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Boolean} values.
+     *
+     * @return a {@code Generator<Boolean>}
+     */
     public static Generator<Boolean> generateBoolean() {
         return Primitives.generateBoolean();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Boolean} values, with custom probabilities for
+     * {@code true} and {@code false} values.
+     *
+     * @param weights the probabilities for returning {@code true} vs. {@code false} values
+     * @return a {@code Generator<Boolean>}
+     */
     public static Generator<Boolean> generateBoolean(BooleanWeights weights) {
         return CoProducts.generateBoolean(weights);
     }
 
     /**
-     * Generates a {@link Double} within the full range of {@code Double}s (between {@link Double#MIN_VALUE} and {@link Double#MAX_VALUE}, inclusive)
+     * Creates a {@link Generator} that yields {@link Double}s within the full range of {@code Double}s
+     * (between {@link Double#MIN_VALUE} and {@link Double#MAX_VALUE}, inclusive).
+     *
+     * @return a {@link FloatingPointGenerator}
      */
     public static FloatingPointGenerator<Double> generateDouble() {
         return Primitives.generateDouble();
     }
 
     /**
-     * Generates a {@link Double} between 0 (inclusive) and 1 (exclusive)
+     * Creates a {@link Generator} that yields {@link Double}s between between 0 (inclusive) and 1 (exclusive).
+     *
+     * @return a {@link FloatingPointGenerator}
      */
     public static FloatingPointGenerator<Double> generateDoubleFractional() {
         return Primitives.generateDoubleFractional();
     }
 
     /**
-     * Generates a {@link Double} within specified range
+     * Creates a {@link Generator} that yields {@link Double}s within a specific range.
+     *
+     * @param range the range of values to generate
+     * @return a {@link FloatingPointGenerator}
      */
     public static FloatingPointGenerator<Double> generateDouble(DoubleRange range) {
         return Primitives.generateDouble(range);
     }
 
     /**
-     * Generates a {@link Float} within the full range of {@code Float}s (between {@link Float#MIN_VALUE} and {@link Float#MAX_VALUE}, inclusive)
+     * Creates a {@link Generator} that yields {@link Float}s within the full range of {@code Float}s
+     * (between {@link Float#MIN_VALUE} and {@link Float#MAX_VALUE}, inclusive).
+     *
+     * @return a {@link FloatingPointGenerator}
      */
     public static FloatingPointGenerator<Float> generateFloat() {
         return Primitives.generateFloat();
     }
 
     /**
-     * Generates a {@link Float} between 0 (inclusive) and 1 (exclusive)
+     * Creates a {@link Generator} that yields {@link Float}s between between 0 (inclusive) and 1 (exclusive).
+     *
+     * @return a {@link FloatingPointGenerator}
      */
     public static FloatingPointGenerator<Float> generateFloatFractional() {
         return Primitives.generateFloatFractional();
     }
 
     /**
-     * Generates a {@link Float} within specified range
+     * Creates a {@link Generator} that yields {@link Float}s within a specific range.
+     *
+     * @param range the range of values to generate
+     * @return a {@link FloatingPointGenerator}
      */
     public static FloatingPointGenerator<Float> generateFloat(FloatRange range) {
         return Primitives.generateFloat(range);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Integer}s within the full range of {@code Integer}s
+     * (between {@link Integer#MIN_VALUE} and {@link Integer#MAX_VALUE}, inclusive).
+     *
+     * @return a {@code Generator<Integer>}
+     */
     public static Generator<Integer> generateInt() {
         return Primitives.generateInt();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Integer}s within a specific range.
+     *
+     * @param range the range of values to generate
+     * @return a {@code Generator<Integer>}
+     */
     public static Generator<Integer> generateInt(IntRange range) {
         return Primitives.generateInt(range);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Integer}s that are intended to be used as indices (e.g. into arrays or collections).
+     * Values returned range from 0..{@code bound} (exclusive). Ignores any bias settings.
+     *
+     * @param bound the maximum value (exclusive)
+     * @return a {@code Generator<Integer>}
+     */
     public static Generator<Integer> generateIntIndex(int bound) {
         return Primitives.generateIntIndex(bound);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Long}s within the full range of {@code Long}s
+     * (between {@link Long#MIN_VALUE} and {@link Long#MAX_VALUE}, inclusive).
+     *
+     * @return a {@code Generator<Long>}
+     */
     public static Generator<Long> generateLong() {
         return Primitives.generateLong();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Long}s within a specific range.
+     *
+     * @param range the range of values to generate
+     * @return a {@code Generator<Long>}
+     */
     public static Generator<Long> generateLong(LongRange range) {
         return Primitives.generateLong(range);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Long}s that are intended to be used as indices (e.g. into arrays or collections).
+     * Values returned range from 0..{@code bound} (exclusive). Ignores any bias settings.
+     *
+     * @param bound the maximum value (exclusive)
+     * @return a {@code Generator<Long>}
+     */
     public static Generator<Long> generateLongIndex(long bound) {
         return Primitives.generateLongIndex(bound);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Byte}s within the full range of {@code Byte}s
+     * (between -128 and 127, inclusive).
+     *
+     * @return a {@code Generator<Byte>}
+     */
     public static Generator<Byte> generateByte() {
         return Primitives.generateByte();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Byte}s within a specific range.
+     *
+     * @param range the range of values to generate
+     * @return a {@code Generator<Byte>}
+     */
     public static Generator<Byte> generateByte(ByteRange range) {
         return Primitives.generateByte(range);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Short}s within the full range of {@code Short}s
+     * (between -32768 and 32767, inclusive).
+     *
+     * @return a {@code Generator<Short>}
+     */
     public static Generator<Short> generateShort() {
         return Primitives.generateShort();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Short}s within a specific range.
+     *
+     * @param range the range of values to generate
+     * @return a {@code Generator<Short>}
+     */
     public static Generator<Short> generateShort(ShortRange range) {
         return Primitives.generateShort(range);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Character}s within the full range of {@code Character}s
+     * (between {@link Character#MIN_VALUE} and {@link Character#MAX_VALUE}, inclusive).
+     *
+     * @return a {@code Generator<Character>}
+     */
     public static Generator<Character> generateChar() {
         return Primitives.generateChar();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Character}s within a specific range.
+     *
+     * @param range the range of values to generate
+     * @return a {@code Generator<Character>}
+     */
     public static Generator<Character> generateChar(CharRange range) {
         return Primitives.generateChar(range);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Double}s, which, when accumulated, will result in
+     * normal distribution.
+     *
+     * @return a {@code Generator<Double>}
+     */
     public static Generator<Double> generateGaussian() {
         return Primitives.generateGaussian();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Byte} arrays of varying sizes.
+     *
+     * @return a {@code Generator<Byte[]>}
+     */
     public static Generator<Byte[]> generateByteArray() {
         return Primitives.generateByteArray();
     }
 
-    public static Generator<Byte[]> generateByteArray(int count) {
-        return Primitives.generateByteArray(count);
+    /**
+     * Creates a {@link Generator} that yields {@link Byte} arrays of varying sizes.
+     *
+     * @param size the size of the arrays returned; must be &gt;= 0
+     * @return a {@code Generator<Byte[]>}
+     */
+    public static Generator<Byte[]> generateByteArray(int size) {
+        return Primitives.generateByteArray(size);
     }
 
+    /**
+     * Creates a {@link Generator} that yields boxed primitives.  When invoked, will return one of the following types:
+     * {@link Integer}, {@link Long}, {@link Short}, {@link Byte}, {@link Double}, {@link Float}, {@link Boolean}, or {@link Character}.
+     *
+     * @return a {@code Generator<Object>}
+     */
     public static Generator<Object> generateBoxedPrimitive() {
         return Primitives.generateBoxedPrimitive();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Seed}s.
+     *
+     * @return a {@code Generator<Seed>}
+     */
     public static Generator<Seed> generateSeed() {
         return Primitives.generateSeed();
     }
 
+    /**
+     * Creates a {@link Generator} that yields sizes, generally used to determine sizes of collections.
+     * Respects the size settings in the {@link GeneratorParameters} used to configure the generator.
+     *
+     * @return a {@code Generator<Integer>}
+     */
     public static Generator<Integer> generateSize() {
         return Primitives.generateSize();
     }
 
+    /**
+     * Creates a {@link Generator} that dynamically creates another {@code Generator} depending on a randomly
+     * generated size value.
+     * Respects the size settings in the {@link GeneratorParameters} used to configure the generator.
+     *
+     * @param fn  a function that takes a size (an {@link Integer} &gt;= 0) and returns a {@code Generator}
+     * @param <A> the type of value to generate
+     * @return a {@code Generator<A>}
+     */
     public static <A> Generator<A> sized(Fn1<Integer, Generator<A>> fn) {
         return Primitives.sized(fn);
     }
 
+    /**
+     * Creates a {@link Generator} that dynamically creates another {@code Generator} depending on a randomly
+     * generated size value.
+     * Respects the size settings in the {@link GeneratorParameters} used to configure the generator, but the size
+     * will always be {@code minimum} or greater.
+     *
+     * @param minimum the minimum size to generate
+     * @param fn      a function that takes a size (an {@link Integer} &gt;= {@code minimum}) and returns a {@code Generator}
+     * @param <A>     the type of value to generate
+     * @return a {@code Generator<A>}
+     */
     public static <A> Generator<A> sizedMinimum(int minimum, Fn1<Integer, Generator<A>> fn) {
         if (minimum < 1) {
             return sized(fn);
@@ -305,12 +468,38 @@ public final class Generators {
         return generateCollectionSize(sizeRange).flatMap(size -> buildNonEmptyVector(size, gen));
     }
 
+    /**
+     * Creates a {@link Generator} that is a product of two other {@code Generators}.
+     *
+     * @param a       the first component generator
+     * @param b       the second component generator
+     * @param combine a function to combine the results from the component generators
+     * @param <A>     the type of the values generated by the first component generator
+     * @param <B>     the type of the values generated by the second component generator
+     * @param <Out>   the type of the values to be ultimately yielded by the result {@code Generator} (i.e, the return type of the {@code combine} function)
+     * @return a {@code Generator<Out>}
+     * @see Generators#tupled(Generator, Generator)
+     */
     public static <A, B, Out> Generator<Out> product(Generator<A> a,
                                                      Generator<B> b,
                                                      Fn2<A, B, Out> combine) {
         return Products.product(a, b, combine);
     }
 
+    /**
+     * Creates a {@link Generator} that is a product of three other {@code Generators}.
+     *
+     * @param a       the first component generator
+     * @param b       the second component generator
+     * @param c       the third component generator
+     * @param combine a function to combine the results from the component generators
+     * @param <A>     the type of the values generated by the first component generator
+     * @param <B>     the type of the values generated by the second component generator
+     * @param <C>     the type of the values generated by the third component generator
+     * @param <Out>   the type of the values to be ultimately yielded by the result {@code Generator} (i.e, the return type of the {@code combine} function)
+     * @return a {@code Generator<Out>}
+     * @see Generators#tupled(Generator, Generator, Generator)
+     */
     public static <A, B, C, Out> Generator<Out> product(Generator<A> a,
                                                         Generator<B> b,
                                                         Generator<C> c,
@@ -318,6 +507,22 @@ public final class Generators {
         return Products.product(a, b, c, combine);
     }
 
+    /**
+     * Creates a {@link Generator} that is a product of four other {@code Generators}.
+     *
+     * @param a       the first component generator
+     * @param b       the second component generator
+     * @param c       the third component generator
+     * @param d       the fourth component generator
+     * @param combine a function to combine the results from the component generators
+     * @param <A>     the type of the values generated by the first component generator
+     * @param <B>     the type of the values generated by the second component generator
+     * @param <C>     the type of the values generated by the third component generator
+     * @param <D>     the type of the values generated by the fourth component generator
+     * @param <Out>   the type of the values to be ultimately yielded by the result {@code Generator} (i.e, the return type of the {@code combine} function)
+     * @return a {@code Generator<Out>}
+     * @see Generators#tupled(Generator, Generator, Generator, Generator)
+     */
     public static <A, B, C, D, Out> Generator<Out> product(Generator<A> a,
                                                            Generator<B> b,
                                                            Generator<C> c,
@@ -326,6 +531,24 @@ public final class Generators {
         return Products.product(a, b, c, d, combine);
     }
 
+    /**
+     * Creates a {@link Generator} that is a product of five other {@code Generators}.
+     *
+     * @param a       the first component generator
+     * @param b       the second component generator
+     * @param c       the third component generator
+     * @param d       the fourth component generator
+     * @param e       the fifth component generator
+     * @param combine a function to combine the results from the component generators
+     * @param <A>     the type of the values generated by the first component generator
+     * @param <B>     the type of the values generated by the second component generator
+     * @param <C>     the type of the values generated by the third component generator
+     * @param <D>     the type of the values generated by the fourth component generator
+     * @param <E>     the type of the values generated by the fifth component generator
+     * @param <Out>   the type of the values to be ultimately yielded by the result {@code Generator} (i.e, the return type of the {@code combine} function)
+     * @return a {@code Generator<Out>}
+     * @see Generators#tupled(Generator, Generator, Generator, Generator, Generator)
+     */
     public static <A, B, C, D, E, Out> Generator<Out> product(Generator<A> a,
                                                               Generator<B> b,
                                                               Generator<C> c,
@@ -335,6 +558,26 @@ public final class Generators {
         return Products.product(a, b, c, d, e, combine);
     }
 
+    /**
+     * Creates a {@link Generator} that is a product of six other {@code Generators}.
+     *
+     * @param a       the first component generator
+     * @param b       the second component generator
+     * @param c       the third component generator
+     * @param d       the fourth component generator
+     * @param e       the fifth component generator
+     * @param f       the sixth component generator
+     * @param combine a function to combine the results from the component generators
+     * @param <A>     the type of the values generated by the first component generator
+     * @param <B>     the type of the values generated by the second component generator
+     * @param <C>     the type of the values generated by the third component generator
+     * @param <D>     the type of the values generated by the fourth component generator
+     * @param <E>     the type of the values generated by the fifth component generator
+     * @param <F>     the type of the values generated by the sixth component generator
+     * @param <Out>   the type of the values to be ultimately yielded by the result {@code Generator} (i.e, the return type of the {@code combine} function)
+     * @return a {@code Generator<Out>}
+     * @see Generators#tupled(Generator, Generator, Generator, Generator, Generator, Generator)
+     */
     public static <A, B, C, D, E, F, Out> Generator<Out> product(Generator<A> a,
                                                                  Generator<B> b,
                                                                  Generator<C> c,
@@ -345,6 +588,28 @@ public final class Generators {
         return Products.product(a, b, c, d, e, f, combine);
     }
 
+    /**
+     * Creates a {@link Generator} that is a product of seven other {@code Generators}.
+     *
+     * @param a       the first component generator
+     * @param b       the second component generator
+     * @param c       the third component generator
+     * @param d       the fourth component generator
+     * @param e       the fifth component generator
+     * @param f       the sixth component generator
+     * @param g       the seventh component generator
+     * @param combine a function to combine the results from the component generators
+     * @param <A>     the type of the values generated by the first component generator
+     * @param <B>     the type of the values generated by the second component generator
+     * @param <C>     the type of the values generated by the third component generator
+     * @param <D>     the type of the values generated by the fourth component generator
+     * @param <E>     the type of the values generated by the fifth component generator
+     * @param <F>     the type of the values generated by the sixth component generator
+     * @param <G>     the type of the values generated by the seventh component generator
+     * @param <Out>   the type of the values to be ultimately yielded by the result {@code Generator} (i.e, the return type of the {@code combine} function)
+     * @return a {@code Generator<Out>}
+     * @see Generators#tupled(Generator, Generator, Generator, Generator, Generator, Generator, Generator)
+     */
     public static <A, B, C, D, E, F, G, Out> Generator<Out> product(Generator<A> a,
                                                                     Generator<B> b,
                                                                     Generator<C> c,
@@ -356,6 +621,30 @@ public final class Generators {
         return Products.product(a, b, c, d, e, f, g, combine);
     }
 
+    /**
+     * Creates a {@link Generator} that is a product of eight other {@code Generators}.
+     *
+     * @param a       the first component generator
+     * @param b       the second component generator
+     * @param c       the third component generator
+     * @param d       the fourth component generator
+     * @param e       the fifth component generator
+     * @param f       the sixth component generator
+     * @param g       the seventh component generator
+     * @param h       the eighth component generator
+     * @param combine a function to combine the results from the component generators
+     * @param <A>     the type of the values generated by the first component generator
+     * @param <B>     the type of the values generated by the second component generator
+     * @param <C>     the type of the values generated by the third component generator
+     * @param <D>     the type of the values generated by the fourth component generator
+     * @param <E>     the type of the values generated by the fifth component generator
+     * @param <F>     the type of the values generated by the sixth component generator
+     * @param <G>     the type of the values generated by the seventh component generator
+     * @param <H>     the type of the values generated by the eighth component generator
+     * @param <Out>   the type of the values to be ultimately yielded by the result {@code Generator} (i.e, the return type of the {@code combine} function)
+     * @return a {@code Generator<Out>}
+     * @see Generators#tupled(Generator, Generator, Generator, Generator, Generator, Generator, Generator, Generator)
+     */
     public static <A, B, C, D, E, F, G, H, Out> Generator<Out> product(Generator<A> a,
                                                                        Generator<B> b,
                                                                        Generator<C> c,
@@ -368,17 +657,53 @@ public final class Generators {
         return Products.product(a, b, c, d, e, f, g, h, combine);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Tuple2}s by combining the outputs of two other {@code Generators}.
+     *
+     * @param a   the first component generator
+     * @param b   the second component generator
+     * @param <A> the type of the values generated by the first component generator
+     * @param <B> the type of the values generated by the second component generator
+     * @return a {@code Generator<Tuple2<A, B>}
+     * @see Generators#product(Generator, Generator, Fn2)
+     */
     public static <A, B> Generator<Tuple2<A, B>> tupled(Generator<A> a,
                                                         Generator<B> b) {
         return Products.product(a, b, Tuple2::tuple);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Tuple3}s by combining the outputs of three other {@code Generators}.
+     *
+     * @param a   the first component generator
+     * @param b   the second component generator
+     * @param c   the third component generator
+     * @param <A> the type of the values generated by the first component generator
+     * @param <B> the type of the values generated by the second component generator
+     * @param <C> the type of the values generated by the third component generator
+     * @return a {@code Generator<Tuple3<A, B, C>}
+     * @see Generators#product(Generator, Generator, Generator, Fn3)
+     */
     public static <A, B, C> Generator<Tuple3<A, B, C>> tupled(Generator<A> a,
                                                               Generator<B> b,
                                                               Generator<C> c) {
         return Products.product(a, b, c, Tuple3::tuple);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Tuple4}s by combining the outputs of four other {@code Generators}.
+     *
+     * @param a   the first component generator
+     * @param b   the second component generator
+     * @param c   the third component generator
+     * @param d   the fourth component generator
+     * @param <A> the type of the values generated by the first component generator
+     * @param <B> the type of the values generated by the second component generator
+     * @param <C> the type of the values generated by the third component generator
+     * @param <D> the type of the values generated by the fourth component generator
+     * @return a {@code Generator<Tuple4<A, B, C, D>}
+     * @see Generators#product(Generator, Generator, Generator, Generator, Fn4)
+     */
     public static <A, B, C, D> Generator<Tuple4<A, B, C, D>> tupled(Generator<A> a,
                                                                     Generator<B> b,
                                                                     Generator<C> c,
@@ -386,6 +711,22 @@ public final class Generators {
         return Products.product(a, b, c, d, Tuple4::tuple);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Tuple5}s by combining the outputs of five other {@code Generators}.
+     *
+     * @param a   the first component generator
+     * @param b   the second component generator
+     * @param c   the third component generator
+     * @param d   the fourth component generator
+     * @param e   the fifth component generator
+     * @param <A> the type of the values generated by the first component generator
+     * @param <B> the type of the values generated by the second component generator
+     * @param <C> the type of the values generated by the third component generator
+     * @param <D> the type of the values generated by the fourth component generator
+     * @param <E> the type of the values generated by the fifth component generator
+     * @return a {@code Generator<Tuple5<A, B, C, D, E>}
+     * @see Generators#product(Generator, Generator, Generator, Generator, Generator, Fn5)
+     */
     public static <A, B, C, D, E> Generator<Tuple5<A, B, C, D, E>> tupled(Generator<A> a,
                                                                           Generator<B> b,
                                                                           Generator<C> c,
@@ -394,6 +735,24 @@ public final class Generators {
         return Products.product(a, b, c, d, e, Tuple5::tuple);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Tuple6}s by combining the outputs of six other {@code Generators}.
+     *
+     * @param a   the first component generator
+     * @param b   the second component generator
+     * @param c   the third component generator
+     * @param d   the fourth component generator
+     * @param e   the fifth component generator
+     * @param f   the sixth component generator
+     * @param <A> the type of the values generated by the first component generator
+     * @param <B> the type of the values generated by the second component generator
+     * @param <C> the type of the values generated by the third component generator
+     * @param <D> the type of the values generated by the fourth component generator
+     * @param <E> the type of the values generated by the fifth component generator
+     * @param <F> the type of the values generated by the sixth component generator
+     * @return a {@code Generator<Tuple6<A, B, C, D, E, F>}
+     * @see Generators#product(Generator, Generator, Generator, Generator, Generator, Generator, Fn6)
+     */
     public static <A, B, C, D, E, F> Generator<Tuple6<A, B, C, D, E, F>> tupled(Generator<A> a,
                                                                                 Generator<B> b,
                                                                                 Generator<C> c,
@@ -403,6 +762,26 @@ public final class Generators {
         return Products.product(a, b, c, d, e, f, Tuple6::tuple);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Tuple7}s by combining the outputs of seven other {@code Generators}.
+     *
+     * @param a   the first component generator
+     * @param b   the second component generator
+     * @param c   the third component generator
+     * @param d   the fourth component generator
+     * @param e   the fifth component generator
+     * @param f   the sixth component generator
+     * @param g   the seventh component generator
+     * @param <A> the type of the values generated by the first component generator
+     * @param <B> the type of the values generated by the second component generator
+     * @param <C> the type of the values generated by the third component generator
+     * @param <D> the type of the values generated by the fourth component generator
+     * @param <E> the type of the values generated by the fifth component generator
+     * @param <F> the type of the values generated by the sixth component generator
+     * @param <G> the type of the values generated by the seventh component generator
+     * @return a {@code Generator<Tuple7<A, B, C, D, E, F, G>}
+     * @see Generators#product(Generator, Generator, Generator, Generator, Generator, Generator, Generator, Fn7)
+     */
     public static <A, B, C, D, E, F, G> Generator<Tuple7<A, B, C, D, E, F, G>> tupled(Generator<A> a,
                                                                                       Generator<B> b,
                                                                                       Generator<C> c,
@@ -413,6 +792,28 @@ public final class Generators {
         return Products.product(a, b, c, d, e, f, g, Tuple7::tuple);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Tuple8}s by combining the outputs of eight other {@code Generators}.
+     *
+     * @param a   the first component generator
+     * @param b   the second component generator
+     * @param c   the third component generator
+     * @param d   the fourth component generator
+     * @param e   the fifth component generator
+     * @param f   the sixth component generator
+     * @param g   the seventh component generator
+     * @param h   the eighth component generator
+     * @param <A> the type of the values generated by the first component generator
+     * @param <B> the type of the values generated by the second component generator
+     * @param <C> the type of the values generated by the third component generator
+     * @param <D> the type of the values generated by the fourth component generator
+     * @param <E> the type of the values generated by the fifth component generator
+     * @param <F> the type of the values generated by the sixth component generator
+     * @param <G> the type of the values generated by the seventh component generator
+     * @param <H> the type of the values generated by the eighth component generator
+     * @return a {@code Generator<Tuple8<A, B, C, D, E, F, G, H>}
+     * @see Generators#product(Generator, Generator, Generator, Generator, Generator, Generator, Generator, Generator, Fn8)
+     */
     public static <A, B, C, D, E, F, G, H> Generator<Tuple8<A, B, C, D, E, F, G, H>> tupled(Generator<A> a,
                                                                                             Generator<B> b,
                                                                                             Generator<C> c,
