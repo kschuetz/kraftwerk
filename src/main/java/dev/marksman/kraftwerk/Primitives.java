@@ -21,7 +21,9 @@ import static com.jnape.palatable.lambda.adt.Maybe.just;
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Constantly.constantly;
 import static dev.marksman.kraftwerk.Generators.constant;
+import static dev.marksman.kraftwerk.Normalize.normalizeSizeRange;
 import static dev.marksman.kraftwerk.Result.result;
+import static dev.marksman.kraftwerk.SizeParameters.sizeParameters;
 import static dev.marksman.kraftwerk.SizeSelectors.sizeSelector;
 import static dev.marksman.kraftwerk.bias.BiasSetting.noBias;
 import static dev.marksman.kraftwerk.core.BuildingBlocks.checkBound;
@@ -268,6 +270,11 @@ final class Primitives {
 
     static Generator<Integer> generateSize() {
         return SizeGenerator.INSTANCE;
+    }
+
+    static Generator<Integer> generateSize(IntRange sizeRange) {
+        IntRange normalizedSizeRange = normalizeSizeRange(sizeRange);
+        return new RangedSizeGenerator(normalizedSizeRange);
     }
 
     static <A> Generator<A> sized(Fn1<Integer, Generator<A>> fn) {
@@ -694,6 +701,30 @@ final class Primitives {
         public Generate<Integer> prepare(GeneratorParameters generatorParameters) {
             return Bias.applyBiasSetting(generatorParameters.getBiasSettings().sizeBias(generatorParameters.getSizeParameters()),
                     sizeSelector(generatorParameters.getSizeParameters()));
+        }
+
+        @Override
+        public Maybe<String> getLabel() {
+            return LABEL;
+        }
+    }
+
+    private static class RangedSizeGenerator implements Generator<Integer> {
+        private static final Maybe<String> LABEL = Maybe.just("size");
+        private final IntRange sizeRange;
+
+        private RangedSizeGenerator(IntRange sizeRange) {
+            this.sizeRange = sizeRange;
+        }
+
+        @Override
+        public Generate<Integer> prepare(GeneratorParameters generatorParameters) {
+            SizeParameters sizeParameters = sizeParameters(Maybe.just(sizeRange.minInclusive()),
+                    Maybe.just(sizeRange.maxInclusive()),
+                    generatorParameters.getSizeParameters().getPreferredSize().filter(sizeRange::includes));
+
+            return Bias.applyBiasSetting(generatorParameters.getBiasSettings().sizeBias(sizeParameters),
+                    sizeSelector(sizeParameters));
         }
 
         @Override

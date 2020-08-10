@@ -369,6 +369,16 @@ public final class Generators {
     }
 
     /**
+     * Creates a {@link Generator} that yields sizes within a specific range, generally used to determine sizes of collections.
+     * Overrides the {@link GeneratorParameters}'s size parameters used to configure the generator, but will respect a preferred size if it can.
+     *
+     * @return a {@code Generator<Integer>}
+     */
+    public static Generator<Integer> generateSize(IntRange sizeRange) {
+        return Primitives.generateSize(sizeRange);
+    }
+
+    /**
      * Creates a {@link Generator} that dynamically creates another {@code Generator} depending on a randomly
      * generated size value.
      * Respects the size settings in the {@link GeneratorParameters} used to configure the generator.
@@ -966,28 +976,138 @@ public final class Generators {
         return Sequence.sequenceNonEmpty(gs);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link String}s of printable ASCII characters, with varying lengths.
+     *
+     * @return a {@code Generator<String>}
+     */
     public static Generator<String> generateString() {
         return Strings.generateString();
     }
 
-    public static Generator<String> generateString(int length, Generator<String> g) {
-        return Strings.generateString(length, g);
+    /**
+     * Creates a {@link Generator} that yields {@link String}s of printable ASCII characters of a specific length.
+     * <p>
+     * The length of the generated {@code String}s will always be {@code length}.
+     *
+     * @param length the length of the generated strings.  If &lt;=0, then all strings will be empty.
+     * @return a {@code Generator<String>}
+     */
+    static Generator<String> generateString(int length) {
+        return Strings.generateString(length);
     }
 
-    public static Generator<String> generateStringFromCharacters(int length, Generator<Character> g) {
-        return Strings.generateStringFromCharacters(length, g);
+    /**
+     * Creates a {@link Generator} that yields {@link String}s of printable ASCII characters, with varying lengths
+     * within a specific range.
+     * <p>
+     * The length of the generated {@code String}s will always fall within {@code lengthRange}.
+     *
+     * @param lengthRange the length range of the generated strings.
+     * @return a {@code Generator<String>}
+     */
+    static Generator<String> generateString(IntRange lengthRange) {
+        return Strings.generateString(lengthRange);
     }
 
-    public static Generator<String> generateStringFromCharacters(int length, NonEmptyVector<Character> characters) {
-        return Strings.generateStringFromCharacters(length, characters);
+    /**
+     * Creates a {@link Generator} that yields {@link String}s by invoking another {@code Generator} a specific number
+     * of times, and concatenating the results.
+     *
+     * @param numberOfChunks the number of chunks to generate and concatenate
+     * @param chunkGenerator the generator for each chunk to be concatenated
+     * @return a {@code Generator<String>}
+     */
+    public static Generator<String> generateString(int numberOfChunks, Generator<String> chunkGenerator) {
+        return Strings.generateString(numberOfChunks, chunkGenerator);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link String}s by invoking another {@code Generator} a random number
+     * of times within a specific range, and concatenating the results.
+     *
+     * @param numberOfChunksRange the range of the number of chunks to generate and concatenate
+     * @param chunkGenerator      the generator for each chunk to be concatenated
+     * @return a {@code Generator<String>}
+     */
+    public static Generator<String> generateString(IntRange numberOfChunksRange, Generator<String> chunkGenerator) {
+        return Strings.generateString(numberOfChunksRange, chunkGenerator);
+    }
+
+    /**
+     * Creates a {@link Generator} that yields {@link String}s by invoking a {@code Generator<Character>} a varying number of times,
+     * and concatenating the results.
+     *
+     * @param g the generator for each character to be concatenated
+     * @return a {@code Generator<String>}
+     */
     public static Generator<String> generateStringFromCharacters(Generator<Character> g) {
         return Strings.generateStringFromCharacters(g);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link String}s by choosing from a collection of {@code Character}s a varying number of times,
+     * and concatenating the results.
+     *
+     * @param characters the characters to choose from
+     * @return a {@code Generator<String>}
+     */
     public static Generator<String> generateStringFromCharacters(NonEmptyVector<Character> characters) {
         return Strings.generateStringFromCharacters(characters);
+    }
+
+    /**
+     * Creates a {@link Generator} that yields {@link String}s by invoking a {@code Generator<Character>} a specific number of times,
+     * and concatenating the results.
+     * <p>
+     * The length of the generated {@code String}s will always be {@code length}.
+     *
+     * @param g the generator for each character to be concatenated
+     * @return a {@code Generator<String>}
+     */
+    public static Generator<String> generateStringFromCharacters(int length, Generator<Character> g) {
+        return Strings.generateStringFromCharacters(length, g);
+    }
+
+    /**
+     * Creates a {@link Generator} that yields {@link String}s by choosing from a collection of {@code Character}s a specific number of times,
+     * and concatenating the results.
+     * <p>
+     * The length of the generated {@code String}s will always be {@code length}.
+     *
+     * @param characters the characters to choose from
+     * @return a {@code Generator<String>}
+     */
+    public static Generator<String> generateStringFromCharacters(int length, NonEmptyVector<Character> characters) {
+        return Strings.generateStringFromCharacters(length, characters);
+    }
+
+    /**
+     * Creates a {@link Generator} that yields {@link String}s by invoking a {@code Generator<Character>} a varying number of times
+     * within a specific range, and concatenating the results.
+     * <p>
+     * The length of the generated {@code String}s will always be within {@code lengthRange}.
+     *
+     * @param lengthRange the range of the length of the string to generate
+     * @param g           the generator for each character to be concatenated
+     * @return a {@code Generator<String>}
+     */
+    public static Generator<String> generateStringFromCharacters(IntRange lengthRange, Generator<Character> g) {
+        return Strings.generateStringFromCharacters(lengthRange, g);
+    }
+
+    /**
+     * Creates a {@link Generator} that yields {@link String}s by choosing from a collection of {@code Character}s a varying number of times
+     * within a specific range, and concatenating the results.
+     * <p>
+     * The length of the generated {@code String}s will always be within {@code lengthRange}.
+     *
+     * @param lengthRange the range of the length of the string to generate
+     * @param characters  the characters to choose from
+     * @return a {@code Generator<String>}
+     */
+    public static Generator<String> generateStringFromCharacters(IntRange lengthRange, NonEmptyVector<Character> characters) {
+        return Strings.generateStringFromCharacters(lengthRange, characters);
     }
 
     @SafeVarargs
@@ -1001,6 +1121,10 @@ public final class Generators {
 
     public static Generator<String> generateIdentifier(int length) {
         return Strings.generateIdentifier(length);
+    }
+
+    public static Generator<String> generateIdentifier(IntRange lengthRange) {
+        return Strings.generateIdentifier(lengthRange);
     }
 
     public static Generator<String> concatStrings(Generator<String> separator, Iterable<Generator<String>> components) {

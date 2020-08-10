@@ -4,6 +4,7 @@ import com.jnape.palatable.lambda.adt.Maybe;
 import com.jnape.palatable.lambda.functions.builtin.fn1.CatMaybes;
 import dev.marksman.collectionviews.NonEmptyVector;
 import dev.marksman.enhancediterables.EnhancedIterable;
+import dev.marksman.kraftwerk.constraints.IntRange;
 import dev.marksman.kraftwerk.domain.Characters;
 
 import java.util.ArrayList;
@@ -13,15 +14,27 @@ import static com.jnape.palatable.lambda.functions.builtin.fn2.Intersperse.inter
 import static dev.marksman.enhancediterables.EnhancedIterable.enhance;
 import static dev.marksman.kraftwerk.Generators.aggregate;
 import static dev.marksman.kraftwerk.Generators.constant;
+import static dev.marksman.kraftwerk.Primitives.generateSize;
 import static dev.marksman.kraftwerk.Sequence.sequence;
 import static dev.marksman.kraftwerk.aggregator.Aggregators.charAggregator;
 import static dev.marksman.kraftwerk.aggregator.Aggregators.maybeStringAggregator;
 import static dev.marksman.kraftwerk.aggregator.Aggregators.stringAggregator;
 
-class Strings {
+final class Strings {
+
+    private Strings() {
+    }
 
     static Generator<String> generateString() {
         return generateStringFromCharacters(Characters.asciiPrintable());
+    }
+
+    static Generator<String> generateString(int length) {
+        return generateStringFromCharacters(length, Characters.asciiPrintable());
+    }
+
+    static Generator<String> generateString(IntRange lengthRange) {
+        return generateStringFromCharacters(lengthRange, Characters.asciiPrintable());
     }
 
     static Generator<String> generateString(int length, Generator<String> g) {
@@ -29,6 +42,21 @@ class Strings {
         else if (length == 1) return g;
         else {
             return aggregate(stringAggregator(), length, g);
+        }
+    }
+
+    static Generator<String> generateString(IntRange lengthRange, Generator<String> g) {
+        if (lengthRange.minInclusive() <= 0) {
+            if (lengthRange.maxInclusive() <= 0) {
+                return constant("");
+            } else {
+                lengthRange = lengthRange.withMinInclusive(0);
+            }
+        }
+        if (lengthRange.minInclusive() == 1 && lengthRange.maxInclusive() == 1) {
+            return g;
+        } else {
+            return aggregate(stringAggregator(), lengthRange, g);
         }
     }
 
@@ -48,8 +76,27 @@ class Strings {
         }
     }
 
+    static Generator<String> generateStringFromCharacters(IntRange lengthRange, Generator<Character> g) {
+        if (lengthRange.minInclusive() <= 0) {
+            if (lengthRange.maxInclusive() <= 0) {
+                return constant("");
+            } else {
+                lengthRange = lengthRange.withMinInclusive(0);
+            }
+        }
+        if (lengthRange.minInclusive() == 1 && lengthRange.maxInclusive() == 1) {
+            return g.fmap(Object::toString);
+        } else {
+            return aggregate(charAggregator(), lengthRange, g);
+        }
+    }
+
     static Generator<String> generateStringFromCharacters(int length, NonEmptyVector<Character> characters) {
         return generateStringFromCharacters(length, Choose.chooseOneFromDomain(characters));
+    }
+
+    static Generator<String> generateStringFromCharacters(IntRange lengthRange, NonEmptyVector<Character> characters) {
+        return generateStringFromCharacters(lengthRange, Choose.chooseOneFromDomain(characters));
     }
 
     @SafeVarargs
@@ -78,6 +125,10 @@ class Strings {
                 return generateString(firstChar, generateStringFromCharacters(length - 1, Characters.alphaNumeric()));
             }
         }
+    }
+
+    static Generator<String> generateIdentifier(IntRange lengthRange) {
+        return generateLengthForString(lengthRange).flatMap(Strings::generateIdentifier);
     }
 
     static Generator<String> concatStrings(Generator<String> separator, Iterable<Generator<String>> components) {
@@ -128,4 +179,7 @@ class Strings {
         }
     }
 
+    static Generator<Integer> generateLengthForString(IntRange lengthRange) {
+        return generateSize(lengthRange);
+    }
 }
