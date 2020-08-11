@@ -52,7 +52,6 @@ import dev.marksman.kraftwerk.constraints.LocalDateTimeRange;
 import dev.marksman.kraftwerk.constraints.LocalTimeRange;
 import dev.marksman.kraftwerk.constraints.LongRange;
 import dev.marksman.kraftwerk.constraints.ShortRange;
-import dev.marksman.kraftwerk.core.BuildingBlocks;
 import dev.marksman.kraftwerk.frequency.FrequencyMap;
 import dev.marksman.kraftwerk.weights.BooleanWeights;
 import dev.marksman.kraftwerk.weights.EitherWeights;
@@ -78,7 +77,6 @@ import java.util.UUID;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Replicate.replicate;
 import static dev.marksman.kraftwerk.Collections.generateCollectionSize;
-import static dev.marksman.kraftwerk.Result.result;
 import static dev.marksman.kraftwerk.aggregator.Aggregators.collectionAggregator;
 import static dev.marksman.kraftwerk.aggregator.Aggregators.vectorAggregator;
 
@@ -96,18 +94,6 @@ public final class Generators {
      */
     public static <A> Generator<A> constant(A a) {
         return Constant.constant(a);
-    }
-
-    public static <A, B> Generator<B> tap(Generator<A> gen,
-                                          Fn2<Generate<A>, Seed, B> f) {
-        return parameters -> {
-            Generate<A> runA = gen.prepare(parameters);
-            return input -> {
-                Seed nextState = BuildingBlocks.nextInt(input).getNextState();
-                return result(nextState,
-                        f.apply(runA, input));
-            };
-        };
     }
 
     /**
