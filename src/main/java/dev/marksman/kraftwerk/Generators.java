@@ -80,6 +80,9 @@ import static dev.marksman.kraftwerk.Collections.generateCollectionSize;
 import static dev.marksman.kraftwerk.aggregator.Aggregators.collectionAggregator;
 import static dev.marksman.kraftwerk.aggregator.Aggregators.vectorAggregator;
 
+/**
+ * A collection of built-in generators
+ */
 public final class Generators {
     private Generators() {
 
@@ -954,10 +957,24 @@ public final class Generators {
         return Products.product(a, b, c, d, e, f, g, h, Tuple8::tuple);
     }
 
+    /**
+     * Converts a sequence of {@link Generator}s to a {@code Generator} of sequences.
+     *
+     * @param gs  a sequence of zero or more {@code Generator<A>}s
+     * @param <A> the element type
+     * @return a {@code Generator<ImmutableVector<A>>}
+     */
     public static <A> Generator<ImmutableVector<A>> sequence(Iterable<Generator<A>> gs) {
         return Sequence.sequence(gs);
     }
 
+    /**
+     * Converts a non-empty sequence of {@link Generator}s to a {@code Generator} of non-empty sequences.
+     *
+     * @param gs  a sequence of one or more {@code Generator<A>}s
+     * @param <A> the element type
+     * @return a {@code Generator<ImmutableNonEmptyVector<A>>}
+     */
     public static <A> Generator<ImmutableNonEmptyVector<A>> sequenceNonEmpty(NonEmptyIterable<Generator<A>> gs) {
         return Sequence.sequenceNonEmpty(gs);
     }
@@ -1096,71 +1113,208 @@ public final class Generators {
         return Strings.generateStringFromCharacters(lengthRange, characters);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link String}s by invoking one or more {@code Generator<String>}s in order and concatenating the result.
+     *
+     * @param first the generator of the first string to be concatenated
+     * @param more  the generators of the remaining strings to be concatenated
+     * @return a {@code Generator<String>}
+     */
     @SafeVarargs
     public static Generator<String> generateString(Generator<String> first, Generator<String>... more) {
         return Strings.generateString(first, more);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link String}s that are legal Java identifiers.  May also yield empty strings.
+     *
+     * @return a {@code Generator<String>}
+     * @see Generators#generateIdentifier(int)
+     * @see Generators#generateIdentifier(IntRange)
+     */
     public static Generator<String> generateIdentifier() {
         return Strings.generateIdentifier();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link String}s that are legal Java identifiers of a specific length.
+     *
+     * @param length the length of the identifiers to generate
+     * @return a {@code Generator<String>}
+     * @see Generators#generateIdentifier()
+     * @see Generators#generateIdentifier(IntRange)
+     */
     public static Generator<String> generateIdentifier(int length) {
         return Strings.generateIdentifier(length);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link String}s that are legal Java identifiers with a length within a specific range.
+     *
+     * @param lengthRange the range of the length of the identifiers to generate
+     * @return a {@code Generator<String>}
+     * @see Generators#generateIdentifier()
+     * @see Generators#generateIdentifier(int)
+     */
     public static Generator<String> generateIdentifier(IntRange lengthRange) {
         return Strings.generateIdentifier(lengthRange);
     }
 
-    public static Generator<String> concatStrings(Generator<String> separator, Iterable<Generator<String>> components) {
-        return Strings.concatStrings(separator, components);
-    }
-
-    public static Generator<String> concatStrings(String separator, Iterable<Generator<String>> components) {
-        return Strings.concatStrings(separator, components);
-    }
-
+    /**
+     * Creates a {@link Generator} that yields {@link String}s by invoking a sequence of component {@code Generator<String>}s
+     * and concatenating the results.
+     *
+     * @param components a sequence of {@code Generator<String>}s to be invoked to generate the components of the output
+     * @return a {@code Generator<String>}
+     * @see Generators#concatStrings(String, Iterable)
+     * @see Generators#concatStrings(Generator, Iterable)
+     */
     public static Generator<String> concatStrings(Iterable<Generator<String>> components) {
         return Strings.concatStrings(components);
     }
 
-    public static Generator<String> concatMaybeStrings(Generator<String> separator, Iterable<Generator<Maybe<String>>> components) {
-        return Strings.concatMaybeStrings(separator, components);
+    /**
+     * Creates a {@link Generator} that yields {@link String}s by invoking a sequence of component {@code Generator<String>}s
+     * and concatenating the results, separating them with a specific separator.
+     *
+     * @param separator  a {@code String} that will be inserted between each of the components of the output
+     * @param components a sequence of {@code Generator<String>}s to be invoked to generate the components of the output
+     * @return a {@code Generator<String>}
+     * @see Generators#concatStrings(Iterable)
+     * @see Generators#concatStrings(Generator, Iterable)
+     */
+    public static Generator<String> concatStrings(String separator, Iterable<Generator<String>> components) {
+        return Strings.concatStrings(separator, components);
     }
 
-    public static Generator<String> concatMaybeStrings(String separator, Iterable<Generator<Maybe<String>>> components) {
-        return Strings.concatMaybeStrings(separator, components);
+    /**
+     * Creates a {@link Generator} that yields {@link String}s by invoking a sequence of component {@code Generator<String>}s
+     * and concatenating the results, separating them by a separator that is also generated.
+     *
+     * @param separator  a {@code Generator<String>} to generate the separator strings.
+     *                   This generator is invoked every time a separator is called for (i.e., between the invocations of each component generator).
+     *                   Note that this can potentially result in a different separator used within the same result.
+     * @param components a sequence of {@code Generator<String>}s to be invoked to generate the components of the output
+     * @return a {@code Generator<String>}
+     * @see Generators#concatStrings(Iterable)
+     * @see Generators#concatStrings(String, Iterable)
+     */
+    public static Generator<String> concatStrings(Generator<String> separator, Iterable<Generator<String>> components) {
+        return Strings.concatStrings(separator, components);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link String}s by invoking a sequence of component {@code Generator<Maybe<String>>}s
+     * and concatenating the results.
+     *
+     * @param components a sequence of {@code Generator<Maybe<String>>}s to be invoked to generate the components of the output.
+     *                   If a generator outputs a {@link Maybe#just(Object)}, it will be concatenated to the final output, otherwise ignored.
+     * @return a {@code Generator<String>}
+     * @see Generators#concatMaybeStrings(String, Iterable)
+     * @see Generators#concatMaybeStrings(Generator, Iterable)
+     */
     public static Generator<String> concatMaybeStrings(Iterable<Generator<Maybe<String>>> components) {
         return Strings.concatMaybeStrings(components);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link String}s by invoking a sequence of component {@code Generator<Maybe<String>>}s
+     * and concatenating the results, separating them with a specific separator.
+     *
+     * @param separator  a {@code String} that will be inserted between each of the components of the output (but only those that yield a {@link Maybe#just(Object)}
+     * @param components a sequence of {@code Generator<Maybe<String>>}s to be invoked to generate the components of the output.
+     *                   If a generator outputs a {@code Maybe#just}, it will be concatenated to the final output, otherwise ignored.
+     * @return a {@code Generator<String>}
+     * @see Generators#concatMaybeStrings(Iterable)
+     * @see Generators#concatMaybeStrings(Generator, Iterable)
+     */
+    public static Generator<String> concatMaybeStrings(String separator, Iterable<Generator<Maybe<String>>> components) {
+        return Strings.concatMaybeStrings(separator, components);
+    }
+
+    /**
+     * Creates a {@link Generator} that yields {@link String}s by invoking a sequence of component {@code Generator<Maybe<String>>}s
+     * and concatenating the results, separating them by a separator that is also generated.
+     *
+     * @param separator  a {@code Generator<String>} to generate the separator strings.
+     *                   This generator is invoked every time a separator is called for (i.e., between the invocations of each component generator that yield a {@link Maybe#just(Object)}).
+     *                   Note that this can potentially result in a different separator used within the same result.
+     * @param components a sequence of {@code Generator<Maybe<String>>}s to be invoked to generate the components of the output.
+     *                   If a generator outputs a {@code Maybe#just}, it will be concatenated to the final output, otherwise ignored.
+     * @return a {@code Generator<String>}
+     * @see Generators#concatMaybeStrings(Iterable)
+     * @see Generators#concatMaybeStrings(String, Iterable)
+     */
+    public static Generator<String> concatMaybeStrings(Generator<String> separator, Iterable<Generator<Maybe<String>>> components) {
+        return Strings.concatMaybeStrings(separator, components);
+    }
+
+    /**
+     * Instantiates a {@link CompoundStringBuilder}.
+     *
+     * @return a {@code CompoundStringBuilder}
+     */
     public static CompoundStringBuilder compoundStringBuilder() {
         return ConcreteCompoundStringBuilder.builder();
     }
 
+    /**
+     * Creates a {@link Generator} that, when invoked, always yields {@code null} of a specific type.
+     *
+     * @param <A> the type of the output
+     * @return a {@code Generator<A>}
+     */
     public static <A> Generator<A> generateNull() {
         return Nulls.generateNull();
     }
 
-    public static <A> Generator<A> generateWithNulls(NullWeights weights, Generator<A> g) {
-        return Nulls.generateWithNulls(weights, g);
+    /**
+     * Creates a {@link Generator} that mixes occasional {@code null} values into the output of an existing {@code Generator}.
+     *
+     * @param gen the original generator
+     * @param <A> the type of the output
+     * @return a {@code Generator<A>}
+     */
+    public static <A> Generator<A> generateWithNulls(Generator<A> gen) {
+        return Nulls.generateWithNulls(gen);
     }
 
-    public static <A> Generator<A> generateWithNulls(Generator<A> g) {
-        return Nulls.generateWithNulls(g);
+    /**
+     * Creates a {@link Generator} that mixes occasional {@code null} values into the output of an existing {@code Generator},
+     * with a specific probability for null.
+     *
+     * @param weights the probability for a null value to occur in the output
+     * @param gen     the original generator
+     * @param <A>     the type of the output
+     * @return a {@code Generator<A>}
+     */
+    public static <A> Generator<A> generateWithNulls(NullWeights weights, Generator<A> gen) {
+        return Nulls.generateWithNulls(weights, gen);
     }
 
+    /**
+     * Creates a {@link Generator} that, when invoked, always yields {@code Unit.UNIT}.
+     *
+     * @return a {@code Generator<Unit>}
+     */
     public static Generator<Unit> generateUnit() {
         return CoProducts.generateUnit();
     }
 
+    /**
+     * Creates a {@link Generator} that, when invoked, always yields {@code true}.
+     *
+     * @return a {@code Generator<Boolean>}
+     */
     public static Generator<Boolean> generateTrue() {
         return CoProducts.generateTrue();
     }
 
+    /**
+     * Creates a {@link Generator} that, when invoked, always yields {@code false}.
+     *
+     * @return a {@code Generator<Boolean>}
+     */
     public static Generator<Boolean> generateFalse() {
         return CoProducts.generateFalse();
     }
