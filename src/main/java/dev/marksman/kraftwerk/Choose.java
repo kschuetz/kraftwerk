@@ -79,8 +79,11 @@ class Choose {
     }
 
     static <A> Generator<ImmutableVector<A>> chooseSomeFromDomain(Collection<A> items) {
-        requireNonEmptyChoices("chooseSomeFrom", items);
-        return chooseSomeFromDomain(NonEmptyVector.copyFromOrThrow(items));
+        if (items.isEmpty()) {
+            return constant(Vector.empty());
+        } else {
+            return chooseSomeFromDomain(NonEmptyVector.copyFromOrThrow(items));
+        }
     }
 
     static <A> Generator<ImmutableVector<A>> chooseSomeFromDomain(NonEmptyVector<A> domain) {

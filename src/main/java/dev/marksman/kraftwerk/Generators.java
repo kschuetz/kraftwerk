@@ -1319,112 +1319,330 @@ public final class Generators {
         return CoProducts.generateFalse();
     }
 
-    public static <A> Generator<Maybe<A>> generateMaybe(MaybeWeights weights, Generator<A> g) {
-        return CoProducts.generateMaybe(weights, g);
+    /**
+     * Converts a {@link Generator}{@code <A>} into a {@code Generator<Maybe<A>>} that most of the time yields a {@code just},
+     * but will occasionally yield a {@code nothing}.
+     *
+     * @param gen the generator to convert
+     * @param <A> the output type of the generator to convert
+     * @return a {@code Generator<Maybe<A>>}
+     */
+    public static <A> Generator<Maybe<A>> generateMaybe(Generator<A> gen) {
+        return CoProducts.generateMaybe(gen);
     }
 
-    public static <A> Generator<Maybe<A>> generateMaybe(Generator<A> g) {
-        return CoProducts.generateMaybe(g);
+    /**
+     * Converts a {@link Generator}{@code <A>} into a {@code Generator<Maybe<A>>}, with custom probabilities
+     * for yielding {@code just} vs. {@code nothing}.
+     *
+     * @param weights the probabilities for {@code just} vs. {@code nothing}
+     * @param gen     the generator to convert
+     * @param <A>     the output type of the generator to convert
+     * @return a {@code Generator<Maybe<A>>}
+     */
+    public static <A> Generator<Maybe<A>> generateMaybe(MaybeWeights weights, Generator<A> gen) {
+        return CoProducts.generateMaybe(weights, gen);
     }
 
-    public static <A> Generator<Maybe<A>> generateJust(Generator<A> g) {
-        return CoProducts.generateJust(g);
+    /**
+     * Converts a {@link Generator}{@code <A>} into a {@code Generator<Maybe<A>>} that will always yield {@code just}.
+     *
+     * @param gen the generator to convert
+     * @param <A> the output type of the generator to convert
+     * @return a {@code Generator<Maybe<A>>}
+     */
+    public static <A> Generator<Maybe<A>> generateJust(Generator<A> gen) {
+        return CoProducts.generateJust(gen);
     }
 
+    /**
+     * Creates a {@link Generator} that, when invoked, always yields {@link Maybe#nothing()}.
+     *
+     * @param <A> the output type of the generator to convert
+     * @return a {@code Generator<Maybe<A>>}
+     */
     public static <A> Generator<Maybe<A>> generateNothing() {
         return CoProducts.generateNothing();
     }
 
-    public static <L, R> Generator<Either<L, R>> generateEither(EitherWeights weights, Generator<L> leftGen, Generator<R> rightGen) {
-        return CoProducts.generateEither(weights, leftGen, rightGen);
-    }
-
+    /**
+     * Creates a {@link Generator} that yields {@link Either}s, with equal probabilities for returning a {@code left}
+     * or a {@code right}.
+     *
+     * @param leftGen  the generator of left values
+     * @param rightGen the generator of right values
+     * @param <L>      the left type
+     * @param <R>      the right type
+     * @return a {@code Generator<Either<L, R>>}
+     */
     public static <L, R> Generator<Either<L, R>> generateEither(Generator<L> leftGen, Generator<R> rightGen) {
         return CoProducts.generateEither(leftGen, rightGen);
     }
 
-    public static <L, R> Generator<Either<L, R>> generateLeft(Generator<L> g) {
-        return CoProducts.generateLeft(g);
+    /**
+     * Creates a {@link Generator} that yields {@link Either}s, with custom probabilities for returning a {@code left}
+     * or a {@code right}.
+     *
+     * @param weights  the probabilities for {@code left} vs. {@code right}
+     * @param leftGen  the generator of left values
+     * @param rightGen the generator of right values
+     * @param <L>      the left type
+     * @param <R>      the right type
+     * @return a {@code Generator<Either<L, R>>}
+     */
+    public static <L, R> Generator<Either<L, R>> generateEither(EitherWeights weights, Generator<L> leftGen, Generator<R> rightGen) {
+        return CoProducts.generateEither(weights, leftGen, rightGen);
     }
 
-    public static <L, R> Generator<Either<L, R>> generateRight(Generator<R> g) {
-        return CoProducts.generateRight(g);
+    /**
+     * Converts a {@link Generator}{@code <L>} into a {@code Generator<Either<L, R>>} that will always yield {@code left}.
+     *
+     * @param gen the generator of left values
+     * @param <L> the left type
+     * @param <R> the right type
+     * @return a {@code Generator<Either<L, R>>}
+     */
+    public static <L, R> Generator<Either<L, R>> generateLeft(Generator<L> gen) {
+        return CoProducts.generateLeft(gen);
     }
 
+    /**
+     * Converts a {@link Generator}{@code <L>} into a {@code Generator<Either<L, R>>} that will always yield {@code right}.
+     *
+     * @param gen the generator of right values
+     * @param <L> the left type
+     * @param <R> the right type
+     * @return a {@code Generator<Either<L, R>>}
+     */
+    public static <L, R> Generator<Either<L, R>> generateRight(Generator<R> gen) {
+        return CoProducts.generateRight(gen);
+    }
+
+    /**
+     * Creates a {@link Generator} that yields {@link These}s, with equal probabilities for returning a value from {@code generatorA},
+     * {@code generatorB}, or a combination of both.
+     *
+     * @param generatorA the generator of type {@code A}
+     * @param generatorB the generator of type {@code B}
+     * @param <A>        the first possible type
+     * @param <B>        the second possible type
+     * @return a {@code Generator<These<A, B>>}
+     */
     public static <A, B> Generator<These<A, B>> generateThese(Generator<A> generatorA, Generator<B> generatorB) {
         return CoProducts.generateThese(generatorA, generatorB);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link These}s, with custom probabilities for returning a value from {@code generatorA},
+     * {@code generatorB}, or a combination of both.
+     *
+     * @param weights    the probabilities for returning a value for {@code generatorA} vs. {@code generatorB} vs. both
+     * @param generatorA the generator of type {@code A}
+     * @param generatorB the generator of type {@code B}
+     * @param <A>        the first possible type
+     * @param <B>        the second possible type
+     * @return a {@code Generator<These<A, B>>}
+     */
     public static <A, B> Generator<These<A, B>> generateThese(TernaryWeights weights, Generator<A> generatorA, Generator<B> generatorB) {
         return CoProducts.generateThese(weights, generatorA, generatorB);
     }
 
+    /**
+     * Creates a {@link Generator} that chooses values from an enum.
+     *
+     * @param enumType the class of the enum type
+     * @param <A>      the enum type
+     * @return a {@code Generator<A>}
+     */
     public static <A extends Enum<A>> Generator<A> generateFromEnum(Class<A> enumType) {
         return Enums.generateFromEnum(enumType);
     }
 
+    /**
+     * Creates a {@link Generator} that, when invoked, randomly chooses from one or more other {@code Generator}s,
+     * with an equal probability for each {@code Generator}.
+     *
+     * @param first the first candidate {@code Generator}
+     * @param more  the remaining candidate {@code Generator}s
+     * @param <A>   the output type
+     * @return a {@code Generator<A>}
+     */
     @SafeVarargs
     public static <A> Generator<A> chooseOneOf(Generator<? extends A> first, Generator<? extends A>... more) {
         return Choose.chooseOneOf(first, more);
     }
 
+    /**
+     * Creates a {@link Generator} that, when invoked, randomly chooses from one or more values, with an equal probability for each.
+     *
+     * @param first the first candidate value
+     * @param more  the remaining candidate values
+     * @param <A>   the output type
+     * @return a {@code Generator<A>}
+     */
     @SafeVarargs
     public static <A> Generator<A> chooseOneOfValues(A first, A... more) {
         return Choose.chooseOneOfValues(first, more);
     }
 
-    @SafeVarargs
-    public static <A> Generator<ImmutableNonEmptyVector<A>> chooseAtLeastOneOfValues(A first, A... more) {
-        return Choose.chooseAtLeastOneOfValues(first, more);
-    }
-
+    /**
+     * Creates a {@link Generator} that, when invoked, chooses one or more of the supplied candidate {@code Generators},
+     * invokes them, and returns a collection of the results.
+     *
+     * @param first the first candidate {@code Generator}
+     * @param more  the remaining candidate {@code Generator}s
+     * @param <A>   the output type
+     * @return a {@code Generator<ImmutableNonEmptyVector<A>>}
+     */
     @SafeVarargs
     public static <A> Generator<ImmutableNonEmptyVector<A>> chooseAtLeastOneOf(Generator<? extends A> first, Generator<? extends A>... more) {
         return Choose.chooseAtLeastOneOf(first, more);
     }
 
+    /**
+     * Creates a {@link Generator} that, when invoked, chooses one or more of the supplied candidate values, and returns
+     * a collection of all those chosen.
+     *
+     * @param first the first candidate value
+     * @param more  the remaining candidate values
+     * @param <A>   the output type
+     * @return a {@code Generator<ImmutableNonEmptyVector<A>>}
+     */
     @SafeVarargs
-    public static <A> Generator<ImmutableVector<A>> chooseSomeOfValues(A first, A... more) {
-        return Choose.chooseSomeOf(first, more);
+    public static <A> Generator<ImmutableNonEmptyVector<A>> chooseAtLeastOneOfValues(A first, A... more) {
+        return Choose.chooseAtLeastOneOfValues(first, more);
     }
 
+    /**
+     * Creates a {@link Generator} that, when invoked, chooses zero or more of the supplied candidate {@code Generators},
+     * invokes them, and returns a collection of the results.
+     *
+     * @param first the first candidate {@code Generator}
+     * @param more  the remaining candidate {@code Generator}s
+     * @param <A>   the output type
+     * @return a {@code Generator<ImmutableVector<A>>}
+     */
     @SafeVarargs
     public static <A> Generator<ImmutableVector<A>> chooseSomeOf(Generator<? extends A> first, Generator<? extends A>... more) {
         return Choose.chooseSomeOf(first, more);
     }
 
-    public static <A> Generator<A> chooseOneFromCollection(Collection<A> items) {
-        return Choose.chooseOneFromCollection(items);
+    /**
+     * Creates a {@link Generator} that, when invoked, chooses zero or more of the supplied candidate values,
+     * and returns a collection of all those chosen.
+     *
+     * @param first the first candidate {@code Generator}
+     * @param more  the remaining candidate {@code Generator}s
+     * @param <A>   the output type
+     * @return a {@code Generator<ImmutableVector<A>>}
+     */
+    @SafeVarargs
+    public static <A> Generator<ImmutableVector<A>> chooseSomeOfValues(A first, A... more) {
+        return Choose.chooseSomeOf(first, more);
     }
 
+    /**
+     * Creates a {@link Generator} that, when invoked, chooses a value from a collection.
+     *
+     * @param candidates the collection of candidates values.  Must have at least one element.
+     * @param <A>        the output type
+     * @return a {@code Generator<A>}
+     */
+    public static <A> Generator<A> chooseOneFromCollection(Collection<A> candidates) {
+        return Choose.chooseOneFromCollection(candidates);
+    }
+
+    /**
+     * Creates a {@link Generator} that, when invoked, chooses a value from a custom domain.
+     *
+     * @param domain the collection of candidates values
+     * @param <A>    the output type
+     * @return a {@code Generator<A>}
+     */
     public static <A> Generator<A> chooseOneFromDomain(NonEmptyVector<A> domain) {
         return Choose.chooseOneFromDomain(domain);
     }
 
-    public static <A> Generator<ImmutableNonEmptyVector<A>> chooseAtLeastOneFromCollection(Collection<A> items) {
-        return Choose.chooseAtLeastOneFromCollection(items);
+    /**
+     * Creates a {@link Generator} that, when invoked, chooses one or more values from a collection and returns
+     * a collection of the values chosen.
+     *
+     * @param candidates the collection of candidate values.  Must have at least one element.
+     * @param <A>        the output type
+     * @return a {@code Generator<A>}
+     */
+    public static <A> Generator<ImmutableNonEmptyVector<A>> chooseAtLeastOneFromCollection(Collection<A> candidates) {
+        return Choose.chooseAtLeastOneFromCollection(candidates);
     }
 
+    /**
+     * Creates a {@link Generator} that, when invoked, chooses one or more values from a custom domain and returns
+     * a collection of the values chosen.
+     *
+     * @param domain the collection of candidate values
+     * @param <A>    the output type
+     * @return a {@code Generator<A>}
+     */
     public static <A> Generator<ImmutableNonEmptyVector<A>> chooseAtLeastOneFromDomain(NonEmptyVector<A> domain) {
         return Choose.chooseAtLeastOneFromDomain(domain);
     }
 
-    public static <A> Generator<ImmutableVector<A>> chooseSomeFromCollection(Collection<A> items) {
-        return Choose.chooseSomeFromDomain(items);
+    /**
+     * Creates a {@link Generator} that, when invoked, chooses zero or more values from a collection and returns
+     * a collection of the values chosen.
+     *
+     * @param candidates the collection of candidate values
+     * @param <A>        the output type
+     * @return a {@code Generator<A>}
+     */
+    public static <A> Generator<ImmutableVector<A>> chooseSomeFromCollection(Collection<A> candidates) {
+        return Choose.chooseSomeFromDomain(candidates);
     }
 
+    /**
+     * Creates a {@link Generator} that, when invoked, chooses zero or more values from a custom domain and returns
+     * a collection of the values chosen.
+     *
+     * @param domain the collection of candidate values
+     * @param <A>    the output type
+     * @return a {@code Generator<A>}
+     */
     public static <A> Generator<ImmutableVector<A>> chooseSomeFromDomain(NonEmptyVector<A> domain) {
         return Choose.chooseSomeFromDomain(domain);
     }
 
+    /**
+     * Creates a {@link Generator} that, when invoked, chooses a {@link Map.Entry} from a {@code Map}.
+     *
+     * @param map a map with all candidate entries.  Must contain at least one entry.
+     * @param <K> the key type
+     * @param <V> the value type
+     * @return a {@code Generator<Map.Entry<K, V>>}
+     */
     public static <K, V> Generator<Map.Entry<K, V>> chooseEntryFromMap(Map<K, V> map) {
         return Choose.chooseEntryFromMap(map);
     }
 
+    /**
+     * Creates a {@link Generator} that, when invoked, chooses a key from a {@code Map}.
+     *
+     * @param map a map with all candidate keys.  Must contain at least one key.
+     * @param <K> the key type
+     * @param <V> the value type
+     * @return a {@code Generator<K>}
+     */
     public static <K, V> Generator<K> chooseKeyFromMap(Map<K, V> map) {
         return Choose.chooseKeyFromMap(map);
     }
 
+    /**
+     * Creates a {@link Generator} that, when invoked, chooses a value from a {@code Map}.
+     *
+     * @param map a map with all candidate values.  Must contain at least one value.
+     * @param <K> the key type
+     * @param <V> the value type
+     * @return a {@code Generator<V>}
+     */
     public static <K, V> Generator<V> chooseValueFromMap(Map<K, V> map) {
         return Choose.chooseValueFromMap(map);
     }
