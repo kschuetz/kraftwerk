@@ -2,7 +2,7 @@ package dev.marksman.kraftwerk;
 
 import dev.marksman.collectionviews.Vector;
 
-import static dev.marksman.kraftwerk.Choose.chooseOneFromDomain;
+import static dev.marksman.kraftwerk.Choose.chooseOneValueFromDomain;
 
 class Enums {
 
@@ -11,7 +11,7 @@ class Enums {
         if (enumConstants == null || enumConstants.length == 0) {
             throw new IllegalArgumentException("Class " + enumType + " has no enum constants");
         }
-        return chooseOneFromDomain(Vector.copyFrom(enumConstants).toNonEmptyOrThrow());
+        return chooseOneValueFromDomain(Vector.copyFrom(enumConstants).toNonEmptyOrThrow());
     }
 
 }

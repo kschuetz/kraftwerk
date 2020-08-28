@@ -94,7 +94,7 @@ public final class Name {
     }
 
     private static class generators {
-        static final Generator<String> initial = Generators.chooseOneFromDomain(Characters.alphaUpper()).fmap(c -> c + ".");
+        static final Generator<String> initial = Generators.chooseOneValueFromDomain(Characters.alphaUpper()).fmap(c -> c + ".");
 
         static final Generator<String> givenNames =
                 Generators.chooseOneOfValues("Alice", "Barbara", "Bart", "Billy", "Bobby", "Carol", "Cindy", "Elizabeth",
@@ -102,15 +102,15 @@ public final class Name {
                         "Maggie", "Marcia", "Marge", "Mary", "Mike", "Oliver", "Patricia", "Peter", "Stan");
 
         static final Generator<String> first =
-                Generators.frequency(givenNames.weighted(15),
+                Generators.chooseOneOf(givenNames.weighted(15),
                         initial.weighted(1));
 
         static final Generator<String> middle =
-                Generators.frequency(givenNames.weighted(1),
+                Generators.chooseOneOf(givenNames.weighted(1),
                         initial.weighted(5));
 
         static final Generator<String> last =
-                Generators.chooseOneFromCollection(asList(
+                Generators.chooseOneValueFromCollection(asList(
                         "Allen", "Anderson", "Brown", "Clark", "Davis", "Foobar", "Garcia", "Hall", "Harris",
                         "Hernandez", "Jackson", "Johnson", "Jones", "King", "Lee", "Lewis", "Lopez", "Martin",
                         "Martinez", "Miller", "Moore", "Qwerty", "Robinson", "Rodriguez", "Smith", "Taylor",

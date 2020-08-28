@@ -16,7 +16,7 @@ public class WeightedChoiceExample {
                         .or(Generators.generateLong())
                         .or(Generators.generateByte())
                         .or(Generators.generateShort())
-                        .or(Generators.chooseOneFromDomain(Characters.asciiPrintable()))
+                        .or(Generators.chooseOneValueFromDomain(Characters.asciiPrintable()))
                         .toGenerator();
 
         primitiveGenerator

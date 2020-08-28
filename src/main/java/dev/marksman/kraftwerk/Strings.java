@@ -65,7 +65,7 @@ final class Strings {
     }
 
     static Generator<String> generateStringFromCharacters(NonEmptyVector<Character> characters) {
-        return Generators.sized(size -> generateStringFromCharacters(size, Choose.chooseOneFromDomain(characters)));
+        return Generators.sized(size -> generateStringFromCharacters(size, Choose.chooseOneValueFromDomain(characters)));
     }
 
     static Generator<String> generateStringFromCharacters(int length, Generator<Character> g) {
@@ -92,11 +92,11 @@ final class Strings {
     }
 
     static Generator<String> generateStringFromCharacters(int length, NonEmptyVector<Character> characters) {
-        return generateStringFromCharacters(length, Choose.chooseOneFromDomain(characters));
+        return generateStringFromCharacters(length, Choose.chooseOneValueFromDomain(characters));
     }
 
     static Generator<String> generateStringFromCharacters(IntRange lengthRange, NonEmptyVector<Character> characters) {
-        return generateStringFromCharacters(lengthRange, Choose.chooseOneFromDomain(characters));
+        return generateStringFromCharacters(lengthRange, Choose.chooseOneValueFromDomain(characters));
     }
 
     @SafeVarargs

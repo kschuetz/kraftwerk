@@ -26,7 +26,7 @@ class Choose {
 
     @SafeVarargs
     static <A> Generator<A> chooseOneOfValues(A first, A... more) {
-        return chooseOneFromDomain(NonEmptyVector.of(first, more));
+        return chooseOneValueFromDomain(NonEmptyVector.of(first, more));
     }
 
     @SafeVarargs
@@ -36,7 +36,7 @@ class Choose {
 
     @SafeVarargs
     static <A> Generator<ImmutableNonEmptyVector<A>> chooseAtLeastOneOfValues(A first, A... more) {
-        return chooseAtLeastOneFromDomain(Vector.of(first, more));
+        return chooseAtLeastOneValueFromDomain(Vector.of(first, more));
     }
 
     @SafeVarargs
@@ -47,7 +47,7 @@ class Choose {
 
     @SafeVarargs
     static <A> Generator<ImmutableVector<A>> chooseSomeOf(A first, A... more) {
-        return chooseSomeFromDomain(Vector.of(first, more));
+        return chooseSomeValuesFromDomain(Vector.of(first, more));
     }
 
     @SafeVarargs
@@ -55,12 +55,12 @@ class Choose {
         return chooseSomeFromGenerators(0, NonEmptyVector.of(first, more));
     }
 
-    static <A> Generator<A> chooseOneFromCollection(Collection<A> items) {
-        requireNonEmptyChoices("chooseOneFrom", items);
-        return chooseOneFromDomain(NonEmptyVector.copyFromOrThrow(items));
+    static <A> Generator<A> chooseOneValueFromCollection(Iterable<A> candidates) {
+        requireNonEmptyCandidates("chooseOneFrom", candidates);
+        return chooseOneValueFromDomain(NonEmptyVector.copyFromOrThrow(candidates));
     }
 
-    static <A> Generator<A> chooseOneFromDomain(NonEmptyVector<A> domain) {
+    static <A> Generator<A> chooseOneValueFromDomain(NonEmptyVector<A> domain) {
         int size = domain.size();
         if (size == 1) {
             return constant(domain.unsafeGet(0));
@@ -69,43 +69,43 @@ class Choose {
         }
     }
 
-    static <A> Generator<ImmutableNonEmptyVector<A>> chooseAtLeastOneFromCollection(Collection<A> items) {
-        requireNonEmptyChoices("chooseAtLeastOneFrom", items);
-        return chooseAtLeastOneFromDomain(NonEmptyVector.copyFromOrThrow(items));
+    static <A> Generator<ImmutableNonEmptyVector<A>> chooseAtLeastOneValueFromCollection(Collection<A> candidates) {
+        requireNonEmptyCandidates("chooseAtLeastOneFrom", candidates);
+        return chooseAtLeastOneValueFromDomain(NonEmptyVector.copyFromOrThrow(candidates));
     }
 
-    static <A> Generator<ImmutableNonEmptyVector<A>> chooseAtLeastOneFromDomain(NonEmptyVector<A> domain) {
+    static <A> Generator<ImmutableNonEmptyVector<A>> chooseAtLeastOneValueFromDomain(NonEmptyVector<A> domain) {
         return chooseSomeFromValues(1, domain).fmap(ImmutableVector::toNonEmptyOrThrow);
     }
 
-    static <A> Generator<ImmutableVector<A>> chooseSomeFromDomain(Collection<A> items) {
-        if (items.isEmpty()) {
+    static <A> Generator<ImmutableVector<A>> chooseSomeValuesFromDomain(Collection<A> candidates) {
+        if (candidates.isEmpty()) {
             return constant(Vector.empty());
         } else {
-            return chooseSomeFromDomain(NonEmptyVector.copyFromOrThrow(items));
+            return chooseSomeValuesFromDomain(NonEmptyVector.copyFromOrThrow(candidates));
         }
     }
 
-    static <A> Generator<ImmutableVector<A>> chooseSomeFromDomain(NonEmptyVector<A> domain) {
+    static <A> Generator<ImmutableVector<A>> chooseSomeValuesFromDomain(NonEmptyVector<A> domain) {
         return chooseSomeFromValues(0, domain);
     }
 
     static <K, V> Generator<Map.Entry<K, V>> chooseEntryFromMap(Map<K, V> map) {
         Set<Map.Entry<K, V>> entries = map.entrySet();
-        requireNonEmptyChoices("chooseEntryFrom", entries);
-        return chooseOneFromCollection(entries);
+        requireNonEmptyCandidates("chooseEntryFrom", entries);
+        return chooseOneValueFromCollection(entries);
     }
 
     static <K, V> Generator<K> chooseKeyFromMap(Map<K, V> map) {
         Set<K> keys = map.keySet();
-        requireNonEmptyChoices("chooseKeyFrom", keys);
-        return chooseOneFromCollection(keys);
+        requireNonEmptyCandidates("chooseKeyFrom", keys);
+        return chooseOneValueFromCollection(keys);
     }
 
     static <K, V> Generator<V> chooseValueFromMap(Map<K, V> map) {
         Collection<V> values = map.values();
-        requireNonEmptyChoices("chooseValueFrom", values);
-        return chooseOneFromCollection(values);
+        requireNonEmptyCandidates("chooseValueFrom", values);
+        return chooseOneValueFromCollection(values);
     }
 
     static <A> Generator<A> frequency(FrequencyMap<A> frequencyMap) {
@@ -113,23 +113,27 @@ class Choose {
     }
 
     @SafeVarargs
-    static <A> Generator<A> frequency(Weighted<? extends Generator<? extends A>> first,
-                                      Weighted<? extends Generator<? extends A>>... more) {
-        return frequencyImpl(cons(first, asList(more)));
+    static <A> Generator<A> chooseOneOf(Weighted<? extends Generator<? extends A>> first,
+                                        Weighted<? extends Generator<? extends A>>... more) {
+        return chooseOneFromCollectionWeighted(cons(first, asList(more)));
     }
 
     @SafeVarargs
-    public static <A> Generator<A> frequencyValues(Weighted<? extends A> first,
-                                                   Weighted<? extends A>... more) {
-        return frequencyImpl(cons(first.fmap(Generators::constant),
+    static <A> Generator<A> chooseOneOfWeightedValues(Weighted<? extends A> first,
+                                                      Weighted<? extends A>... more) {
+        return chooseOneFromCollectionWeighted(cons(first.fmap(Generators::constant),
                 com.jnape.palatable.lambda.functions.builtin.fn2.Map.map(w -> w.fmap(Generators::constant), asList(more))));
     }
 
-    static <A> Generator<A> frequency(Collection<Weighted<? extends Generator<? extends A>>> entries) {
-        return frequencyImpl(entries);
+    static <A> Generator<A> chooseOneFromCollection(Iterable<Generator<? extends A>> candidates) {
+        return FoldLeft.<Generator<? extends A>, FrequencyMapBuilder<A>>foldLeft(
+                FrequencyMapBuilder::add,
+                frequencyMapBuilder(), candidates)
+                .build()
+                .toGenerator();
     }
 
-    private static <A> Generator<A> frequencyImpl(Iterable<Weighted<? extends Generator<? extends A>>> entries) {
+    static <A> Generator<A> chooseOneFromCollectionWeighted(Iterable<Weighted<? extends Generator<? extends A>>> entries) {
         return FoldLeft.<Weighted<? extends Generator<? extends A>>, FrequencyMapBuilder<A>>foldLeft(
                 FrequencyMapBuilder::add,
                 frequencyMapBuilder(), entries)
@@ -137,9 +141,9 @@ class Choose {
                 .toGenerator();
     }
 
-    private static <A> void requireNonEmptyChoices(String methodName, Iterable<A> items) {
-        if (!items.iterator().hasNext()) {
-            throw new IllegalArgumentException(methodName + " requires at least one choice");
+    private static <A> void requireNonEmptyCandidates(String methodName, Iterable<A> candidates) {
+        if (!candidates.iterator().hasNext()) {
+            throw new IllegalArgumentException(methodName + " requires at least one candidate");
         }
     }
 

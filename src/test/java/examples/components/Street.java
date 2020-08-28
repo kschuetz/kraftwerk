@@ -74,7 +74,7 @@ public final class Street {
 
     private static class generators {
         static final Generator<String> compass =
-                Generators.frequency(Generators.chooseOneOfValues("N.", "S.", "W.", "E.").weighted(8),
+                Generators.chooseOneOf(Generators.chooseOneOfValues("N.", "S.", "W.", "E.").weighted(8),
                         Generators.chooseOneOfValues("NW", "NE", "SW", "SE").weighted(1));
 
         static final Generator<String> ordinal =
@@ -93,7 +93,7 @@ public final class Street {
                 Generators.chooseOneOfValues("Oak", "Maple", "Elm", "Pine", "Spruce", "Sycamore", "Birch", "Apple", "Peach");
 
         static final Generator<String> suffix =
-                Generators.frequencyValues(weighted(10, "St."),
+                Generators.chooseOneOfWeightedValues(weighted(10, "St."),
                         weighted(7, "Ave."),
                         weighted(5, "Rd."),
                         weighted(3, "Dr."),
@@ -102,7 +102,7 @@ public final class Street {
                         weighted(1, "Ct."));
 
         static final Generator<String> name =
-                Generators.frequency(weighted(3, ordinal),
+                Generators.chooseOneOf(weighted(3, ordinal),
                         weighted(2, tree),
                         weighted(2, president),
                         weighted(2, generateCityRootName()));

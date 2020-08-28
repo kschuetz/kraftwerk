@@ -1459,8 +1459,8 @@ public final class Generators {
     }
 
     /**
-     * Creates a {@link Generator} that, when invoked, randomly chooses from one or more other {@code Generator}s,
-     * with an equal probability for each {@code Generator}.
+     * Creates a {@link Generator} that, when invoked, randomly selects from a list of candidate {@code Generator}s,
+     * (with equal probabilities for each).  The output is then drawn from the chosen {@code Generator}.
      *
      * @param first the first candidate {@code Generator}
      * @param more  the remaining candidate {@code Generator}s
@@ -1473,7 +1473,22 @@ public final class Generators {
     }
 
     /**
-     * Creates a {@link Generator} that, when invoked, randomly chooses from one or more values, with an equal probability for each.
+     * Creates a {@link Generator} that, when invoked, randomly selects from a list of candidate {@code Generator}s,
+     * (with equal probabilities for each).  The output is then drawn from the chosen {@code Generator}.
+     *
+     * @param first the first weighted candidate {@code Generator}
+     * @param more  the remaining weighted candidates {@code Generator}s
+     * @param <A>   the output type
+     * @return a {@code Generator<A>}
+     */
+    @SafeVarargs
+    public static <A> Generator<A> chooseOneOf(Weighted<? extends Generator<? extends A>> first,
+                                               Weighted<? extends Generator<? extends A>>... more) {
+        return Choose.chooseOneOf(first, more);
+    }
+
+    /**
+     * Creates a {@link Generator} that, when invoked, randomly chooses an item from one or more candidate values, with an equal probability for each.
      *
      * @param first the first candidate value
      * @param more  the remaining candidate values
@@ -1486,8 +1501,22 @@ public final class Generators {
     }
 
     /**
-     * Creates a {@link Generator} that, when invoked, chooses one or more of the supplied candidate {@code Generators},
-     * invokes them, and returns a collection of the results.
+     * Creates a {@link Generator} that, when invoked, randomly chooses and item from one or more candidate values, with custom probabilities for each.
+     *
+     * @param first the first weighted candidate value
+     * @param more  the remaining weighted candidate values
+     * @param <A>   the output type
+     * @return a {@code Generator<A>}
+     */
+    @SafeVarargs
+    public static <A> Generator<A> chooseOneOfWeightedValues(Weighted<? extends A> first,
+                                                             Weighted<? extends A>... more) {
+        return Choose.chooseOneOfWeightedValues(first, more);
+    }
+
+    /**
+     * Creates a {@link Generator} that, when invoked, chooses one or more of the supplied candidate {@code Generator}s.
+     * The chosen {@code Generator}s are then invoked, and the outputs are collected for the result.
      *
      * @param first the first candidate {@code Generator}
      * @param more  the remaining candidate {@code Generator}s
@@ -1514,8 +1543,8 @@ public final class Generators {
     }
 
     /**
-     * Creates a {@link Generator} that, when invoked, chooses zero or more of the supplied candidate {@code Generators},
-     * invokes them, and returns a collection of the results.
+     * Creates a {@link Generator} that, when invoked, chooses zero or more of the supplied candidate {@code Generator}s.
+     * The chosen {@code Generator}s are then invoked, and the outputs are collected for the result.
      *
      * @param first the first candidate {@code Generator}
      * @param more  the remaining candidate {@code Generator}s
@@ -1542,14 +1571,39 @@ public final class Generators {
     }
 
     /**
-     * Creates a {@link Generator} that, when invoked, chooses a value from a collection.
+     * Creates a {@link Generator} that, when invoked, chooses a value from a collection, with an equal probability
+     * for each element.
      *
-     * @param candidates the collection of candidates values.  Must have at least one element.
      * @param <A>        the output type
+     * @param candidates the collection of candidate values.  Must have at least one element.
      * @return a {@code Generator<A>}
      */
-    public static <A> Generator<A> chooseOneFromCollection(Collection<A> candidates) {
+    public static <A> Generator<A> chooseOneValueFromCollection(Iterable<A> candidates) {
+        return Choose.chooseOneValueFromCollection(candidates);
+    }
+
+    /**
+     * Creates a {@link Generator} that, when invoked, chooses a {@code Generator} from a collection of candidate {@code Generator}s
+     * (with an equal probability for each).  The output is then drawn from the chosen {@code Generator}.
+     *
+     * @param <A>        the output type
+     * @param candidates the collection of candidate {@code Generator}s.  Must have at least one element.
+     * @return a {@code Generator<A>}
+     */
+    public static <A> Generator<A> chooseOneFromCollection(Iterable<Generator<? extends A>> candidates) {
         return Choose.chooseOneFromCollection(candidates);
+    }
+
+    /**
+     * Creates a {@link Generator} that, when invoked, chooses a {@code Generator} from a collection of candidate {@code Generator}s
+     * (with a custom probability for each).  The output is then drawn from the chosen {@code Generator}.
+     *
+     * @param <A>        the output type
+     * @param candidates the collection of weighted candidate {@code Generator}s.  Must have at least one element.
+     * @return a {@code Generator<A>}
+     */
+    public static <A> Generator<A> chooseOneFromCollectionWeighted(Iterable<Weighted<? extends Generator<? extends A>>> candidates) {
+        return Choose.chooseOneFromCollectionWeighted(candidates);
     }
 
     /**
@@ -1559,8 +1613,8 @@ public final class Generators {
      * @param <A>    the output type
      * @return a {@code Generator<A>}
      */
-    public static <A> Generator<A> chooseOneFromDomain(NonEmptyVector<A> domain) {
-        return Choose.chooseOneFromDomain(domain);
+    public static <A> Generator<A> chooseOneValueFromDomain(NonEmptyVector<A> domain) {
+        return Choose.chooseOneValueFromDomain(domain);
     }
 
     /**
@@ -1571,8 +1625,8 @@ public final class Generators {
      * @param <A>        the output type
      * @return a {@code Generator<A>}
      */
-    public static <A> Generator<ImmutableNonEmptyVector<A>> chooseAtLeastOneFromCollection(Collection<A> candidates) {
-        return Choose.chooseAtLeastOneFromCollection(candidates);
+    public static <A> Generator<ImmutableNonEmptyVector<A>> chooseAtLeastOneValueFromCollection(Collection<A> candidates) {
+        return Choose.chooseAtLeastOneValueFromCollection(candidates);
     }
 
     /**
@@ -1583,8 +1637,8 @@ public final class Generators {
      * @param <A>    the output type
      * @return a {@code Generator<A>}
      */
-    public static <A> Generator<ImmutableNonEmptyVector<A>> chooseAtLeastOneFromDomain(NonEmptyVector<A> domain) {
-        return Choose.chooseAtLeastOneFromDomain(domain);
+    public static <A> Generator<ImmutableNonEmptyVector<A>> chooseAtLeastOneValueFromDomain(NonEmptyVector<A> domain) {
+        return Choose.chooseAtLeastOneValueFromDomain(domain);
     }
 
     /**
@@ -1595,8 +1649,8 @@ public final class Generators {
      * @param <A>        the output type
      * @return a {@code Generator<A>}
      */
-    public static <A> Generator<ImmutableVector<A>> chooseSomeFromCollection(Collection<A> candidates) {
-        return Choose.chooseSomeFromDomain(candidates);
+    public static <A> Generator<ImmutableVector<A>> chooseSomeValuesFromCollection(Collection<A> candidates) {
+        return Choose.chooseSomeValuesFromDomain(candidates);
     }
 
     /**
@@ -1607,8 +1661,8 @@ public final class Generators {
      * @param <A>    the output type
      * @return a {@code Generator<A>}
      */
-    public static <A> Generator<ImmutableVector<A>> chooseSomeFromDomain(NonEmptyVector<A> domain) {
-        return Choose.chooseSomeFromDomain(domain);
+    public static <A> Generator<ImmutableVector<A>> chooseSomeValuesFromDomain(NonEmptyVector<A> domain) {
+        return Choose.chooseSomeValuesFromDomain(domain);
     }
 
     /**
@@ -1647,24 +1701,15 @@ public final class Generators {
         return Choose.chooseValueFromMap(map);
     }
 
+    /**
+     * Creates a {@link Generator} that chooses its values from a {@link FrequencyMap}.
+     *
+     * @param frequencyMap the {@code FrequencyMap}
+     * @param <A>          the output type
+     * @return a {@code Generator<A>}
+     */
     public static <A> Generator<A> frequency(FrequencyMap<A> frequencyMap) {
         return Choose.frequency(frequencyMap);
-    }
-
-    @SafeVarargs
-    public static <A> Generator<A> frequency(Weighted<? extends Generator<? extends A>> first,
-                                             Weighted<? extends Generator<? extends A>>... more) {
-        return Choose.frequency(first, more);
-    }
-
-    @SafeVarargs
-    public static <A> Generator<A> frequencyValues(Weighted<? extends A> first,
-                                                   Weighted<? extends A>... more) {
-        return Choose.frequencyValues(first, more);
-    }
-
-    public static <A> Generator<A> frequency(Collection<Weighted<? extends Generator<? extends A>>> entries) {
-        return Choose.frequency(entries);
     }
 
     public static <A> Generator<ArrayList<A>> generateArrayList(Generator<A> g) {

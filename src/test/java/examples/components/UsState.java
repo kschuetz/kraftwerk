@@ -2,7 +2,7 @@ package examples.components;
 
 import dev.marksman.kraftwerk.Generator;
 
-import static dev.marksman.kraftwerk.Generators.frequencyValues;
+import static dev.marksman.kraftwerk.Generators.chooseOneOfWeightedValues;
 import static dev.marksman.kraftwerk.Weighted.weighted;
 
 public final class UsState {
@@ -59,7 +59,7 @@ public final class UsState {
     }
 
     private static class generators {
-        private static final Generator<UsState> usState = frequencyValues(
+        private static final Generator<UsState> usState = chooseOneOfWeightedValues(
                 weighted(39, "CA"), weighted(28, "TX"), weighted(21, "FL"),
                 weighted(19, "NY"), weighted(12, "PA"), weighted(12, "IL"),
                 weighted(11, "OH"), weighted(10, "GA"), weighted(10, "NC"),
