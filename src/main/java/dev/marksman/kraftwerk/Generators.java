@@ -1712,110 +1712,310 @@ public final class Generators {
         return Choose.frequency(frequencyMap);
     }
 
-    public static <A> Generator<ArrayList<A>> generateArrayList(Generator<A> g) {
-        return Collections.generateArrayList(g);
+    /**
+     * Creates a {@link Generator} that yields {@link ArrayList}s of various sizes.
+     *
+     * @param elements the generator for elements
+     * @param <A>      the element type
+     * @return a {@code Generator<ArrayList<A>>}
+     */
+    public static <A> Generator<ArrayList<A>> generateArrayList(Generator<A> elements) {
+        return Collections.generateArrayList(elements);
     }
 
-    public static <A> Generator<ArrayList<A>> generateNonEmptyArrayList(Generator<A> g) {
-        return Collections.generateNonEmptyArrayList(g);
+    /**
+     * Creates a {@link Generator} that yields {@link ArrayList}s of various sizes, with a minimum size of one.
+     *
+     * @param elements the generator for elements
+     * @param <A>      the element type
+     * @return a {@code Generator<ArrayList<A>>}
+     */
+    public static <A> Generator<ArrayList<A>> generateNonEmptyArrayList(Generator<A> elements) {
+        return Collections.generateNonEmptyArrayList(elements);
     }
 
-    public static <A> Generator<ArrayList<A>> generateArrayListOfSize(int size, Generator<A> g) {
-        return Collections.generateArrayListOfSize(size, g);
+    /**
+     * Creates a {@link Generator} that yields {@link ArrayList}s of a specific size.
+     *
+     * @param size     the size of the {@code ArrayList}s returned; must be &gt;= 0
+     * @param elements the generator for elements
+     * @param <A>      the element type
+     * @return a {@code Generator<ArrayList<A>>}
+     */
+    public static <A> Generator<ArrayList<A>> generateArrayListOfSize(int size, Generator<A> elements) {
+        return Collections.generateArrayListOfSize(size, elements);
     }
 
-    public static <A> Generator<ArrayList<A>> generateArrayListOfSize(IntRange sizeRange, Generator<A> g) {
-        return Collections.generateArrayListOfSize(sizeRange, g);
+    /**
+     * Creates a {@link Generator} that yields {@link ArrayList}s of various sizes, within a specific range.
+     *
+     * @param sizeRange the size range of the {@code ArrayList}s returned
+     * @param elements  the generator for elements
+     * @param <A>       the element type
+     * @return a {@code Generator<ArrayList<A>>}
+     */
+    public static <A> Generator<ArrayList<A>> generateArrayListOfSize(IntRange sizeRange, Generator<A> elements) {
+        return Collections.generateArrayListOfSize(sizeRange, elements);
     }
 
-    public static <A> Generator<HashSet<A>> generateHashSet(Generator<A> g) {
-        return Collections.generateHashSet(g);
+    /**
+     * Creates a {@link Generator} that yields {@link HashSet}s of various sizes.
+     *
+     * @param elements the generator for elements
+     * @param <A>      the element type
+     * @return a {@code Generator<HashSet<A>>}
+     */
+    public static <A> Generator<HashSet<A>> generateHashSet(Generator<A> elements) {
+        return Collections.generateHashSet(elements);
     }
 
-    public static <A> Generator<HashSet<A>> generateNonEmptyHashSet(Generator<A> g) {
-        return Collections.generateNonEmptyHashSet(g);
+    /**
+     * Creates a {@link Generator} that yields {@link HashSet}s of various sizes, with a minimum size of one.
+     *
+     * @param elements the generator for elements
+     * @param <A>      the element type
+     * @return a {@code Generator<HashSet<A>>}
+     */
+    public static <A> Generator<HashSet<A>> generateNonEmptyHashSet(Generator<A> elements) {
+        return Collections.generateNonEmptyHashSet(elements);
     }
 
-    public static <A> Generator<ImmutableVector<A>> generateVector(Generator<A> g) {
-        return Collections.generateVector(g);
+    /**
+     * Creates a {@link Generator} that yields {@link ImmutableVector}s of various sizes.
+     *
+     * @param elements the generator for elements
+     * @param <A>      the element type
+     * @return a {@code Generator<ImmutableVector<A>>}
+     */
+    public static <A> Generator<ImmutableVector<A>> generateVector(Generator<A> elements) {
+        return Collections.generateVector(elements);
     }
 
-    public static <A> Generator<ImmutableVector<A>> generateVectorOfSize(int size, Generator<A> g) {
-        return Collections.generateVectorOfSize(size, g);
+    /**
+     * Creates a {@link Generator} that yields {@link ImmutableVector}s of a specific size.
+     *
+     * @param size     the size of the {@code ImmutableVector}s returned; must be &gt;= 0
+     * @param elements the generator for elements
+     * @param <A>      the element type
+     * @return a {@code Generator<ImmutableVector<A>>}
+     */
+    public static <A> Generator<ImmutableVector<A>> generateVectorOfSize(int size, Generator<A> elements) {
+        return Collections.generateVectorOfSize(size, elements);
     }
 
-    public static <A> Generator<ImmutableVector<A>> generateVectorOfSize(IntRange sizeRange, Generator<A> g) {
-        return Collections.generateVectorOfSize(sizeRange, g);
+    /**
+     * Creates a {@link Generator} that yields {@link ImmutableVector}s of a various sizes, within a specific range.
+     *
+     * @param sizeRange the size range of the {@code ImmutableVector}s returned
+     * @param elements  the generator for elements
+     * @param <A>       the element type
+     * @return a {@code Generator<ImmutableVector<A>>}
+     */
+    public static <A> Generator<ImmutableVector<A>> generateVectorOfSize(IntRange sizeRange, Generator<A> elements) {
+        return Collections.generateVectorOfSize(sizeRange, elements);
     }
 
-    public static <A> Generator<ImmutableNonEmptyVector<A>> generateNonEmptyVector(Generator<A> g) {
-        return Collections.generateNonEmptyVector(g);
+    /**
+     * Creates a {@link Generator} that yields {@link ImmutableNonEmptyVector}s of various sizes.
+     *
+     * @param elements the generator for elements
+     * @param <A>      the element type
+     * @return a {@code Generator<ImmutableNonEmptyVector<A>>}
+     */
+    public static <A> Generator<ImmutableNonEmptyVector<A>> generateNonEmptyVector(Generator<A> elements) {
+        return Collections.generateNonEmptyVector(elements);
     }
 
-    public static <A> Generator<ImmutableNonEmptyVector<A>> generateNonEmptyVectorOfSize(int size, Generator<A> g) {
-        return Collections.generateNonEmptyVectorOfSize(size, g);
+    /**
+     * Creates a {@link Generator} that yields {@link ImmutableNonEmptyVector}s of a specific size.
+     *
+     * @param size     the size of the {@code ImmutableNonEmptyVector}s returned; must be &gt;= 1
+     * @param elements the generator for elements
+     * @param <A>      the element type
+     * @return a {@code Generator<ImmutableNonEmptyVector<A>>}
+     */
+    public static <A> Generator<ImmutableNonEmptyVector<A>> generateNonEmptyVectorOfSize(int size, Generator<A> elements) {
+        return Collections.generateNonEmptyVectorOfSize(size, elements);
     }
 
-    public static <A> Generator<ImmutableNonEmptyVector<A>> generateNonEmptyVectorOfSize(IntRange sizeRange, Generator<A> g) {
-        return Collections.generateNonEmptyVectorOfSize(sizeRange, g);
+    /**
+     * Creates a {@link Generator} that yields {@link ImmutableNonEmptyVector}s of a various sizes, within a specific range.
+     *
+     * @param sizeRange the size range of the {@code ImmutableNonEmptyVector}s returned
+     * @param elements  the generator for elements
+     * @param <A>       the element type
+     * @return a {@code Generator<ImmutableNonEmptyVector<A>>}
+     */
+    public static <A> Generator<ImmutableNonEmptyVector<A>> generateNonEmptyVectorOfSize(IntRange sizeRange, Generator<A> elements) {
+        return Collections.generateNonEmptyVectorOfSize(sizeRange, elements);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Map}s of various sizes.
+     *
+     * @param generateKey   the generator for keys
+     * @param generateValue the generator for values
+     * @param <K>           the key type
+     * @param <V>           the value type
+     * @return a {@code Generator<Map<K, V>>}
+     */
     public static <K, V> Generator<Map<K, V>> generateMap(Generator<K> generateKey,
                                                           Generator<V> generateValue) {
         return Collections.generateMap(generateKey, generateValue);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Map}s with a given set of keys.
+     *
+     * @param keys          the keys to populate in the output.  All keys will be in the output.
+     * @param generateValue the generator for values
+     * @param <K>           the key type
+     * @param <V>           the value type
+     * @return a {@code Generator<Map<K, V>>}
+     */
     public static <K, V> Generator<Map<K, V>> generateMap(Collection<K> keys,
                                                           Generator<V> generateValue) {
         return Collections.generateMap(keys, generateValue);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Map}s with a given set of keys.
+     *
+     * @param keys          the keys to populate in the output.  All keys will be in the output.
+     * @param generateValue the generator for values
+     * @param <K>           the key type
+     * @param <V>           the value type
+     * @return a {@code Generator<Map<K, V>>}
+     */
     public static <K, V> Generator<Map<K, V>> generateMap(NonEmptyVector<K> keys,
                                                           Generator<V> generateValue) {
         return Collections.generateMap(keys, generateValue);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Map}s of various sizes, with a minimum size of one.
+     *
+     * @param generateKey   the generator for keys
+     * @param generateValue the generator for values
+     * @param <K>           the key type
+     * @param <V>           the value type
+     * @return a {@code Generator<Map<K, V>>}
+     */
     public static <K, V> Generator<Map<K, V>> generateNonEmptyMap(Generator<K> generateKey,
                                                                   Generator<V> generateValue) {
         return Collections.generateNonEmptyMap(generateKey, generateValue);
     }
 
-    public static <A> Generator<ImmutableNonEmptyIterable<A>> generateInfiniteIterable(Generator<A> gen) {
-        return Infinite.generateInfiniteIterable(gen);
+    /**
+     * Creates a {@link Generator} that yields infinite {@link Iterable}s.
+     *
+     * @param elements the generator for elements
+     * @param <A>      the element type
+     * @return a {@code Generator<ImmutableNonEmptyIterable<A>>}
+     */
+    public static <A> Generator<ImmutableNonEmptyIterable<A>> generateInfiniteIterable(Generator<A> elements) {
+        return Infinite.generateInfiniteIterable(elements);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Vector}s that contain the integers from {@code 0}..{@code count-1}
+     * in random order.
+     *
+     * @param count the number of elements in the output; must be &gt;= 0.
+     * @return a {@code Generator<Vector<Integer>>}
+     */
     public static Generator<Vector<Integer>> generateShuffled(int count) {
         return Shuffle.generateShuffled(count);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Vector}s by shuffling the indices from {@code 0}..{@code count-1}
+     * in random order, and mapping them to a given function.
+     *
+     * @param count the number of elements in the output; must be &gt;= 0.
+     * @param fn    a pure function that converts an integer from {@code 0}..{@code count-1} to an element; should be side-effect free.
+     * @param <A>   the element type
+     * @return a {@code Generator<Vector<A>>}
+     */
     public static <A> Generator<Vector<A>> generateShuffled(int count, Fn1<Integer, A> fn) {
         return Shuffle.generateShuffled(count, fn);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link NonEmptyVector}s by shuffling the indices from {@code 0}..{@code count-1}
+     * in random order, and mapping them to a given function.
+     *
+     * @param count the number of elements in the output; must be &gt;= 1.
+     * @param fn    a pure function that converts an integer from {@code 0}..{@code count-1} to an element; should be side-effect free.
+     * @param <A>   the element type
+     * @return a {@code Generator<NonEmptyVector<A>>}
+     */
     public static <A> Generator<NonEmptyVector<A>> generateNonEmptyShuffled(int count, Fn1<Integer, A> fn) {
         return Shuffle.generateNonEmptyShuffled(count, fn);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Vector}s by randomly shuffling the order of the elements in the input.
+     *
+     * @param input the input sequence.  It is not altered, and is iterated at most once.
+     * @param <A>   the element type
+     * @return a {@code Generator<Vector<A>>}
+     */
     public static <A> Generator<Vector<A>> generateShuffled(FiniteIterable<A> input) {
         return Shuffle.generateShuffled(input);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link NonEmptyVector}s by randomly shuffling the order of the elements in the input.
+     *
+     * @param input the input sequence.  It is not altered, and is iterated at most once.
+     * @param <A>   the element type
+     * @return a {@code Generator<NonEmptyVector<A>>}
+     */
     public static <A> Generator<NonEmptyVector<A>> generateShuffled(NonEmptyFiniteIterable<A> input) {
         return Shuffle.generateShuffled(input);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Vector}s by randomly shuffling the order of the elements in the input.
+     *
+     * @param input the input sequence.  It is not altered, and is iterated at most once.
+     * @param <A>   the element type
+     * @return a {@code Generator<Vector<A>>}
+     */
     public static <A> Generator<Vector<A>> generateShuffled(Collection<A> input) {
         return Shuffle.generateShuffled(input);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Vector}s by randomly shuffling the order of the elements in the input.
+     *
+     * @param input the input sequence.  It is not altered, and is iterated at most once.
+     * @param <A>   the element type
+     * @return a {@code Generator<Vector<A>>}
+     */
     public static <A> Generator<Vector<A>> generateShuffled(A[] input) {
         return Shuffle.generateShuffled(input);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Vector}s by randomly shuffling the order of the elements in the input.
+     *
+     * @param input the input {@code Vector}
+     * @param <A>   the element type
+     * @return a {@code Generator<Vector<A>>}
+     */
     public static <A> Generator<Vector<A>> generateShuffled(Vector<A> input) {
         return generateShuffled(input.size(), input::unsafeGet);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link NonEmptyVector}s by randomly shuffling the order of the elements in the input.
+     *
+     * @param input the input {@code NonEmptyVector}
+     * @param <A>   the element type
+     * @return a {@code Generator<NonEmptyVector<A>>}
+     */
     public static <A> Generator<NonEmptyVector<A>> generateShuffled(NonEmptyVector<A> input) {
         return Shuffle.generateShuffled(input);
     }
