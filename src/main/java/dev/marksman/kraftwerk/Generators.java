@@ -2713,7 +2713,7 @@ public final class Generators {
      *                            next element.
      * @param orderedElems        the ordered sequence of candidates
      * @param <A>                 the element type
-     * @return a {code Generator<ImmutableVector<A>>}
+     * @return a {@code Generator<ImmutableVector<A>>}
      */
     public static <A> Generator<ImmutableVector<A>> generateOrderedSequence(Generator<Integer> countForEachElement,
                                                                             ImmutableVector<A> orderedElems) {
@@ -2729,7 +2729,7 @@ public final class Generators {
      *                                 next element.
      * @param orderedElems             the ordered sequence of candidates
      * @param <A>                      the element type
-     * @return a {code Generator<ImmutableVector<A>>}
+     * @return a {@code Generator<ImmutableVector<A>>}
      */
     public static <A> Generator<ImmutableVector<A>> generateOrderedSequence(IntRange countForEachElementRange,
                                                                             ImmutableVector<A> orderedElems) {
