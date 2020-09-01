@@ -141,7 +141,7 @@ public final class Generators {
     /**
      * Creates a {@link Generator} that yields {@link Double}s within a specific range.
      *
-     * @param range the range of values to generate
+     * @param range the {@link DoubleRange} of values to generate
      * @return a {@link FloatingPointGenerator}
      */
     public static FloatingPointGenerator<Double> generateDouble(DoubleRange range) {
@@ -170,7 +170,7 @@ public final class Generators {
     /**
      * Creates a {@link Generator} that yields {@link Float}s within a specific range.
      *
-     * @param range the range of values to generate
+     * @param range the {@link FloatRange} of values to generate
      * @return a {@link FloatingPointGenerator}
      */
     public static FloatingPointGenerator<Float> generateFloat(FloatRange range) {
@@ -190,7 +190,7 @@ public final class Generators {
     /**
      * Creates a {@link Generator} that yields {@link Integer}s within a specific range.
      *
-     * @param range the range of values to generate
+     * @param range the {@link IntRange} of values to generate
      * @return a {@code Generator<Integer>}
      */
     public static Generator<Integer> generateInt(IntRange range) {
@@ -221,7 +221,7 @@ public final class Generators {
     /**
      * Creates a {@link Generator} that yields {@link Long}s within a specific range.
      *
-     * @param range the range of values to generate
+     * @param range the {@link LongRange} of values to generate
      * @return a {@code Generator<Long>}
      */
     public static Generator<Long> generateLong(LongRange range) {
@@ -252,7 +252,7 @@ public final class Generators {
     /**
      * Creates a {@link Generator} that yields {@link Byte}s within a specific range.
      *
-     * @param range the range of values to generate
+     * @param range the {@link ByteRange} of values to generate
      * @return a {@code Generator<Byte>}
      */
     public static Generator<Byte> generateByte(ByteRange range) {
@@ -272,7 +272,7 @@ public final class Generators {
     /**
      * Creates a {@link Generator} that yields {@link Short}s within a specific range.
      *
-     * @param range the range of values to generate
+     * @param range the {@link ShortRange} of values to generate
      * @return a {@code Generator<Short>}
      */
     public static Generator<Short> generateShort(ShortRange range) {
@@ -292,7 +292,7 @@ public final class Generators {
     /**
      * Creates a {@link Generator} that yields {@link Character}s within a specific range.
      *
-     * @param range the range of values to generate
+     * @param range the {@link CharRange} of values to generate
      * @return a {@code Generator<Character>}
      */
     public static Generator<Character> generateChar(CharRange range) {
@@ -497,7 +497,7 @@ public final class Generators {
      * The size of the generated {@code Collection}s will always fall within {@code sizeRange}.
      *
      * @param constructCollection the constructor for the desired type of collection (e.g. {@code ArrayList::new})
-     * @param sizeRange           the range of sizes for the generated collections.  Lower end of range must be &gt;= 0.
+     * @param sizeRange           the {@link IntRange} of sizes for the generated collections.  Lower end of range must be &gt;= 0.
      * @param gen                 the element {@code Generator}
      * @param <A>                 the element type of the desired collection
      * @param <C>                 the collection type.   Instances of {@code C} must support {@link Collection#add} (which is to say, must not throw on invocation).
@@ -544,7 +544,7 @@ public final class Generators {
      * <p>
      * The size of the generated {@code ImmutableVector}s will always fall within {@code sizeRange}.
      *
-     * @param sizeRange the range of sizes for the generated {@code ImmutableVector}s.  Lower end of range must be &gt;= 0.
+     * @param sizeRange the {@link IntRange} of sizes for the generated {@code ImmutableVector}s.  Lower end of range must be &gt;= 0.
      * @param gen       the element {@code Generator}
      * @param <A>       the element type of the desired {@code ImmutableVector}
      * @return a {@code Generator<ImmutableVector<A>>}
@@ -590,7 +590,7 @@ public final class Generators {
      * <p>
      * The size of the generated {@code ImmutableNonEmptyVector}s will always fall within {@code sizeRange}.
      *
-     * @param sizeRange the range of sizes for the generated {@code ImmutableVector}s.  Lower end of range must be &gt;= 1.
+     * @param sizeRange the {@link IntRange} of sizes for the generated {@code ImmutableVector}s.  Lower end of range must be &gt;= 1.
      * @param gen       the element {@code Generator}
      * @param <A>       the element type of the desired {@code ImmutableNonEmptyVector}
      * @return a {@code Generator<ImmutableNonEmptyVector<A>>}
@@ -1029,7 +1029,7 @@ public final class Generators {
      * Creates a {@link Generator} that yields {@link String}s by invoking another {@code Generator} a random number
      * of times within a specific range, and concatenating the results.
      *
-     * @param numberOfChunksRange the range of the number of chunks to generate and concatenate
+     * @param numberOfChunksRange the {@link IntRange} of the number of chunks to generate and concatenate
      * @param chunkGenerator      the generator for each chunk to be concatenated
      * @return a {@code Generator<String>}
      */
@@ -1091,7 +1091,7 @@ public final class Generators {
      * <p>
      * The length of the generated {@code String}s will always be within {@code lengthRange}.
      *
-     * @param lengthRange the range of the length of the string to generate
+     * @param lengthRange the {@link IntRange} of the length of the string to generate
      * @param g           the generator for each character to be concatenated
      * @return a {@code Generator<String>}
      */
@@ -1105,7 +1105,7 @@ public final class Generators {
      * <p>
      * The length of the generated {@code String}s will always be within {@code lengthRange}.
      *
-     * @param lengthRange the range of the length of the string to generate
+     * @param lengthRange the {@link IntRange} of the length of the string to generate
      * @param characters  the characters to choose from
      * @return a {@code Generator<String>}
      */
@@ -1151,7 +1151,7 @@ public final class Generators {
     /**
      * Creates a {@link Generator} that yields {@link String}s that are legal Java identifiers with a length within a specific range.
      *
-     * @param lengthRange the range of the length of the identifiers to generate
+     * @param lengthRange the {@link IntRange} of the length of the identifiers to generate
      * @return a {@code Generator<String>}
      * @see Generators#generateIdentifier()
      * @see Generators#generateIdentifier(int)
@@ -2020,33 +2020,94 @@ public final class Generators {
         return Shuffle.generateShuffled(input);
     }
 
+    /**
+     * Creates a {@link ChoiceBuilder1}.
+     *
+     * @param firstChoice a weighted {@link Generator} for the first choice
+     * @param <A>         the output type of the first choice
+     * @return a {@code ChoiceBuilder1<A>}
+     */
     public static <A> ChoiceBuilder1<A> choiceBuilder(Weighted<? extends Generator<? extends A>> firstChoice) {
         return ChoiceBuilder1.choiceBuilder(firstChoice);
     }
 
+    /**
+     * Creates a {@link ChoiceBuilder1}.
+     *
+     * @param firstChoice a {@link Generator} for the first choice
+     * @param <A>         the output type of the first choice
+     * @return a {@code ChoiceBuilder1<A>}
+     */
     public static <A> ChoiceBuilder1<A> choiceBuilder(Generator<? extends A> firstChoice) {
         return ChoiceBuilder1.choiceBuilder(firstChoice);
     }
 
+    /**
+     * Creates a {@link ChoiceBuilder1}.
+     *
+     * @param firstChoice a weighted value for the first choice
+     * @param <A>         the output type of the first choice
+     * @return a {@code ChoiceBuilder1<A>}
+     */
     public static <A> ChoiceBuilder1<A> choiceBuilderValue(Weighted<? extends A> firstChoice) {
         return ChoiceBuilder1.choiceBuilderValue(firstChoice);
     }
 
+    /**
+     * Creates a {@link ChoiceBuilder1}.
+     *
+     * @param firstChoice a value for the first choice
+     * @param <A>         the output type of the first choice
+     * @return a {@code ChoiceBuilder1<A>}
+     */
     public static <A> ChoiceBuilder1<A> choiceBuilderValue(A firstChoice) {
         return ChoiceBuilder1.choiceBuilderValue(firstChoice);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Choice2}s.
+     *
+     * @param a   a weighted {@code Generator} for the first choice
+     * @param b   a weighted {@code Generator} for the second choice
+     * @param <A> the output type of the first choice
+     * @param <B> the output type of the second choice
+     * @return a {@code Generator<Choice2<A, B>>}
+     */
     public static <A, B> Generator<Choice2<A, B>> generateChoice(Weighted<? extends Generator<? extends A>> a,
                                                                  Weighted<? extends Generator<? extends B>> b) {
         return choiceBuilder(a).or(b).toGenerator();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Choice3}s.
+     *
+     * @param a   a weighted {@code Generator} for the first choice
+     * @param b   a weighted {@code Generator} for the second choice
+     * @param c   a weighted {@code Generator} for the third choice
+     * @param <A> the output type of the first choice
+     * @param <B> the output type of the second choice
+     * @param <C> the output type of the third choice
+     * @return a {@code Generator<Choice3<A, B, C>>}
+     */
     public static <A, B, C> Generator<Choice3<A, B, C>> generateChoice(Weighted<? extends Generator<? extends A>> a,
                                                                        Weighted<? extends Generator<? extends B>> b,
                                                                        Weighted<? extends Generator<? extends C>> c) {
         return choiceBuilder(a).or(b).or(c).toGenerator();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Choice4}s.
+     *
+     * @param a   a weighted {@code Generator} for the first choice
+     * @param b   a weighted {@code Generator} for the second choice
+     * @param c   a weighted {@code Generator} for the third choice
+     * @param d   a weighted {@code Generator} for the fourth choice
+     * @param <A> the output type of the first choice
+     * @param <B> the output type of the second choice
+     * @param <C> the output type of the third choice
+     * @param <D> the output type of the fourth choice
+     * @return a {@code Generator<Choice4<A, B, C, D>>}
+     */
     public static <A, B, C, D> Generator<Choice4<A, B, C, D>> generateChoice(Weighted<? extends Generator<? extends A>> a,
                                                                              Weighted<? extends Generator<? extends B>> b,
                                                                              Weighted<? extends Generator<? extends C>> c,
@@ -2054,6 +2115,21 @@ public final class Generators {
         return choiceBuilder(a).or(b).or(c).or(d).toGenerator();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Choice5}s.
+     *
+     * @param a   a weighted {@code Generator} for the first choice
+     * @param b   a weighted {@code Generator} for the second choice
+     * @param c   a weighted {@code Generator} for the third choice
+     * @param d   a weighted {@code Generator} for the fourth choice
+     * @param e   a weighted {@code Generator} for the fifth choice
+     * @param <A> the output type of the first choice
+     * @param <B> the output type of the second choice
+     * @param <C> the output type of the third choice
+     * @param <D> the output type of the fourth choice
+     * @param <E> the output type of the fifth choice
+     * @return a {@code Generator<Choice5<A, B, C, D, E>>}
+     */
     public static <A, B, C, D, E> Generator<Choice5<A, B, C, D, E>> generateChoice(Weighted<? extends Generator<? extends A>> a,
                                                                                    Weighted<? extends Generator<? extends B>> b,
                                                                                    Weighted<? extends Generator<? extends C>> c,
@@ -2062,6 +2138,23 @@ public final class Generators {
         return choiceBuilder(a).or(b).or(c).or(d).or(e).toGenerator();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Choice6}s.
+     *
+     * @param a   a weighted {@code Generator} for the first choice
+     * @param b   a weighted {@code Generator} for the second choice
+     * @param c   a weighted {@code Generator} for the third choice
+     * @param d   a weighted {@code Generator} for the fourth choice
+     * @param e   a weighted {@code Generator} for the fifth choice
+     * @param f   a weighted {@code Generator} for the sixth choice
+     * @param <A> the output type of the first choice
+     * @param <B> the output type of the second choice
+     * @param <C> the output type of the third choice
+     * @param <D> the output type of the fourth choice
+     * @param <E> the output type of the fifth choice
+     * @param <F> the output type of the sixth choice
+     * @return a {@code Generator<Choice6<A, B, C, D, E, F>>}
+     */
     public static <A, B, C, D, E, F> Generator<Choice6<A, B, C, D, E, F>> generateChoice(Weighted<? extends Generator<? extends A>> a,
                                                                                          Weighted<? extends Generator<? extends B>> b,
                                                                                          Weighted<? extends Generator<? extends C>> c,
@@ -2071,6 +2164,25 @@ public final class Generators {
         return choiceBuilder(a).or(b).or(c).or(d).or(e).or(f).toGenerator();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Choice7}s.
+     *
+     * @param a   a weighted {@code Generator} for the first choice
+     * @param b   a weighted {@code Generator} for the second choice
+     * @param c   a weighted {@code Generator} for the third choice
+     * @param d   a weighted {@code Generator} for the fourth choice
+     * @param e   a weighted {@code Generator} for the fifth choice
+     * @param f   a weighted {@code Generator} for the sixth choice
+     * @param g   a weighted {@code Generator} for the seventh choice
+     * @param <A> the output type of the first choice
+     * @param <B> the output type of the second choice
+     * @param <C> the output type of the third choice
+     * @param <D> the output type of the fourth choice
+     * @param <E> the output type of the fifth choice
+     * @param <F> the output type of the sixth choice
+     * @param <G> the output type of the seventh choice
+     * @return a {@code Generator<Choice7<A, B, C, D, E, F, G>>}
+     */
     public static <A, B, C, D, E, F, G> Generator<Choice7<A, B, C, D, E, F, G>> generateChoice(Weighted<? extends Generator<? extends A>> a,
                                                                                                Weighted<? extends Generator<? extends B>> b,
                                                                                                Weighted<? extends Generator<? extends C>> c,
@@ -2081,6 +2193,27 @@ public final class Generators {
         return choiceBuilder(a).or(b).or(c).or(d).or(e).or(f).or(g).toGenerator();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Choice8}s.
+     *
+     * @param a   a weighted {@code Generator} for the first choice
+     * @param b   a weighted {@code Generator} for the second choice
+     * @param c   a weighted {@code Generator} for the third choice
+     * @param d   a weighted {@code Generator} for the fourth choice
+     * @param e   a weighted {@code Generator} for the fifth choice
+     * @param f   a weighted {@code Generator} for the sixth choice
+     * @param g   a weighted {@code Generator} for the seventh choice
+     * @param h   a weighted {@code Generator} for the eighth choice
+     * @param <A> the output type of the first choice
+     * @param <B> the output type of the second choice
+     * @param <C> the output type of the third choice
+     * @param <D> the output type of the fourth choice
+     * @param <E> the output type of the fifth choice
+     * @param <F> the output type of the sixth choice
+     * @param <G> the output type of the seventh choice
+     * @param <H> the output type of the eighth choice
+     * @return a {@code Generator<Choice8<A, B, C, D, E, F, G, H>>}
+     */
     public static <A, B, C, D, E, F, G, H> Generator<Choice8<A, B, C, D, E, F, G, H>> generateChoice(Weighted<? extends Generator<? extends A>> a,
                                                                                                      Weighted<? extends Generator<? extends B>> b,
                                                                                                      Weighted<? extends Generator<? extends C>> c,
@@ -2092,21 +2225,61 @@ public final class Generators {
         return choiceBuilder(a).or(b).or(c).or(d).or(e).or(f).or(g).or(h).toGenerator();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Fn0}s.
+     *
+     * @param result a {@code Generator} for the result of the function
+     * @param <R>    the result type of the function
+     * @return a {@code Generator<Fn0<R>>}
+     */
     public static <R> Generator<Fn0<R>> generateFn0(Generator<R> result) {
         return Functions.generateFn0(result);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Fn1}s.  Generated functions will be pure and total.
+     *
+     * @param param1 a {@link Cogenerator} for the first parameter of the function
+     * @param result a {@code Generator} for the result of the function
+     * @param <A>    the type of the first parameter of the function
+     * @param <R>    the result type of the function
+     * @return a {@code Generator<Fn1<A, R>>}
+     */
     public static <A, R> Generator<Fn1<A, R>> generateFn1(Cogenerator<A> param1,
                                                           Generator<R> result) {
         return Functions.generateFn1(param1, result);
     }
 
+    /**
+     * Creates a {@link Generator} that yields pure {@link Fn2}s. Generated functions will be pure and total.
+     *
+     * @param param1 a {@link Cogenerator} for the first parameter of the function
+     * @param param2 a {@code Cogenerator} for the second parameter of the function
+     * @param result a {@code Generator} for the result of the function
+     * @param <A>    the type of the first parameter of the function
+     * @param <B>    the type of the second parameter of the function
+     * @param <R>    the result type of the function
+     * @return a {@code Generator<Fn2<A, B, R>>}
+     */
     public static <A, B, R> Generator<Fn2<A, B, R>> generateFn2(Cogenerator<A> param1,
                                                                 Cogenerator<B> param2,
                                                                 Generator<R> result) {
         return Functions.generateFn2(param1, param2, result);
     }
 
+    /**
+     * Creates a {@link Generator} that yields pure {@link Fn3}s. Generated functions will be pure and total.
+     *
+     * @param param1 a {@link Cogenerator} for the first parameter of the function
+     * @param param2 a {@code Cogenerator} for the second parameter of the function
+     * @param param3 a {@code Cogenerator} for the third parameter of the function
+     * @param result a {@code Generator} for the result of the function
+     * @param <A>    the type of the first parameter of the function
+     * @param <B>    the type of the second parameter of the function
+     * @param <C>    the type of the third parameter of the function
+     * @param <R>    the result type of the function
+     * @return a {@code Generator<Fn3<A, B, C, R>>}
+     */
     public static <A, B, C, R> Generator<Fn3<A, B, C, R>> generateFn3(Cogenerator<A> param1,
                                                                       Cogenerator<B> param2,
                                                                       Cogenerator<C> param3,
@@ -2114,6 +2287,21 @@ public final class Generators {
         return Functions.generateFn3(param1, param2, param3, result);
     }
 
+    /**
+     * Creates a {@link Generator} that yields pure {@link Fn4}s. Generated functions will be pure and total.
+     *
+     * @param param1 a {@link Cogenerator} for the first parameter of the function
+     * @param param2 a {@code Cogenerator} for the second parameter of the function
+     * @param param3 a {@code Cogenerator} for the third parameter of the function
+     * @param param4 a {@code Cogenerator} for the fourth parameter of the function
+     * @param result a {@code Generator} for the result of the function
+     * @param <A>    the type of the first parameter of the function
+     * @param <B>    the type of the second parameter of the function
+     * @param <C>    the type of the third parameter of the function
+     * @param <D>    the type of the fourth parameter of the function
+     * @param <R>    the result type of the function
+     * @return a {@code Generator<Fn4<A, B, C, D, R>>}
+     */
     public static <A, B, C, D, R> Generator<Fn4<A, B, C, D, R>> generateFn4(Cogenerator<A> param1,
                                                                             Cogenerator<B> param2,
                                                                             Cogenerator<C> param3,
@@ -2122,6 +2310,23 @@ public final class Generators {
         return Functions.generateFn4(param1, param2, param3, param4, result);
     }
 
+    /**
+     * Creates a {@link Generator} that yields pure {@link Fn5}s. Generated functions will be pure and total.
+     *
+     * @param param1 a {@link Cogenerator} for the first parameter of the function
+     * @param param2 a {@code Cogenerator} for the second parameter of the function
+     * @param param3 a {@code Cogenerator} for the third parameter of the function
+     * @param param4 a {@code Cogenerator} for the fourth parameter of the function
+     * @param param5 a {@code Cogenerator} for the fifth parameter of the function
+     * @param result a {@code Generator} for the result of the function
+     * @param <A>    the type of the first parameter of the function
+     * @param <B>    the type of the second parameter of the function
+     * @param <C>    the type of the third parameter of the function
+     * @param <D>    the type of the fourth parameter of the function
+     * @param <E>    the type of the fifth parameter of the function
+     * @param <R>    the result type of the function
+     * @return a {@code Generator<Fn5<A, B, C, D, E, R>>}
+     */
     public static <A, B, C, D, E, R> Generator<Fn5<A, B, C, D, E, R>> generateFn5(Cogenerator<A> param1,
                                                                                   Cogenerator<B> param2,
                                                                                   Cogenerator<C> param3,
@@ -2131,6 +2336,25 @@ public final class Generators {
         return Functions.generateFn5(param1, param2, param3, param4, param5, result);
     }
 
+    /**
+     * Creates a {@link Generator} that yields pure {@link Fn6}s. Generated functions will be pure and total.
+     *
+     * @param param1 a {@link Cogenerator} for the first parameter of the function
+     * @param param2 a {@code Cogenerator} for the second parameter of the function
+     * @param param3 a {@code Cogenerator} for the third parameter of the function
+     * @param param4 a {@code Cogenerator} for the fourth parameter of the function
+     * @param param5 a {@code Cogenerator} for the fifth parameter of the function
+     * @param param6 a {@code Cogenerator} for the sixth parameter of the function
+     * @param result a {@code Generator} for the result of the function
+     * @param <A>    the type of the first parameter of the function
+     * @param <B>    the type of the second parameter of the function
+     * @param <C>    the type of the third parameter of the function
+     * @param <D>    the type of the fourth parameter of the function
+     * @param <E>    the type of the fifth parameter of the function
+     * @param <F>    the type of the sixth parameter of the function
+     * @param <R>    the result type of the function
+     * @return a {@code Generator<Fn6<A, B, C, D, E, F, R>>}
+     */
     public static <A, B, C, D, E, F, R> Generator<Fn6<A, B, C, D, E, F, R>> generateFn6(Cogenerator<A> param1,
                                                                                         Cogenerator<B> param2,
                                                                                         Cogenerator<C> param3,
@@ -2141,6 +2365,27 @@ public final class Generators {
         return Functions.generateFn6(param1, param2, param3, param4, param5, param6, result);
     }
 
+    /**
+     * Creates a {@link Generator} that yields pure {@link Fn7}s. Generated functions will be pure and total.
+     *
+     * @param param1 a {@link Cogenerator} for the first parameter of the function
+     * @param param2 a {@code Cogenerator} for the second parameter of the function
+     * @param param3 a {@code Cogenerator} for the third parameter of the function
+     * @param param4 a {@code Cogenerator} for the fourth parameter of the function
+     * @param param5 a {@code Cogenerator} for the fifth parameter of the function
+     * @param param6 a {@code Cogenerator} for the sixth parameter of the function
+     * @param param7 a {@code Cogenerator} for the seventh parameter of the function
+     * @param result a {@code Generator} for the result of the function
+     * @param <A>    the type of the first parameter of the function
+     * @param <B>    the type of the second parameter of the function
+     * @param <C>    the type of the third parameter of the function
+     * @param <D>    the type of the fourth parameter of the function
+     * @param <E>    the type of the fifth parameter of the function
+     * @param <F>    the type of the sixth parameter of the function
+     * @param <G>    the type of the seventh parameter of the function
+     * @param <R>    the result type of the function
+     * @return a {@code Generator<Fn7<A, B, C, D, E, F, G, R>>}
+     */
     public static <A, B, C, D, E, F, G, R> Generator<Fn7<A, B, C, D, E, F, G, R>> generateFn7(Cogenerator<A> param1,
                                                                                               Cogenerator<B> param2,
                                                                                               Cogenerator<C> param3,
@@ -2152,6 +2397,29 @@ public final class Generators {
         return Functions.generateFn7(param1, param2, param3, param4, param5, param6, param7, result);
     }
 
+    /**
+     * Creates a {@link Generator} that yields pure {@link Fn8}s. Generated functions will be pure and total.
+     *
+     * @param param1 a {@link Cogenerator} for the first parameter of the function
+     * @param param2 a {@code Cogenerator} for the second parameter of the function
+     * @param param3 a {@code Cogenerator} for the third parameter of the function
+     * @param param4 a {@code Cogenerator} for the fourth parameter of the function
+     * @param param5 a {@code Cogenerator} for the fifth parameter of the function
+     * @param param6 a {@code Cogenerator} for the sixth parameter of the function
+     * @param param7 a {@code Cogenerator} for the seventh parameter of the function
+     * @param param8 a {@code Cogenerator} for the eighth parameter of the function
+     * @param result a {@code Generator} for the result of the function
+     * @param <A>    the type of the first parameter of the function
+     * @param <B>    the type of the second parameter of the function
+     * @param <C>    the type of the third parameter of the function
+     * @param <D>    the type of the fourth parameter of the function
+     * @param <E>    the type of the fifth parameter of the function
+     * @param <F>    the type of the sixth parameter of the function
+     * @param <G>    the type of the seventh parameter of the function
+     * @param <H>    the type of the eighth parameter of the function
+     * @param <R>    the result type of the function
+     * @return a {@code Generator<Fn8<A, B, C, D, E, F, G, H, R>>}
+     */
     public static <A, B, C, D, E, F, G, H, R> Generator<Fn8<A, B, C, D, E, F, G, H, R>> generateFn8(Cogenerator<A> param1,
                                                                                                     Cogenerator<B> param2,
                                                                                                     Cogenerator<C> param3,
@@ -2164,212 +2432,557 @@ public final class Generators {
         return Functions.generateFn8(param1, param2, param3, param4, param5, param6, param7, param8, result);
     }
 
+    /**
+     * Creates a {@link Generator} that yields version 4 {@link UUID}s.
+     *
+     * @return a {@code Generator<UUID>}
+     */
     public static Generator<UUID> generateUUID() {
         return UUIDs.generateUUID();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link BigInteger}s.
+     *
+     * @return a {@code Generator<BigInteger>}
+     */
     public static Generator<BigInteger> generateBigInteger() {
         return BigNumbers.generateBigInteger();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link BigInteger}s within a specific range.
+     *
+     * @param range the {@link BigIntegerRange} of the values to generate
+     * @return a {@code Generator<BigInteger>}
+     */
     public static Generator<BigInteger> generateBigInteger(BigIntegerRange range) {
         return BigNumbers.generateBigInteger(range);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link BigDecimal}s.
+     *
+     * @return a {@code Generator<BigDecimal>}
+     */
     public static Generator<BigDecimal> generateBigDecimal() {
         return BigNumbers.generateBigDecimal();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link BigDecimal}s within a specific range.
+     *
+     * @param range the {@link BigDecimalRange} of the values to generate
+     * @return a {@code Generator<BigDecimal>}
+     */
     public static Generator<BigDecimal> generateBigDecimal(BigDecimalRange range) {
         return BigNumbers.generateBigDecimal(range);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link BigDecimal}s within a specific range, and with the number of decimal places
+     * determined by a specific {@code Generator}.
+     *
+     * @param generateDecimalPlaces a {@code Generator} to determine the number of decimal places of the generated values
+     * @param range                 the {@link BigDecimalRange} of the values to generate
+     * @return a {@code Generator<BigDecimal>}
+     */
     public static Generator<BigDecimal> generateBigDecimal(Generator<Integer> generateDecimalPlaces, BigDecimalRange range) {
         return BigNumbers.generateBigDecimal(generateDecimalPlaces, range);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link BigDecimal}s within a specific range, and with the number of decimal places
+     * within a specific range.
+     *
+     * @param decimalPlacesRange the {@link IntRange} for the number of decimal places of the generated values
+     * @param range              the {@link BigDecimalRange} of the values to generate
+     * @return a {@code Generator<BigDecimal>}
+     */
+    static Generator<BigDecimal> generateBigDecimal(IntRange decimalPlacesRange, BigDecimalRange range) {
+        return BigNumbers.generateBigDecimal(decimalPlacesRange, range);
+    }
+
+    /**
+     * Creates a {@link Generator} that yields {@link BigDecimal}s within a specific range, and with a specific number of
+     * decimal places.
+     *
+     * @param decimalPlaces the number of decimal places of the generated values
+     * @return a {@code Generator<BigDecimal>}
+     */
     public static Generator<BigDecimal> generateBigDecimal(int decimalPlaces, BigDecimalRange range) {
         return BigNumbers.generateBigDecimal(decimalPlaces, range);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Month}s.
+     *
+     * @return a {@code Generator<Month>}
+     */
     public static Generator<Month> generateMonth() {
         return Temporal.generateMonth();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link DayOfWeek}s.
+     *
+     * @return a {@code Generator<DayOfWeek>}
+     */
     public static Generator<DayOfWeek> generateDayOfWeek() {
         return Temporal.generateDayOfWeek();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link LocalDate}s.
+     *
+     * @return a {@code Generator<LocalDate>}
+     */
     public static Generator<LocalDate> generateLocalDate() {
         return Temporal.generateLocalDate();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link LocalDate}s within a specific range.
+     *
+     * @param range the {@link LocalDateRange} of the values to generate
+     * @return a {@code Generator<LocalDate>}
+     */
     public static Generator<LocalDate> generateLocalDate(LocalDateRange range) {
         return Temporal.generateLocalDate(range);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link LocalDate}s within a specific {@link Year}.
+     *
+     * @param year the year of the values to generate
+     * @return a {@code Generator<LocalDate>}
+     */
     public static Generator<LocalDate> generateLocalDateForYear(Year year) {
         return Temporal.generateLocalDateForYear(year);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link LocalDate}s within a specific {@link YearMonth}.
+     *
+     * @param yearMonth the year and month of the values to generate
+     * @return a {@code Generator<LocalDate>}
+     */
     public static Generator<LocalDate> generateLocalDateForMonth(YearMonth yearMonth) {
         return Temporal.generateLocalDateForMonth(yearMonth);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link LocalTime}s.
+     *
+     * @return a {@code Generator<LocalTime>}
+     */
     public static Generator<LocalTime> generateLocalTime() {
         return Temporal.generateLocalTime();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link LocalTime}s within a specific range.
+     *
+     * @param range the {@link LocalTimeRange} of the values to generate
+     * @return a {@code Generator<LocalTime>}
+     */
     public static Generator<LocalTime> generateLocalTime(LocalTimeRange range) {
         return Temporal.generateLocalTime(range);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link LocalDateTime}s.
+     *
+     * @return a {@code Generator<LocalDateTime>}
+     */
     public static Generator<LocalDateTime> generateLocalDateTime() {
         return Temporal.generateLocalDateTime();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link LocalDateTime}s within a specific date range.
+     *
+     * @param dateRange the {@link LocalDateRange} of the values to generate
+     * @return a {@code Generator<LocalDateTime>}
+     */
     public static Generator<LocalDateTime> generateLocalDateTime(LocalDateRange dateRange) {
         return Temporal.generateLocalDateTime(dateRange);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link LocalDateTime}s within a specific range.
+     *
+     * @param range the {@link LocalDateTimeRange} of the values to generate
+     * @return a {@code Generator<LocalDateTime>}
+     */
     public static Generator<LocalDateTime> generateLocalDateTime(LocalDateTimeRange range) {
         return Temporal.generateLocalDateTime(range);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Duration}s.
+     *
+     * @return a {@code Generator<Duration>}
+     */
     public static Generator<Duration> generateDuration() {
         return Temporal.generateDuration();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link Duration}s with a specific range.
+     *
+     * @param range the {@link DurationRange} of the values to generate
+     * @return a {@code Generator<Duration>}
+     */
     public static Generator<Duration> generateDuration(DurationRange range) {
         return Temporal.generateDuration(range);
     }
 
+    /**
+     * Creates a {@link Generator} that builds its results by generating a random number of values (one or more) and combining
+     * them using {@link Semigroup}.
+     *
+     * @param semigroup the {@code Semigroup} to apply.  May be called zero or more times.
+     * @param gen       the {@code Generator} of the values to feed through the {@code Semigroup}
+     * @param <A>       the output type
+     * @return a {@code Generator<A>}
+     */
     public static <A> Generator<A> generateFromSemigroup(Semigroup<A> semigroup, Generator<A> gen) {
         return Lambda.generateFromSemigroup(semigroup, gen);
     }
 
+    /**
+     * Creates a {@link Generator} that builds its results by generating a specific number of values and combining
+     * them using {@link Semigroup}.
+     *
+     * @param semigroup the {@code Semigroup} to apply
+     * @param gen       the {@code Generator} of the values to feed through the {@code Semigroup}
+     * @param count     the number of elements to feed through the {@code Semigroup}; must be &gt;= 1
+     * @param <A>       the output type
+     * @return a {@code Generator<A>}
+     */
     public static <A> Generator<A> generateNFromSemigroup(Semigroup<A> semigroup, Generator<A> gen, int count) {
         return Lambda.generateNFromSemigroup(semigroup, gen, count);
     }
 
+    /**
+     * Creates a {@link Generator} that builds its results by generating a random number of values (zero or more) and combining
+     * them using {@link Monoid}.
+     *
+     * @param monoid the {@code Monoid} to apply.  May be called zero or more times.
+     * @param gen    the {@code Generator} of the values to feed through the {@code Monoid}
+     * @param <A>    the output type
+     * @return a {@code Generator<A>}
+     */
     public static <A> Generator<A> generateFromMonoid(Monoid<A> monoid, Generator<A> gen) {
         return Lambda.generateFromMonoid(monoid, gen);
     }
 
+    /**
+     * Creates a {@link Generator} that builds its results by generating a specific number of values and combining
+     * them using {@link Monoid}.
+     *
+     * @param monoid the {@code Monoid} to apply
+     * @param gen    the {@code Generator} of the values to feed through the {@code Monoid}
+     * @param count  the number of elements to feed through the {@code Monoid}; must be &gt;= 0
+     * @param <A>    the output type
+     * @return a {@code Generator<A>}
+     */
     public static <A> Generator<A> generateNFromMonoid(Monoid<A> monoid, Generator<A> gen, int count) {
         return Lambda.generateNFromMonoid(monoid, gen, count);
     }
 
-    public static <A extends Comparable<A>> Generator<Tuple2<A, A>> generateOrderedPair(Generator<A> generator) {
-        return OrderedTuples.generateOrderedPair(generator);
+    /**
+     * Creates a {@link Generator} that yields ordered pairs of some {@link Comparable} type.  The second element
+     * of the pair will be greater than or equal to the first element.
+     *
+     * @param elements the generator for elements
+     * @param <A>      the element type - must be {@code Comparable}
+     * @return a {@code Generator<Tuple2<A, A>>}
+     */
+    public static <A extends Comparable<A>> Generator<Tuple2<A, A>> generateOrderedPair(Generator<A> elements) {
+        return OrderedTuples.generateOrderedPair(elements);
     }
 
+    /**
+     * Creates a {@link Generator} that yields ordered sequences.
+     *
+     * @param countForEachElement a {@code Generator} that determines the count (zero or more) for each element.
+     *                            For each element in {@code orderedElems}, this generator is invoked to yield a number,
+     *                            and the element is repeated in the output that number of times before moving on to the
+     *                            next element.
+     * @param orderedElems        the ordered sequence of candidates
+     * @param <A>                 the element type
+     * @return a {code Generator<ImmutableVector<A>>}
+     */
     public static <A> Generator<ImmutableVector<A>> generateOrderedSequence(Generator<Integer> countForEachElement,
                                                                             ImmutableVector<A> orderedElems) {
         return Sequences.generateOrderedSequence(countForEachElement, orderedElems);
     }
 
+    /**
+     * Creates a {@link Generator} that yields ordered sequences.
+     *
+     * @param countForEachElementRange the {@link IntRange} of the count of each element in the output.
+     *                                 For each element in {@code orderedElems}, a random number in the range is selected,
+     *                                 and the element is repeated in the output that number of times before moving on to the
+     *                                 next element.
+     * @param orderedElems             the ordered sequence of candidates
+     * @param <A>                      the element type
+     * @return a {code Generator<ImmutableVector<A>>}
+     */
     public static <A> Generator<ImmutableVector<A>> generateOrderedSequence(IntRange countForEachElementRange,
                                                                             ImmutableVector<A> orderedElems) {
         return Sequences.generateOrderedSequence(countForEachElementRange, orderedElems);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link IntRange}s.
+     *
+     * @return a {@code Generator<IntRange>}
+     */
     public static Generator<IntRange> generateIntRange() {
         return Ranges.generateIntRange();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link IntRange}s, within a specific parent range.
+     *
+     * @param parentRange the {@code IntRange} to restrict the output.
+     *                    The output ranges will either be equal to or fully subsumed by this range.
+     * @return a {@code Generator<IntRange>}
+     */
     public static Generator<IntRange> generateIntRange(IntRange parentRange) {
         return Ranges.generateIntRange(parentRange);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link LongRange}s.
+     *
+     * @return a {@code Generator<LongRange>}
+     */
     public static Generator<LongRange> generateLongRange() {
         return Ranges.generateLongRange();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link LongRange}s, within a specific parent range.
+     *
+     * @param parentRange the {@code LongRange} to restrict the output.
+     *                    The output ranges will either be equal to or fully subsumed by this range.
+     * @return a {@code Generator<LongRange>}
+     */
     public static Generator<LongRange> generateLongRange(LongRange parentRange) {
         return Ranges.generateLongRange(parentRange);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link ShortRange}s.
+     *
+     * @return a {@code Generator<ShortRange>}
+     */
     public static Generator<ShortRange> generateShortRange() {
         return Ranges.generateShortRange();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link ShortRange}s, within a specific parent range.
+     *
+     * @param parentRange the {@code ShortRange} to restrict the output.
+     *                    The output ranges will either be equal to or fully subsumed by this range.
+     * @return a {@code Generator<ShortRange>}
+     */
     public static Generator<ShortRange> generateShortRange(ShortRange parentRange) {
         return Ranges.generateShortRange(parentRange);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link ByteRange}s.
+     *
+     * @return a {@code Generator<ByteRange>}
+     */
     public static Generator<ByteRange> generateByteRange() {
         return Ranges.generateByteRange();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link ByteRange}s, within a specific parent range.
+     *
+     * @param parentRange the {@code ByteRange} to restrict the output.
+     *                    The output ranges will either be equal to or fully subsumed by this range.
+     * @return a {@code Generator<ByteRange>}
+     */
     public static Generator<ByteRange> generateByteRange(ByteRange parentRange) {
         return Ranges.generateByteRange(parentRange);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link DoubleRange}s.
+     *
+     * @return a {@code Generator<DoubleRange>}
+     */
     public static Generator<DoubleRange> generateDoubleRange() {
         return Ranges.generateDoubleRange();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link DoubleRange}s, within a specific parent range.
+     *
+     * @param parentRange the {@code DoubleRange} to restrict the output.
+     *                    The output ranges will either be equal to or fully subsumed by this range.
+     * @return a {@code Generator<DoubleRange>}
+     */
     public static Generator<DoubleRange> generateDoubleRange(DoubleRange parentRange) {
         return Ranges.generateDoubleRange(parentRange);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link FloatRange}s.
+     *
+     * @return a {@code Generator<FloatRange>}
+     */
     public static Generator<FloatRange> generateFloatRange() {
         return Ranges.generateFloatRange();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link FloatRange}s, within a specific parent range.
+     *
+     * @param parentRange the {@code FloatRange} to restrict the output.
+     *                    The output ranges will either be equal to or fully subsumed by this range.
+     * @return a {@code Generator<FloatRange>}
+     */
     public static Generator<FloatRange> generateFloatRange(FloatRange parentRange) {
         return Ranges.generateFloatRange(parentRange);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link BigIntegerRange}s.
+     *
+     * @return a {@code Generator<BigIntegerRange>}
+     */
     public static Generator<BigIntegerRange> generateBigIntegerRange() {
         return Ranges.generateBigIntegerRange();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link BigIntegerRange}s, within a specific parent range.
+     *
+     * @param parentRange the {@code BigIntegerRange} to restrict the output.
+     *                    The output ranges will either be equal to or fully subsumed by this range.
+     * @return a {@code Generator<BigIntegerRange>}
+     */
     public static Generator<BigIntegerRange> generateBigIntegerRange(BigIntegerRange parentRange) {
         return Ranges.generateBigIntegerRange(parentRange);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link BigDecimalRange}s.
+     *
+     * @return a {@code Generator<BigDecimalRange>}
+     */
     public static Generator<BigDecimalRange> generateBigDecimalRange() {
         return Ranges.generateBigDecimalRange();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link BigDecimalRange}s, within a specific parent range.
+     *
+     * @param parentRange the {@code BigDecimalRange} to restrict the output.
+     *                    The output ranges will either be equal to or fully subsumed by this range.
+     * @return a {@code Generator<BigDecimalRange>}
+     */
     public static Generator<BigDecimalRange> generateBigDecimalRange(BigDecimalRange parentRange) {
         return Ranges.generateBigDecimalRange(parentRange);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link LocalDateRange}s.
+     *
+     * @return a {@code Generator<LocalDateRange>}
+     */
     public static Generator<LocalDateRange> generateLocalDateRange() {
         return Ranges.generateLocalDateRange();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link LocalDateRange}s, within a specific parent range.
+     *
+     * @param parentRange the {@code LocalDateRange} to restrict the output.
+     *                    The output ranges will either be equal to or fully subsumed by this range.
+     * @return a {@code Generator<LocalDateRange>}
+     */
     public static Generator<LocalDateRange> generateLocalDateRange(LocalDateRange parentRange) {
         return Ranges.generateLocalDateRange(parentRange);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link LocalTimeRange}s.
+     *
+     * @return a {@code Generator<LocalTimeRange>}
+     */
     public static Generator<LocalTimeRange> generateLocalTimeRange() {
         return Ranges.generateLocalTimeRange();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link LocalTimeRange}s, within a specific parent range.
+     *
+     * @param parentRange the {@code LocalTimeRange} to restrict the output.
+     *                    The output ranges will either be equal to or fully subsumed by this range.
+     * @return a {@code Generator<LocalTimeRange>}
+     */
     public static Generator<LocalTimeRange> generateLocalTimeRange(LocalTimeRange parentRange) {
         return Ranges.generateLocalTimeRange(parentRange);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link LocalDateTimeRange}s.
+     *
+     * @return a {@code Generator<LocalDateTimeRange>}
+     */
     public static Generator<LocalDateTimeRange> generateLocalDateTimeRange() {
         return Ranges.generateLocalDateTimeRange();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link LocalDateTimeRange}s, within a specific parent range.
+     *
+     * @param parentRange the {@code LocalDateRange} to restrict the output.
+     *                    The output ranges will either be equal to or fully subsumed by this range.
+     * @return a {@code Generator<LocalDateTimeRange>}
+     */
     public static Generator<LocalDateTimeRange> generateLocalDateTimeRange(LocalDateRange parentRange) {
         return Ranges.generateLocalDateTimeRange(parentRange);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link LocalDateTimeRange}s, within a specific parent range.
+     *
+     * @param parentRange the {@code LocalDateTimeRange} to restrict the output.
+     *                    The output ranges will either be equal to or fully subsumed by this range.
+     * @return a {@code Generator<LocalDateTimeRange>}
+     */
     public static Generator<LocalDateTimeRange> generateLocalDateTimeRange(LocalDateTimeRange parentRange) {
         return Ranges.generateLocalDateTimeRange(parentRange);
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link DurationRange}s.
+     *
+     * @return a {@code Generator<DurationRange>}
+     */
     public static Generator<DurationRange> generateDurationRange() {
         return Ranges.generateDurationRange();
     }
 
+    /**
+     * Creates a {@link Generator} that yields {@link DurationRange}s, within a specific parent range.
+     *
+     * @param parentRange the {@code DurationRange} to restrict the output.
+     *                    The output ranges will either be equal to or fully subsumed by this range.
+     * @return a {@code Generator<DurationRange>}
+     */
     public static Generator<DurationRange> generateDurationRange(DurationRange parentRange) {
         return Ranges.generateDurationRange(parentRange);
     }

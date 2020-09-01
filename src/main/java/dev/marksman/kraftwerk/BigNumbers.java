@@ -46,6 +46,10 @@ class BigNumbers {
         return generateDecimalPlaces.flatMap(decimalPlaces -> generateBigDecimal(decimalPlaces, range));
     }
 
+    static Generator<BigDecimal> generateBigDecimal(IntRange decimalPlacesRange, BigDecimalRange range) {
+        return generateInt(decimalPlacesRange).flatMap(decimalPlaces -> generateBigDecimal(decimalPlaces, range));
+    }
+
     static Generator<BigDecimal> generateBigDecimal(int decimalPlaces, BigDecimalRange range) {
         BigDecimal min = range.min();
         BigDecimal max = range.max();
