@@ -11,9 +11,9 @@ final class Tap {
     }
 
     static <A, B> Generator<B> tap(Generator<A> gen,
-                                   Fn2<Generate<A>, Seed, B> f) {
+                                   Fn2<GenerateFn<A>, Seed, B> f) {
         return parameters -> {
-            Generate<A> runA = gen.prepare(parameters);
+            GenerateFn<A> runA = gen.createGenerateFn(parameters);
             return input -> {
                 Seed nextState = BuildingBlocks.nextInt(input).getNextState();
                 return result(nextState,

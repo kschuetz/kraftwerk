@@ -31,13 +31,13 @@ final class Aggregation {
         }
 
         @Override
-        public Generate<Out> prepare(GeneratorParameters generatorParameters) {
-            Iterable<Generate<Elem>> runners = Map.map(g -> g.prepare(generatorParameters), elements);
+        public GenerateFn<Out> createGenerateFn(GeneratorParameters generatorParameters) {
+            Iterable<GenerateFn<Elem>> runners = Map.map(g -> g.createGenerateFn(generatorParameters), elements);
             return input -> {
                 Seed current = input;
                 Builder builder = aggregator.builder();
 
-                for (Generate<Elem> element : runners) {
+                for (GenerateFn<Elem> element : runners) {
                     Result<? extends Seed, Elem> next = element.apply(current);
                     builder = aggregator.add(builder, next.getValue());
                     current = next.getNextState();

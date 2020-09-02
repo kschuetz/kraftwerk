@@ -8,11 +8,11 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 public final class ValueSupply<A> implements ImmutableNonEmptyIterable<A> {
-    private final Generate<A> gen;
+    private final GenerateFn<A> gen;
     private final A firstValue;
     private final Seed state;
 
-    private ValueSupply(Generate<A> gen, Seed initialState) {
+    private ValueSupply(GenerateFn<A> gen, Seed initialState) {
         this.gen = gen;
         Result<? extends Seed, A> r1 = gen.apply(initialState);
         this.firstValue = r1.getValue();
@@ -34,10 +34,10 @@ public final class ValueSupply<A> implements ImmutableNonEmptyIterable<A> {
     }
 
     private static class TailIterator<A> implements Iterator<A> {
-        private final Generate<A> gen;
+        private final GenerateFn<A> gen;
         private Seed state;
 
-        private TailIterator(Generate<A> gen, Seed state) {
+        private TailIterator(GenerateFn<A> gen, Seed state) {
             this.gen = gen;
             this.state = state;
         }
@@ -59,7 +59,7 @@ public final class ValueSupply<A> implements ImmutableNonEmptyIterable<A> {
         }
     }
 
-    static <A> ValueSupply<A> valueSupply(Generate<A> gen, Seed initialState) {
+    static <A> ValueSupply<A> valueSupply(GenerateFn<A> gen, Seed initialState) {
         return new ValueSupply<>(gen, initialState);
     }
 

@@ -283,10 +283,10 @@ final class Primitives {
 
     private static <A> Generator<A> simpleGenerator(Maybe<String> label,
                                                     Fn1<GeneratorParameters, BiasSetting<A>> getBias,
-                                                    Generate<A> runFn) {
+                                                    GenerateFn<A> runFn) {
         return new Generator<A>() {
             @Override
-            public Generate<A> prepare(GeneratorParameters generatorParameters) {
+            public GenerateFn<A> createGenerateFn(GeneratorParameters generatorParameters) {
                 return Bias.applyBiasSetting(getBias.apply(generatorParameters), runFn);
             }
 
@@ -306,7 +306,7 @@ final class Primitives {
         }
 
         @Override
-        public Generate<Boolean> prepare(GeneratorParameters generatorParameters) {
+        public GenerateFn<Boolean> createGenerateFn(GeneratorParameters generatorParameters) {
             return BuildingBlocks::nextBoolean;
         }
 
@@ -332,7 +332,7 @@ final class Primitives {
         }
 
         @Override
-        public Generate<Double> prepare(GeneratorParameters generatorParameters) {
+        public GenerateFn<Double> createGenerateFn(GeneratorParameters generatorParameters) {
             return Bias.applyBiasSetting(buildBiasSetting(generatorParameters),
                     range.match(__ -> defaultGenerate(),
                             this::constrainedGenerate));
@@ -375,11 +375,11 @@ final class Primitives {
             return bias.addSpecialValues(specialValues);
         }
 
-        private Generate<Double> defaultGenerate() {
+        private GenerateFn<Double> defaultGenerate() {
             return BuildingBlocks::nextDoubleFractional;
         }
 
-        private Generate<Double> constrainedGenerate(DoubleRange range) {
+        private GenerateFn<Double> constrainedGenerate(DoubleRange range) {
             double min = range.minInclusive();
             double max = range.maxInclusive();
             if (min == max) {
@@ -414,7 +414,7 @@ final class Primitives {
         }
 
         @Override
-        public Generate<Float> prepare(GeneratorParameters generatorParameters) {
+        public GenerateFn<Float> createGenerateFn(GeneratorParameters generatorParameters) {
             return Bias.applyBiasSetting(buildBiasSetting(generatorParameters),
                     range.match(__ -> defaultGenerate(),
                             this::constrainedGenerate));
@@ -457,11 +457,11 @@ final class Primitives {
             return bias.addSpecialValues(specialValues);
         }
 
-        private Generate<Float> defaultGenerate() {
+        private GenerateFn<Float> defaultGenerate() {
             return BuildingBlocks::nextFloatFractional;
         }
 
-        private Generate<Float> constrainedGenerate(FloatRange range) {
+        private GenerateFn<Float> constrainedGenerate(FloatRange range) {
             float min = range.minInclusive();
             float max = range.maxInclusive();
             if (min == max) {
@@ -494,7 +494,7 @@ final class Primitives {
         }
 
         @Override
-        public Generate<Integer> prepare(GeneratorParameters generatorParameters) {
+        public GenerateFn<Integer> createGenerateFn(GeneratorParameters generatorParameters) {
 
             return Bias.applyBiasSetting(generatorParameters.getBiasSettings()
                             .intBias(IntRange.fullRange()),
@@ -516,7 +516,7 @@ final class Primitives {
         }
 
         @Override
-        public Generate<Long> prepare(GeneratorParameters generatorParameters) {
+        public GenerateFn<Long> createGenerateFn(GeneratorParameters generatorParameters) {
             return Bias.applyBiasSetting(generatorParameters.getBiasSettings()
                             .longBias(LongRange.fullRange()),
                     BuildingBlocks::nextLong);
@@ -537,7 +537,7 @@ final class Primitives {
         }
 
         @Override
-        public Generate<Double> prepare(GeneratorParameters generatorParameters) {
+        public GenerateFn<Double> createGenerateFn(GeneratorParameters generatorParameters) {
             return BuildingBlocks::nextGaussian;
         }
 
@@ -559,7 +559,7 @@ final class Primitives {
         }
 
         @Override
-        public Generate<Byte> prepare(GeneratorParameters generatorParameters) {
+        public GenerateFn<Byte> createGenerateFn(GeneratorParameters generatorParameters) {
             return Bias.applyBiasSetting(generatorParameters.getBiasSettings().byteBias(range),
                     input -> unsafeNextIntExclusive(0, 256, input).fmap(getMapper()));
         }
@@ -593,7 +593,7 @@ final class Primitives {
         }
 
         @Override
-        public Generate<Short> prepare(GeneratorParameters generatorParameters) {
+        public GenerateFn<Short> createGenerateFn(GeneratorParameters generatorParameters) {
             return Bias.applyBiasSetting(generatorParameters.getBiasSettings().shortBias(range),
                     input -> unsafeNextIntExclusive(0, 65536, input).fmap(getMapper()));
         }
@@ -626,7 +626,7 @@ final class Primitives {
         }
 
         @Override
-        public Generate<Character> prepare(GeneratorParameters generatorParameters) {
+        public GenerateFn<Character> createGenerateFn(GeneratorParameters generatorParameters) {
             return Bias.applyBiasSetting(generatorParameters.getBiasSettings().charBias(range),
                     input -> nextInt(input).fmap(getMapper()));
         }
@@ -651,7 +651,7 @@ final class Primitives {
         }
 
         @Override
-        public Generate<Byte[]> prepare(GeneratorParameters generatorParameters) {
+        public GenerateFn<Byte[]> createGenerateFn(GeneratorParameters generatorParameters) {
             return input -> {
                 byte[] buffer = new byte[count];
                 Result<? extends Seed, Unit> next = nextBytes(buffer, input);
@@ -676,7 +676,7 @@ final class Primitives {
         private static final SeedGenerator INSTANCE = new SeedGenerator();
 
         @Override
-        public Generate<Seed> prepare(GeneratorParameters generatorParameters) {
+        public GenerateFn<Seed> createGenerateFn(GeneratorParameters generatorParameters) {
             return seed -> {
                 Result<Seed, Long> longResult = BuildingBlocks.nextLong(seed);
                 return result(longResult.getNextState(), Seed.create(longResult.getValue()));
@@ -698,7 +698,7 @@ final class Primitives {
         }
 
         @Override
-        public Generate<Integer> prepare(GeneratorParameters generatorParameters) {
+        public GenerateFn<Integer> createGenerateFn(GeneratorParameters generatorParameters) {
             return Bias.applyBiasSetting(generatorParameters.getBiasSettings().sizeBias(generatorParameters.getSizeParameters()),
                     sizeSelector(generatorParameters.getSizeParameters()));
         }
@@ -718,7 +718,7 @@ final class Primitives {
         }
 
         @Override
-        public Generate<Integer> prepare(GeneratorParameters generatorParameters) {
+        public GenerateFn<Integer> createGenerateFn(GeneratorParameters generatorParameters) {
             SizeParameters sizeParameters = sizeParameters(Maybe.just(sizeRange.minInclusive()),
                     Maybe.just(sizeRange.maxInclusive()),
                     generatorParameters.getSizeParameters().getPreferredSize().filter(sizeRange::includes));

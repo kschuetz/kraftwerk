@@ -33,8 +33,8 @@ final class Mapping {
         }
 
         @Override
-        public Generate<A> prepare(GeneratorParameters generatorParameters) {
-            Generate<In> g = source.prepare(generatorParameters);
+        public GenerateFn<A> createGenerateFn(GeneratorParameters generatorParameters) {
+            GenerateFn<In> g = source.createGenerateFn(generatorParameters);
             return input -> g.apply(input).fmap(fn);
         }
 
@@ -65,8 +65,8 @@ final class Mapping {
 
         @SuppressWarnings("unchecked")
         @Override
-        public Generate<A> prepare(GeneratorParameters generatorParameters) {
-            Generate<In> g = source.prepare(generatorParameters);
+        public GenerateFn<A> createGenerateFn(GeneratorParameters generatorParameters) {
+            GenerateFn<In> g = source.createGenerateFn(generatorParameters);
             Fn1<Object, Object> fn = buildFn();
             return input -> g.apply(input).fmap(x -> (A) fn.apply(x));
         }

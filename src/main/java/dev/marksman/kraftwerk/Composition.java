@@ -20,12 +20,12 @@ final class Composition {
         }
 
         @Override
-        public Generate<A> prepare(GeneratorParameters generatorParameters) {
-            Fn1<Seed, Result<? extends Seed, In>> runner = operand.prepare(generatorParameters);
+        public GenerateFn<A> createGenerateFn(GeneratorParameters generatorParameters) {
+            Fn1<Seed, Result<? extends Seed, In>> runner = operand.createGenerateFn(generatorParameters);
             return input -> {
                 Result<? extends Seed, In> result1 = runner.apply(input);
                 Generator<A> g2 = fn.apply(result1.getValue());
-                return g2.prepare(generatorParameters).apply(result1.getNextState());
+                return g2.createGenerateFn(generatorParameters).apply(result1.getNextState());
             };
         }
 

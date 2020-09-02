@@ -36,8 +36,8 @@ final class Meta {
         }
 
         @Override
-        public Generate<A> prepare(GeneratorParameters generatorParameters) {
-            return underlying.prepare(generatorParameters);
+        public GenerateFn<A> createGenerateFn(GeneratorParameters generatorParameters) {
+            return underlying.createGenerateFn(generatorParameters);
         }
     }
 }

@@ -127,7 +127,7 @@ class GeneratorTest {
 
     @SuppressWarnings("unchecked")
     private static <A> Result<Seed, A> run(Generator<A> gen, Seed input) {
-        return (Result<Seed, A>) gen.prepare(defaultGeneratorParameters()).apply(input);
+        return (Result<Seed, A>) gen.createGenerateFn(defaultGeneratorParameters()).apply(input);
     }
 
 }

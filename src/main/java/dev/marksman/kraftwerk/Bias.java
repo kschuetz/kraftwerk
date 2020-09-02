@@ -13,8 +13,8 @@ import dev.marksman.kraftwerk.core.BuildingBlocks;
 import static dev.marksman.kraftwerk.Result.result;
 
 final class Bias {
-    static <A> Generate<A> applyBiasSetting(BiasSetting<A> biasSetting,
-                                            Generate<A> underlying) {
+    static <A> GenerateFn<A> applyBiasSetting(BiasSetting<A> biasSetting,
+                                              GenerateFn<A> underlying) {
         return biasSetting.match(__ -> underlying,
                 isv -> injectSpecial(isv.getSpecialValues(), underlying));
     }
@@ -22,7 +22,7 @@ final class Bias {
     static <A> Generator<A> applyBiasSetting(Fn1<BiasSettings, BiasSetting<A>> getBiasSetting,
                                              Generator<A> underlying) {
         return generatorParameters -> applyBiasSetting(getBiasSetting.apply(generatorParameters.getBiasSettings()),
-                underlying.prepare(generatorParameters));
+                underlying.createGenerateFn(generatorParameters));
     }
 
     static <A> Generator<A> injectsSpecialValues(NonEmptyFiniteIterable<A> specialValues, Generator<A> underlying) {
@@ -37,8 +37,8 @@ final class Bias {
         return injectsSpecialValues(Vector.of(specialValue), underlying);
     }
 
-    private static <A> Generate<A> injectSpecial(ImmutableNonEmptyVector<A> specialValues,
-                                                 Generate<A> underlying) {
+    private static <A> GenerateFn<A> injectSpecial(ImmutableNonEmptyVector<A> specialValues,
+                                                   GenerateFn<A> underlying) {
         final int specialWeight = specialValues.size();
         final int nonSpecialWeight = 20 + 3 * specialWeight;
         final int totalWeight = specialWeight + nonSpecialWeight;
@@ -69,8 +69,8 @@ final class Bias {
         }
 
         @Override
-        public Generate<A> prepare(GeneratorParameters generatorParameters) {
-            return injectSpecial(specialValues, underlying.prepare(generatorParameters));
+        public GenerateFn<A> createGenerateFn(GeneratorParameters generatorParameters) {
+            return injectSpecial(specialValues, underlying.createGenerateFn(generatorParameters));
         }
 
         @Override

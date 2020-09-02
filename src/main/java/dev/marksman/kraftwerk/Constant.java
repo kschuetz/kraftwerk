@@ -18,7 +18,7 @@ final class Constant<A> implements Generator<A> {
     }
 
     @Override
-    public Generate<A> prepare(GeneratorParameters generatorParameters) {
+    public GenerateFn<A> createGenerateFn(GeneratorParameters generatorParameters) {
         return input -> result(input, value);
     }
 
