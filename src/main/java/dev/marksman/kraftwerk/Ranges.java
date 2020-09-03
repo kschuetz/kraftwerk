@@ -38,7 +38,7 @@ import static dev.marksman.kraftwerk.Temporal.generateLocalDate;
 import static dev.marksman.kraftwerk.Temporal.generateLocalDateTime;
 import static dev.marksman.kraftwerk.Temporal.generateLocalTime;
 
-public class Ranges {
+final class Ranges {
 
     private static final DoubleRange FULL_DOUBLE_RANGE = DoubleRange.inclusive(Double.MIN_VALUE, Double.MAX_VALUE);
     private static final FloatRange FULL_FLOAT_RANGE = FloatRange.inclusive(-Float.MAX_VALUE, Float.MAX_VALUE);

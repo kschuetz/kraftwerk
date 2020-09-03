@@ -7,6 +7,17 @@ import java.util.Iterator;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+/**
+ * An infinite sequence of values of type {@code A}.
+ * <p>
+ * A {@code ValueSupply} does not have internal state, so it can be iterated multiple times, and for each time will return
+ * the same sequence.
+ * <p>
+ * Each element of a {@code ValueSupply} is lazily computed, therefore, a {@code ValueSupply} only requires a small, constant
+ * amount of memory.
+ *
+ * @param <A> the element type
+ */
 public final class ValueSupply<A> implements ImmutableNonEmptyIterable<A> {
     private final GenerateFn<A> gen;
     private final A firstValue;
@@ -29,6 +40,11 @@ public final class ValueSupply<A> implements ImmutableNonEmptyIterable<A> {
         return () -> new TailIterator<>(gen, state);
     }
 
+    /**
+     * Creates a {@link Stream} from this {@code ValueSupply}.
+     *
+     * @return a {@code Stream<A>}
+     */
     public Stream<A> stream() {
         return StreamSupport.stream(spliterator(), false);
     }

@@ -4,7 +4,7 @@ import dev.marksman.kraftwerk.core.BuildingBlocks;
 
 import static dev.marksman.kraftwerk.Result.result;
 
-public final class SizeSelectors {
+final class SizeSelectors {
     private static final int DEFAULT_RANGE = 16;
 
     private SizeSelectors() {

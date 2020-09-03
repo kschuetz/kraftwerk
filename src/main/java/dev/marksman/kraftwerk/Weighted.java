@@ -3,6 +3,11 @@ package dev.marksman.kraftwerk;
 import com.jnape.palatable.lambda.functions.Fn1;
 import com.jnape.palatable.lambda.functor.Functor;
 
+/**
+ * Associates a weight value with an object.  A weight value can be any non-negative integer.
+ *
+ * @param <A> the type of the underlying object
+ */
 public final class Weighted<A> implements Functor<A, Weighted<?>> {
     private final int weight;
     private final A value;
@@ -12,6 +17,14 @@ public final class Weighted<A> implements Functor<A, Weighted<?>> {
         this.value = value;
     }
 
+    /**
+     * Decorates a value with {@code Weighted}.
+     *
+     * @param weight the weight value; must be &gt;= 0
+     * @param value  the underlying object
+     * @param <A>    the type of the underlying object
+     * @return a {@code Weighted<A>}
+     */
     public static <A> Weighted<A> weighted(int weight, A value) {
         if (weight < 0) {
             throw new IllegalArgumentException("weight must be >= 0");
@@ -19,6 +32,13 @@ public final class Weighted<A> implements Functor<A, Weighted<?>> {
         return new Weighted<>(weight, value);
     }
 
+    /**
+     * Decorates a value with {@code Weighted}, with a weight of 1.
+     *
+     * @param value the underlying object
+     * @param <A>   the type of the underlying object
+     * @return a {@code Weighted<A>}
+     */
     public static <A> Weighted<A> weighted(A value) {
         return weighted(1, value);
     }
@@ -28,6 +48,12 @@ public final class Weighted<A> implements Functor<A, Weighted<?>> {
         return weighted(weight, fn.apply(value));
     }
 
+    /**
+     * Creates a new {@code Weighted} for the same underlying object, with the weight value multiplied by {@code positiveFactor}.
+     *
+     * @param positiveFactor the factor; must be &gt;= 1
+     * @return a {@code Weighted<A>}
+     */
     public Weighted<A> multiplyBy(int positiveFactor) {
         if (positiveFactor < 1) {
             throw new IllegalArgumentException("factor must be positive");
