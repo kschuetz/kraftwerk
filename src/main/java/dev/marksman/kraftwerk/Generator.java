@@ -6,6 +6,7 @@ import com.jnape.palatable.lambda.adt.hlist.Tuple2;
 import com.jnape.palatable.lambda.adt.hlist.Tuple3;
 import com.jnape.palatable.lambda.functions.Fn1;
 import com.jnape.palatable.lambda.functions.Fn2;
+import com.jnape.palatable.lambda.functor.Functor;
 import com.jnape.palatable.lambda.monad.Monad;
 import dev.marksman.collectionviews.ImmutableNonEmptyVector;
 import dev.marksman.collectionviews.ImmutableVector;
@@ -20,9 +21,33 @@ import static com.jnape.palatable.lambda.adt.Maybe.nothing;
 import static dev.marksman.kraftwerk.StandardGeneratorParameters.defaultGeneratorParameters;
 import static dev.marksman.kraftwerk.ValueSupply.valueSupply;
 
+/**
+ * A strategy for generating random values of type {@code A}.
+ * <p>
+ * To use a {@code Generator}, call one of its {@code run} methods ({@link Generator#run()}, {@link Generator#run(Seed)},
+ * {@link Generator#run(GeneratorParameters)}, or {@link Generator#run(GeneratorParameters, Seed)}).  These will
+ * give you a {@link ValueSupply}, which is an infinite {@link Iterable} with some additional convenience methods.
+ * <p>
+ * Several built-in {@code Generator}s are provided in {@link Generators}.  These can be used as is or composed with others
+ * to build {@code Generator}s that yield more complex types.
+ * <p>
+ * All {@code Generator}s are immutable and contain no state. Any method that appears to mutate a {@code Generator} actually
+ * creates a new {@code Generator}, while leaving the original unchanged.
+ * <p>
+ * Since a {@code Generator} is a {@link Functor}, its output can be mapped using {@link Generator#fmap}.
+ * It is a {@link Monad} as well, so it can be composed with other {@code Generator}s using {@link Generator#flatMap}.
+ * {@code Generator}s, if properly designed, obey the functor and monad laws.
+ * <p>
+ * {@code Generator}s can <i>not</i>, however, be filtered. A {@code Generator} provides the guarantee that when invoked
+ * for any {@link Seed}, it will eventually yield a value. Filtering would remove that guarantee. If you need to filter
+ * the values you are interested in, either change the design of your generator to only produce those values, or filter the
+ * resulting {@code ValueSupply} instead.
+ *
+ * @param <A> the output type
+ */
 public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
     /**
-     * Creates a {@link GenerateFn} using the given {@link GeneratorParameters}.
+     * Creates a {@link GenerateFn} using the given {@code GeneratorParameters}.
      * This is the only method that a {@code Generator} needs to implement.
      * Since this is a low level method, users may wish to call once of the
      * higher level {@code run} methods instead.
@@ -31,6 +56,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
      * - createGenerateFn must be referentially transparent; it must yield the equivalent {@code GenerateFn} for all calls for a given {@link Seed}
      * - The {@code GenerateFn} must pure and referentially transparent
      * - The {@code GenerateFn} must be guaranteed to yield a value
+     * - The {@code GenerateFn} must not mutate the input {@code Seed}; it must return a new {@code Seed}
      *
      * @param generatorParameters the {@code GeneratorParameters}
      * @return a {@code GenerateFn<A>}
@@ -42,7 +68,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
     GenerateFn<A> createGenerateFn(GeneratorParameters generatorParameters);
 
     /**
-     * Creates a {@link ValueSupply} from custom {@link GeneratorParameters} and a specific initial {@link Seed}.
+     * Creates a {@link ValueSupply} from custom {@code GeneratorParameters} and a specific initial {@link Seed}.
      *
      * @param generatorParameters the {@code GeneratorParameters}
      * @param initialSeed         the initial {@code Seed}
@@ -56,7 +82,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
     }
 
     /**
-     * Creates a {@link ValueSupply} from a specific initial {@link Seed}, using the built-in default {@link GeneratorParameters}.
+     * Creates a {@link ValueSupply} from a specific initial {@link Seed}, using the built-in default {@code GeneratorParameters}.
      *
      * @param initialSeed the initial {@code Seed}
      * @return a {@code ValueSupply<A>}
@@ -69,7 +95,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
     }
 
     /**
-     * Creates a {@link ValueSupply} from custom {@link GeneratorParameters}, and a random initial seed.
+     * Creates a {@link ValueSupply} from custom {@code GeneratorParameters}, and a random initial seed.
      * Calling this will result in a different {@code ValueSupply} each time.
      *
      * @return a {@code ValueSupply<A>}
@@ -82,7 +108,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
     }
 
     /**
-     * Creates a {@link ValueSupply} from a random initial seed, using the built-in default {@link GeneratorParameters}.
+     * Creates a {@link ValueSupply} from a random initial seed, using the built-in default {@code GeneratorParameters}.
      * Calling this will result in a different {@code ValueSupply} each time.
      *
      * @return a {@code ValueSupply<A>}
@@ -95,7 +121,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
     }
 
     /**
-     * Creates a new {@link Generator} by mapping the output of this {@code Generator}.
+     * Creates a new {@code Generator} by mapping the output of this {@code Generator}.
      *
      * @param fn  the mapping function
      * @param <B> the new output type
@@ -106,7 +132,14 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
         return Mapping.mapped(fn, this);
     }
 
-    // TODO: flatMap docs
+    /**
+     * Creates a new {@code Generator} that, when invoked, feeds the output of this {@code Generator} to a function that
+     * returns another {@code Generator}, and invokes that.
+     *
+     * @param f   the mapping function
+     * @param <B> the new output type
+     * @return a {@code Generator<B>}
+     */
     @SuppressWarnings("unchecked")
     @Override
     default <B> Generator<B> flatMap(Fn1<? super A, ? extends Monad<B, Generator<?>>> f) {
@@ -139,7 +172,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
     }
 
     /**
-     * Returns the application-specific opaque object associated with this {@link Generator}, if any.
+     * Returns the application-specific opaque object associated with this {@code Generator}, if any.
      *
      * @return {@code a Maybe<Object>}
      * @see Generator#attachApplicationData(Object)
@@ -149,7 +182,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
     }
 
     /**
-     * Creates a new {@link Generator} that is the same as this one, with the label changed to the one provided.
+     * Creates a new {@code Generator} that is the same as this one, with the label changed to the one provided.
      *
      * @param label the label
      * @return a {@code Generator<A>}
@@ -160,7 +193,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
     }
 
     /**
-     * Creates a new {@link Generator} that is the same as this one, with the attached application changed to the object provided.
+     * Creates a new {@code Generator} that is the same as this one, with the attached application changed to the object provided.
      *
      * @param applicationData an opaque application-defined object of any type to be used as metadata
      * @return a {@code Generator<A>}
@@ -171,7 +204,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
     }
 
     /**
-     * Creates a new {@link Generator} that yields pairs of values generated by this one.
+     * Creates a new {@code Generator} that yields pairs of values generated by this one.
      *
      * @return a {@code Generator<Tuple2<A, A>>}
      */
@@ -180,7 +213,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
     }
 
     /**
-     * Creates a new {@link Generator} that yields triples of values generated by this one.
+     * Creates a new {@code Generator} that yields triples of values generated by this one.
      *
      * @return a {@code Generator<Tuple3<A, A, A>>}
      */
@@ -189,7 +222,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
     }
 
     /**
-     * Creates a {@link Weighted} instance of this {@link Generator} with a weight of 1.
+     * Creates a {@link Weighted} instance of this {@code Generator} with a weight of 1.
      *
      * @return a {@code Weighted<Generator<A>>}
      */
@@ -198,7 +231,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
     }
 
     /**
-     * Creates a {@link Weighted} instance of this {@link Generator} with a custom weight.
+     * Creates a {@link Weighted} instance of this {@code Generator} with a custom weight.
      *
      * @param weight the weight value; must be &gt;= 0
      * @return a {@code Weighted<Generator<A>>}
@@ -263,46 +296,118 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
         return Generators.generateWithNulls(this);
     }
 
+    /**
+     * Creates a new {@code Generator} that is the same as this one, but occasionally yields {@code null},
+     * with a custom probability.
+     *
+     * @return a {@code Generator<Maybe<A>>}
+     */
     default Generator<A> withNulls(NullWeights weights) {
         return Generators.generateWithNulls(weights, this);
     }
 
+    /**
+     * Creates a new {@code Generator} that yields {@link ArrayList}s of various sizes, with this {@code Generator}
+     * generating the elements.
+     *
+     * @return a {@code Generator<ArrayList<A>>}
+     */
     default Generator<ArrayList<A>> arrayList() {
         return Generators.generateArrayList(this);
     }
 
+    /**
+     * Creates a new {@code Generator} that yields non-empty {@link ArrayList}s of various sizes, with this {@code Generator}
+     * generating the elements.
+     *
+     * @return a {@code Generator<ArrayList<A>>}
+     */
     default Generator<ArrayList<A>> nonEmptyArrayList() {
         return Generators.generateNonEmptyArrayList(this);
     }
 
+    /**
+     * Creates a new {@code Generator} that yields {@link ArrayList}s of a specific size, with this {@code Generator}
+     * generating the elements.
+     *
+     * @param size the size of the {@code ArrayList}s generated; must be &gt;=0
+     * @return a {@code Generator<ArrayList<A>>}
+     */
     default Generator<ArrayList<A>> arrayListOfSize(int size) {
         return Generators.generateArrayListOfSize(size, this);
     }
 
+    /**
+     * Creates a new {@code Generator} that yields {@link ArrayList}s of various sizes within a specific range,
+     * with this {@code Generator} generating the elements.
+     *
+     * @param sizeRange the {@link IntRange} of the sizes of {@code ArrayList}s generated
+     * @return a {@code Generator<ArrayList<A>>}
+     */
     default Generator<ArrayList<A>> arrayListOfSize(IntRange sizeRange) {
         return Generators.generateArrayListOfSize(sizeRange, this);
     }
 
+    /**
+     * Creates a new {@code Generator} that yields {@link dev.marksman.collectionviews.Vector}s of various sizes,
+     * with this {@code Generator} generating the elements.
+     *
+     * @return a {@code Generator<ImmutableVector<A>>}
+     */
     default Generator<ImmutableVector<A>> vector() {
         return Generators.generateVector(this);
     }
 
+    /**
+     * Creates a new {@code Generator} that yields {@link dev.marksman.collectionviews.Vector}s of a specific size,
+     * with this {@code Generator} generating the elements.
+     *
+     * @param size the size of the {@code Vector}s generated; must be &gt;=0
+     * @return a {@code Generator<ImmutableVector<A>>}
+     */
     default Generator<ImmutableVector<A>> vectorOfSize(int size) {
         return Generators.generateVectorOfSize(size, this);
     }
 
+    /**
+     * Creates a new {@code Generator} that yields {@link dev.marksman.collectionviews.Vector}s of various sizes within
+     * a specific range, with this {@code Generator} generating the elements.
+     *
+     * @param sizeRange the {@link IntRange} of the sizes of {@code Vector}s generated
+     * @return a {@code Generator<ImmutableVector<A>>}
+     */
     default Generator<ImmutableVector<A>> vectorOfSize(IntRange sizeRange) {
         return Generators.generateVectorOfSize(sizeRange, this);
     }
 
+    /**
+     * Creates a new {@code Generator} that yields {@link dev.marksman.collectionviews.NonEmptyVector}s of various sizes,
+     * with this {@code Generator} generating the elements.
+     *
+     * @return a {@code Generator<ImmutableNonEmptyVector<A>>}
+     */
     default Generator<ImmutableNonEmptyVector<A>> nonEmptyVector() {
         return Generators.generateNonEmptyVector(this);
     }
 
+    /**
+     * Creates a new {@code Generator} that yields {@link dev.marksman.collectionviews.NonEmptyVector}s of a specific size,
+     * with this {@code Generator} generating the elements.
+     *
+     * @param size the size of the {@code NonEmptyVector}s generated; must be &gt;=1
+     * @return a {@code Generator<ImmutableNonEmptyVector<A>>}
+     */
     default Generator<ImmutableNonEmptyVector<A>> nonEmptyVectorOfSize(int size) {
         return Generators.generateNonEmptyVectorOfSize(size, this);
     }
 
+    /**
+     * Creates a new {@code Generator} that yields {@link dev.marksman.collectionviews.NonEmptyVector}s of various sizes
+     * within a specific range, with this {@code Generator} generating the elements.
+     *
+     * @param sizeRange the {@link IntRange} of the sizes of {@code NonEmptyVector}s generated
+     * @return a {@code Generator<ImmutableNonEmptyVector<A>>}
+     */
     default Generator<ImmutableNonEmptyVector<A>> nonEmptyVectorOfSize(IntRange sizeRange) {
         return Generators.generateNonEmptyVectorOfSize(sizeRange, this);
     }
@@ -311,13 +416,24 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
         return Generators.product(this, other, fn);
     }
 
-    // **********
-    // mixing in edge cases
-
+    /**
+     * Creates a new {@code Generator} with special values mixed into the output of this one.
+     * Special values will be represented more frequently than non-special values.
+     *
+     * @param values the special values to mix in
+     * @return a {@code Generator<A>}
+     */
     default Generator<A> injectSpecialValues(NonEmptyFiniteIterable<A> values) {
         return Bias.injectsSpecialValues(values, this);
     }
 
+    /**
+     * Creates a new {@code Generator} with a special value mixed into the output of this one.
+     * Special values will be represented more frequently than non-special values.
+     *
+     * @param specialValue the special value
+     * @return a {@code Generator<A>}
+     */
     default Generator<A> injectSpecialValue(A specialValue) {
         return Bias.injectsSpecialValue(specialValue, this);
     }
