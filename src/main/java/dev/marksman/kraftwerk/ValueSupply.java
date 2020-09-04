@@ -30,6 +30,10 @@ public final class ValueSupply<A> implements ImmutableNonEmptyIterable<A> {
         this.state = r1.getNextState();
     }
 
+    static <A> ValueSupply<A> valueSupply(GenerateFn<A> gen, Seed initialState) {
+        return new ValueSupply<>(gen, initialState);
+    }
+
     @Override
     public A head() {
         return firstValue;
@@ -74,9 +78,4 @@ public final class ValueSupply<A> implements ImmutableNonEmptyIterable<A> {
             return run.getValue();
         }
     }
-
-    static <A> ValueSupply<A> valueSupply(GenerateFn<A> gen, Seed initialState) {
-        return new ValueSupply<>(gen, initialState);
-    }
-
 }

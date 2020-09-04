@@ -6,7 +6,6 @@ package dev.marksman.kraftwerk;
  * @param <A> the output type (typically {@link Float} or {@link Double}
  */
 public interface FloatingPointGenerator<A> extends Generator<A> {
-
     /**
      * Creates a new {@code FloatingPointGenerator} that is the same as this one, but with the
      * generation of NaNs enabled (or disabled).
@@ -44,5 +43,4 @@ public interface FloatingPointGenerator<A> extends Generator<A> {
     default FloatingPointGenerator<A> withInfinities() {
         return withInfinities(true);
     }
-
 }

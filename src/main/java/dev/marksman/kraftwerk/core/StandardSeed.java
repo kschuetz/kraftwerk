@@ -11,16 +11,6 @@ public final class StandardSeed implements Seed {
         this.seedValue = seedValue;
     }
 
-    @Override
-    public Seed perturb(long value) {
-        return BuildingBlocks.perturb(value, this);
-    }
-
-    @Override
-    public Seed setNextSeedValue(long value) {
-        return new StandardSeed(value);
-    }
-
     private static StandardSeed standardSeed(long value) {
         return new StandardSeed(value);
     }
@@ -32,6 +22,16 @@ public final class StandardSeed implements Seed {
     public static StandardSeed initStandardSeed() {
         Random random = new Random();
         return standardSeed(random.nextLong());
+    }
+
+    @Override
+    public Seed perturb(long value) {
+        return BuildingBlocks.perturb(value, this);
+    }
+
+    @Override
+    public Seed setNextSeedValue(long value) {
+        return new StandardSeed(value);
     }
 
     public long getSeedValue() {
