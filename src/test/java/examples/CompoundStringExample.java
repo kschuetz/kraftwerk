@@ -12,7 +12,7 @@ import static dev.marksman.kraftwerk.weights.MaybeWeights.nothings;
 public class CompoundStringExample {
 
     public static void main(String[] args) {
-        Generator<String> sentence = Generators.compoundStringBuilder()
+        Generator<String> sentence = Generators.stringGeneratorBuilder()
                 .add(Generators.chooseOneOfValues("The", "A"))
                 .add(frequencyMap(Generators.chooseOneOfValues("quick", "fast", "speedy").weighted(3))
                         .add(Generators.chooseOneOfValues("slow", "reluctant", "sleepy"))

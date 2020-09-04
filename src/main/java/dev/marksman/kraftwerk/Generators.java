@@ -1250,12 +1250,12 @@ public final class Generators {
     }
 
     /**
-     * Instantiates a {@link CompoundStringBuilder}.
+     * Instantiates a {@link StringGeneratorBuilder}.
      *
-     * @return a {@code CompoundStringBuilder}
+     * @return a {@code StringGeneratorBuilder}
      */
-    public static CompoundStringBuilder compoundStringBuilder() {
-        return CompoundStringBuilder.builder();
+    public static StringGeneratorBuilder stringGeneratorBuilder() {
+        return StringGeneratorBuilder.builder();
     }
 
     /**
