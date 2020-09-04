@@ -39,6 +39,11 @@ public interface GeneratorParameters {
      */
     GeneratorParameters withNoBias();
 
+    /**
+     * Creates a {@code GeneratorParameters} with default settings.
+     *
+     * @return a {@code GeneratorParameters}
+     */
     static GeneratorParameters generatorParameters() {
         return StandardGeneratorParameters.defaultGeneratorParameters();
     }

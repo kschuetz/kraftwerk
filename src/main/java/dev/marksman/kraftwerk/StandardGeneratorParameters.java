@@ -6,7 +6,7 @@ import static dev.marksman.kraftwerk.SizeParameters.noSizeLimits;
 import static dev.marksman.kraftwerk.bias.EmptyBiasSettings.emptyBiasSettings;
 
 
-public class StandardGeneratorParameters implements GeneratorParameters {
+final class StandardGeneratorParameters implements GeneratorParameters {
     private static final StandardGeneratorParameters DEFAULT_PARAMETERS = standardGeneratorParameters(noSizeLimits(),
             emptyBiasSettings());
 
