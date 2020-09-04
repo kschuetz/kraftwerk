@@ -1255,7 +1255,7 @@ public final class Generators {
      * @return a {@code CompoundStringBuilder}
      */
     public static CompoundStringBuilder compoundStringBuilder() {
-        return ConcreteCompoundStringBuilder.builder();
+        return CompoundStringBuilder.builder();
     }
 
     /**
