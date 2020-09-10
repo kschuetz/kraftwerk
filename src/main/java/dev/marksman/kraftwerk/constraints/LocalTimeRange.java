@@ -6,6 +6,17 @@ import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRa
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeInclusive;
 import static dev.marksman.kraftwerk.constraints.RangeToString.rangeToString;
 
+/**
+ * A range of {@link LocalTime}s.  Like all ranges, it is immutable and its span always includes a minimum of one value.
+ * <p>
+ * Construct using one of the static methods ({@link LocalTimeRange#inclusive}, {@link LocalTimeRange#exclusive}),
+ * <p>
+ * or by using {@link LocalTimeRange#from}:
+ * <pre>
+ * LocalTimeRange.from(LocalTime.of(0, 0)).to(LocalTime.of(12, 0))      // inclusive upper bound
+ * LocalTimeRange.from(LocalTime.of(0, 0)).until(LocalTime.of(12, 0))   // exclusive upper bound
+ * </pre>
+ */
 public final class LocalTimeRange implements Constraint<LocalTime> {
     private static final LocalTimeRange FULL = new LocalTimeRange(LocalTime.MIN, LocalTime.MAX, true);
 
@@ -19,6 +30,14 @@ public final class LocalTimeRange implements Constraint<LocalTime> {
         this.maxIncluded = maxIncluded;
     }
 
+    /**
+     * Partially constructs a {@code LocalTimeRange} with its lower bound.
+     * <p>
+     * With the result, you can call {@code to} or {@code until} with the upper bound to create the {@code LocalTimeRange}.
+     *
+     * @param minInclusive the lower bound (inclusive) of the range
+     * @return a {@link LocalTimeRangeFrom}
+     */
     public static LocalTimeRangeFrom from(LocalTime minInclusive) {
         return new LocalTimeRangeFrom() {
             @Override
@@ -33,18 +52,30 @@ public final class LocalTimeRange implements Constraint<LocalTime> {
         };
     }
 
+    /**
+     * Creates a {@code LocalTimeRange} from {@code minInclusive}..{@code maxInclusive}.
+     */
     public static LocalTimeRange inclusive(LocalTime minInclusive, LocalTime maxInclusive) {
         return localTimeRange(minInclusive, maxInclusive, true);
     }
 
+    /**
+     * Creates a {@code LocalTimeRange} from {@code minInclusive}..{@code maxExclusive}.
+     */
     public static LocalTimeRange exclusive(LocalTime minInclusive, LocalTime maxExclusive) {
         return localTimeRange(minInclusive, maxExclusive, false);
     }
 
+    /**
+     * Creates a {@code LocalTimeRange} that includes all possible {@code LocalTime}s ({@link LocalTime#MIN}..{@link LocalTime#MAX}).
+     */
     public static LocalTimeRange fullRange() {
         return FULL;
     }
 
+    /**
+     * Creates a {@code LocalTimeRange}.
+     */
     public static LocalTimeRange localTimeRange(LocalTime minInclusive, LocalTime max, boolean maxIncluded) {
         if (maxIncluded) {
             validateRangeInclusive(minInclusive, max);
@@ -76,14 +107,32 @@ public final class LocalTimeRange implements Constraint<LocalTime> {
         return !(beforeMin || afterMax);
     }
 
+    /**
+     * Creates a new {@code LocalTimeRange} that is the same as this one, with a new lower bound.
+     *
+     * @param minInclusive the new lower bound (inclusive) for the range; must not exceed this range's upper bound
+     * @return a {@code LocalTimeRange}
+     */
     public LocalTimeRange withMinInclusive(LocalTime minInclusive) {
         return localTimeRange(minInclusive, max, maxIncluded);
     }
 
-    public LocalTimeRange withMaxInclusive(LocalTime max) {
-        return localTimeRange(minInclusive, max, true);
+    /**
+     * Creates a new {@code LocalTimeRange} that is the same as this one, with a new upper bound.
+     *
+     * @param maxInclusive the new upper bound (inclusive) for the range; must not be less than this range's lower bound
+     * @return a {@code LocalTimeRange}
+     */
+    public LocalTimeRange withMaxInclusive(LocalTime maxInclusive) {
+        return localTimeRange(minInclusive, maxInclusive, true);
     }
 
+    /**
+     * Creates a new {@code LocalTimeRange} that is the same as this one, with a new upper bound.
+     *
+     * @param maxExclusive the new upper bound (exclusive) for the range; must be greater than this range's lower bound
+     * @return a {@code LocalTimeRange}
+     */
     public LocalTimeRange withMaxExclusive(LocalTime maxExclusive) {
         return localTimeRange(minInclusive, maxExclusive, false);
     }
@@ -113,9 +162,24 @@ public final class LocalTimeRange implements Constraint<LocalTime> {
         return rangeToString(getClass().getSimpleName(), minInclusive, true, max, maxIncluded);
     }
 
+    /**
+     * A partially constructed {@link LocalTimeRange}, with the lower bound already provided.
+     */
     public interface LocalTimeRangeFrom {
+        /**
+         * Creates a {@link LocalTimeRange} from the already provided lower bound to {@code maxInclusive}.
+         *
+         * @param maxInclusive the upper bound (inclusive) of the range
+         * @return a {@code LocalTimeRange}
+         */
         LocalTimeRange to(LocalTime maxInclusive);
 
+        /**
+         * Creates a {@link LocalTimeRange} from the already provided lower bound to {@code maxExclusive}.
+         *
+         * @param maxExclusive the upper bound (exclusive) of the range
+         * @return a {@code LocalTimeRange}
+         */
         LocalTimeRange until(LocalTime maxExclusive);
     }
 }

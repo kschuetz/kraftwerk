@@ -7,6 +7,17 @@ import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRa
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeInclusive;
 import static dev.marksman.kraftwerk.constraints.RangeToString.rangeToString;
 
+/**
+ * A range of {@code byte}s.  Like all ranges, it is immutable and its span always includes a minimum of one value.
+ * <p>
+ * Construct using one of the static methods ({@link ByteRange#inclusive}, {@link ByteRange#exclusive}),
+ * <p>
+ * or by using {@link ByteRange#from}:
+ * <pre>
+ * ByteRange.from((byte) 0).to((byte) 10)      // inclusive upper bound
+ * ByteRange.from((byte) 0).until((byte) 10)   // exclusive upper bound
+ * </pre>
+ */
 public final class ByteRange implements Constraint<Byte>, Iterable<Byte> {
     private static final ByteRange FULL = new ByteRange(Byte.MIN_VALUE, Byte.MAX_VALUE);
 
@@ -18,6 +29,14 @@ public final class ByteRange implements Constraint<Byte>, Iterable<Byte> {
         this.maxInclusive = maxInclusive;
     }
 
+    /**
+     * Partially constructs a {@code ByteRange} with its lower bound.
+     * <p>
+     * With the result, you can call {@code to} or {@code until} with the upper bound to create the {@code ByteRange}.
+     *
+     * @param minInclusive the lower bound (inclusive) of the range
+     * @return a {@link ByteRangeFrom}
+     */
     public static ByteRangeFrom from(byte minInclusive) {
         return new ByteRangeFrom() {
             @Override
@@ -32,21 +51,33 @@ public final class ByteRange implements Constraint<Byte>, Iterable<Byte> {
         };
     }
 
+    /**
+     * Creates a {@code ByteRange} from {@code minInclusive}..{@code maxInclusive}.
+     */
     public static ByteRange inclusive(byte minInclusive, byte maxInclusive) {
         validateRangeInclusive(minInclusive, maxInclusive);
         return new ByteRange(minInclusive, maxInclusive);
     }
 
+    /**
+     * Creates a {@code ByteRange} from {@code minInclusive}..{@code maxExclusive}.
+     */
     public static ByteRange exclusive(byte minInclusive, byte maxExclusive) {
         validateRangeExclusive(minInclusive, maxExclusive);
         return new ByteRange(minInclusive, (byte) (maxExclusive - 1));
     }
 
+    /**
+     * Creates a {@code ByteRange} from {@code 0}..{@code maxExclusive}.
+     */
     public static ByteRange exclusive(byte maxExclusive) {
         validateRangeExclusive((byte) 0, maxExclusive);
         return new ByteRange((byte) 0, (byte) (maxExclusive - 1));
     }
 
+    /**
+     * Creates a {@code ByteRange} that includes all possible {@code byte}s ({@link Byte#MIN_VALUE}..{@link Byte#MAX_VALUE}).
+     */
     public static ByteRange fullRange() {
         return FULL;
     }
@@ -69,18 +100,36 @@ public final class ByteRange implements Constraint<Byte>, Iterable<Byte> {
         return value >= minInclusive && value <= maxInclusive;
     }
 
+    /**
+     * Creates a new {@code ByteRange} that is the same as this one, with a new lower bound.
+     *
+     * @param minInclusive the new lower bound (inclusive) for the range; must not exceed this range's upper bound
+     * @return a {@code ByteRange}
+     */
     public ByteRange withMinInclusive(byte minInclusive) {
         byte max = maxInclusive;
         validateRangeInclusive(minInclusive, max);
         return new ByteRange(minInclusive, max);
     }
 
+    /**
+     * Creates a new {@code ByteRange} that is the same as this one, with a new upper bound.
+     *
+     * @param maxInclusive the new upper bound (inclusive) for the range; must not be less than this range's lower bound
+     * @return a {@code ByteRange}
+     */
     public ByteRange withMaxInclusive(byte maxInclusive) {
         byte min = minInclusive;
         validateRangeInclusive(min, maxInclusive);
         return new ByteRange(min, maxInclusive);
     }
 
+    /**
+     * Creates a new {@code ByteRange} that is the same as this one, with a new upper bound.
+     *
+     * @param maxExclusive the new upper bound (exclusive) for the range; must be greater than this range's lower bound
+     * @return a {@code ByteRange}
+     */
     public ByteRange withMaxExclusive(byte maxExclusive) {
         byte min = minInclusive;
         validateRangeExclusive(min, maxExclusive);
@@ -110,9 +159,24 @@ public final class ByteRange implements Constraint<Byte>, Iterable<Byte> {
         return rangeToString(getClass().getSimpleName(), minInclusive, true, maxInclusive, true);
     }
 
+    /**
+     * A partially constructed {@link ByteRange}, with the lower bound already provided.
+     */
     public interface ByteRangeFrom {
+        /**
+         * Creates a {@link ByteRange} from the already provided lower bound to {@code maxInclusive}.
+         *
+         * @param maxInclusive the upper bound (inclusive) of the range
+         * @return a {@code ByteRange}
+         */
         ByteRange to(byte maxInclusive);
 
+        /**
+         * Creates a {@link ByteRange} from the already provided lower bound to {@code maxExclusive}.
+         *
+         * @param maxExclusive the upper bound (exclusive) of the range
+         * @return a {@code ByteRange}
+         */
         ByteRange until(byte maxExclusive);
     }
 

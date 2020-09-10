@@ -12,6 +12,17 @@ import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRa
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeInclusive;
 import static dev.marksman.kraftwerk.constraints.RangeToString.rangeToString;
 
+/**
+ * A range of {@link BigDecimal}s.  Like all ranges, it is immutable and its span always includes a minimum of one value.
+ * <p>
+ * Construct using one of the static methods ({@link BigDecimalRange#inclusive}, {@link BigDecimalRange#exclusive}),
+ * <p>
+ * or by using {@link BigDecimalRange#from}:
+ * <pre>
+ * BigDecimalRange.from(BigDecimal.ZERO).to(BigDecimal.TEN)      // inclusive upper bound
+ * BigDecimalRange.from(BigDecimal.ZERO).until(BigDecimal.TEN)   // exclusive upper bound
+ * </pre>
+ */
 public final class BigDecimalRange implements Constraint<BigDecimal> {
     private final BigDecimal min;
     private final boolean minIncluded;
@@ -25,47 +36,75 @@ public final class BigDecimalRange implements Constraint<BigDecimal> {
         this.maxIncluded = maxIncluded;
     }
 
-    public static BigDecimalRangeFrom from(BigDecimal min) {
+    /**
+     * Partially constructs a {@code BigDecimalRange} with its lower bound.
+     * <p>
+     * With the result, you can call {@code to} or {@code until} with the upper bound to create the {@code BigDecimalRange}.
+     *
+     * @param minInclusive the lower bound (inclusive) of the range
+     * @return a {@link BigDecimalRangeFrom}
+     */
+    public static BigDecimalRangeFrom from(BigDecimal minInclusive) {
         return new BigDecimalRangeFrom() {
             @Override
             public BigDecimalRange to(BigDecimal maxInclusive) {
-                return bigDecimalRange(min, true, maxInclusive, true);
+                return bigDecimalRange(minInclusive, true, maxInclusive, true);
             }
 
             @Override
             public BigDecimalRange until(BigDecimal maxExclusive) {
-                return bigDecimalRange(min, true, maxExclusive, false);
+                return bigDecimalRange(minInclusive, true, maxExclusive, false);
             }
         };
     }
 
-    public static BigDecimalRangeFrom fromExclusive(BigDecimal min) {
+    /**
+     * Partially constructs a {@code BigDecimalRange} with its lower bound.
+     * <p>
+     * With the result, you can call {@code to} or {@code until} with the upper bound to create the {@code BigDecimalRange}.
+     *
+     * @param minExclusive the lower bound (exclusive) of the range
+     * @return a {@link BigDecimalRangeFrom}
+     */
+    public static BigDecimalRangeFrom fromExclusive(BigDecimal minExclusive) {
         return new BigDecimalRangeFrom() {
             @Override
             public BigDecimalRange to(BigDecimal maxInclusive) {
-                return bigDecimalRange(min, false, maxInclusive, true);
+                return bigDecimalRange(minExclusive, false, maxInclusive, true);
             }
 
             @Override
             public BigDecimalRange until(BigDecimal maxExclusive) {
-                return bigDecimalRange(min, false, maxExclusive, false);
+                return bigDecimalRange(minExclusive, false, maxExclusive, false);
             }
         };
     }
 
+    /**
+     * Creates a {@code BigDecimalRange} from {@code minInclusive}..{@code maxInclusive}.
+     */
     public static BigDecimalRange inclusive(BigDecimal minInclusive, BigDecimal maxInclusive) {
         return bigDecimalRange(minInclusive, true, maxInclusive, true);
     }
 
+    /**
+     * Creates a {@code BigDecimalRange} from {@code minInclusive}..{@code maxExclusive}.
+     */
     public static BigDecimalRange exclusive(BigDecimal minInclusive, BigDecimal maxExclusive) {
         return bigDecimalRange(minInclusive, true, maxExclusive, false);
     }
 
+    /**
+     * Creates a {@code BigDecimalRange} from {@code 0}..{@code maxExclusive}.
+     */
     public static BigDecimalRange exclusive(BigDecimal maxExclusive) {
         validateExclusiveBound(maxExclusive);
         return bigDecimalRange(BigDecimal.ZERO, true, maxExclusive, false);
     }
 
+    /**
+     * Creates a {@code BigDecimalRange}.
+     */
     public static BigDecimalRange bigDecimalRange(BigDecimal min, boolean minIncluded, BigDecimal max, boolean maxIncluded) {
         if (minIncluded && maxIncluded) {
             validateRangeInclusive(min, max);
@@ -97,18 +136,42 @@ public final class BigDecimalRange implements Constraint<BigDecimal> {
                 (maxIncluded ? LTE.lte(max, value) : LT.lt(max, value));
     }
 
+    /**
+     * Creates a new {@code BigDecimalRange} that is the same as this one, with a new lower bound.
+     *
+     * @param minInclusive the new lower bound (inclusive) for the range; must not exceed this range's upper bound
+     * @return a {@code BigDecimalRange}
+     */
     public BigDecimalRange withMinInclusive(BigDecimal minInclusive) {
         return bigDecimalRange(minInclusive, true, max, maxIncluded);
     }
 
+    /**
+     * Creates a new {@code BigDecimalRange} that is the same as this one, with a new upper bound.
+     *
+     * @param maxInclusive the new upper bound (inclusive) for the range; must not be less than this range's lower bound
+     * @return a {@code BigDecimalRange}
+     */
     public BigDecimalRange withMaxInclusive(BigDecimal maxInclusive) {
         return bigDecimalRange(min, minIncluded, maxInclusive, true);
     }
 
+    /**
+     * Creates a new {@code BigDecimalRange} that is the same as this one, with a new lower bound.
+     *
+     * @param minExclusive the new lower bound (exclusive) for the range; must be less than this range's upper bound
+     * @return a {@code BigDecimalRange}
+     */
     public BigDecimalRange withMinExclusive(BigDecimal minExclusive) {
         return bigDecimalRange(minExclusive, false, max, maxIncluded);
     }
 
+    /**
+     * Creates a new {@code BigDecimalRange} that is the same as this one, with a new upper bound.
+     *
+     * @param maxExclusive the new upper bound (exclusive) for the range; must be greater than this range's lower bound
+     * @return a {@code BigDecimalRange}
+     */
     public BigDecimalRange withMaxExclusive(BigDecimal maxExclusive) {
         return bigDecimalRange(min, minIncluded, maxExclusive, false);
     }
@@ -144,9 +207,24 @@ public final class BigDecimalRange implements Constraint<BigDecimal> {
         return rangeToString(getClass().getSimpleName(), min, minIncluded, max, maxIncluded);
     }
 
+    /**
+     * A partially constructed {@link BigDecimalRange}, with the lower bound already provided.
+     */
     public interface BigDecimalRangeFrom {
+        /**
+         * Creates a {@link BigDecimalRange} from the already provided lower bound to {@code maxInclusive}.
+         *
+         * @param maxInclusive the upper bound (inclusive) of the range
+         * @return a {@code BigDecimalRange}
+         */
         BigDecimalRange to(BigDecimal maxInclusive);
 
+        /**
+         * Creates a {@link BigDecimalRange} from the already provided lower bound to {@code maxExclusive}.
+         *
+         * @param maxExclusive the upper bound (exclusive) of the range
+         * @return a {@code BigDecimalRange}
+         */
         BigDecimalRange until(BigDecimal maxExclusive);
     }
 }

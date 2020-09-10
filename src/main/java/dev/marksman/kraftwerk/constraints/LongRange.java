@@ -7,6 +7,17 @@ import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRa
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeInclusive;
 import static dev.marksman.kraftwerk.constraints.RangeToString.rangeToString;
 
+/**
+ * A range of {@code long}s.  Like all ranges, it is immutable and its span always includes a minimum of one value.
+ * <p>
+ * Construct using one of the static methods ({@link LongRange#inclusive}, {@link LongRange#exclusive}),
+ * <p>
+ * or by using {@link LongRange#from}:
+ * <pre>
+ * LongRange.from(0).to(10)      // inclusive upper bound
+ * LongRange.from(0).until(10)   // exclusive upper bound
+ * </pre>
+ */
 public final class LongRange implements Constraint<Long>, Iterable<Long> {
     private static final LongRange FULL = new LongRange(Long.MIN_VALUE, Long.MAX_VALUE);
 
@@ -18,12 +29,21 @@ public final class LongRange implements Constraint<Long>, Iterable<Long> {
         this.maxInclusive = maxInclusive;
     }
 
+    /**
+     * Partially constructs a {@code LongRange} with its lower bound.
+     * <p>
+     * With the result, you can call {@code to} or {@code until} with the upper bound to create the {@code LongRange}.
+     *
+     * @param minInclusive the lower bound (inclusive) of the range
+     * @return a {@link LongRangeFrom}
+     */
     public static LongRangeFrom from(long minInclusive) {
         return new LongRangeFrom() {
             @Override
             public LongRange to(long maxInclusive) {
                 return inclusive(minInclusive, maxInclusive);
             }
+
 
             @Override
             public LongRange until(long maxExclusive) {
@@ -32,20 +52,32 @@ public final class LongRange implements Constraint<Long>, Iterable<Long> {
         };
     }
 
+    /**
+     * Creates a {@code LongRange} from {@code minInclusive}..{@code maxInclusive}.
+     */
     public static LongRange inclusive(long minInclusive, long maxInclusive) {
         validateRangeInclusive(minInclusive, maxInclusive);
         return new LongRange(minInclusive, maxInclusive);
     }
 
+    /**
+     * Creates a {@code LongRange} from {@code minInclusive}..{@code maxExclusive}.
+     */
     public static LongRange exclusive(long minInclusive, long maxExclusive) {
         validateRangeExclusive(minInclusive, maxExclusive);
         return new LongRange(minInclusive, maxExclusive - 1);
     }
 
+    /**
+     * Creates a {@code LongRange} from {@code 0}..{@code maxExclusive}.
+     */
     public static LongRange exclusive(long maxExclusive) {
         return exclusive(0, maxExclusive);
     }
 
+    /**
+     * Creates a {@code LongRange} that includes all possible {@code long}s ({@link Long#MIN_VALUE}..{@link Long#MAX_VALUE}).
+     */
     public static LongRange fullRange() {
         return FULL;
     }
@@ -68,14 +100,32 @@ public final class LongRange implements Constraint<Long>, Iterable<Long> {
         return n >= minInclusive && n <= maxInclusive;
     }
 
+    /**
+     * Creates a new {@code LongRange} that is the same as this one, with a new lower bound.
+     *
+     * @param minInclusive the new lower bound (inclusive) for the range; must not exceed this range's upper bound
+     * @return a {@code LongRange}
+     */
     public LongRange withMinInclusive(long minInclusive) {
         return inclusive(minInclusive, maxInclusive);
     }
 
+    /**
+     * Creates a new {@code LongRange} that is the same as this one, with a new upper bound.
+     *
+     * @param maxInclusive the new upper bound (inclusive) for the range; must not be less than this range's lower bound
+     * @return a {@code LongRange}
+     */
     public LongRange withMaxInclusive(long maxInclusive) {
         return inclusive(minInclusive, maxInclusive);
     }
 
+    /**
+     * Creates a new {@code LongRange} that is the same as this one, with a new upper bound.
+     *
+     * @param maxExclusive the new upper bound (exclusive) for the range; must be greater than this range's lower bound
+     * @return a {@code LongRange}
+     */
     public LongRange withMaxExclusive(long maxExclusive) {
         return inclusive(minInclusive, maxExclusive);
     }
@@ -103,9 +153,24 @@ public final class LongRange implements Constraint<Long>, Iterable<Long> {
         return rangeToString(getClass().getSimpleName(), minInclusive, true, maxInclusive, true);
     }
 
+    /**
+     * A partially constructed {@link LongRange}, with the lower bound already provided.
+     */
     public interface LongRangeFrom {
+        /**
+         * Creates a {@link LongRange} from the already provided lower bound to {@code maxInclusive}.
+         *
+         * @param maxInclusive the upper bound (inclusive) of the range
+         * @return a {@code LongRange}
+         */
         LongRange to(long maxInclusive);
 
+        /**
+         * Creates a {@link LongRange} from the already provided lower bound to {@code maxExclusive}.
+         *
+         * @param maxExclusive the upper bound (exclusive) of the range
+         * @return a {@code LongRange}
+         */
         LongRange until(long maxExclusive);
     }
 

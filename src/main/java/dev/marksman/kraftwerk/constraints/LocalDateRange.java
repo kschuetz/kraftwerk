@@ -9,6 +9,17 @@ import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRa
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeInclusive;
 import static dev.marksman.kraftwerk.constraints.RangeToString.rangeToString;
 
+/**
+ * A range of {@link LocalDate}s.  Like all ranges, it is immutable and its span always includes a minimum of one value.
+ * <p>
+ * Construct using one of the static methods ({@link LocalDateRange#inclusive}, {@link LocalDateRange#exclusive}),
+ * <p>
+ * or by using {@link LocalDateRange#from}:
+ * <pre>
+ * LocalDateRange.from(LocalDate.of(2020, 1, 1)).to(LocalDate.of(2021, 1, 1))      // inclusive upper bound
+ * LocalDateRange.from(LocalDate.of(2020, 1, 1)).until(LocalDate.of(2021, 1, 1))   // exclusive upper bound
+ * </pre>
+ */
 public final class LocalDateRange implements Constraint<LocalDate>, Iterable<LocalDate> {
     private final LocalDate minInclusive;
     private final LocalDate maxInclusive;
@@ -18,6 +29,14 @@ public final class LocalDateRange implements Constraint<LocalDate>, Iterable<Loc
         this.maxInclusive = maxInclusive;
     }
 
+    /**
+     * Partially constructs a {@code LocalDateRange} with its lower bound.
+     * <p>
+     * With the result, you can call {@code to} or {@code until} with the upper bound to create the {@code LocalDateRange}.
+     *
+     * @param minInclusive the lower bound (inclusive) of the range
+     * @return a {@link LocalDateRangeFrom}
+     */
     public static LocalDateRangeFrom from(LocalDate minInclusive) {
         return new LocalDateRangeFrom() {
             @Override
@@ -32,11 +51,17 @@ public final class LocalDateRange implements Constraint<LocalDate>, Iterable<Loc
         };
     }
 
+    /**
+     * Creates a {@code LocalDateRange} from {@code minInclusive}..{@code maxInclusive}.
+     */
     public static LocalDateRange inclusive(LocalDate minInclusive, LocalDate maxInclusive) {
         validateRangeInclusive(minInclusive, maxInclusive);
         return new LocalDateRange(minInclusive, maxInclusive);
     }
 
+    /**
+     * Creates a {@code LocalDateRange} from {@code minInclusive}..{@code maxExclusive}.
+     */
     public static LocalDateRange exclusive(LocalDate minInclusive, LocalDate maxExclusive) {
         validateRangeExclusive(minInclusive, maxExclusive);
         return new LocalDateRange(minInclusive, maxExclusive.minusDays(1));
@@ -64,16 +89,34 @@ public final class LocalDateRange implements Constraint<LocalDate>, Iterable<Loc
         return !(date.isBefore(minInclusive) || date.isAfter(maxInclusive));
     }
 
-    public LocalDateRange withMinInclusive(LocalDate min) {
-        return inclusive(min, maxInclusive);
+    /**
+     * Creates a new {@code LocalDateRange} that is the same as this one, with a new lower bound.
+     *
+     * @param minInclusive the new lower bound (inclusive) for the range; must not exceed this range's upper bound
+     * @return a {@code LocalDateRange}
+     */
+    public LocalDateRange withMinInclusive(LocalDate minInclusive) {
+        return inclusive(minInclusive, maxInclusive);
     }
 
-    public LocalDateRange withMaxInclusive(LocalDate max) {
-        return inclusive(minInclusive, max);
+    /**
+     * Creates a new {@code LocalDateRange} that is the same as this one, with a new upper bound.
+     *
+     * @param maxInclusive the new upper bound (inclusive) for the range; must not be less than this range's lower bound
+     * @return a {@code LocalDateRange}
+     */
+    public LocalDateRange withMaxInclusive(LocalDate maxInclusive) {
+        return inclusive(minInclusive, maxInclusive);
     }
 
-    public LocalDateRange withMaxExclusive(LocalDate max) {
-        return exclusive(minInclusive, max);
+    /**
+     * Creates a new {@code LocalDateRange} that is the same as this one, with a new upper bound.
+     *
+     * @param maxExclusive the new upper bound (exclusive) for the range; must be greater than this range's lower bound
+     * @return a {@code LocalDateRange}
+     */
+    public LocalDateRange withMaxExclusive(LocalDate maxExclusive) {
+        return exclusive(minInclusive, maxExclusive);
     }
 
     @Override
@@ -99,9 +142,24 @@ public final class LocalDateRange implements Constraint<LocalDate>, Iterable<Loc
         return rangeToString(getClass().getSimpleName(), minInclusive, true, maxInclusive, true);
     }
 
+    /**
+     * A partially constructed {@link LocalDateRange}, with the lower bound already provided.
+     */
     public interface LocalDateRangeFrom {
+        /**
+         * Creates a {@link LocalDateRange} from the already provided lower bound to {@code maxInclusive}.
+         *
+         * @param maxInclusive the upper bound (inclusive) of the range
+         * @return a {@code LocalDateRange}
+         */
         LocalDateRange to(LocalDate maxInclusive);
 
+        /**
+         * Creates a {@link LocalDateRange} from the already provided lower bound to {@code maxExclusive}.
+         *
+         * @param maxExclusive the upper bound (exclusive) of the range
+         * @return a {@code LocalDateRange}
+         */
         LocalDateRange until(LocalDate maxExclusive);
     }
 

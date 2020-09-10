@@ -7,6 +7,17 @@ import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRa
 import static dev.marksman.kraftwerk.constraints.RangeInputValidation.validateRangeInclusive;
 import static dev.marksman.kraftwerk.constraints.RangeToString.rangeToString;
 
+/**
+ * A range of {@code char}s.  Like all ranges, it is immutable and its span always includes a minimum of one value.
+ * <p>
+ * Construct using one of the static methods ({@link CharRange#inclusive}, {@link CharRange#exclusive}),
+ * <p>
+ * or by using {@link CharRange#from}:
+ * <pre>
+ * CharRange.from('a').to('z')      // 'a'..'z' inclusive
+ * CharRange.from('a').until('z')   // 'a'..'z' exclusive
+ * </pre>
+ */
 public final class CharRange implements Constraint<Character>, Iterable<Character> {
     private static final CharRange FULL = new CharRange(Character.MIN_VALUE, Character.MAX_VALUE);
 
@@ -18,6 +29,14 @@ public final class CharRange implements Constraint<Character>, Iterable<Characte
         this.maxInclusive = maxInclusive;
     }
 
+    /**
+     * Partially constructs a {@code CharRange} with its lower bound.
+     * <p>
+     * With the result, you can call {@code to} or {@code until} with the upper bound to create the {@code CharRange}.
+     *
+     * @param minInclusive the lower bound (inclusive) of the range
+     * @return a {@link CharRangeFrom}
+     */
     public static CharRangeFrom from(char minInclusive) {
         return new CharRangeFrom() {
             @Override
@@ -32,16 +51,25 @@ public final class CharRange implements Constraint<Character>, Iterable<Characte
         };
     }
 
+    /**
+     * Creates a {@code CharRange} from {@code minInclusive}..{@code maxInclusive}.
+     */
     public static CharRange inclusive(char minInclusive, char maxInclusive) {
         validateRangeInclusive(minInclusive, maxInclusive);
         return new CharRange(minInclusive, maxInclusive);
     }
 
+    /**
+     * Creates a {@code CharRange} from {@code minInclusive}..{@code maxExclusive}.
+     */
     public static CharRange exclusive(char minInclusive, char maxExclusive) {
         validateRangeExclusive(minInclusive, maxExclusive);
         return new CharRange(minInclusive, (char) (maxExclusive - 1));
     }
 
+    /**
+     * Creates a {@code CharRange} that includes all possible {@code char}s ({@link Character#MIN_VALUE}..{@link Character#MAX_VALUE}).
+     */
     public static CharRange fullRange() {
         return FULL;
     }
@@ -64,18 +92,36 @@ public final class CharRange implements Constraint<Character>, Iterable<Characte
         return value >= minInclusive && value <= maxInclusive;
     }
 
+    /**
+     * Creates a new {@code CharRange} that is the same as this one, with a new lower bound.
+     *
+     * @param minInclusive the new lower bound (inclusive) for the range; must not exceed this range's upper bound
+     * @return a {@code CharRange}
+     */
     public CharRange withMinInclusive(char minInclusive) {
         char max = maxInclusive;
         validateRangeInclusive(minInclusive, max);
         return new CharRange(minInclusive, max);
     }
 
+    /**
+     * Creates a new {@code CharRange} that is the same as this one, with a new upper bound.
+     *
+     * @param maxInclusive the new upper bound (inclusive) for the range; must not be less than this range's lower bound
+     * @return a {@code CharRange}
+     */
     public CharRange withMaxInclusive(char maxInclusive) {
         char min = minInclusive;
         validateRangeInclusive(min, maxInclusive);
         return new CharRange(min, maxInclusive);
     }
 
+    /**
+     * Creates a new {@code CharRange} that is the same as this one, with a new upper bound.
+     *
+     * @param maxExclusive the new upper bound (exclusive) for the range; must be greater than this range's lower bound
+     * @return a {@code CharRange}
+     */
     public CharRange withMaxExclusive(char maxExclusive) {
         char min = minInclusive;
         validateRangeExclusive(min, maxExclusive);
@@ -105,9 +151,24 @@ public final class CharRange implements Constraint<Character>, Iterable<Characte
         return rangeToString(getClass().getSimpleName(), minInclusive, true, maxInclusive, true);
     }
 
+    /**
+     * A partially constructed {@link CharRange}, with the lower bound already provided.
+     */
     public interface CharRangeFrom {
+        /**
+         * Creates a {@link CharRange} from the already provided lower bound to {@code maxInclusive}.
+         *
+         * @param maxInclusive the upper bound (inclusive) of the range
+         * @return a {@code CharRange}
+         */
         CharRange to(char maxInclusive);
 
+        /**
+         * Creates a {@link CharRange} from the already provided lower bound to {@code maxExclusive}.
+         *
+         * @param maxExclusive the upper bound (exclusive) of the range
+         * @return a {@code CharRange}
+         */
         CharRange until(char maxExclusive);
     }
 
