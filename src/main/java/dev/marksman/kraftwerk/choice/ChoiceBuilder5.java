@@ -11,6 +11,20 @@ import dev.marksman.kraftwerk.frequency.FrequencyMap;
 import static dev.marksman.kraftwerk.Generators.constant;
 import static dev.marksman.kraftwerk.choice.ChoiceBuilder6.choiceBuilder6;
 
+/**
+ * A builder to facilitate the construction of {@link Generator}s that yield {@link Choice5} values.
+ * <p>
+ * Use one of the {@link ChoiceBuilder5#or} methods to add more choices, and call {@link ChoiceBuilder5#toGenerator} to
+ * build the final {@link Generator}.
+ * <p>
+ * All instances of {@code ChoiceBuilder} are immutable and can be reused, even after calling {@code toGenerator}.
+ *
+ * @param <A> the type of the first choice
+ * @param <B> the type of the second choice
+ * @param <C> the type of the third choice
+ * @param <D> the type of the fourth choice
+ * @param <E> the type of the fifth choice
+ */
 public final class ChoiceBuilder5<A, B, C, D, E> implements ToGenerator<Choice5<A, B, C, D, E>> {
     private final FrequencyMap<Choice5<A, B, C, D, E>> frequencyMap;
 
@@ -18,15 +32,25 @@ public final class ChoiceBuilder5<A, B, C, D, E> implements ToGenerator<Choice5<
         this.frequencyMap = frequencyMap;
     }
 
-    public static <A, B, C, D, E> ChoiceBuilder5<A, B, C, D, E> choiceBuilder5(FrequencyMap<Choice5<A, B, C, D, E>> frequencyMap) {
+    static <A, B, C, D, E> ChoiceBuilder5<A, B, C, D, E> choiceBuilder5(FrequencyMap<Choice5<A, B, C, D, E>> frequencyMap) {
         return new ChoiceBuilder5<>(frequencyMap);
     }
 
+    /**
+     * Builds the final {@link Generator}.
+     */
     @Override
     public Generator<Choice5<A, B, C, D, E>> toGenerator() {
         return frequencyMap.toGenerator();
     }
 
+    /**
+     * Adds another choice.
+     *
+     * @param weightedGenerator a weighted {@code Generator} for the next choice
+     * @param <F>               the type of the next choice
+     * @return a {@code ChoiceBuilder6<A, B, C, D, E, F>}
+     */
     public <F> ChoiceBuilder6<A, B, C, D, E, F> or(Weighted<? extends Generator<? extends F>> weightedGenerator) {
         FrequencyMap<Choice6<A, B, C, D, E, F>> newFrequencyMap = frequencyMap
                 .<Choice6<A, B, C, D, E, F>>fmap(c5 ->
@@ -35,14 +59,35 @@ public final class ChoiceBuilder5<A, B, C, D, E> implements ToGenerator<Choice5<
         return choiceBuilder6(newFrequencyMap);
     }
 
+    /**
+     * Adds another choice.
+     *
+     * @param gen a  {@code Generator} for the next choice
+     * @param <F> the type of the next choice
+     * @return a {@code ChoiceBuilder6<A, B, C, D, E, F>}
+     */
     public <F> ChoiceBuilder6<A, B, C, D, E, F> or(Generator<F> gen) {
         return or(gen.weighted());
     }
 
+    /**
+     * Adds another choice.
+     *
+     * @param weightedValue a weighted value for the next choice
+     * @param <F>           the type of the next choice
+     * @return a {@code ChoiceBuilder6<A, B, C, D, E, F>}
+     */
     public <F> ChoiceBuilder6<A, B, C, D, E, F> orValue(Weighted<? extends F> weightedValue) {
         return or(weightedValue.fmap(Generators::constant));
     }
 
+    /**
+     * Adds another choice.
+     *
+     * @param value a value for the next choice
+     * @param <F>   the type of the next choice
+     * @return a {@code ChoiceBuilder6<A, B, C, D, E, F>}
+     */
     public <F> ChoiceBuilder6<A, B, C, D, E, F> orValue(F value) {
         return or(constant(value).weighted());
     }
