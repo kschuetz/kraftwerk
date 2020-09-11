@@ -4,6 +4,11 @@ import dev.marksman.kraftwerk.Seed;
 
 import java.util.Random;
 
+/**
+ * A default implementation for {@link Seed}.
+ * <p>
+ * Even though this class is public, it is <i>not</i> part of the public API and can change at any time.
+ */
 public final class StandardSeed implements Seed {
     private final long seedValue;
 

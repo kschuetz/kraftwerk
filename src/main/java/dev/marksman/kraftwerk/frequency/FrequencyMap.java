@@ -20,11 +20,11 @@ public interface FrequencyMap<A> extends ToGenerator<A> {
     <B> FrequencyMap<B> fmap(Fn1<? super A, ? extends B> fn);
 
     /**
-     * Multiplies existing weights by `positiveFactor`.  Useful for combining with
-     * other `FrequencyMap`s.
+     * Multiplies existing weights by {@code positiveFactor}.  Useful for combining with
+     * other {@code FrequencyMap}s.
      *
-     * @param positiveFactor number to multiply by.  Must be &gt;= 1.
-     * @return a new `FrequencyMap` containing the same entries with the weights multiplied.
+     * @param positiveFactor number to multiply by;  must be &gt;= 1.
+     * @return a new {@code positiveFactor} containing the same entries with the weights multiplied
      * @throws IllegalArgumentException if positiveFactor is &lt; 1.
      */
     FrequencyMap<A> multiply(int positiveFactor);

@@ -4,10 +4,18 @@ import dev.marksman.collectionviews.ImmutableNonEmptyVector;
 import dev.marksman.collectionviews.NonEmptyVector;
 import dev.marksman.collectionviews.NonEmptyVectorBuilder;
 import dev.marksman.collectionviews.Vector;
+import dev.marksman.kraftwerk.Generators;
 
 import java.util.HashSet;
 
-public class Characters {
+/**
+ * A collection of useful domains of characters.  These can be used as inputs to {@link Generators#chooseOneValueFromDomain(NonEmptyVector)},
+ * among other methods.
+ */
+public final class Characters {
+    private Characters() {
+
+    }
 
     private static final ImmutableNonEmptyVector<Character> ALPHA_LOWER = NonEmptyVector.lazyFill(26, idx -> (char) (97 + idx));
     private static final ImmutableNonEmptyVector<Character> ALPHA_UPPER = NonEmptyVector.lazyFill(26, idx -> (char) (65 + idx));
@@ -59,5 +67,4 @@ public class Characters {
             return builder.build();
         }
     }
-
 }

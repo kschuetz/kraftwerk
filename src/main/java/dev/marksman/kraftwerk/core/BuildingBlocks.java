@@ -8,7 +8,9 @@ import static com.jnape.palatable.lambda.adt.Unit.UNIT;
 import static dev.marksman.kraftwerk.Result.result;
 import static dev.marksman.kraftwerk.core.StandardSeedCacheGaussian.standardSeedCacheGaussian;
 
-
+/**
+ * Even though this class is public, it is <i>not</i> part of the public API and can change at any time.
+ */
 public final class BuildingBlocks {
 
     private static final double DOUBLE_UNIT = 0x1.0p-53;  // 1.0  / (1L << 53)
