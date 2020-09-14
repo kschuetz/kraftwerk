@@ -1,6 +1,10 @@
 package dev.marksman.kraftwerk.util;
 
-public class Labeling {
+public final class Labeling {
+    private Labeling() {
+
+    }
+
     public static String intInterval(int min, int max, boolean exclusive) {
         return interval("int", min, max, exclusive);
     }

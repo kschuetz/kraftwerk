@@ -412,6 +412,17 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
         return Generators.generateNonEmptyVectorOfSize(sizeRange, this);
     }
 
+    /**
+     * Creates a new {@code Generator} that combines the output of another {@code Generator} using a function
+     * to yield the final output.
+     *
+     * @param fn    a function that takes the output of this {@code Generator} and the output of {@code other},
+     *              and returns the final output
+     * @param other the other {@code Generator}
+     * @param <B>   the output type of the other {@code Generator}
+     * @param <C>   the new output type
+     * @return a {@code Generator<C>}
+     */
     default <B, C> Generator<C> zipWith(Fn2<A, B, C> fn, Generator<B> other) {
         return Generators.product(this, other, fn);
     }
