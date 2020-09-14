@@ -16,11 +16,21 @@ import java.math.BigInteger;
 
 import static dev.marksman.kraftwerk.bias.BiasSetting.noBias;
 
+/**
+ * {@link BiasSettings} with all settings set to {@link dev.marksman.kraftwerk.bias.BiasSetting.NoBias}.
+ */
 public final class EmptyBiasSettings implements BiasSettings {
     private static final EmptyBiasSettings INSTANCE = new EmptyBiasSettings();
 
     private EmptyBiasSettings() {
 
+    }
+
+    /**
+     * Creates an {@code EmptyBiasSettings}.
+     */
+    public static BiasSettings emptyBiasSettings() {
+        return INSTANCE;
     }
 
     @Override
@@ -76,9 +86,5 @@ public final class EmptyBiasSettings implements BiasSettings {
     @Override
     public BiasSettings overrideWith(BiasSettings other) {
         return other;
-    }
-
-    public static BiasSettings emptyBiasSettings() {
-        return INSTANCE;
     }
 }

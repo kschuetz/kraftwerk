@@ -16,6 +16,9 @@ import java.math.BigInteger;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn3.Between.between;
 
+/**
+ * A set of default {@link BiasSettings} for property-testing purposes.
+ */
 public final class DefaultPropertyTestingBiasSettings implements BiasSettings {
     public static final BigDecimal SMALL_BIG_DECIMAL = BigDecimal.valueOf(0.000001);
     private static final DefaultPropertyTestingBiasSettings INSTANCE = new DefaultPropertyTestingBiasSettings();
@@ -24,6 +27,9 @@ public final class DefaultPropertyTestingBiasSettings implements BiasSettings {
 
     }
 
+    /**
+     * Constructs a {@code DefaultPropertyTestingBiasSettings.
+     */
     public static DefaultPropertyTestingBiasSettings defaultPropertyTestBiasSettings() {
         return INSTANCE;
     }

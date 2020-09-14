@@ -6,20 +6,36 @@ import dev.marksman.collectionviews.ImmutableNonEmptyVector;
 import dev.marksman.collectionviews.NonEmptyVector;
 import dev.marksman.collectionviews.VectorBuilder;
 import dev.marksman.enhancediterables.NonEmptyIterable;
+import dev.marksman.kraftwerk.Generator;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Constantly.constantly;
 
+/**
+ * A strategy for injecting special values in a the output of {@link Generator}s of a specific type.
+ *
+ * @param <A> the output type
+ */
 public abstract class BiasSetting<A> implements CoProduct2<BiasSetting.NoBias<A>,
         BiasSetting.InjectSpecialValues<A>, BiasSetting<A>> {
 
     private static final BiasSettingBuilder<?> SIMPLE_BUILDER = new BiasSettingBuilder<>(constantly(true),
             VectorBuilder.builder());
 
+    /**
+     * A {@code BiasSetting} that instructs {@link Generator}s to inject no special values.
+     */
     @SuppressWarnings("unchecked")
     public static <A> BiasSetting<A> noBias() {
         return (BiasSetting<A>) NoBias.INSTANCE;
     }
 
+    /**
+     * A {@code BiasSetting} that instructs {@link Generator}s to inject special values into their output.
+     * <p>
+     * These values will artificially occur more frequently in the output of a {@code Generator}, provided they are in its range.
+     *
+     * @param specialValues the collection of special values
+     */
     public static <A> BiasSetting<A> injectSpecialValues(NonEmptyIterable<A> specialValues) {
         return new InjectSpecialValues<>(NonEmptyVector.nonEmptyCopyFrom(specialValues));
     }
