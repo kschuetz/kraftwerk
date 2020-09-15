@@ -11,11 +11,13 @@ import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
 import static dev.marksman.kraftwerk.Distributions.linearRampDown;
 import static dev.marksman.kraftwerk.Distributions.linearRampUp;
 import static dev.marksman.kraftwerk.Distributions.triangularInt;
+import static dev.marksman.kraftwerk.Generators.choiceBuilder;
 import static dev.marksman.kraftwerk.Generators.generateBoolean;
 import static dev.marksman.kraftwerk.Generators.generateByte;
 import static dev.marksman.kraftwerk.Generators.generateGaussian;
 import static dev.marksman.kraftwerk.Generators.generateInt;
 import static dev.marksman.kraftwerk.Generators.generateShort;
+import static dev.marksman.kraftwerk.Generators.generateUnit;
 import static dev.marksman.kraftwerk.Weighted.weighted;
 import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMapValue;
 import static visualization.ChartSuite.chartSuite;
@@ -30,7 +32,8 @@ public class GenerateCharts {
         Fn1<ChartSuite, ChartSuite> builder =
                 primitives()
                         .fmap(freqMaps())
-                        .fmap(distributions());
+                        .fmap(distributions())
+                        .fmap(choiceBuilders());
 
         builder.apply(chartSuite(outputDir))
                 .run()
@@ -70,9 +73,80 @@ public class GenerateCharts {
 
     private static Fn1<ChartSuite, ChartSuite> distributions() {
         return cs -> cs
-                .add("linear-ramp-up-int", histogram(linearRampUp(generateInt(IntRange.from(0).to(255))), 256, id()))
-                .add("linear-ramp-down-int", histogram(linearRampDown(generateInt(IntRange.from(0).to(255))), 256, id()))
-                .add("linear-ramp-up-down-int", histogram(linearRampUp(linearRampDown(generateInt(IntRange.from(0).to(255)))), 256, id()))
-                .add("triangular-int", histogram(triangularInt(generateInt(IntRange.from(0).to(255))), 256, id()));
+                .add("linear-ramp-up-int", histogram(linearRampUp(generateInt(IntRange.from(0).to(255))).labeled("linear-ramp-up"), 256, id()))
+                .add("linear-ramp-down-int", histogram(linearRampDown(generateInt(IntRange.from(0).to(255))).labeled("linear-ramp-down"), 256, id()))
+                .add("linear-ramp-up-down-int", histogram(linearRampUp(linearRampDown(generateInt(IntRange.from(0).to(255)))).labeled("linear-ramp-up-down"), 256, id()))
+                .add("triangular-int", histogram(triangularInt(generateInt(IntRange.from(0).to(255))).labeled("triangular"), 256, id()));
+    }
+
+    private static Fn1<ChartSuite, ChartSuite> choiceBuilders() {
+        return cs -> cs
+                .add("choiceBuilder2",
+                        histogram(choiceBuilder(generateUnit().weighted(1))
+                                        .or(generateUnit().weighted(2))
+                                        .toGenerator()
+                                        .labeled("choiceBuilder2"), 2,
+                                c -> c.match(__ -> 0, __ -> 1)))
+                .add("choiceBuilder3",
+                        histogram(choiceBuilder(generateUnit().weighted(1))
+                                        .or(generateUnit().weighted(2))
+                                        .or(generateUnit().weighted(3))
+                                        .toGenerator()
+                                        .labeled("choiceBuilder3"), 3,
+                                c -> c.match(__ -> 0, __ -> 1, __ -> 2)))
+                .add("choiceBuilder4",
+                        histogram(choiceBuilder(generateUnit().weighted(1))
+                                        .or(generateUnit().weighted(2))
+                                        .or(generateUnit().weighted(3))
+                                        .or(generateUnit().weighted(4))
+                                        .toGenerator()
+                                        .labeled("choiceBuilder4"), 4,
+                                c -> c.match(__ -> 0, __ -> 1, __ -> 2, __ -> 3)))
+                .add("choiceBuilder5",
+                        histogram(choiceBuilder(generateUnit().weighted(1))
+                                        .or(generateUnit().weighted(2))
+                                        .or(generateUnit().weighted(3))
+                                        .or(generateUnit().weighted(4))
+                                        .or(generateUnit().weighted(5))
+                                        .toGenerator()
+                                        .labeled("choiceBuilder5"), 5,
+                                c -> c.match(__ -> 0, __ -> 1, __ -> 2, __ -> 3,
+                                        __ -> 4)))
+                .add("choiceBuilder6",
+                        histogram(choiceBuilder(generateUnit().weighted(1))
+                                        .or(generateUnit().weighted(2))
+                                        .or(generateUnit().weighted(3))
+                                        .or(generateUnit().weighted(4))
+                                        .or(generateUnit().weighted(5))
+                                        .or(generateUnit().weighted(6))
+                                        .toGenerator()
+                                        .labeled("choiceBuilder6"), 6,
+                                c -> c.match(__ -> 0, __ -> 1, __ -> 2, __ -> 3,
+                                        __ -> 4, __ -> 5)))
+                .add("choiceBuilder7",
+                        histogram(choiceBuilder(generateUnit().weighted(1))
+                                        .or(generateUnit().weighted(2))
+                                        .or(generateUnit().weighted(3))
+                                        .or(generateUnit().weighted(4))
+                                        .or(generateUnit().weighted(5))
+                                        .or(generateUnit().weighted(6))
+                                        .or(generateUnit().weighted(7))
+                                        .toGenerator()
+                                        .labeled("choiceBuilder7"), 7,
+                                c -> c.match(__ -> 0, __ -> 1, __ -> 2, __ -> 3,
+                                        __ -> 4, __ -> 5, __ -> 6)))
+                .add("choiceBuilder8",
+                        histogram(choiceBuilder(generateUnit().weighted(1))
+                                        .or(generateUnit().weighted(2))
+                                        .or(generateUnit().weighted(3))
+                                        .or(generateUnit().weighted(4))
+                                        .or(generateUnit().weighted(5))
+                                        .or(generateUnit().weighted(6))
+                                        .or(generateUnit().weighted(7))
+                                        .or(generateUnit().weighted(8))
+                                        .toGenerator()
+                                        .labeled("choiceBuilder8"), 8,
+                                c -> c.match(__ -> 0, __ -> 1, __ -> 2, __ -> 3,
+                                        __ -> 4, __ -> 5, __ -> 6, __ -> 7)));
     }
 }
