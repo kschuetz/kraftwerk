@@ -60,7 +60,9 @@ public class GenerateCharts {
                 .add("float-with-NaNs", histogram(Generators.generateFloatFractional().withNaNs()
                                 .labeled("float with NaNs"), 2,
                         n -> Float.isNaN(n) ? 1 : 0))
-                .add("gaussian", histogram(generateGaussian(), 512, n -> 256 + (int) (90 * n)));
+                .add("gaussian", histogram(generateGaussian(), 512, n -> 256 + (int) (90 * n)))
+                .add("two-dice", histogram(generateInt(IntRange.from(1).to(6)).pair().labeled("two dice"),
+                        13, pair -> pair._1() + pair._2()));
     }
 
     private static Fn1<ChartSuite, ChartSuite> freqMaps() {
