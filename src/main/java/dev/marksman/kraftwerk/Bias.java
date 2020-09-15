@@ -44,12 +44,12 @@ final class Bias {
         final int totalWeight = specialWeight + nonSpecialWeight;
 
         return input -> {
-            long n = input.getSeedValue() % totalWeight;
-            if (n < specialWeight) {
-                Result<Seed, Integer> r0 = BuildingBlocks.nextIntExclusive(0, specialWeight, input);
-                return result(r0.getNextState(), specialValues.unsafeGet(r0.getValue()));
+            Result<Seed, Integer> r0 = BuildingBlocks.unsafeNextIntBounded(totalWeight, input);
+            if (r0.getValue() < specialWeight) {
+                Result<Seed, Integer> r1 = BuildingBlocks.nextIntExclusive(0, specialWeight, r0.getNextState());
+                return result(r1.getNextState(), specialValues.unsafeGet(r0.getValue()));
             } else {
-                return underlying.apply(input);
+                return underlying.apply(r0.getNextState());
             }
         };
     }
