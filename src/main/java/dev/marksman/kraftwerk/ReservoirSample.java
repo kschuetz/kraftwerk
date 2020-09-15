@@ -26,18 +26,27 @@ class ReservoirSample {
 
     private static Generator<Set<Integer>> reservoirSampleImpl(int n, int k) {
         return parameters -> input -> {
-            Seed current = input;
+
             Integer[] result = new Integer[k];
             for (int i = 0; i < k; i++) {
                 result[i] = i;
             }
-            for (int i = k; i < n; i++) {
-                Result<? extends Seed, Integer> next = BuildingBlocks.nextIntBounded(i, current);
-                Integer value = next.getValue();
-                if (value < k) {
-                    result[value] = i;
+            Result<Seed, Double> r0 = BuildingBlocks.nextDoubleFractional(input);
+            double w = Math.exp(Math.log(r0.getValue()) / k);
+            int j = k - 1;
+            Seed current = r0.getNextState();
+            while (j < n) {
+                Result<? extends Seed, Double> r1 = BuildingBlocks.nextDoubleFractional(current);
+                j += (int) (Math.log(r1.getValue()) / Math.log(1d - w)) + 1;
+                if (j < n) {
+                    Result<Seed, Double> r2 = BuildingBlocks.nextDoubleFractional(r1.getNextState());
+                    Result<Seed, Integer> r3 = BuildingBlocks.unsafeNextIntBounded(k, r2.getNextState());
+                    result[r3.getValue()] = j;
+                    w = w * Math.exp(Math.log(r2.getValue()) / k);
+                    current = r3.getNextState();
+                } else {
+                    current = r1.getNextState();
                 }
-                current = next.getNextState();
             }
             return Result.result(current, Set.copyFrom(result));
         };
@@ -81,15 +90,4 @@ class ReservoirSample {
             return Result.result(current, result);
         };
     }
-
-    public static void main(String[] args) {
-        generateBitMask(8, 1)
-                .run()
-                .take(20)
-                .forEach(n -> {
-                    System.out.println(Long.toBinaryString(n));
-                });
-    }
-
-
 }
