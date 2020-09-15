@@ -1,7 +1,6 @@
 package dev.marksman.kraftwerk;
 
 import dev.marksman.kraftwerk.constraints.IntRange;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -52,15 +51,10 @@ class ChooseTest {
         }
 
         @Test
-        @Disabled
         void coverage() {
-            // TODO: fix reservoir sample
             int[] f = new int[4];
-            chooseAtLeastOneOfValues(0, 1, 2).run().take(100).forEach(xs -> {
-                System.out.println(xs);
-                f[xs.foldLeft(Integer::sum, 0)] += 1;
-            });
-            for (int i = 0; i < 4; i++) System.out.println(f[i]);
+            chooseAtLeastOneOfValues(0, 1, 2).run().take(100)
+                    .forEach(xs -> f[xs.foldLeft(Integer::sum, 0)] += 1);
             assertTrue(coversRange(f));
         }
     }

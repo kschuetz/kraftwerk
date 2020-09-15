@@ -6,6 +6,7 @@ import dev.marksman.collectionviews.ImmutableVector;
 import dev.marksman.collectionviews.NonEmptyVector;
 import dev.marksman.collectionviews.Vector;
 import dev.marksman.collectionviews.VectorBuilder;
+import dev.marksman.kraftwerk.constraints.IntRange;
 import dev.marksman.kraftwerk.frequency.FrequencyMap;
 import dev.marksman.kraftwerk.frequency.FrequencyMapBuilder;
 
@@ -16,8 +17,10 @@ import java.util.Set;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Cons.cons;
 import static com.jnape.palatable.lambda.functions.builtin.fn3.FoldLeft.foldLeft;
+import static dev.marksman.kraftwerk.Distributions.linearRampDown;
 import static dev.marksman.kraftwerk.Generators.buildVector;
 import static dev.marksman.kraftwerk.Generators.constant;
+import static dev.marksman.kraftwerk.Generators.generateInt;
 import static dev.marksman.kraftwerk.ReservoirSample.reservoirSample;
 import static dev.marksman.kraftwerk.frequency.FrequencyMapBuilder.frequencyMapBuilder;
 import static java.util.Arrays.asList;
@@ -148,7 +151,8 @@ class Choose {
     }
 
     private static <A> Generator<ImmutableVector<A>> chooseSomeFromValues(int min, NonEmptyVector<A> domain) {
-        return Generators.sized(k -> reservoirSample(domain.size(), Math.max(k, min))
+        IntRange sizeRange = IntRange.from(min).to(Math.max(min, domain.size()));
+        return chooseSize(sizeRange).flatMap(k -> reservoirSample(domain.size(), Math.max(k, min))
                 .fmap(indices -> {
                     VectorBuilder<A> builder = Vector.builder(k);
                     for (Integer idx : indices) {
@@ -160,7 +164,8 @@ class Choose {
 
     @SuppressWarnings("unchecked")
     private static <A> Generator<ImmutableVector<A>> chooseSomeFromGenerators(int min, NonEmptyVector<Generator<? extends A>> domain) {
-        return Generators.sized(k -> reservoirSample(domain.size(), Math.max(k, min))
+        IntRange sizeRange = IntRange.from(min).to(Math.max(min, domain.size()));
+        return chooseSize(sizeRange).flatMap(k -> reservoirSample(domain.size(), Math.max(k, min))
                 .flatMap(indices -> {
                     ArrayList<Generator<A>> generators = new ArrayList<>();
                     for (Integer idx : indices) {
@@ -170,4 +175,7 @@ class Choose {
                 }));
     }
 
+    private static Generator<Integer> chooseSize(IntRange sizeRange) {
+        return linearRampDown(generateInt(sizeRange));
+    }
 }
