@@ -59,7 +59,7 @@ final class FrequencyMap3<A> implements FrequencyMap<A> {
         if (weightedGenerator.getWeight() < 1) {
             return this;
         } else {
-            return frequencyMapN(weightedGenerator, asList(weightedGenerator, weightedGeneratorA, weightedGeneratorB, weightedGeneratorC));
+            return frequencyMapN(weightedGenerator, asList(weightedGeneratorA, weightedGeneratorB, weightedGeneratorC));
         }
     }
 
