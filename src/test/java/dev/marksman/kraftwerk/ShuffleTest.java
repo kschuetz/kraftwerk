@@ -7,7 +7,9 @@ import org.junit.jupiter.api.Test;
 import java.util.HashSet;
 
 import static dev.marksman.kraftwerk.Generators.generateShuffled;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static testsupport.Assert.assertForAll;
+import static testsupport.CoversRange.coversRange;
 
 class ShuffleTest {
 
@@ -32,14 +34,9 @@ class ShuffleTest {
                     middle[result.unsafeGet(15)] += 1;
                     last[result.unsafeGet(31)] += 1;
                 });
-        // TODO: fix shuffle
-
-//        System.out.println(Arrays.toString(first));
-//        System.out.println(Arrays.toString(middle));
-//        System.out.println(Arrays.toString(last));
-//        assertTrue(coversRange(first));
-//        assertTrue(coversRange(middle));
-//        assertTrue(coversRange(last));
+        assertTrue(coversRange(first));
+        assertTrue(coversRange(middle));
+        assertTrue(coversRange(last));
     }
 
 }

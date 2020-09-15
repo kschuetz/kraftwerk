@@ -45,17 +45,6 @@ class PrimitivesTest {
 
     }
 
-//    @Test
-//    void testIntExclusiveInBounds() {
-//        assertForAll(generateIntExclusive(Integer.MAX_VALUE), gte(0));
-//        assertForAll(generateIntExclusive(Integer.MAX_VALUE).flatMap(Generators::generateIntExclusive), gte(0));
-//        assertForAll(generateInt(Integer.MIN_VALUE, Integer.MAX_VALUE - 1)
-//                        .flatMap(lowerBound -> generateInt(lowerBound + 1, Integer.MAX_VALUE)
-//                                .flatMap(upperBound -> generateIntExclusive(lowerBound, upperBound)
-//                                        .fmap(n -> n >= lowerBound && n < upperBound))),
-//                id());
-//    }
-
     @Test
     void testIntFullRange() {
         Seed initial = Seed.random();
@@ -81,17 +70,6 @@ class PrimitivesTest {
                 id());
 
     }
-
-//    @Test
-//    void testLongExclusiveInBounds() {
-//        assertForAll(Generators.generateLong(LongRange.exclusive(Long.MAX_VALUE)), gte(0L));
-//        assertForAll(Generators.generateLong(LongRange.exclusive(Long.MAX_VALUE)).flatMap(Generators::generateLongExclusive), gte(0L));
-//        assertForAll(generateLong(Long.MIN_VALUE, Long.MAX_VALUE - 1)
-//                        .flatMap(lowerBound -> generateLong(lowerBound + 1, Long.MAX_VALUE)
-//                                .flatMap(upperBound -> Generators.generateLongExclusive(lowerBound, upperBound)
-//                                        .fmap(n -> n >= lowerBound && n < upperBound))),
-//                id());
-//    }
 
     @Test
     void testLongFullRange() {
@@ -245,32 +223,6 @@ class PrimitivesTest {
 
         assertTrue(coversRange(f));
     }
-
-//    @Test
-//    void testIntExclusiveCoversRange1() {
-//        int[] f = new int[256];
-//        generateIntExclusive(256)
-//                .run()
-//                .take(2560)
-//                .forEach(n -> {
-//                    f[n] += 1;
-//                });
-//
-//        assertTrue(coversRange(f));
-//    }
-//
-//    @Test
-//    void testIntExclusiveCoversRange2() {
-//        int[] f = new int[256];
-//        generateIntExclusive(-128, 128)
-//                .run()
-//                .take(2560)
-//                .forEach(n -> {
-//                    f[n + 128] += 1;
-//                });
-//
-//        assertTrue(coversRange(f));
-//    }
 
     @Test
     void testIntInclusiveCoversRange1() {
