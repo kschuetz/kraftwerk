@@ -27,6 +27,7 @@ public class GenerateCharts {
 
     public static void main(String[] args) {
         Path outputDir = Paths.get("target", "charts");
+        //noinspection ResultOfMethodCallIgnored
         outputDir.toFile().mkdirs();
 
         Fn1<ChartSuite, ChartSuite> builder =
@@ -52,7 +53,13 @@ public class GenerateCharts {
                 .add("short", histogram(generateShort(), 256, n -> (n >> 8) & 255))
                 .add("boolean", histogram(generateBoolean(), 2, b -> b ? 0 : 1))
                 .add("double", histogram(Generators.generateDoubleFractional(), 256, n -> (int) (n * 256)))
+                .add("double-with-NaNs", histogram(Generators.generateDoubleFractional().withNaNs()
+                                .labeled("double with NaNs"), 2,
+                        n -> Double.isNaN(n) ? 1 : 0))
                 .add("float", histogram(Generators.generateFloatFractional(), 256, n -> (int) (n * 256)))
+                .add("float-with-NaNs", histogram(Generators.generateFloatFractional().withNaNs()
+                                .labeled("float with NaNs"), 2,
+                        n -> Float.isNaN(n) ? 1 : 0))
                 .add("gaussian", histogram(generateGaussian(), 512, n -> 256 + (int) (90 * n)));
     }
 
