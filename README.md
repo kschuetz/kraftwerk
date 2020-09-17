@@ -18,15 +18,15 @@ public static class IntegerExample {
         Generators.generateInt()
                 .run()
                 .take(5)
-                .forEach(System.out::println);
+                .forEach(System.out::println);    
+        
+        // sample output:
+        // -806894999
+        // -2088055255
+        // 519165596
+        // -247082188
+        // 2073514567
     }       
-
-// sample output:
-// -806894999
-// -2088055255
-// 519165596
-// -247082188
-// 2073514567        
 }
 ```      
 
@@ -40,15 +40,15 @@ public static class IntegerWithinRangeExample {
         Generators.generateInt(IntRange.from(1).to(100))
                 .run()
                 .take(5)
-                .forEach(System.out::println);
-    }  
+                .forEach(System.out::println); 
 
-// sample output:
-// 48
-// 82
-// 24
-// 41
-// 32
+        // sample output:
+        // 48
+        // 82
+        // 24
+        // 41
+        // 32
+    }  
 }
 ```
 
@@ -62,16 +62,16 @@ public static class InitialSeedExample {
         Generators.generateInt(IntRange.from(1).to(100))
                 .run(initialSeed)
                 .take(5)
-                .forEach(System.out::println);
-    }       
+                .forEach(System.out::println);  
 
-// output:
-// 24
-// 48
-// 68
-// 86
-// 39    
-// These will be the same on every run because we are using the same initial seed.
+        // output:
+        // 24
+        // 48
+        // 68
+        // 86
+        // 39    
+        // These will be the same on every run because we are using the same initial seed.
+    }       
 }
 ```                          
 
@@ -85,15 +85,15 @@ public static class MappingExample {
                 .fmap(n -> n * 1000)
                 .run()
                 .take(5)
-                .forEach(System.out::println);
+                .forEach(System.out::println);   
+        
+        // sample output:
+        // 64000
+        // 34000
+        // 60000
+        // 58000
+        // 61000
     }       
-
-// sample output:
-// 64000
-// 34000
-// 60000
-// 58000
-// 61000
 }
 ```    
 
@@ -108,16 +108,15 @@ public static class MappingToADifferentType {
                 .run()
                 .take(5)
                 .forEach(System.out::println);
-
+        
+        // sample output:
+        // 2020-02-27
+        // 2020-03-08
+        // 2020-01-19
+        // 2020-04-09
+        // 2020-01-03
     }
 }  
-
-// sample output:
-// 2020-02-27
-// 2020-03-08
-// 2020-01-19
-// 2020-04-09
-// 2020-01-03
 ```        
 
 Two or more (up to eight) generators can be combined to create a generator of `Tuple`s, using `Generators.tupled`:
@@ -131,14 +130,14 @@ public static class CombiningTwoGenerators {
         generator.run()
                 .take(5)
                 .forEach(System.out::println);
+        
+        // sample output:
+        // HList{ 1085224429 :: Sp`b}tM#@E|r }
+        // HList{ -354995125 :: Zh:b4 }
+        // HList{ -41728349 :: C8T[8aD }
+        // HList{ 981101761 :: 'z }
+        // HList{ -1434780244 :: uX }
     }  
-
-// sample output:
-// HList{ 1085224429 :: Sp`b}tM#@E|r }
-// HList{ -354995125 :: Zh:b4 }
-// HList{ -41728349 :: C8T[8aD }
-// HList{ 981101761 :: 'z }
-// HList{ -1434780244 :: uX }
 }
 ```        
 
@@ -154,14 +153,14 @@ public static class CombiningThreeGenerators {
         generator.run()
                 .take(5)
                 .forEach(System.out::println);
+        
+        // sample output:
+        // HList{ 1730204138 :: A(@'y)p#e: :: 0.11402224544546236 }
+        // HList{ 1909756109 :: ';B :: 0.9884475029496926 }
+        // HList{ 1809180523 :: "W>.<eS :: 0.5097816977203855 }
+        // HList{ -540828092 :: ^Tld^2a#C}>N6U@ :: 0.7904007899645681 }
+        // HList{ -829429249 ::  :: 0.3125739749760317 }
     }      
-
-// sample output:
-// HList{ 1730204138 :: A(@'y)p#e: :: 0.11402224544546236 }
-// HList{ 1909756109 :: ';B :: 0.9884475029496926 }
-// HList{ 1809180523 :: "W>.<eS :: 0.5097816977203855 }
-// HList{ -540828092 :: ^Tld^2a#C}>N6U@ :: 0.7904007899645681 }
-// HList{ -829429249 ::  :: 0.3125739749760317 }
 }
 ```        
 
