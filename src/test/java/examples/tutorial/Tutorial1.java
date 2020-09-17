@@ -87,9 +87,9 @@ public class Tutorial1 {
     public static class CustomProductTypes {
         public static void main(String[] args) {
             Generator<Integer> component = Generators.generateInt(IntRange.inclusive(0, 255));
-            Generator<RGB> generatePoint = Generators.product(component, component, component, RGB::new);
+            Generator<RGB> generateRGB = Generators.product(component, component, component, RGB::new);
 
-            generatePoint.run()
+            generateRGB.run()
                     .take(5)
                     .forEach(System.out::println);
         }
