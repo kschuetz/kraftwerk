@@ -28,7 +28,7 @@ public final class DefaultPropertyTestingBiasSettings implements BiasSettings {
     }
 
     /**
-     * Constructs a {@code DefaultPropertyTestingBiasSettings.
+     * Constructs a {@code DefaultPropertyTestingBiasSettings}.
      */
     public static DefaultPropertyTestingBiasSettings defaultPropertyTestBiasSettings() {
         return INSTANCE;
