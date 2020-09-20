@@ -49,7 +49,7 @@ class Choose {
     }
 
     @SafeVarargs
-    static <A> Generator<ImmutableVector<A>> chooseSomeOf(A first, A... more) {
+    static <A> Generator<ImmutableVector<A>> chooseSomeOfValues(A first, A... more) {
         return chooseSomeValuesFromDomain(Vector.of(first, more));
     }
 
@@ -72,7 +72,7 @@ class Choose {
         }
     }
 
-    static <A> Generator<ImmutableNonEmptyVector<A>> chooseAtLeastOneValueFromCollection(Collection<A> candidates) {
+    static <A> Generator<ImmutableNonEmptyVector<A>> chooseAtLeastOneValueFromCollection(Iterable<A> candidates) {
         requireNonEmptyCandidates("chooseAtLeastOneFrom", candidates);
         return chooseAtLeastOneValueFromDomain(NonEmptyVector.copyFromOrThrow(candidates));
     }
@@ -81,7 +81,7 @@ class Choose {
         return chooseSomeFromValues(1, domain).fmap(ImmutableVector::toNonEmptyOrThrow);
     }
 
-    static <A> Generator<ImmutableVector<A>> chooseSomeValuesFromDomain(Collection<A> candidates) {
+    static <A> Generator<ImmutableVector<A>> chooseSomeValuesFromCollection(Collection<A> candidates) {
         if (candidates.isEmpty()) {
             return constant(Vector.empty());
         } else {
@@ -129,6 +129,7 @@ class Choose {
     }
 
     static <A> Generator<A> chooseOneFromCollection(Iterable<Generator<? extends A>> candidates) {
+        requireNonEmptyCandidates("chooseOneFromCollection", candidates);
         return FoldLeft.<Generator<? extends A>, FrequencyMapBuilder<A>>foldLeft(
                 FrequencyMapBuilder::add,
                 frequencyMapBuilder(), candidates)

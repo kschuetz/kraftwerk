@@ -1567,7 +1567,7 @@ public final class Generators {
      */
     @SafeVarargs
     public static <A> Generator<ImmutableVector<A>> chooseSomeOfValues(A first, A... more) {
-        return Choose.chooseSomeOf(first, more);
+        return Choose.chooseSomeOfValues(first, more);
     }
 
     /**
@@ -1650,7 +1650,7 @@ public final class Generators {
      * @return a {@code Generator<A>}
      */
     public static <A> Generator<ImmutableVector<A>> chooseSomeValuesFromCollection(Collection<A> candidates) {
-        return Choose.chooseSomeValuesFromDomain(candidates);
+        return Choose.chooseSomeValuesFromCollection(candidates);
     }
 
     /**

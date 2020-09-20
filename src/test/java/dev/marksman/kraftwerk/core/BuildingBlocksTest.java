@@ -14,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static testsupport.GeneratorPair.newRandomGeneratorPair;
 
 class BuildingBlocksTest {
-
     private static final int SEQUENCE_LENGTH = 32;
 
     @Test
@@ -166,5 +165,4 @@ class BuildingBlocksTest {
 
         assertArrayEquals(expected, actual, gp.info());
     }
-
 }
