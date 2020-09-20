@@ -4,9 +4,21 @@
 [![Javadoc](https://javadoc-badge.appspot.com/dev.marksman/kraftwerk.svg?label=javadoc)](https://kschuetz.github.io/kraftwerk/javadoc/)
 [![CircleCI](https://circleci.com/gh/kschuetz/kraftwerk.svg?style=svg)](https://circleci.com/gh/kschuetz/kraftwerk)
 
-WORK IN PROGRESS
+#### Table of Contents
+ - [What is it?](#what-is-it)
+ - [Tutorial](#tutorial)
+ - [Generators](#generators)
+ - [License](#license)
 
-# Quick Start
+# <a name="what-is-it">What is it?</a>
+
+*kraftwerk* is a purely-functional Java library for (pseudo-)randomly generating values of simple or complex data types. It provides several built-in "generators" that can used by themselves, or composed with other generators in arbitrarily complex ways. 
+     
+The property-testing framework [Gauntlet](https://github.com/kschuetz/gauntlet) uses *kraftwerk* for sample generation. However, *kraftwerk* is designed to be general purpose and need not be used for the application of property testing.  
+
+*kraftwerk* requires Java 1.8 or higher.
+
+# <a name="tutorial">Tutorial</a>
 
 The following example will generate a supply of random integers, and print the first five to the console.
 
@@ -75,7 +87,7 @@ public static class InitialSeedExample {
 }
 ```                          
 
-A generator can be "mapped" using `fmap`. `fmap` maps the output of a generator to new value using function, and yields a new generator.
+A generator can be "mapped" using `fmap`. `fmap` maps the output of a generator to a new value using a function, and yields a new generator.
 The following example multiplies the initial generator's output by 1000:
 
 ```java
@@ -218,8 +230,12 @@ public static class CustomProductTypes {
                         '}';
             }
         }
-    }
-```
+    }                                          
+```       
+
+# <a name="generators">Generators</a>
+
+A `Generator<A>` is a strategy for generating random value of type `A`.  Several built-in `Generator`s are provided as static methods in `dev.marksman.kraftwerk.Generators`.
 
 # <a name="license">License</a>
 
