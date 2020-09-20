@@ -7,7 +7,6 @@ import static dev.marksman.kraftwerk.Result.result;
 
 final class Tap {
     private Tap() {
-
     }
 
     static <A, B> Generator<B> tap(Generator<A> gen,

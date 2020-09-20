@@ -14,7 +14,6 @@ import static com.jnape.palatable.lambda.functions.builtin.fn3.FoldLeft.foldLeft
 
 final class Mapping {
     private Mapping() {
-
     }
 
     static <A, B> Generator<B> mapped(Fn1<? super A, ? extends B> fn, Generator<A> source) {

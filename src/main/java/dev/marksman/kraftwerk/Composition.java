@@ -4,6 +4,9 @@ import com.jnape.palatable.lambda.adt.Maybe;
 import com.jnape.palatable.lambda.functions.Fn1;
 
 final class Composition {
+    private Composition() {
+    }
+
     static <A, B> Generator<B> flatMapped(Fn1<? super A, ? extends Generator<B>> fn, Generator<A> operand) {
         return new FlatMapped<>(operand, fn::apply);
     }

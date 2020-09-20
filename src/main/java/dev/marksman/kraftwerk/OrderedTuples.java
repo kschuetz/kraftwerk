@@ -3,9 +3,7 @@ package dev.marksman.kraftwerk;
 import com.jnape.palatable.lambda.adt.hlist.Tuple2;
 
 final class OrderedTuples {
-
     private OrderedTuples() {
-
     }
 
     static <A extends Comparable<A>> Generator<Tuple2<A, A>> generateOrderedPair(Generator<A> generator) {
@@ -17,5 +15,4 @@ final class OrderedTuples {
                 ? pair.invert()
                 : pair;
     }
-
 }

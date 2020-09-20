@@ -3,6 +3,9 @@ package dev.marksman.kraftwerk;
 import com.jnape.palatable.lambda.adt.Maybe;
 
 final class Meta {
+    private Meta() {
+    }
+
     static <A> Generator<A> withMetadata(Maybe<String> label, Maybe<Object> applicationData, Generator<A> underlying) {
         while (underlying instanceof WithMetadata<?>) {
             underlying = ((WithMetadata<A>) underlying).getUnderlying();

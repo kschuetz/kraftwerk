@@ -8,7 +8,6 @@ final class SizeSelectors {
     private static final int DEFAULT_RANGE = 16;
 
     private SizeSelectors() {
-
     }
 
     private static Result<Seed, Boolean> shouldUsePreferred(Seed input) {

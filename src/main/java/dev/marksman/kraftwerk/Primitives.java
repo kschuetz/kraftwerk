@@ -47,7 +47,6 @@ final class Primitives {
     private static final FloatRange DEFAULT_FLOAT_RANGE = FloatRange.inclusive(-1E7f, 1E7f);
 
     private Primitives() {
-
     }
 
     static Generator<Integer> generateInt() {
@@ -88,7 +87,6 @@ final class Primitives {
         } else {
             return simpleGenerator(label, getBias, input -> unsafeNextIntBounded(bound, input));
         }
-
     }
 
     private static Generator<Integer> generateIntExclusive(int origin, int bound) {
@@ -474,7 +472,6 @@ final class Primitives {
                 };
             }
         }
-
     }
 
     private static class IntGenerator implements Generator<Integer> {
@@ -570,7 +567,6 @@ final class Primitives {
                 return i -> (byte) (min + (i % span));
             }
         }
-
     }
 
     private static class ShortGenerator implements Generator<Short> {

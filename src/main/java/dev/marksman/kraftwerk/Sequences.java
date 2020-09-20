@@ -11,7 +11,9 @@ import static dev.marksman.kraftwerk.Generators.constant;
 import static dev.marksman.kraftwerk.Generators.generateInt;
 import static dev.marksman.kraftwerk.constraints.IntRange.inclusive;
 
-class Sequences {
+final class Sequences {
+    private Sequences() {
+    }
 
     static <A> Generator<ImmutableVector<A>> generateOrderedSequence(Generator<Integer> countForEachElement,
                                                                      ImmutableVector<A> orderedElems) {
@@ -55,5 +57,4 @@ class Sequences {
             }
         }
     }
-
 }

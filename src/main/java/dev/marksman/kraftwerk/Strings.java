@@ -21,7 +21,6 @@ import static dev.marksman.kraftwerk.aggregator.Aggregators.maybeStringAggregato
 import static dev.marksman.kraftwerk.aggregator.Aggregators.stringAggregator;
 
 final class Strings {
-
     private Strings() {
     }
 

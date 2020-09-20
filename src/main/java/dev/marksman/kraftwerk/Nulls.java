@@ -8,6 +8,9 @@ import static dev.marksman.kraftwerk.weights.NullWeights.nonNulls;
 final class Nulls {
     private static final NullWeights DEFAULT_NULL_WEIGHTS = nonNulls(9).toNulls(1);
 
+    private Nulls() {
+    }
+
     static <A> Generator<A> generateNull() {
         return Generators.constant(null);
     }

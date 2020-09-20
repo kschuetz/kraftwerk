@@ -16,7 +16,9 @@ import static dev.marksman.kraftwerk.weights.EitherWeights.rights;
 import static dev.marksman.kraftwerk.weights.MaybeWeights.justs;
 import static dev.marksman.kraftwerk.weights.TernaryWeights.ternaryWeights;
 
-class CoProducts {
+final class CoProducts {
+    private CoProducts() {
+    }
 
     private static final Generator<Unit> GENERATE_UNIT = constant(Unit.UNIT);
     private static final Generator<Boolean> GENERATE_TRUE = constant(true);
@@ -96,5 +98,4 @@ class CoProducts {
                 .add(generatorA.zipWith(These::both, generatorB).weighted(weights.getWeightC()))
                 .toGenerator();
     }
-
 }

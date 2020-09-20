@@ -19,7 +19,9 @@ import com.jnape.palatable.lambda.functions.Fn8;
 
 import static dev.marksman.kraftwerk.Tap.tap;
 
-class Functions {
+final class Functions {
+    private Functions() {
+    }
 
     static <R> Generator<Fn0<R>> generateFn0(Generator<R> result) {
         return tap(result, (output, rs) -> () -> output.apply(rs).getValue());
@@ -111,5 +113,4 @@ class Functions {
                 (output, rs) -> (a, b, c, d, e, f, g, h) ->
                         output.apply(params.apply(rs, Product8.product(a, b, c, d, e, f, g, h))).getValue());
     }
-
 }

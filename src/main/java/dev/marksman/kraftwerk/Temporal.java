@@ -18,17 +18,17 @@ import java.time.YearMonth;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
-class Temporal {
+final class Temporal {
     static final LocalDateRange DEFAULT_LOCAL_DATE_RANGE =
             LocalDateRange.from(LocalDate.of(1899, 1, 1))
                     .to(LocalDate.of(2199, 12, 31));
-
     static final DurationRange DEFAULT_DURATION_RANGE = DurationRange.from(Duration.ZERO).to(Duration.ofDays(1000));
-
     private static final Generator<Month> MONTH_GENERATOR = Enums.generateFromEnum(Month.class);
     private static final Generator<DayOfWeek> DAY_OF_WEEK_GENERATOR = Generators.generateFromEnum(DayOfWeek.class);
-
     private static final long NANOS_PER_DAY = 60 * 60 * 24 * 1_000_000_000L;
+
+    private Temporal() {
+    }
 
     static Generator<Month> generateMonth() {
         return MONTH_GENERATOR;

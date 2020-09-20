@@ -15,7 +15,10 @@ import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Upcast.upcast;
 import static dev.marksman.kraftwerk.Result.result;
 
-class Shuffle {
+final class Shuffle {
+    private Shuffle() {
+    }
+
     static Generator<Vector<Integer>> generateShuffled(int count) {
         return generateShuffled(count, id());
     }

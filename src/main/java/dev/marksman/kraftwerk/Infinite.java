@@ -3,15 +3,17 @@ package dev.marksman.kraftwerk;
 import dev.marksman.enhancediterables.ImmutableNonEmptyIterable;
 import dev.marksman.kraftwerk.core.BuildingBlocks;
 
+import static dev.marksman.kraftwerk.Tap.tap;
 import static dev.marksman.kraftwerk.ValueSupply.valueSupply;
 
-class Infinite {
+final class Infinite {
+    private Infinite() {
+    }
 
     static <A> Generator<ImmutableNonEmptyIterable<A>> generateInfiniteIterable(Generator<A> gen) {
-        return Tap.tap(gen, (g1, input) -> {
+        return tap(gen, (g1, input) -> {
             Result<Seed, Long> initialState = BuildingBlocks.nextLong(input);
             return valueSupply(g1, Seed.create(initialState._2()));
         });
     }
-
 }

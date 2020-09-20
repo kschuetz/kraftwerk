@@ -7,7 +7,10 @@ import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
 import static dev.marksman.kraftwerk.aggregator.Aggregator.aggregator;
 import static dev.marksman.kraftwerk.aggregator.Aggregators.monoidAggregator;
 
-class Lambda {
+final class Lambda {
+    private Lambda() {
+    }
+
     static <A> Generator<A> generateFromSemigroup(Semigroup<A> semigroup, Generator<A> gen) {
         return Generators.sized(size -> generateNFromSemigroup(semigroup, gen, Math.max(1, size)));
     }

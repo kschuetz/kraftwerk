@@ -39,9 +39,11 @@ import static dev.marksman.kraftwerk.Temporal.generateLocalDateTime;
 import static dev.marksman.kraftwerk.Temporal.generateLocalTime;
 
 final class Ranges {
-
     private static final DoubleRange FULL_DOUBLE_RANGE = DoubleRange.inclusive(Double.MIN_VALUE, Double.MAX_VALUE);
     private static final FloatRange FULL_FLOAT_RANGE = FloatRange.inclusive(-Float.MAX_VALUE, Float.MAX_VALUE);
+
+    private Ranges() {
+    }
 
     static Generator<IntRange> generateIntRange() {
         return generateIntRange(IntRange.fullRange());
@@ -177,5 +179,4 @@ final class Ranges {
             return LocalDateTimeRange.inclusive(pair._2(), pair._1());
         }
     }
-
 }

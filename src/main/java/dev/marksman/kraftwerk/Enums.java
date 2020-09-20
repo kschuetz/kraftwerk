@@ -4,7 +4,9 @@ import dev.marksman.collectionviews.Vector;
 
 import static dev.marksman.kraftwerk.Choose.chooseOneValueFromDomain;
 
-class Enums {
+final class Enums {
+    private Enums() {
+    }
 
     static <A extends Enum<A>> Generator<A> generateFromEnum(Class<A> enumType) {
         A[] enumConstants = enumType.getEnumConstants();
@@ -13,5 +15,4 @@ class Enums {
         }
         return chooseOneValueFromDomain(Vector.copyFrom(enumConstants).toNonEmptyOrThrow());
     }
-
 }

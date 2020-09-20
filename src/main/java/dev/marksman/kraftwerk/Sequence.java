@@ -7,7 +7,9 @@ import dev.marksman.enhancediterables.NonEmptyIterable;
 import static dev.marksman.kraftwerk.Generators.aggregate;
 import static dev.marksman.kraftwerk.aggregator.Aggregators.vectorAggregator;
 
-class Sequence {
+final class Sequence {
+    private Sequence() {
+    }
 
     static <A> Generator<ImmutableVector<A>> sequence(Iterable<Generator<A>> gs) {
         return aggregate(vectorAggregator(), gs);
@@ -16,5 +18,4 @@ class Sequence {
     static <A> Generator<ImmutableNonEmptyVector<A>> sequenceNonEmpty(NonEmptyIterable<Generator<A>> gs) {
         return sequence(gs).fmap(ImmutableVector::toNonEmptyOrThrow);
     }
-
 }

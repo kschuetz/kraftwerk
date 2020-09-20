@@ -4,7 +4,6 @@ import dev.marksman.kraftwerk.constraints.IntRange;
 
 final class Preconditions {
     private Preconditions() {
-
     }
 
     static void requirePositiveSize(IntRange sizeRange) {

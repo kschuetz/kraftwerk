@@ -2,7 +2,9 @@ package dev.marksman.kraftwerk;
 
 import java.util.UUID;
 
-class UUIDs {
+final class UUIDs {
+    private UUIDs() {
+    }
 
     static Generator<UUID> generateUUID() {
         return Generators.product(
@@ -18,5 +20,4 @@ class UUIDs {
                             s.substring(20));
                 });
     }
-
 }

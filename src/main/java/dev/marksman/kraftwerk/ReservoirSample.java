@@ -9,7 +9,9 @@ import java.util.Arrays;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Upcast.upcast;
 
-class ReservoirSample {
+final class ReservoirSample {
+    private ReservoirSample() {
+    }
 
     static Generator<FiniteIterable<Integer>> reservoirSample(int n, int k) {
         if (k < 1 || n < 1) {

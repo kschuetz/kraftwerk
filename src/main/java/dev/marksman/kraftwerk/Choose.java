@@ -25,7 +25,9 @@ import static dev.marksman.kraftwerk.ReservoirSample.reservoirSample;
 import static dev.marksman.kraftwerk.frequency.FrequencyMapBuilder.frequencyMapBuilder;
 import static java.util.Arrays.asList;
 
-class Choose {
+final class Choose {
+    private Choose() {
+    }
 
     @SafeVarargs
     static <A> Generator<A> chooseOneOfValues(A first, A... more) {

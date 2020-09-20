@@ -13,7 +13,10 @@ import java.util.Map;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Zip.zip;
 
-class Collections {
+final class Collections {
+    private Collections() {
+    }
+
     static <A> Generator<ArrayList<A>> generateArrayList(Generator<A> gen) {
         return Generators.sized(n -> buildArrayList(n, gen));
     }

@@ -14,7 +14,6 @@ import static dev.marksman.kraftwerk.Result.result;
 
 final class Products {
     private Products() {
-
     }
 
     static <A, B, Out> Generator<Out> product(Generator<A> a,
@@ -110,7 +109,6 @@ final class Products {
         public Maybe<String> getLabel() {
             return LABEL;
         }
-
     }
 
     private static class Product3<A, B, C, Out> implements Generator<Out> {
@@ -148,7 +146,6 @@ final class Products {
         public Maybe<String> getLabel() {
             return LABEL;
         }
-
     }
 
     private static class Product4<A, B, C, D, Out> implements Generator<Out> {
@@ -191,7 +188,6 @@ final class Products {
         public Maybe<String> getLabel() {
             return LABEL;
         }
-
     }
 
     private static class Product5<A, B, C, D, E, Out> implements Generator<Out> {
@@ -239,7 +235,6 @@ final class Products {
         public Maybe<String> getLabel() {
             return LABEL;
         }
-
     }
 
     private static class Product6<A, B, C, D, E, F, Out> implements Generator<Out> {
@@ -292,7 +287,6 @@ final class Products {
         public Maybe<String> getLabel() {
             return LABEL;
         }
-
     }
 
     private static class Product7<A, B, C, D, E, F, G, Out> implements Generator<Out> {
@@ -350,7 +344,6 @@ final class Products {
         public Maybe<String> getLabel() {
             return LABEL;
         }
-
     }
 
     private static class Product8<A, B, C, D, E, F, G, H, Out> implements Generator<Out> {
@@ -413,6 +406,5 @@ final class Products {
         public Maybe<String> getLabel() {
             return LABEL;
         }
-
     }
 }
