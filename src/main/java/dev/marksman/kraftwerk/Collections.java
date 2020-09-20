@@ -2,7 +2,7 @@ package dev.marksman.kraftwerk;
 
 import dev.marksman.collectionviews.ImmutableNonEmptyVector;
 import dev.marksman.collectionviews.ImmutableVector;
-import dev.marksman.collectionviews.NonEmptyVector;
+import dev.marksman.collectionviews.Vector;
 import dev.marksman.kraftwerk.constraints.IntRange;
 
 import java.util.ArrayList;
@@ -14,7 +14,6 @@ import java.util.Map;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Zip.zip;
 
 class Collections {
-
     static <A> Generator<ArrayList<A>> generateArrayList(Generator<A> gen) {
         return Generators.sized(n -> buildArrayList(n, gen));
     }
@@ -80,7 +79,7 @@ class Collections {
         return generateMapImpl(keys.size(), keys, generateValue);
     }
 
-    static <K, V> Generator<Map<K, V>> generateMap(NonEmptyVector<K> keys,
+    static <K, V> Generator<Map<K, V>> generateMap(Vector<K> keys,
                                                    Generator<V> generateValue) {
         return generateMapImpl(keys.size(), keys, generateValue);
     }
@@ -114,5 +113,4 @@ class Collections {
         return generateArrayListOfSize(size, generateKey)
                 .flatMap(keys -> generateMapImpl(keys.size(), keys, generateValue));
     }
-
 }

@@ -1887,7 +1887,7 @@ public final class Generators {
      * @param <V>           the value type
      * @return a {@code Generator<Map<K, V>>}
      */
-    public static <K, V> Generator<Map<K, V>> generateMap(NonEmptyVector<K> keys,
+    public static <K, V> Generator<Map<K, V>> generateMap(Vector<K> keys,
                                                           Generator<V> generateValue) {
         return Collections.generateMap(keys, generateValue);
     }
