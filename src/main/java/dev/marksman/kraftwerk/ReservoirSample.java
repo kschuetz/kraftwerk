@@ -26,7 +26,6 @@ class ReservoirSample {
 
     private static Generator<Set<Integer>> reservoirSampleImpl(int n, int k) {
         return parameters -> input -> {
-
             Integer[] result = new Integer[k];
             for (int i = 0; i < k; i++) {
                 result[i] = i;
