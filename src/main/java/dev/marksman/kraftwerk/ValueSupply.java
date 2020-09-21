@@ -1,5 +1,6 @@
 package dev.marksman.kraftwerk;
 
+import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.enhancediterables.ImmutableIterable;
 import dev.marksman.enhancediterables.ImmutableNonEmptyIterable;
 
@@ -19,18 +20,18 @@ import java.util.stream.StreamSupport;
  * @param <A> the element type
  */
 public final class ValueSupply<A> implements ImmutableNonEmptyIterable<A> {
-    private final GenerateFn<A> gen;
+    private final Fn1<Seed, Result<? extends Seed, A>> gen;
     private final A firstValue;
     private final Seed state;
 
-    private ValueSupply(GenerateFn<A> gen, Seed initialState) {
+    private ValueSupply(Fn1<Seed, Result<? extends Seed, A>> gen, Seed initialState) {
         this.gen = gen;
         Result<? extends Seed, A> r1 = gen.apply(initialState);
         this.firstValue = r1.getValue();
         this.state = r1.getNextState();
     }
 
-    static <A> ValueSupply<A> valueSupply(GenerateFn<A> gen, Seed initialState) {
+    static <A> ValueSupply<A> valueSupply(Fn1<Seed, Result<? extends Seed, A>> gen, Seed initialState) {
         return new ValueSupply<>(gen, initialState);
     }
 
@@ -54,10 +55,10 @@ public final class ValueSupply<A> implements ImmutableNonEmptyIterable<A> {
     }
 
     private static class TailIterator<A> implements Iterator<A> {
-        private final GenerateFn<A> gen;
+        private final Fn1<Seed, Result<? extends Seed, A>> gen;
         private Seed state;
 
-        private TailIterator(GenerateFn<A> gen, Seed state) {
+        private TailIterator(Fn1<Seed, Result<? extends Seed, A>> gen, Seed state) {
             this.gen = gen;
             this.state = state;
         }
