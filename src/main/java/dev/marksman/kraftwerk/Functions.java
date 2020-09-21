@@ -24,7 +24,7 @@ final class Functions {
     }
 
     static <R> Generator<Fn0<R>> generateFn0(Generator<R> result) {
-        return tap(result, (output, rs) -> () -> output.apply(rs).getValue());
+        return result.fmap(r -> () -> r);
     }
 
     static <A, R> Generator<Fn1<A, R>> generateFn1(Cogenerator<A> param1,
