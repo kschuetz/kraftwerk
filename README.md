@@ -14,11 +14,13 @@
 
 *kraftwerk* is a purely-functional Java library for (pseudo-)randomly generating values of simple or complex data types. It provides several built-in "generators" that can used by themselves, or composed with other generators in arbitrarily complex ways. 
      
-The property-testing framework [Gauntlet](https://github.com/kschuetz/gauntlet) uses *kraftwerk* for sample generation. However, *kraftwerk* is designed to be general purpose and need not be used for the application of property testing.  
+The property testing framework [Gauntlet](https://github.com/kschuetz/gauntlet) uses *kraftwerk* for sample generation. However, *kraftwerk* is designed to be general purpose and is not limited to the application of property testing.  
 
-*kraftwerk* requires Java 1.8 or higher.
+*kraftwerk* requires Java 1.8 or higher. It depends on [lambda](https://github.com/palatable/lambda) and supports the generation of several *lambda* types.
 
 # <a name="tutorial">Tutorial</a>
+
+Several built-in generators can be found in the [`dev.marksman.kraftwerk.Generators`](https://kschuetz.github.io/kraftwerk/javadoc/dev/marksman/kraftwerk/Generators.html) package.  We will start with [`generateInt`](https://kschuetz.github.io/kraftwerk/javadoc/dev/marksman/kraftwerk/Generators.html#generateInt--):
 
 The following example will generate a supply of random integers, and print the first five to the console.
 
@@ -235,7 +237,7 @@ public static class CustomProductTypes {
 
 # <a name="generators">Generators</a>
 
-A `Generator<A>` is a strategy for generating random value of type `A`.  Several built-in `Generator`s are provided as static methods in `dev.marksman.kraftwerk.Generators`.
+A [`Generator<A>`](https://kschuetz.github.io/kraftwerk/javadoc/dev/marksman/kraftwerk/Generator.html) is a strategy for generating random values of type `A`.  Several built-in `Generator`s are provided as static methods in [`dev.marksman.kraftwerk.Generators`](https://kschuetz.github.io/kraftwerk/javadoc/dev/marksman/kraftwerk/Generators.html).
 
 # <a name="license">License</a>
 
