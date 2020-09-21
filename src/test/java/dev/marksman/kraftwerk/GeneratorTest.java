@@ -5,7 +5,6 @@ import com.jnape.palatable.lambda.adt.hlist.Tuple3;
 import com.jnape.palatable.lambda.functions.Fn1;
 import com.jnape.palatable.lambda.functions.builtin.fn1.Id;
 import dev.marksman.kraftwerk.constraints.IntRange;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -20,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GeneratorTest {
-
     private static final int SEQUENCE_LENGTH = 17;
 
     private static final Generator<Integer> gen1 = Generators.generateInt();
@@ -64,18 +62,6 @@ class GeneratorTest {
     @Test
     void generateConstant() {
         assertTrue(all(eq(1), Generators.constant(1).run().take(1000)));
-    }
-
-    @Disabled
-    @Test
-    void stackSafeFlatMap() {
-        int LARGE_NUMBER = 10_000;
-        int max = 2 * LARGE_NUMBER;
-        Generator<Integer> g = Generators.generateInt(IntRange.from(0).to(max));
-        for (int i = 0; i < LARGE_NUMBER; i++) {
-            g = g.flatMap(n -> Generators.generateInt(IntRange.from(n).to(max)));
-        }
-        g.run().iterator().next();
     }
 
     @Test
@@ -129,5 +115,4 @@ class GeneratorTest {
     private static <A> Result<Seed, A> run(Generator<A> gen, Seed input) {
         return (Result<Seed, A>) gen.createGenerateFn(defaultGeneratorParameters()).apply(input);
     }
-
 }

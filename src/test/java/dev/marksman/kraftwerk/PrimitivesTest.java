@@ -25,7 +25,6 @@ import static testsupport.CoversRange.coversRange;
 import static testsupport.Sample.sample;
 
 class PrimitivesTest {
-
     @Test
     void testIntInclusiveInBounds() {
         assertForAll(generateInt(IntRange.from(0).to(0)), eq(0));

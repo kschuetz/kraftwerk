@@ -12,7 +12,6 @@ import static testsupport.Assert.assertForAll;
 import static testsupport.CoversRange.coversRange;
 
 class ShuffleTest {
-
     @Test
     void testShuffleRetainsSameElements() {
         ImmutableVector<Integer> source = Vector.range(32);
@@ -38,5 +37,4 @@ class ShuffleTest {
         assertTrue(coversRange(middle));
         assertTrue(coversRange(last));
     }
-
 }
