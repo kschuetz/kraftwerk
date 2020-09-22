@@ -22,6 +22,8 @@ The property testing framework [Gauntlet](https://github.com/kschuetz/gauntlet) 
 
 Several built-in generators can be found in the [`dev.marksman.kraftwerk.Generators`](https://kschuetz.github.io/kraftwerk/javadoc/dev/marksman/kraftwerk/Generators.html) package.  We will start with [`generateInt`](https://kschuetz.github.io/kraftwerk/javadoc/dev/marksman/kraftwerk/Generators.html#generateInt--):
 
+### Generating integers
+
 The following example will generate a supply of random integers, and print the first five to the console.
 
 ```java
@@ -44,6 +46,8 @@ public static class IntegerExample {
 }
 ```      
 
+## Specifying a range
+
 The integers in the above example will all lie between `Integer.MIN_VALUE` and `Integer.MAX_VALUE`.  
 If we want to limit the integers to a specific range, there is another version of `generateInt` that accepts a range parameter.
 The following will limit the output to be between 1 and 100 (inclusive):
@@ -64,10 +68,14 @@ public static class IntegerWithinRangeExample {
         // 32
     }  
 }
-```
+```       
 
-The `run` method we used previously randomly generates a new seed each time it is called. If we have a specific
-initial seed value we would like to use, we can pass it in as a parameter:
+### Choosing an initial seed
+
+The `run` method we used previously randomly generates a new initial seed each time it is called. You may have observed that that isn't purely functional at all!
+That is true; it is a method that's provided for convenience, useful for quick examples like these. 
+
+There *is* a version of `run` that is pure.  In the pure version, you need to pass in an initial `Seed`.  The same seed value will yield the same sequence every time.
 
 ```java
 public static class InitialSeedExample {
@@ -88,6 +96,8 @@ public static class InitialSeedExample {
     }       
 }
 ```                          
+
+### Mapping a generator
 
 A generator can be "mapped" using `fmap`. `fmap` maps the output of a generator to a new value using a function, and yields a new generator.
 The following example multiplies the initial generator's output by 1000:
@@ -111,6 +121,8 @@ public static class MappingExample {
 }
 ```    
 
+### Mapping to a different type
+
 The function passed to `fmap` does not need to return the same type as the input. The following example converts a generator
 of `Integer`s to a generator of `LocalDate`s:
 
@@ -132,6 +144,8 @@ public static class MappingToADifferentType {
     }
 }  
 ```        
+
+### Combining generators
 
 Two or more (up to eight) generators can be combined to create a generator of `Tuple`s, using `Generators.tupled`:
 
@@ -178,62 +192,169 @@ public static class CombiningThreeGenerators {
 }
 ```        
 
+### Combining into a custom type
+
 If you would prefer a product type other than `Tuple`, you can use `Generators.product`. This takes the component generators,
 and a function to apply to all of the generated components in order to create the desired type.  Here is an example that
 generates values of a custom type `RGB`:
                                        
 ```java
 public static class CustomProductTypes {
-        public static void main(String[] args) {
-            Generator<Integer> component = Generators.generateInt(IntRange.inclusive(0, 255));
-            Generator<RGB> generateRGB = Generators.product(component, component, component, RGB::new);
+    public static void main(String[] args) {
+        Generator<Integer> component = Generators.generateInt(IntRange.inclusive(0, 255));
+        Generator<RGB> generateRGB = Generators.product(component, component, component, RGB::new);
 
-            generateRGB.run()
-                    .take(5)
-                    .forEach(System.out::println);   
-            
-            // sample output:
-            // RGB{red=121, green=48, blue=174}
-            // RGB{red=193, green=0, blue=18}
-            // RGB{red=201, green=76, blue=22}
-            // RGB{red=221, green=221, blue=118}
-            // RGB{red=188, green=169, blue=66}
+        generateRGB.run()
+                .take(5)
+                .forEach(System.out::println);   
+        
+        // sample output:
+        // RGB{red=121, green=48, blue=174}
+        // RGB{red=193, green=0, blue=18}
+        // RGB{red=201, green=76, blue=22}
+        // RGB{red=221, green=221, blue=118}
+        // RGB{red=188, green=169, blue=66}
+    }
+
+    public static class RGB {
+        private final int red;
+        private final int green;
+        private final int blue;
+
+        public RGB(int red, int green, int blue) {
+            this.red = red;
+            this.green = green;
+            this.blue = blue;
         }
 
-        public static class RGB {
-            private final int red;
-            private final int green;
-            private final int blue;
-
-            public RGB(int red, int green, int blue) {
-                this.red = red;
-                this.green = green;
-                this.blue = blue;
-            }
-
-            public int getRed() {
-                return red;
-            }
-
-            public int getGreen() {
-                return green;
-            }
-
-            public int getBlue() {
-                return blue;
-            }
-
-            @Override
-            public String toString() {
-                return "RGB{" +
-                        "red=" + red +
-                        ", green=" + green +
-                        ", blue=" + blue +
-                        '}';
-            }
+        public int getRed() {
+            return red;
         }
-    }                                          
+
+        public int getGreen() {
+            return green;
+        }
+
+        public int getBlue() {
+            return blue;
+        }
+
+        @Override
+        public String toString() {
+            return "RGB{" +
+                    "red=" + red +
+                    ", green=" + green +
+                    ", blue=" + blue +
+                    '}';
+        }
+    }
+}                                          
 ```       
+
+### Generating `Collection`s
+
+`Generators` contains some built-in generators for building collections. These generators take as a parameter a generator for its elements.
+The following example generates `ArrayList`s of integers:
+
+```java
+public static class ArrayListExample {
+    public static void main(String[] args) {
+        Generators.generateArrayList(generateInt(IntRange.from(1).to(10)))
+                .run()
+                .take(10)
+                .forEach(System.out::println);  
+
+        // sample output:
+        //[3, 3, 8, 4, 4, 3, 7, 9]
+        //[3, 2, 7, 3, 9, 1]
+        //[9, 8, 10, 4, 3, 4, 9, 3, 1, 6, 7, 6, 3]
+        //[3, 3, 10, 10]
+        //[8, 1]
+        //[6, 3, 7, 3, 5, 2, 3, 3, 6, 8, 1, 5, 9]
+        //[]
+        //[8, 7, 8]
+        //[8, 2, 10, 5]
+        //[9, 9, 8, 1, 2, 9]
+    }
+}
+```
+
+Notice that the lists that were generated are of various sizes, including empty.
+
+### Controlling the size of a generated collection
+
+Most collection generators allow you to specify the size of the collection.  This example generates `ArrayList`s of length 5:
+
+```java
+public static class ArrayListOfSizeExample {
+    public static void main(String[] args) {
+        Generators.generateArrayListOfSize(5, generateInt(IntRange.from(1).to(10)))
+                .run()
+                .take(5)
+                .forEach(System.out::println);  
+        
+        // sample output:
+        //[9, 9, 2, 7, 5]
+        //[6, 5, 7, 5, 1]
+        //[8, 7, 4, 7, 7]
+        //[7, 8, 7, 4, 3]
+        //[3, 3, 10, 5, 3]
+    }
+}
+```   
+
+You can also specify a size range:
+
+```java
+public static class ArrayListOfSizeRangeExample {
+    public static void main(String[] args) {
+        Generators.generateArrayListOfSize(IntRange.from(1).to(7),
+                generateInt(IntRange.from(1).to(10)))
+                .run()
+                .take(10)
+                .forEach(System.out::println);    
+        
+        // sample output:
+        //[1, 5, 5, 3, 4, 8]
+        //[8, 4, 5, 6, 3]
+        //[1, 2, 3]
+        //[10, 2, 4, 4, 2]
+        //[4, 10, 2, 7, 6, 3, 10]
+        //[4, 3, 6, 1, 2, 6]     
+        //[3]
+        //[9, 8, 10]
+        //[4, 6, 3, 3, 1, 5, 4]
+        //[2]
+    }
+}
+```  
+
+There are generators for other collection types as well, such as `Map`s and `Set`s.  The following example generates maps that have a characters for keys and integer for values:
+
+```java
+public static class MapExample {
+    public static void main(String[] args) {
+        Generator<Character> keyGenerator = generateChar(CharRange.from('A').to('Z'));
+        Generator<Integer> valueGenerator = generateInt(IntRange.from(1).to(10));
+        Generators.generateMap(keyGenerator, valueGenerator)
+                .run()
+                .take(10)
+                .forEach(System.out::println);
+        
+        // sample output:
+        //{B=2, R=3, S=3, F=7, W=2, I=2, Y=9, O=3}
+        //{Q=6, C=1, T=3, E=2, G=6, I=10, J=9, L=5, M=7}
+        //{}
+        //{P=10, A=5, B=7, S=7, T=4, W=3, G=3, H=1, Y=7, M=2, N=5, O=1}
+        //{T=7, U=6, E=4, W=6, I=8, K=7, N=3}
+        //{G=7, H=6, I=6, J=5, M=4, N=10}
+        //{}
+        //{}
+        //{A=9, C=6, E=2, I=1, J=6, K=4, L=2, M=7, N=1, P=9, Q=3, S=4, U=9, W=1, X=8}
+        //{B=8, D=4, T=1, E=10, G=1, Y=8, I=6, L=10, M=2, O=1}
+    }
+}
+```
 
 # <a name="generators">Generators</a>
 
