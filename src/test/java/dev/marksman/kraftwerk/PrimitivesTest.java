@@ -1,9 +1,11 @@
 package dev.marksman.kraftwerk;
 
+import dev.marksman.kraftwerk.constraints.CharRange;
 import dev.marksman.kraftwerk.constraints.DoubleRange;
 import dev.marksman.kraftwerk.constraints.FloatRange;
 import dev.marksman.kraftwerk.constraints.IntRange;
 import dev.marksman.kraftwerk.constraints.LongRange;
+import dev.marksman.kraftwerk.constraints.ShortRange;
 import org.junit.jupiter.api.Test;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
@@ -18,6 +20,7 @@ import static dev.marksman.kraftwerk.Generators.generateFloat;
 import static dev.marksman.kraftwerk.Generators.generateInt;
 import static dev.marksman.kraftwerk.Generators.generateLong;
 import static dev.marksman.kraftwerk.Generators.generateShort;
+import static dev.marksman.kraftwerk.Primitives.generateChar;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static testsupport.Assert.assertForAll;
@@ -197,6 +200,11 @@ class PrimitivesTest {
     }
 
     @Test
+    void testShortsInBounds() {
+        assertForAll(generateShort(ShortRange.from((short) -257).to((short) 257)), n -> n >= -257 && n <= 257);
+    }
+
+    @Test
     void testShortCoversRange() {
         int[] f0 = new int[256];
         int[] f1 = new int[256];
@@ -264,6 +272,22 @@ class PrimitivesTest {
                 .run()
                 .take(2560)
                 .forEach(n -> f[n.intValue() + 128] += 1);
+
+        assertTrue(coversRange(f));
+    }
+
+    @Test
+    void testCharsInBounds() {
+        assertForAll(generateChar(CharRange.from('a').to('z')), c -> c >= 'a' && c <= 'z');
+    }
+
+    @Test
+    void testCharCoversRange() {
+        int[] f = new int[26];
+        generateChar(CharRange.from('a').to('z'))
+                .run()
+                .take(2560)
+                .forEach(c -> f[(int) c - (int) 'a'] += 1);
 
         assertTrue(coversRange(f));
     }

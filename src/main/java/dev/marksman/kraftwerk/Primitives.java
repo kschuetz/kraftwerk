@@ -31,7 +31,6 @@ import static dev.marksman.kraftwerk.core.BuildingBlocks.checkCount;
 import static dev.marksman.kraftwerk.core.BuildingBlocks.checkMinMax;
 import static dev.marksman.kraftwerk.core.BuildingBlocks.checkOriginBound;
 import static dev.marksman.kraftwerk.core.BuildingBlocks.nextBytes;
-import static dev.marksman.kraftwerk.core.BuildingBlocks.nextInt;
 import static dev.marksman.kraftwerk.core.BuildingBlocks.unsafeNextDoubleBetween;
 import static dev.marksman.kraftwerk.core.BuildingBlocks.unsafeNextIntBounded;
 import static dev.marksman.kraftwerk.core.BuildingBlocks.unsafeNextIntBoundedPowerOf2;
@@ -550,7 +549,7 @@ final class Primitives {
         @Override
         public GenerateFn<Byte> createGenerateFn(GeneratorParameters generatorParameters) {
             return Bias.applyBiasSetting(generatorParameters.getBiasSettings().byteBias(range),
-                    input -> unsafeNextIntExclusive(0, 256, input).fmap(getMapper()));
+                    input -> unsafeNextIntBounded(256, input).fmap(getMapper()));
         }
 
         @Override
@@ -583,7 +582,7 @@ final class Primitives {
         @Override
         public GenerateFn<Short> createGenerateFn(GeneratorParameters generatorParameters) {
             return Bias.applyBiasSetting(generatorParameters.getBiasSettings().shortBias(range),
-                    input -> unsafeNextIntExclusive(0, 65536, input).fmap(getMapper()));
+                    input -> unsafeNextIntBounded(65536, input).fmap(getMapper()));
         }
 
         @Override
@@ -615,19 +614,15 @@ final class Primitives {
 
         @Override
         public GenerateFn<Character> createGenerateFn(GeneratorParameters generatorParameters) {
+            int min = range.minInclusive();
+            int span = (range.maxInclusive() - min) + 1;
             return Bias.applyBiasSetting(generatorParameters.getBiasSettings().charBias(range),
-                    input -> nextInt(input).fmap(getMapper()));
+                    input -> unsafeNextIntBounded(span, input).fmap(i -> (char) (min + i)));
         }
 
         @Override
         public Maybe<String> getLabel() {
             return LABEL;
-        }
-
-        private Fn1<Integer, Character> getMapper() {
-            int min = range.minInclusive();
-            int span = (range.maxInclusive() - min) + 1;
-            return i -> (char) (min + (i % span));
         }
     }
 
