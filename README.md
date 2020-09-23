@@ -47,7 +47,7 @@ public class IntegerExample {
 }
 ```      
 
-## Specifying a range
+### Specifying a range
 
 The integers in the above example will all lie between `Integer.MIN_VALUE` and `Integer.MAX_VALUE`.  
 If we want to limit the integers to a specific range, there is another version of `generateInt` that accepts a range parameter.
