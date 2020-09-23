@@ -1474,7 +1474,7 @@ public final class Generators {
 
     /**
      * Creates a {@link Generator} that, when invoked, randomly selects from a list of candidate {@code Generator}s,
-     * (with equal probabilities for each).  The output is then drawn from the chosen {@code Generator}.
+     * (with custom probabilities for each).  The output is then drawn from the chosen {@code Generator}.
      *
      * @param first the first weighted candidate {@code Generator}
      * @param more  the remaining weighted candidates {@code Generator}s
@@ -1482,9 +1482,9 @@ public final class Generators {
      * @return a {@code Generator<A>}
      */
     @SafeVarargs
-    public static <A> Generator<A> chooseOneOf(Weighted<? extends Generator<? extends A>> first,
-                                               Weighted<? extends Generator<? extends A>>... more) {
-        return Choose.chooseOneOf(first, more);
+    public static <A> Generator<A> chooseOneOfWeighted(Weighted<? extends Generator<? extends A>> first,
+                                                       Weighted<? extends Generator<? extends A>>... more) {
+        return Choose.chooseOneOfWeighted(first, more);
     }
 
     /**

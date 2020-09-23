@@ -30,7 +30,7 @@ public interface FrequencyMap<A> extends ToGenerator<A> {
      * @param <A>           the output type
      * @return a {@code FrequencyMap<A>}
      */
-    static <A> FrequencyMap<A> frequencyMapValue(Weighted<? extends A> weightedValue) {
+    static <A> FrequencyMap<A> frequencyMapFirstValue(Weighted<? extends A> weightedValue) {
         return frequencyMap1(weightedValue.fmap(Generators::constant));
     }
 
@@ -41,7 +41,7 @@ public interface FrequencyMap<A> extends ToGenerator<A> {
      * @param <A>   the output type
      * @return a {@code FrequencyMap<A>}
      */
-    static <A> FrequencyMap<A> frequencyMapValue(A value) {
+    static <A> FrequencyMap<A> frequencyMapFirstValue(A value) {
         return frequencyMap1(constant(value).weighted());
     }
 

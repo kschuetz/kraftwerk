@@ -36,7 +36,7 @@ import static dev.marksman.kraftwerk.Generators.tupled;
 import static testsupport.Assert.assertForAll;
 
 class FunctionsTest {
-    private static final int NUM_CALLS = 20;
+    private static final int NUM_CALLS = 10;
 
     @Test
     void fn1Generator() {

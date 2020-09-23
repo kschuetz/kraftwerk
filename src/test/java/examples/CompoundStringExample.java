@@ -2,10 +2,10 @@ package examples;
 
 import dev.marksman.kraftwerk.Generator;
 import dev.marksman.kraftwerk.Generators;
+import dev.marksman.kraftwerk.frequency.FrequencyMap;
 
 import static dev.marksman.kraftwerk.Weighted.weighted;
 import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
-import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMapValue;
 import static dev.marksman.kraftwerk.weights.MaybeWeights.justs;
 import static dev.marksman.kraftwerk.weights.MaybeWeights.nothings;
 
@@ -17,7 +17,7 @@ public class CompoundStringExample {
                 .add(frequencyMap(Generators.chooseOneOfValues("quick", "fast", "speedy").weighted(3))
                         .add(Generators.chooseOneOfValues("slow", "reluctant", "sleepy"))
                         .toGenerator())
-                .add(frequencyMapValue(weighted(5, "brown"))
+                .add(FrequencyMap.frequencyMapFirstValue(weighted(5, "brown"))
                         .addValue(weighted(4, "red"))
                         .addValue(weighted(3, "orange"))
                         .addValue(weighted(2, "white"))

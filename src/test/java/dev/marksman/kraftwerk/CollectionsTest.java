@@ -32,6 +32,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static testsupport.Assert.assertForAll;
 
 class CollectionsTest {
+    private static final int TEST_FOR_EMPTY_SAMPLE_COUNT = 500;
+
     @Nested
     @DisplayName("generateArrayList")
     class GenerateArrayList {
@@ -44,7 +46,7 @@ class CollectionsTest {
         @Test
         void sometimeEmptyAndSometimesNonEmpty() {
             int[] f = new int[2];
-            generateArrayList(generateUnit()).run().take(100).forEach(xs -> f[xs.size() > 0 ? 1 : 0] += 1);
+            generateArrayList(generateUnit()).run().take(TEST_FOR_EMPTY_SAMPLE_COUNT).forEach(xs -> f[xs.size() > 0 ? 1 : 0] += 1);
             assertTrue(f[0] > 0 && f[1] > 0);
         }
     }
@@ -117,7 +119,7 @@ class CollectionsTest {
         @Test
         void sometimeEmptyAndSometimesNonEmpty() {
             int[] f = new int[2];
-            generateHashSet(generateUnit()).run().take(100).forEach(xs -> f[xs.size() > 0 ? 1 : 0] += 1);
+            generateHashSet(generateUnit()).run().take(TEST_FOR_EMPTY_SAMPLE_COUNT).forEach(xs -> f[xs.size() > 0 ? 1 : 0] += 1);
             assertTrue(f[0] > 0 && f[1] > 0);
         }
     }
@@ -149,7 +151,7 @@ class CollectionsTest {
         @Test
         void sometimeEmptyAndSometimesNonEmpty() {
             int[] f = new int[2];
-            generateVector(generateUnit()).run().take(100).forEach(xs -> f[xs.size() > 0 ? 1 : 0] += 1);
+            generateVector(generateUnit()).run().take(TEST_FOR_EMPTY_SAMPLE_COUNT).forEach(xs -> f[xs.size() > 0 ? 1 : 0] += 1);
             assertTrue(f[0] > 0 && f[1] > 0);
         }
     }
@@ -276,7 +278,7 @@ class CollectionsTest {
             @Test
             void sometimeEmptyAndSometimesNonEmpty() {
                 int[] f = new int[2];
-                generateMap(generateUnit(), generateUnit()).run().take(100).forEach(xs -> f[xs.size() > 0 ? 1 : 0] += 1);
+                generateMap(generateUnit(), generateUnit()).run().take(TEST_FOR_EMPTY_SAMPLE_COUNT).forEach(xs -> f[xs.size() > 0 ? 1 : 0] += 1);
                 assertTrue(f[0] > 0 && f[1] > 0);
             }
         }

@@ -102,11 +102,11 @@ public final class Name {
                         "Maggie", "Marcia", "Marge", "Mary", "Mike", "Oliver", "Patricia", "Peter", "Stan");
 
         static final Generator<String> first =
-                Generators.chooseOneOf(givenNames.weighted(15),
+                Generators.chooseOneOfWeighted(givenNames.weighted(15),
                         initial.weighted(1));
 
         static final Generator<String> middle =
-                Generators.chooseOneOf(givenNames.weighted(1),
+                Generators.chooseOneOfWeighted(givenNames.weighted(1),
                         initial.weighted(5));
 
         static final Generator<String> last =

@@ -57,7 +57,7 @@ public final class ChoiceBuilder1<A> implements ToGenerator<A> {
      * @return a {@code ChoiceBuilder1<A>}
      */
     public static <A> ChoiceBuilder1<A> choiceBuilderValue(Weighted<? extends A> firstChoice) {
-        return new ChoiceBuilder1<>(FrequencyMap.frequencyMapValue(firstChoice));
+        return new ChoiceBuilder1<>(FrequencyMap.frequencyMapFirstValue(firstChoice));
     }
 
     /**

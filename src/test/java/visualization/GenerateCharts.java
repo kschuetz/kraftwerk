@@ -3,6 +3,7 @@ package visualization;
 import com.jnape.palatable.lambda.functions.Fn1;
 import dev.marksman.kraftwerk.Generators;
 import dev.marksman.kraftwerk.constraints.IntRange;
+import dev.marksman.kraftwerk.frequency.FrequencyMap;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,7 +20,6 @@ import static dev.marksman.kraftwerk.Generators.generateInt;
 import static dev.marksman.kraftwerk.Generators.generateShort;
 import static dev.marksman.kraftwerk.Generators.generateUnit;
 import static dev.marksman.kraftwerk.Weighted.weighted;
-import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMapValue;
 import static visualization.ChartSuite.chartSuite;
 import static visualization.HistogramGenerator.histogram;
 
@@ -67,7 +67,7 @@ public class GenerateCharts {
 
     private static Fn1<ChartSuite, ChartSuite> freqMaps() {
         return cs -> cs
-                .add("freqmap1", histogram(frequencyMapValue(weighted(1, 0))
+                .add("freqmap1", histogram(FrequencyMap.frequencyMapFirstValue(weighted(1, 0))
                         .addValue(weighted(2, 1))
                         .addValue(weighted(3, 2))
                         .addValue(weighted(4, 3))

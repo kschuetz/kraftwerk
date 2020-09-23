@@ -74,7 +74,7 @@ public final class Street {
 
     private static class generators {
         static final Generator<String> compass =
-                Generators.chooseOneOf(Generators.chooseOneOfValues("N.", "S.", "W.", "E.").weighted(8),
+                Generators.chooseOneOfWeighted(Generators.chooseOneOfValues("N.", "S.", "W.", "E.").weighted(8),
                         Generators.chooseOneOfValues("NW", "NE", "SW", "SE").weighted(1));
 
         static final Generator<String> ordinal =
@@ -102,7 +102,7 @@ public final class Street {
                         weighted(1, "Ct."));
 
         static final Generator<String> name =
-                Generators.chooseOneOf(weighted(3, ordinal),
+                Generators.chooseOneOfWeighted(weighted(3, ordinal),
                         weighted(2, tree),
                         weighted(2, president),
                         weighted(2, generateCityRootName()));

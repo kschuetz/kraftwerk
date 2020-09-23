@@ -118,8 +118,8 @@ final class Choose {
     }
 
     @SafeVarargs
-    static <A> Generator<A> chooseOneOf(Weighted<? extends Generator<? extends A>> first,
-                                        Weighted<? extends Generator<? extends A>>... more) {
+    static <A> Generator<A> chooseOneOfWeighted(Weighted<? extends Generator<? extends A>> first,
+                                                Weighted<? extends Generator<? extends A>>... more) {
         return chooseOneFromCollectionWeighted(cons(first, asList(more)));
     }
 

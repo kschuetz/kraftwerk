@@ -21,6 +21,7 @@ import static dev.marksman.kraftwerk.Choose.chooseOneFromCollection;
 import static dev.marksman.kraftwerk.Choose.chooseOneFromCollectionWeighted;
 import static dev.marksman.kraftwerk.Choose.chooseOneOf;
 import static dev.marksman.kraftwerk.Choose.chooseOneOfValues;
+import static dev.marksman.kraftwerk.Choose.chooseOneOfWeighted;
 import static dev.marksman.kraftwerk.Choose.chooseOneOfWeightedValues;
 import static dev.marksman.kraftwerk.Choose.chooseOneValueFromCollection;
 import static dev.marksman.kraftwerk.Choose.chooseOneValueFromDomain;
@@ -80,7 +81,7 @@ class ChooseTest {
 
         @Test
         void weightedAlwaysInRange() {
-            assertForAll(chooseOneOf(generateInt(IntRange.from(0).to(10)).weighted(1),
+            assertForAll(chooseOneOfWeighted(generateInt(IntRange.from(0).to(10)).weighted(1),
                     generateInt(IntRange.from(20).to(30)).weighted(0)),
                     n -> (n >= 0 && n <= 10));
         }
