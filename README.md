@@ -27,22 +27,23 @@ Several built-in generators can be found in the [`dev.marksman.kraftwerk.Generat
 The following example will generate a supply of random integers, and print the first five to the console.
 
 ```java
-import dev.marksman.kraftwerk.Generators;
+package examples.tutorial;
+import static dev.marksman.kraftwerk.Generators.generateInt;
 
-public static class IntegerExample {
+public class IntegerExample {
     public static void main(String[] args) {
-        Generators.generateInt()
+        generateInt()
                 .run()
                 .take(5)
-                .forEach(System.out::println);    
-        
+                .forEach(System.out::println);
+
         // sample output:
         // -806894999
         // -2088055255
         // 519165596
         // -247082188
         // 2073514567
-    }       
+    }
 }
 ```      
 
@@ -53,20 +54,23 @@ If we want to limit the integers to a specific range, there is another version o
 The following will limit the output to be between 1 and 100 (inclusive):
 
 ```java 
-public static class IntegerWithinRangeExample {
+package examples.tutorial;
+import dev.marksman.kraftwerk.constraints.IntRange;
+import static dev.marksman.kraftwerk.Generators.generateInt;
+
+public class IntegerWithinRangeExample {
     public static void main(String[] args) {
-        Generators.generateInt(IntRange.from(1).to(100))
+        generateInt(IntRange.from(1).to(100))
                 .run()
                 .take(5)
-                .forEach(System.out::println); 
-
+                .forEach(System.out::println);
         // sample output:
         // 48
         // 82
         // 24
         // 41
         // 32
-    }  
+    }
 }
 ```       
 
@@ -78,13 +82,18 @@ That is true; it is a method that's provided for convenience, useful for quick e
 There *is* a version of `run` that is pure.  In the pure version, you need to pass in an initial `Seed`.  The same seed value will yield the same sequence every time.
 
 ```java
-public static class InitialSeedExample {
+package examples.tutorial;
+import dev.marksman.kraftwerk.Seed;
+import dev.marksman.kraftwerk.constraints.IntRange;
+import static dev.marksman.kraftwerk.Generators.generateInt;
+
+public class InitialSeedExample {
     public static void main(String[] args) {
         Seed initialSeed = Seed.create(123456L);
-        Generators.generateInt(IntRange.from(1).to(100))
+        generateInt(IntRange.from(1).to(100))
                 .run(initialSeed)
                 .take(5)
-                .forEach(System.out::println);  
+                .forEach(System.out::println);
 
         // output:
         // 24
@@ -93,7 +102,7 @@ public static class InitialSeedExample {
         // 86
         // 39    
         // These will be the same on every run because we are using the same initial seed.
-    }       
+    }
 }
 ```                          
 
@@ -103,21 +112,25 @@ A generator can be "mapped" using `fmap`. `fmap` maps the output of a generator 
 The following example multiplies the initial generator's output by 1000:
 
 ```java
-public static class MappingExample {
+package examples.tutorial;
+import dev.marksman.kraftwerk.constraints.IntRange;
+import static dev.marksman.kraftwerk.Generators.generateInt;
+
+public class MappingExample {
     public static void main(String[] args) {
-        Generators.generateInt(IntRange.from(0).to(100))
+        generateInt(IntRange.from(0).to(100))
                 .fmap(n -> n * 1000)
                 .run()
                 .take(5)
-                .forEach(System.out::println);   
-        
+                .forEach(System.out::println);
+
         // sample output:
         // 64000
         // 34000
         // 60000
         // 58000
         // 61000
-    }       
+    }
 }
 ```    
 
@@ -127,9 +140,14 @@ The function passed to `fmap` does not need to return the same type as the input
 of `Integer`s to a generator of `LocalDate`s:
 
 ```java
-public static class MappingToADifferentType {
+package examples.tutorial;
+import dev.marksman.kraftwerk.constraints.IntRange;
+import java.time.LocalDate;
+import static dev.marksman.kraftwerk.Generators.generateInt;
+
+public class MappingToADifferentType {
     public static void main(String[] args) {
-        Generators.generateInt(IntRange.from(0).to(100))
+        generateInt(IntRange.from(0).to(100))
                 .fmap(n -> LocalDate.of(2020, 1, 1).plusDays(n))
                 .run()
                 .take(5)
@@ -142,7 +160,7 @@ public static class MappingToADifferentType {
         // 2020-04-09
         // 2020-01-03
     }
-}  
+}
 ```        
 
 ### Combining generators
@@ -150,33 +168,48 @@ public static class MappingToADifferentType {
 Two or more (up to eight) generators can be combined to create a generator of `Tuple`s, using `Generators.tupled`:
 
 ```java
-public static class CombiningTwoGenerators {
+package examples.tutorial;
+import com.jnape.palatable.lambda.adt.hlist.Tuple2;
+import dev.marksman.kraftwerk.Generator;
+import dev.marksman.kraftwerk.Generators;
+import static dev.marksman.kraftwerk.Generators.generateInt;
+import static dev.marksman.kraftwerk.Generators.generateString;
+
+public class CombiningTwoGenerators {
     public static void main(String[] args) {
-        Generator<Tuple2<Integer, String>> generator = Generators.tupled(Generators.generateInt(),
-                Generators.generateString());
+        Generator<Tuple2<Integer, String>> generator = Generators.tupled(generateInt(),
+                generateString());
 
         generator.run()
                 .take(5)
                 .forEach(System.out::println);
-        
+
         // sample output:
         // HList{ 1085224429 :: Sp`b}tM#@E|r }
         // HList{ -354995125 :: Zh:b4 }
         // HList{ -41728349 :: C8T[8aD }
         // HList{ 981101761 :: 'z }
         // HList{ -1434780244 :: uX }
-    }  
+    }
 }
 ```        
 
 Here is another example that combines three generators:
 
 ```java
-public static class CombiningThreeGenerators {
+package examples.tutorial;
+import com.jnape.palatable.lambda.adt.hlist.Tuple3;
+import dev.marksman.kraftwerk.Generator;
+import dev.marksman.kraftwerk.Generators;
+import static dev.marksman.kraftwerk.Generators.generateDoubleFractional;
+import static dev.marksman.kraftwerk.Generators.generateInt;
+import static dev.marksman.kraftwerk.Generators.generateString;
+
+public class CombiningThreeGenerators {
     public static void main(String[] args) {
-        Generator<Tuple3<Integer, String, Double>> generator = Generators.tupled(Generators.generateInt(),
-                Generators.generateString(),
-                Generators.generateDoubleFractional());
+        Generator<Tuple3<Integer, String, Double>> generator = Generators.tupled(generateInt(),
+                generateString(),
+                generateDoubleFractional());
 
         generator.run()
                 .take(5)
@@ -188,7 +221,7 @@ public static class CombiningThreeGenerators {
         // HList{ 1809180523 :: "W>.<eS :: 0.5097816977203855 }
         // HList{ -540828092 :: ^Tld^2a#C}>N6U@ :: 0.7904007899645681 }
         // HList{ -829429249 ::  :: 0.3125739749760317 }
-    }      
+    }
 }
 ```        
 
@@ -199,15 +232,21 @@ and a function to apply to all of the generated components in order to create th
 generates values of a custom type `RGB`:
                                        
 ```java
-public static class CustomProductTypes {
+package examples.tutorial;
+import dev.marksman.kraftwerk.Generator;
+import dev.marksman.kraftwerk.Generators;
+import dev.marksman.kraftwerk.constraints.IntRange;
+import static dev.marksman.kraftwerk.Generators.generateInt;
+
+public class CustomProductTypesExample {
     public static void main(String[] args) {
-        Generator<Integer> component = Generators.generateInt(IntRange.inclusive(0, 255));
+        Generator<Integer> component = generateInt(IntRange.inclusive(0, 255));
         Generator<RGB> generateRGB = Generators.product(component, component, component, RGB::new);
 
         generateRGB.run()
                 .take(5)
-                .forEach(System.out::println);   
-        
+                .forEach(System.out::println);
+
         // sample output:
         // RGB{red=121, green=48, blue=174}
         // RGB{red=193, green=0, blue=18}
@@ -220,25 +259,15 @@ public static class CustomProductTypes {
         private final int red;
         private final int green;
         private final int blue;
-
         public RGB(int red, int green, int blue) {
             this.red = red;
             this.green = green;
             this.blue = blue;
         }
-
-        public int getRed() {
-            return red;
-        }
-
-        public int getGreen() {
-            return green;
-        }
-
-        public int getBlue() {
-            return blue;
-        }
-
+        public int getRed() { return red; }
+        public int getGreen() { return green; }
+        public int getBlue() { return blue; }
+        
         @Override
         public String toString() {
             return "RGB{" +
@@ -248,7 +277,7 @@ public static class CustomProductTypes {
                     '}';
         }
     }
-}                                          
+}                         
 ```       
 
 ### Generating `Collection`s
@@ -257,12 +286,17 @@ public static class CustomProductTypes {
 The following example generates `ArrayList`s of integers:
 
 ```java
-public static class ArrayListExample {
+package examples.tutorial;
+import dev.marksman.kraftwerk.constraints.IntRange;
+import static dev.marksman.kraftwerk.Generators.generateArrayList;
+import static dev.marksman.kraftwerk.Generators.generateInt;
+
+public class ArrayListExample {
     public static void main(String[] args) {
-        Generators.generateArrayList(generateInt(IntRange.from(1).to(10)))
+        generateArrayList(generateInt(IntRange.from(1).to(10)))
                 .run()
                 .take(10)
-                .forEach(System.out::println);  
+                .forEach(System.out::println);
 
         // sample output:
         //[3, 3, 8, 4, 4, 3, 7, 9]
@@ -286,13 +320,18 @@ Notice that the lists that were generated are of various sizes, including empty.
 Most collection generators allow you to specify the size of the collection.  This example generates `ArrayList`s of length 5:
 
 ```java
-public static class ArrayListOfSizeExample {
+package examples.tutorial;
+import dev.marksman.kraftwerk.constraints.IntRange;
+import static dev.marksman.kraftwerk.Generators.generateArrayListOfSize;
+import static dev.marksman.kraftwerk.Generators.generateInt;
+
+public class ArrayListOfSizeExample {
     public static void main(String[] args) {
-        Generators.generateArrayListOfSize(5, generateInt(IntRange.from(1).to(10)))
+        generateArrayListOfSize(5, generateInt(IntRange.from(1).to(10)))
                 .run()
                 .take(5)
-                .forEach(System.out::println);  
-        
+                .forEach(System.out::println);
+
         // sample output:
         //[9, 9, 2, 7, 5]
         //[6, 5, 7, 5, 1]
@@ -306,14 +345,19 @@ public static class ArrayListOfSizeExample {
 You can also specify a size range:
 
 ```java
-public static class ArrayListOfSizeRangeExample {
+package examples.tutorial;
+import dev.marksman.kraftwerk.Generators;
+import dev.marksman.kraftwerk.constraints.IntRange;
+import static dev.marksman.kraftwerk.Generators.generateInt;
+
+public class ArrayListOfSizeRangeExample {
     public static void main(String[] args) {
         Generators.generateArrayListOfSize(IntRange.from(1).to(7),
                 generateInt(IntRange.from(1).to(10)))
                 .run()
                 .take(10)
-                .forEach(System.out::println);    
-        
+                .forEach(System.out::println);
+
         // sample output:
         //[1, 5, 5, 3, 4, 8]
         //[8, 4, 5, 6, 3]
@@ -332,15 +376,23 @@ public static class ArrayListOfSizeRangeExample {
 There are generators for other collection types as well, such as `Map`s and `Set`s.  The following example generates maps that have a characters for keys and integer for values:
 
 ```java
-public static class MapExample {
+package examples.tutorial;
+import dev.marksman.kraftwerk.Generator;
+import dev.marksman.kraftwerk.constraints.CharRange;
+import dev.marksman.kraftwerk.constraints.IntRange;
+import static dev.marksman.kraftwerk.Generators.generateChar;
+import static dev.marksman.kraftwerk.Generators.generateInt;
+import static dev.marksman.kraftwerk.Generators.generateMap;
+
+public class MapExample {
     public static void main(String[] args) {
         Generator<Character> keyGenerator = generateChar(CharRange.from('A').to('Z'));
         Generator<Integer> valueGenerator = generateInt(IntRange.from(1).to(10));
-        Generators.generateMap(keyGenerator, valueGenerator)
+        generateMap(keyGenerator, valueGenerator)
                 .run()
                 .take(10)
                 .forEach(System.out::println);
-        
+
         // sample output:
         //{B=2, R=3, S=3, F=7, W=2, I=2, Y=9, O=3}
         //{Q=6, C=1, T=3, E=2, G=6, I=10, J=9, L=5, M=7}
@@ -354,6 +406,215 @@ public static class MapExample {
         //{B=8, D=4, T=1, E=10, G=1, Y=8, I=6, L=10, M=2, O=1}
     }
 }
+```
+
+### Choosing from a set of items
+
+Use `chooseOneOfValues` to choose from a set of one or more items:
+
+```java
+package examples.tutorial;
+import static dev.marksman.kraftwerk.Generators.chooseOneOfValues;
+
+public class RainbowExample {
+    public static void main(String[] args) {
+        chooseOneOfValues("red", "orange", "yellow", "green", "blue", "indigo", "violet")
+                .run()
+                .take(10)
+                .forEach(System.out::println);
+
+        // sample output:        
+        //violet
+        //green
+        //orange
+        //violet
+        //yellow
+        //red
+        //yellow
+        //green
+        //blue
+        //violet
+    }
+}
+```
+
+`chooseOneOf` is similar to `chooseOneOfValues`, but it takes `Generator`s as parameters rather than the values themselves:
+
+```java       
+package examples.tutorial;
+import dev.marksman.kraftwerk.Generator;
+import dev.marksman.kraftwerk.constraints.CharRange;
+import static dev.marksman.kraftwerk.Generators.chooseOneOf;
+import static dev.marksman.kraftwerk.Generators.generateChar;
+
+public class LettersExample {
+    public static void main(String[] args) {
+        Generator<Character> uppercaseLetters = generateChar(CharRange.from('A').to('Z'));
+        Generator<Character> lowercaseLetters = generateChar(CharRange.from('a').to('z'));
+        chooseOneOf(uppercaseLetters, lowercaseLetters)
+                .run()
+                .take(10)
+                .forEach(System.out::println);
+
+        // sample output:
+        //g
+        //X
+        //C
+        //w
+        //S
+        //W
+        //s
+        //q
+        //z
+        //j
+    }
+}
+```         
+
+### Choosing from a set of weighted items
+
+Both `chooseOneOf` and `chooseOneOfValues` randomly select from their argument lists with an equal probability for each argument.
+If you want some items to occur more than others, you can use `chooseOneOfWeightedValues` or `chooseOneOfWeighted`:
+
+```java     
+package examples.tutorial;
+import static dev.marksman.kraftwerk.Generators.chooseOneOfWeightedValues;
+import static dev.marksman.kraftwerk.Weighted.weighted;
+
+public class WeightedRainbowExample {
+    public static void main(String[] args) {
+        chooseOneOfWeightedValues(weighted(7, "red"),
+                weighted(6, "orange"),
+                weighted(5, "yellow"),
+                weighted(4, "green"),
+                weighted(3, "blue"),
+                weighted(2, "indigo"),
+                weighted(1, "violet"))
+                .run()
+                .take(10)
+                .forEach(System.out::println);
+
+        // sample output:
+        //red
+        //orange
+        //orange
+        //violet
+        //red
+        //orange
+        //yellow
+        //red
+        //red
+        //green
+    }
+}
+```
+
+In the following example, the cardinal directions (N, S, W, E) will occur 8 times more frequently than the intercardinal directions (NW, NE, SW, SE):
+
+```java           
+package examples.tutorial;
+import static dev.marksman.kraftwerk.Generators.chooseOneOfValues;
+import static dev.marksman.kraftwerk.Generators.chooseOneOfWeighted;
+
+public class CardinalDirectionsExample {
+    public static void main(String[] args) {
+        chooseOneOfWeighted(chooseOneOfValues("N", "S", "W", "E").weighted(8),
+                chooseOneOfValues("NW", "NE", "SW", "SE").weighted(1))
+                .run()
+                .take(10)
+                .forEach(System.out::println);
+
+        // sample output:
+        //W
+        //S
+        //E
+        //N
+        //W
+        //S
+        //SW
+        //W
+        //SE
+        //N
+    }
+}
+```
+
+### `FrequencyMap`s
+
+A `FrequencyMap` is an alternate way to express weights for several values and/or generators.  They can be instantiated using `FrequencyMap.frequencyMap` or `FrequencyMap.frequencyMapFirstValue`.  Several weighted generators or values can then be added.  To convert it to a `Generator` call `toGenerator`.
+
+To be valid, a `FrequencyMap` must have at least one entry with a positive weight.
+
+Note that a `FrequencyMap` is immutable.  All calls to the `add` methods yield a *new* `FrequencyMap`, while leaving the old one intact.
+
+The following example is semantically equivalent to the `RainbowExample` above: 
+
+```java   
+package examples.tutorial;
+import static dev.marksman.kraftwerk.Weighted.weighted;
+import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMapFirstValue;
+
+public class RainbowFrequencyMapExample {
+    public static void main(String[] args) {
+        frequencyMapFirstValue(weighted(7, "red"))
+                .addValue(weighted(6, "orange"))
+                .addValue(weighted(5, "yellow"))
+                .addValue(weighted(4, "green"))
+                .addValue(weighted(3, "blue"))
+                .addValue(weighted(2, "indigo"))
+                .addValue("violet")
+                .toGenerator()
+                .run()
+                .take(10)
+                .forEach(System.out::println);
+
+        // sample output:        
+        //red
+        //orange
+        //yellow
+        //green
+        //green
+        //orange
+        //yellow
+        //yellow
+        //blue
+        //yellow        
+    }
+}
+```
+This example is semantically equivalent to the `CardinalDirectionsExample` above.
+
+```java
+package examples.tutorial;
+import dev.marksman.kraftwerk.Generator;
+import static dev.marksman.kraftwerk.Generators.chooseOneOfValues;
+import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
+
+public class CardinalDirectionsFrequencyMapExample {
+    public static void main(String[] args) {
+        Generator<String> cardinals = chooseOneOfValues("N", "S", "W", "E");
+        Generator<String> interCardinals = chooseOneOfValues("NW", "NE", "SW", "SE");
+
+        frequencyMap(cardinals.weighted(8))
+                .add(interCardinals)
+                .toGenerator()
+                .run()
+                .take(10)
+                .forEach(System.out::println);
+
+        // sample output:
+        //W
+        //N
+        //W
+        //SE
+        //W
+        //SW
+        //N
+        //E
+        //E
+        //E
+    }
+}     
 ```
 
 # <a name="generators">Generators</a>
