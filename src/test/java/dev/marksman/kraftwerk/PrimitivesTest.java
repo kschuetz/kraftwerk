@@ -44,7 +44,6 @@ class PrimitivesTest {
                                 .flatMap(upperBound -> generateInt(IntRange.from(lowerBound).to(upperBound))
                                         .fmap(n -> n >= lowerBound && n <= upperBound))),
                 id());
-
     }
 
     @Test

@@ -11,6 +11,7 @@ import java.util.Random;
 import static dev.marksman.kraftwerk.Bias.applyBiasSetting;
 import static dev.marksman.kraftwerk.Generators.generateInt;
 import static dev.marksman.kraftwerk.Generators.generateLong;
+import static java.math.BigDecimal.ROUND_DOWN;
 
 class BigNumbers {
     static final BigIntegerRange DEFAULT_BIG_INTEGER_RANGE =
@@ -67,7 +68,8 @@ class BigNumbers {
 
         return applyBiasSetting(bs -> bs.bigDecimalBias(range),
                 generateBigIntegerExclusive(integerRange)
-                        .fmap(n -> movePointLeft(shift, integerOrigin.add(n))));
+                        .fmap(n -> movePointLeft(shift, integerOrigin.add(n))
+                                .setScale(decimalPlaces, ROUND_DOWN)));
     }
 
     private static Generator<BigInteger> generateBigIntegerExclusive(BigInteger bound) {
