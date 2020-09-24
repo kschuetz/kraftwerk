@@ -40,7 +40,7 @@ final class Strings {
         if (length <= 0) return constant("");
         else if (length == 1) return g;
         else {
-            return aggregate(stringAggregator(), length, g);
+            return aggregate(stringAggregator(length), length, g);
         }
     }
 
