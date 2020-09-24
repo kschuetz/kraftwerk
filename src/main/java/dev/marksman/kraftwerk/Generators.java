@@ -395,7 +395,7 @@ public final class Generators {
         if (minimum < 1) {
             return sized(fn);
         } else {
-            return sized(n -> fn.apply(Math.min(n, minimum)));
+            return sized(n -> fn.apply(Math.max(n, minimum)));
         }
     }
 
