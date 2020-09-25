@@ -45,6 +45,19 @@ public final class ValueSupply<A> implements ImmutableNonEmptyIterable<A> {
         return () -> new TailIterator<>(gen, state);
     }
 
+    @Override
+    public ValueSupply<A> drop(int count) {
+        if (count <= 0) {
+            return this;
+        } else {
+            Seed current = state;
+            for (int i = 0; i < count; i++) {
+                current = gen.apply(current).getNextState();
+            }
+            return new ValueSupply<>(gen, current);
+        }
+    }
+
     /**
      * Creates a {@link Stream} from this {@code ValueSupply}.
      *
