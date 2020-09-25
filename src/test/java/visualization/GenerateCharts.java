@@ -34,7 +34,8 @@ public class GenerateCharts {
                 primitives()
                         .fmap(freqMaps())
                         .fmap(distributions())
-                        .fmap(choiceBuilders());
+                        .fmap(choiceBuilders())
+                        .fmap(specialValues());
 
         builder.apply(chartSuite(outputDir))
                 .run()
@@ -157,5 +158,13 @@ public class GenerateCharts {
                                         .labeled("choiceBuilder8"), 8,
                                 c -> c.match(__ -> 0, __ -> 1, __ -> 2, __ -> 3,
                                         __ -> 4, __ -> 5, __ -> 6, __ -> 7)));
+    }
+
+    public static Fn1<ChartSuite, ChartSuite> specialValues() {
+        return cs -> cs
+                .add("specialValues1",
+                        histogram(generateInt(IntRange.from(0).to(1))
+                                        .injectSpecialValue(2).labeled("inject 1 special value"), 2,
+                                n -> n < 2 ? 0 : 1));
     }
 }

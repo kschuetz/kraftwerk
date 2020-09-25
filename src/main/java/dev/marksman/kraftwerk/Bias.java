@@ -39,17 +39,14 @@ final class Bias {
 
     private static <A> GenerateFn<A> injectSpecial(ImmutableNonEmptyVector<A> specialValues,
                                                    GenerateFn<A> underlying) {
-        final int specialWeight = specialValues.size();
-        final int nonSpecialWeight = 20 + 3 * specialWeight;
-        final int totalWeight = specialWeight + nonSpecialWeight;
-
+        final int specialCount = specialValues.size();
         return input -> {
-            Result<Seed, Integer> r0 = BuildingBlocks.unsafeNextIntBounded(totalWeight, input);
-            if (r0.getValue() < specialWeight) {
-                Result<Seed, Integer> r1 = BuildingBlocks.nextIntExclusive(0, specialWeight, r0.getNextState());
-                return result(r1.getNextState(), specialValues.unsafeGet(r0.getValue()));
+            // special values will occur 1/16 of the time
+            if ((input.getSeedValue() & 15) == 1) {
+                Result<Seed, Integer> r0 = BuildingBlocks.unsafeNextIntBounded(specialCount, input);
+                return result(r0.getNextState(), specialValues.unsafeGet(r0.getValue()));
             } else {
-                return underlying.apply(r0.getNextState());
+                return underlying.apply(input);
             }
         };
     }
