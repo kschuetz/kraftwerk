@@ -5,8 +5,6 @@ import dev.marksman.collectionviews.Vector;
 import dev.marksman.enhancediterables.FiniteIterable;
 import dev.marksman.kraftwerk.core.BuildingBlocks;
 
-import java.util.Arrays;
-
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Upcast.upcast;
 
 final class ReservoirSample {
@@ -50,45 +48,6 @@ final class ReservoirSample {
                 }
             }
             return Result.result(current, Set.copyFrom(result));
-        };
-    }
-
-    // TODO: generateBitMask needs work
-    static Generator<Long> generateBitMask(int totalBits, int ones) {
-        totalBits = Math.min(64, totalBits);
-        totalBits = Math.max(0, totalBits);
-        ones = Math.min(totalBits, ones);
-        ones = Math.max(0, ones);
-        final byte n = (byte) totalBits;
-        final byte k = (byte) ones;
-        if (totalBits == 0) {
-            return Generators.constant(0L);
-        } else if (ones == 64) {
-            return Generators.constant(-1L);
-        } else if (ones == totalBits) {
-            return Generators.constant((1L << ones) - 1);
-        } else return parameters -> input -> {
-            Seed current = input;
-            byte[] places = new byte[k];
-            for (byte i = 0; i < k; i++) {
-                places[i] = i;
-            }
-            System.out.println(Arrays.toString(places));
-            for (byte i = k; i < n; i++) {
-                Result<? extends Seed, Integer> next = BuildingBlocks.nextIntBounded(i, current);
-                Integer value = next.getValue();
-                System.out.println("value = " + value);
-                if (value < k) {
-                    places[value] = i;
-                }
-                current = next.getNextState();
-            }
-            System.out.println(Arrays.toString(places));
-            long result = 0L;
-            for (byte i = 0; i < k; i++) {
-                result = result | (1L << places[i]);
-            }
-            return Result.result(current, result);
         };
     }
 }
