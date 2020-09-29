@@ -19,6 +19,16 @@ final class FrequencyMap2<A> implements FrequencyMap<A> {
         this.weightedGeneratorB = (Weighted<Generator<A>>) weightedGeneratorB;
     }
 
+    static <A> FrequencyMap2<A> frequencyMap2(Weighted<? extends Generator<? extends A>> weightedGeneratorA,
+                                              Weighted<? extends Generator<? extends A>> weightedGeneratorB) {
+        return new FrequencyMap2<>(weightedGeneratorA, weightedGeneratorB);
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return false;
+    }
+
     @Override
     public Generator<A> toGenerator() {
         int weightA = weightedGeneratorA.getWeight();
@@ -61,10 +71,5 @@ final class FrequencyMap2<A> implements FrequencyMap<A> {
         Fn1<Generator<A>, ? extends Generator<? extends B>> mapGenerator = gen -> gen.fmap(fn);
         return frequencyMap2(weightedGeneratorA.fmap(mapGenerator),
                 weightedGeneratorB.fmap(mapGenerator));
-    }
-
-    static <A> FrequencyMap2<A> frequencyMap2(Weighted<? extends Generator<? extends A>> weightedGeneratorA,
-                                              Weighted<? extends Generator<? extends A>> weightedGeneratorB) {
-        return new FrequencyMap2<>(weightedGeneratorA, weightedGeneratorB);
     }
 }

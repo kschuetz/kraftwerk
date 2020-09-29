@@ -8,7 +8,6 @@ import dev.marksman.collectionviews.Vector;
 import dev.marksman.collectionviews.VectorBuilder;
 import dev.marksman.kraftwerk.constraints.IntRange;
 import dev.marksman.kraftwerk.frequency.FrequencyMap;
-import dev.marksman.kraftwerk.frequency.FrequencyMapBuilder;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,7 +21,7 @@ import static dev.marksman.kraftwerk.Generators.buildVector;
 import static dev.marksman.kraftwerk.Generators.constant;
 import static dev.marksman.kraftwerk.Generators.generateInt;
 import static dev.marksman.kraftwerk.ReservoirSample.reservoirSample;
-import static dev.marksman.kraftwerk.frequency.FrequencyMapBuilder.frequencyMapBuilder;
+import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
 import static java.util.Arrays.asList;
 
 final class Choose {
@@ -132,18 +131,16 @@ final class Choose {
 
     static <A> Generator<A> chooseOneFromCollection(Iterable<Generator<? extends A>> candidates) {
         requireNonEmptyCandidates("chooseOneFromCollection", candidates);
-        return FoldLeft.<Generator<? extends A>, FrequencyMapBuilder<A>>foldLeft(
-                FrequencyMapBuilder::add,
-                frequencyMapBuilder(), candidates)
-                .build()
+        return FoldLeft.<Generator<? extends A>, FrequencyMap<A>>foldLeft(
+                FrequencyMap::add,
+                frequencyMap(), candidates)
                 .toGenerator();
     }
 
     static <A> Generator<A> chooseOneFromCollectionWeighted(Iterable<Weighted<? extends Generator<? extends A>>> entries) {
-        return FoldLeft.<Weighted<? extends Generator<? extends A>>, FrequencyMapBuilder<A>>foldLeft(
-                FrequencyMapBuilder::add,
-                frequencyMapBuilder(), entries)
-                .build()
+        return FoldLeft.<Weighted<? extends Generator<? extends A>>, FrequencyMap<A>>foldLeft(
+                FrequencyMap::add,
+                frequencyMap(), entries)
                 .toGenerator();
     }
 

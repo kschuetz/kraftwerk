@@ -14,6 +14,20 @@ final class FrequencyMap1<A> implements FrequencyMap<A> {
         this.weightedGenerator = (Weighted<Generator<A>>) weightedGenerator;
     }
 
+    static <A> FrequencyMap1<A> frequencyMap1(Weighted<? extends Generator<? extends A>> weightedGenerator) {
+        if (weightedGenerator.getWeight() < 1) throw new IllegalArgumentException("initial weight must be >= 1");
+        return new FrequencyMap1<>(weightedGenerator);
+    }
+
+    static void checkMultiplier(int factor) {
+        if (factor < 1) throw new IllegalArgumentException("factor must be positive");
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return false;
+    }
+
     @Override
     public Generator<A> toGenerator() {
         return weightedGenerator.getValue();
@@ -45,14 +59,5 @@ final class FrequencyMap1<A> implements FrequencyMap<A> {
     @Override
     public <B> FrequencyMap<B> fmap(Fn1<? super A, ? extends B> fn) {
         return frequencyMap1(weightedGenerator.fmap(gen -> gen.fmap(fn)));
-    }
-
-    static <A> FrequencyMap1<A> frequencyMap1(Weighted<? extends Generator<? extends A>> weightedGenerator) {
-        if (weightedGenerator.getWeight() < 1) throw new IllegalArgumentException("initial weight must be >= 1");
-        return new FrequencyMap1<>(weightedGenerator);
-    }
-
-    static void checkMultiplier(int factor) {
-        if (factor < 1) throw new IllegalArgumentException("factor must be positive");
     }
 }

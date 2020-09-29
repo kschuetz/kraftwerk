@@ -30,6 +30,11 @@ final class FrequencyMap3<A> implements FrequencyMap<A> {
     }
 
     @Override
+    public boolean isEmpty() {
+        return false;
+    }
+
+    @Override
     public Generator<A> toGenerator() {
         int weightA = weightedGeneratorA.getWeight();
         int weightB = weightedGeneratorB.getWeight();

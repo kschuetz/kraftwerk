@@ -11,13 +11,27 @@ import static com.jnape.palatable.lambda.functions.builtin.fn2.Cons.cons;
 import static com.jnape.palatable.lambda.functions.builtin.fn3.FoldLeft.foldLeft;
 import static dev.marksman.kraftwerk.Generators.generateLongIndex;
 
-class FrequencyMapN<A> implements FrequencyMap<A> {
+final class FrequencyMapN<A> implements FrequencyMap<A> {
     private final Iterable<Weighted<Generator<A>>> entries;
     private Generator<A> cachedGenerator;
 
     @SuppressWarnings("unchecked")
     private FrequencyMapN(Iterable<? extends Weighted<? extends Generator<? extends A>>> entries) {
         this.entries = (Iterable<Weighted<Generator<A>>>) entries;
+    }
+
+    static <A> FrequencyMapN<A> frequencyMapN(Weighted<? extends Generator<? extends A>> first,
+                                              Iterable<Weighted<? extends Generator<? extends A>>> rest) {
+        return new FrequencyMapN<>(cons(first, rest));
+    }
+
+    static <A> Generator<A> addLabel(Generator<A> gen) {
+        return gen.labeled("frequency map");
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return false;
     }
 
     @Override
@@ -68,14 +82,5 @@ class FrequencyMapN<A> implements FrequencyMap<A> {
         } else {
             return new FrequencyMapN<>(Map.map(entry -> entry.multiplyBy(positiveFactor), entries));
         }
-    }
-
-    static <A> FrequencyMapN<A> frequencyMapN(Weighted<? extends Generator<? extends A>> first,
-                                              Iterable<Weighted<? extends Generator<? extends A>>> rest) {
-        return new FrequencyMapN<>(cons(first, rest));
-    }
-
-    static <A> Generator<A> addLabel(Generator<A> gen) {
-        return gen.labeled("frequency map");
     }
 }

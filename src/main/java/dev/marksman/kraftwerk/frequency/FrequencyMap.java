@@ -1,17 +1,18 @@
 package dev.marksman.kraftwerk.frequency;
 
 import com.jnape.palatable.lambda.functions.Fn1;
+import com.jnape.palatable.lambda.functor.Functor;
 import dev.marksman.kraftwerk.Generator;
 import dev.marksman.kraftwerk.Generators;
 import dev.marksman.kraftwerk.ToGenerator;
 import dev.marksman.kraftwerk.Weighted;
 
 import static dev.marksman.kraftwerk.Generators.constant;
-import static dev.marksman.kraftwerk.frequency.FrequencyMap1.frequencyMap1;
+import static dev.marksman.kraftwerk.frequency.IncompleteFrequencyMap.incompleteFrequencyMap;
 
 /**
  * A strategy for randomly choosing between one or more {@link Generator}s (or values) of a specific type, with a custom set of probabilities.
- * A {@code FrequencyMap} must contain at least one value, and the sum of the weights of all values must be &gt; = 1.
+ * Before it can be converted to a {@code Generator}, a {@code FrequencyMap} must contain at least one value with a weight greater than zero.
  * <p>
  * To build a {@code Generator} from a {@code FrequencyMap}, call {@link FrequencyMap#toGenerator()}.  A {@code FrequencyMap}
  * can always continue to be used and added to, even after calling {@code toGenerator}.
@@ -21,7 +22,16 @@ import static dev.marksman.kraftwerk.frequency.FrequencyMap1.frequencyMap1;
  *
  * @param <A> the output type
  */
-public interface FrequencyMap<A> extends ToGenerator<A> {
+public interface FrequencyMap<A> extends ToGenerator<A>, Functor<A, FrequencyMap<?>> {
+    /**
+     * Creates an empty {@code FrequencyMap}.
+     *
+     * @param <A> the output type
+     * @return a {@code FrequencyMap<A>}
+     */
+    static <A> FrequencyMap<A> frequencyMap() {
+        return incompleteFrequencyMap();
+    }
 
     /**
      * Creates a {@code FrequencyMap}.
@@ -31,7 +41,7 @@ public interface FrequencyMap<A> extends ToGenerator<A> {
      * @return a {@code FrequencyMap<A>}
      */
     static <A> FrequencyMap<A> frequencyMapFirstValue(Weighted<? extends A> weightedValue) {
-        return frequencyMap1(weightedValue.fmap(Generators::constant));
+        return FrequencyMap.<A>frequencyMap().add(weightedValue.fmap(Generators::constant));
     }
 
     /**
@@ -42,7 +52,7 @@ public interface FrequencyMap<A> extends ToGenerator<A> {
      * @return a {@code FrequencyMap<A>}
      */
     static <A> FrequencyMap<A> frequencyMapFirstValue(A value) {
-        return frequencyMap1(constant(value).weighted());
+        return FrequencyMap.<A>frequencyMap().add(constant(value).weighted());
     }
 
     /**
@@ -53,7 +63,7 @@ public interface FrequencyMap<A> extends ToGenerator<A> {
      * @return a {@code FrequencyMap<A>}
      */
     static <A> FrequencyMap<A> frequencyMap(Generator<? extends A> gen1) {
-        return frequencyMap1(gen1.weighted());
+        return FrequencyMap.<A>frequencyMap().add(gen1.weighted());
     }
 
     /**
@@ -65,15 +75,23 @@ public interface FrequencyMap<A> extends ToGenerator<A> {
      * @return a {@code FrequencyMap<A>}
      */
     static <A> FrequencyMap<A> frequencyMap(Weighted<? extends Generator<? extends A>> weightedGenerator) {
-        return frequencyMap1(weightedGenerator);
+        return FrequencyMap.<A>frequencyMap().add(weightedGenerator);
     }
 
     /**
-     * Builds a {@link Generator} from this {@code FrequencyMap}.
+     * Returns true if this {@code FrequencyMap} contains at least one element with weight greater than zero.
+     */
+    boolean isEmpty();
+
+    /**
+     * Builds a {@link Generator} from this {@code FrequencyMap}, if it is not empty.
+     * If this {@code FrequencyMap} is empty (i.e., it contains no weights greater than zero), this method will throw an
+     * {@link IllegalStateException}.
      * <p>
-     * This {@code FrequencyMap<A>} can continue to be used after call this method.
+     * This {@code FrequencyMap<A>} can continue to be used after calling this method.
      *
      * @return a {@code Generator<A>}
+     * @see FrequencyMap#isEmpty
      */
     Generator<A> toGenerator();
 
@@ -138,5 +156,4 @@ public interface FrequencyMap<A> extends ToGenerator<A> {
     default FrequencyMap<A> addValue(Weighted<? extends A> weightedValue) {
         return add(weightedValue.fmap(Generators::constant));
     }
-
 }
