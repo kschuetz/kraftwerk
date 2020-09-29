@@ -6,8 +6,10 @@
 
 #### Table of Contents
  - [What is it?](#what-is-it)
+ - [Features](#features)
+ - [Examples](#examples)
  - [Tutorial](#tutorial)
- - [Generators](#generators)
+ - [More on "purely functional"](#purely-functional)
  - [License](#license)
 
 # <a name="what-is-it">What is it?</a>
@@ -18,9 +20,33 @@ The property testing framework [Gauntlet](https://github.com/kschuetz/gauntlet) 
 
 *kraftwerk* requires Java 1.8 or higher. It depends on [lambda](https://github.com/palatable/lambda) and supports the generation of several *lambda* types.
 
+# <a name="features">Features</a>
+
+*Kraftwerk*'s built-in generators include support for:
+* Primitives
+* Strings
+* Enums
+* Collections
+* Choosing from sets of items
+* Weighting
+* Products (tuples, custom product types)
+* Coproducts (e.g., `Maybe`, `Either`, `Choice`, `These`)
+* Temporal types (e.g., `LocalDate`, `LocalTime`, `LocalDateTime`, `Duration`, `Month`, `DayOfWeek`)
+* Shuffling
+* Functions
+* Ranges
+
+Using combinators like `product` and `flatMap`, these generators can be composed to create more complex generators.
+
+# <a name="examples">Examples</a>
+
+Several examples, including the tutorial examples below, can be found in the [src/test/java/examples](https://github.com/kschuetz/kraftwerk/tree/master/src/test/java/examples) directory. [PersonExample](https://github.com/kschuetz/kraftwerk/blob/master/src/test/java/examples/PersonExample.java) is one of the more complex examples.
+
 # <a name="tutorial">Tutorial</a>
 
-Several built-in generators can be found in the [`dev.marksman.kraftwerk.Generators`](https://kschuetz.github.io/kraftwerk/javadoc/dev/marksman/kraftwerk/Generators.html) package.  We will start with [`generateInt`](https://kschuetz.github.io/kraftwerk/javadoc/dev/marksman/kraftwerk/Generators.html#generateInt--):
+A [`Generator<A>`](https://kschuetz.github.io/kraftwerk/javadoc/dev/marksman/kraftwerk/Generator.html) is a strategy for generating random values of type `A`.  Several built-in `Generator`s are provided as static methods in [`dev.marksman.kraftwerk.Generators`](https://kschuetz.github.io/kraftwerk/javadoc/dev/marksman/kraftwerk/Generators.html).
+
+We will start with [`generateInt`](https://kschuetz.github.io/kraftwerk/javadoc/dev/marksman/kraftwerk/Generators.html#generateInt--):
 
 ### Generating integers
 
@@ -105,6 +131,12 @@ public class InitialSeedExample {
     }
 }
 ```                          
+
+### The `run` method
+
+What does the `run` method on a `Generator` do?  It returns a [`ValueSupply<A>`](https://kschuetz.github.io/kraftwerk/javadoc/dev/marksman/kraftwerk/ValueSupply.html), which is an infinite `Iterable<A>` with several additional methods for convenience.
+
+Among other things, `ValueSupply`s can be iterated, mapped (using `fmap`), filtered (using `filter`), or converted to a Java `Stream` (using `stream`).  `ValueSupply`s are immutable and can be shared and iterated multiple times.  An instance of a `ValueSupply` will always yield the same sequence every time is is iterated.
 
 ### Mapping a generator
 
@@ -615,11 +647,17 @@ public class CardinalDirectionsFrequencyMapExample {
         //E
     }
 }     
-```
+```   
 
-# <a name="generators">Generators</a>
+# <a name="purely-functional">More on "purely functional"</a>
 
-A [`Generator<A>`](https://kschuetz.github.io/kraftwerk/javadoc/dev/marksman/kraftwerk/Generator.html) is a strategy for generating random values of type `A`.  Several built-in `Generator`s are provided as static methods in [`dev.marksman.kraftwerk.Generators`](https://kschuetz.github.io/kraftwerk/javadoc/dev/marksman/kraftwerk/Generators.html).
+All types in the *kraftwerk* API, including builders, are immutable and can be shared safely.  All methods on a class in the *kraftwerk* API that *appear* to mutate will actually create and return a new instance of that object with the change, and leave the original object intact.
+
+All methods in the *kraftwerk* API are also pure and referentially transparent.  There *are* two exceptions to this, but these methods are provided for convenience only:
+* The overloads of the `run` methods that do not take an initial seed as a parameter; these will generate a new seed internally each time they are called
+* `Seed.random` - this will randomly generate a seed
+
+`Generator` implements `Functor` and `Monad` (from [lambda](https://github.com/palatable/lambda)), so a properly-designed generator should obey the functor and monad laws.
 
 # <a name="license">License</a>
 
