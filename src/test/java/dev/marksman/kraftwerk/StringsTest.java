@@ -16,6 +16,10 @@ import static dev.marksman.kraftwerk.Generators.generateIntRange;
 import static dev.marksman.kraftwerk.Generators.generateNothing;
 import static dev.marksman.kraftwerk.Strings.concatMaybeStrings;
 import static dev.marksman.kraftwerk.Strings.concatStrings;
+import static dev.marksman.kraftwerk.Strings.generateAlphaLowerString;
+import static dev.marksman.kraftwerk.Strings.generateAlphaString;
+import static dev.marksman.kraftwerk.Strings.generateAlphaUpperString;
+import static dev.marksman.kraftwerk.Strings.generateAlphanumericString;
 import static dev.marksman.kraftwerk.Strings.generateIdentifier;
 import static dev.marksman.kraftwerk.Strings.generateString;
 import static dev.marksman.kraftwerk.Strings.generateStringFromCharacters;
@@ -102,6 +106,118 @@ class StringsTest {
             Generator<Tuple2<IntRange, String>> generateTestCase = generateIntRange(IntRange.from(0).to(100))
                     .flatMap(lengthRange -> generateStringFromCharacters(lengthRange, charDomain).fmap(s -> tuple(lengthRange, s)));
             assertForAll(generateTestCase, testCase -> testCase._1().includes(testCase._2().length()) && allCharsInRange(testCase._2()));
+        }
+    }
+
+    @Nested
+    @DisplayName("generateAlphaString")
+    class GenerateAlphaString {
+        @Test
+        void variableLength() {
+            assertForAll(generateAlphaString(), this::isValidAlphaString);
+        }
+
+        @Test
+        void constantLength() {
+            assertForAll(generateAlphaString(0), s -> s.length() == 0);
+            assertForAll(generateAlphaString(1), s -> s.length() == 1 && isValidAlphaString(s));
+            assertForAll(generateAlphaString(5), s -> s.length() == 5 && isValidAlphaString(s));
+            assertForAll(generateAlphaString(100), s -> s.length() == 100 && isValidAlphaString(s));
+        }
+
+        @Test
+        void lengthRange() {
+            Generator<Tuple2<IntRange, String>> generateTestCase = generateIntRange(IntRange.from(1).to(20))
+                    .flatMap(lengthRange -> generateAlphaString(lengthRange).fmap(s -> tuple(lengthRange, s)));
+            assertForAll(generateTestCase, testCase -> testCase._1().includes(testCase._2().length()) && isValidAlphaString(testCase._2()));
+        }
+
+        private boolean isValidAlphaString(String s) {
+            return all(c -> (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'), stringIterable(s));
+        }
+    }
+
+    @Nested
+    @DisplayName("generateAlphaUpperString")
+    class GenerateAlphaUpperString {
+        @Test
+        void variableLength() {
+            assertForAll(generateAlphaUpperString(), this::isValidAlphaUpperString);
+        }
+
+        @Test
+        void constantLength() {
+            assertForAll(generateAlphaUpperString(0), s -> s.length() == 0);
+            assertForAll(generateAlphaUpperString(1), s -> s.length() == 1 && isValidAlphaUpperString(s));
+            assertForAll(generateAlphaUpperString(5), s -> s.length() == 5 && isValidAlphaUpperString(s));
+            assertForAll(generateAlphaUpperString(100), s -> s.length() == 100 && isValidAlphaUpperString(s));
+        }
+
+        @Test
+        void lengthRange() {
+            Generator<Tuple2<IntRange, String>> generateTestCase = generateIntRange(IntRange.from(1).to(20))
+                    .flatMap(lengthRange -> generateAlphaUpperString(lengthRange).fmap(s -> tuple(lengthRange, s)));
+            assertForAll(generateTestCase, testCase -> testCase._1().includes(testCase._2().length()) && isValidAlphaUpperString(testCase._2()));
+        }
+
+        private boolean isValidAlphaUpperString(String s) {
+            return all(c -> (c >= 'A' && c <= 'Z'), stringIterable(s));
+        }
+    }
+
+    @Nested
+    @DisplayName("generateAlphaLowerString")
+    class GenerateAlphaLowerString {
+        @Test
+        void variableLength() {
+            assertForAll(generateAlphaLowerString(), this::isValidAlphaLowerString);
+        }
+
+        @Test
+        void constantLength() {
+            assertForAll(generateAlphaLowerString(0), s -> s.length() == 0);
+            assertForAll(generateAlphaLowerString(1), s -> s.length() == 1 && isValidAlphaLowerString(s));
+            assertForAll(generateAlphaLowerString(5), s -> s.length() == 5 && isValidAlphaLowerString(s));
+            assertForAll(generateAlphaLowerString(100), s -> s.length() == 100 && isValidAlphaLowerString(s));
+        }
+
+        @Test
+        void lengthRange() {
+            Generator<Tuple2<IntRange, String>> generateTestCase = generateIntRange(IntRange.from(1).to(20))
+                    .flatMap(lengthRange -> generateAlphaLowerString(lengthRange).fmap(s -> tuple(lengthRange, s)));
+            assertForAll(generateTestCase, testCase -> testCase._1().includes(testCase._2().length()) && isValidAlphaLowerString(testCase._2()));
+        }
+
+        private boolean isValidAlphaLowerString(String s) {
+            return all(c -> (c >= 'a' && c <= 'z'), stringIterable(s));
+        }
+    }
+
+    @Nested
+    @DisplayName("generateAlphaNumericString")
+    class GenerateAlphanumericString {
+        @Test
+        void variableLength() {
+            assertForAll(Strings.generateAlphanumericString(), this::isValidAlphaNumericString);
+        }
+
+        @Test
+        void constantLength() {
+            assertForAll(Strings.generateAlphanumericString(0), s -> s.length() == 0);
+            assertForAll(Strings.generateAlphanumericString(1), s -> s.length() == 1 && isValidAlphaNumericString(s));
+            assertForAll(Strings.generateAlphanumericString(5), s -> s.length() == 5 && isValidAlphaNumericString(s));
+            assertForAll(Strings.generateAlphanumericString(100), s -> s.length() == 100 && isValidAlphaNumericString(s));
+        }
+
+        @Test
+        void lengthRange() {
+            Generator<Tuple2<IntRange, String>> generateTestCase = generateIntRange(IntRange.from(1).to(20))
+                    .flatMap(lengthRange -> generateAlphanumericString(lengthRange).fmap(s -> tuple(lengthRange, s)));
+            assertForAll(generateTestCase, testCase -> testCase._1().includes(testCase._2().length()) && isValidAlphaNumericString(testCase._2()));
+        }
+
+        private boolean isValidAlphaNumericString(String s) {
+            return all(c -> (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9'), stringIterable(s));
         }
     }
 

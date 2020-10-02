@@ -44,7 +44,7 @@ public final class Characters {
         return ALPHA;
     }
 
-    public static ImmutableNonEmptyVector<Character> alphaNumeric() {
+    public static ImmutableNonEmptyVector<Character> alphanumeric() {
         return ALPHA_NUMERIC;
     }
 

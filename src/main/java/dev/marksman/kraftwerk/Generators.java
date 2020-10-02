@@ -1161,6 +1161,154 @@ public final class Generators {
     }
 
     /**
+     * Creates a {@link Generator} that yields {@link String}s consisting of ASCII alphabetic characters, both lowercase and uppercase.
+     *
+     * @return a {@code Generator<String>}
+     * @see Generators#generateAlphaString(int)
+     * @see Generators#generateAlphaString(IntRange)
+     */
+    public static Generator<String> generateAlphaString() {
+        return Strings.generateAlphaString();
+    }
+
+    /**
+     * Creates a {@link Generator} that yields {@link String}s consisting of ASCII alphabetic characters, both lowercase and uppercase,
+     * and with a specific length.
+     *
+     * @param length the length of the strings to generate
+     * @return a {@code Generator<String>}
+     * @see Generators#generateAlphaString()
+     * @see Generators#generateAlphaString(IntRange)
+     */
+    public static Generator<String> generateAlphaString(int length) {
+        return Strings.generateAlphaString(length);
+    }
+
+    /**
+     * Creates a {@link Generator} that yields {@link String}s consisting of ASCII alphabetic characters, both lowercase and uppercase,
+     * and with a length within a specific range.
+     *
+     * @param lengthRange the {@link IntRange} of the length of the strings to generate
+     * @return a {@code Generator<String>}
+     * @see Generators#generateAlphaString()
+     * @see Generators#generateAlphaString(int)
+     */
+    public static Generator<String> generateAlphaString(IntRange lengthRange) {
+        return Strings.generateAlphaString(lengthRange);
+    }
+
+    /**
+     * Creates a {@link Generator} that yields {@link String}s consisting of ASCII uppercase alphabetic characters.
+     *
+     * @return a {@code Generator<String>}
+     * @see Generators#generateAlphaUpperString(int)
+     * @see Generators#generateAlphaUpperString(IntRange)
+     */
+    public static Generator<String> generateAlphaUpperString() {
+        return Strings.generateAlphaUpperString();
+    }
+
+    /**
+     * Creates a {@link Generator} that yields {@link String}s consisting of ASCII uppercase alphabetic characters,
+     * and with a specific length.
+     *
+     * @param length the length of the strings to generate
+     * @return a {@code Generator<String>}
+     * @see Generators#generateAlphaUpperString()
+     * @see Generators#generateAlphaUpperString(IntRange)
+     */
+    public static Generator<String> generateAlphaUpperString(int length) {
+        return Strings.generateAlphaUpperString(length);
+    }
+
+    /**
+     * Creates a {@link Generator} that yields {@link String}s consisting of ASCII uppercase alphabetic characters,
+     * and with a length within a specific range.
+     *
+     * @param lengthRange the {@link IntRange} of the length of the strings to generate
+     * @return a {@code Generator<String>}
+     * @see Generators#generateAlphaUpperString(int)
+     * @see Generators#generateAlphaUpperString(IntRange)
+     */
+    public static Generator<String> generateAlphaUpperString(IntRange lengthRange) {
+        return Strings.generateAlphaUpperString(lengthRange);
+    }
+
+    /**
+     * Creates a {@link Generator} that yields {@link String}s consisting of ASCII lowercase alphabetic characters.
+     *
+     * @return a {@code Generator<String>}
+     * @see Generators#generateAlphaLowerString(int)
+     * @see Generators#generateAlphaLowerString(IntRange)
+     */
+    public static Generator<String> generateAlphaLowerString() {
+        return Strings.generateAlphaLowerString();
+    }
+
+    /**
+     * Creates a {@link Generator} that yields {@link String}s consisting of ASCII lowercase alphabetic characters,
+     * and with a specific length.
+     *
+     * @param length the length of the strings to generate
+     * @return a {@code Generator<String>}
+     * @see Generators#generateAlphaLowerString()
+     * @see Generators#generateAlphaLowerString(IntRange)
+     */
+    public static Generator<String> generateAlphaLowerString(int length) {
+        return Strings.generateAlphaLowerString(length);
+    }
+
+    /**
+     * Creates a {@link Generator} that yields {@link String}s consisting of ASCII lowercase alphabetic characters,
+     * and with a length within a specific range.
+     *
+     * @param lengthRange the {@link IntRange} of the length of the strings to generate
+     * @return a {@code Generator<String>}
+     * @see Generators#generateAlphaLowerString(int)
+     * @see Generators#generateAlphaLowerString(IntRange)
+     */
+    public static Generator<String> generateAlphaLowerString(IntRange lengthRange) {
+        return Strings.generateAlphaLowerString(lengthRange);
+    }
+
+    /**
+     * Creates a {@link Generator} that yields {@link String}s consisting of ASCII alphanumeric characters (A-Z, a-z, 0-9).
+     *
+     * @return a {@code Generator<String>}
+     * @see Generators#generateAlphaLowerString(int)
+     * @see Generators#generateAlphaLowerString(IntRange)
+     */
+    public static Generator<String> generateAlphanumericString() {
+        return Strings.generateAlphanumericString();
+    }
+
+    /**
+     * Creates a {@link Generator} that yields {@link String}s consisting of ASCII alphanumeric characters (A-Z, a-z, 0-9),
+     * and with a specific length.
+     *
+     * @param length the length of the strings to generate
+     * @return a {@code Generator<String>}
+     * @see Generators#generateAlphaLowerString()
+     * @see Generators#generateAlphaLowerString(IntRange)
+     */
+    public static Generator<String> generateAlphanumericString(int length) {
+        return Strings.generateAlphanumericString(length);
+    }
+
+    /**
+     * Creates a {@link Generator} that yields {@link String}s consisting of ASCII alphanumeric characters (A-Z, a-z, 0-9),
+     * and with a length within a specific range.
+     *
+     * @param lengthRange the {@link IntRange} of the length of the strings to generate
+     * @return a {@code Generator<String>}
+     * @see Generators#generateAlphaLowerString(int)
+     * @see Generators#generateAlphaLowerString(IntRange)
+     */
+    public static Generator<String> generateAlphanumericString(IntRange lengthRange) {
+        return Strings.generateAlphanumericString(lengthRange);
+    }
+
+    /**
      * Creates a {@link Generator} that yields {@link String}s by invoking a sequence of component {@code Generator<String>}s
      * and concatenating the results.
      *

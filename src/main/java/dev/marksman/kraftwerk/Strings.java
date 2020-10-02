@@ -121,13 +121,61 @@ final class Strings {
             if (length == 1) {
                 return firstChar;
             } else {
-                return generateString(firstChar, generateStringFromCharacters(length - 1, Characters.alphaNumeric()));
+                return generateString(firstChar, generateStringFromCharacters(length - 1, Characters.alphanumeric()));
             }
         }
     }
 
     static Generator<String> generateIdentifier(IntRange lengthRange) {
         return generateLengthForString(lengthRange).flatMap(Strings::generateIdentifier);
+    }
+
+    static Generator<String> generateAlphaString() {
+        return generateStringFromCharacters(Characters.alpha());
+    }
+
+    static Generator<String> generateAlphaUpperString() {
+        return generateStringFromCharacters(Characters.alphaUpper());
+    }
+
+    static Generator<String> generateAlphaLowerString() {
+        return generateStringFromCharacters(Characters.alphaLower());
+    }
+
+    static Generator<String> generateAlphanumericString() {
+        return generateStringFromCharacters(Characters.alphanumeric());
+    }
+
+    static Generator<String> generateAlphaString(int length) {
+        return generateStringFromCharacters(length, Characters.alpha());
+    }
+
+    static Generator<String> generateAlphaUpperString(int length) {
+        return generateStringFromCharacters(length, Characters.alphaUpper());
+    }
+
+    static Generator<String> generateAlphaLowerString(int length) {
+        return generateStringFromCharacters(length, Characters.alphaLower());
+    }
+
+    static Generator<String> generateAlphanumericString(int length) {
+        return generateStringFromCharacters(length, Characters.alphanumeric());
+    }
+
+    static Generator<String> generateAlphaString(IntRange lengthRange) {
+        return generateStringFromCharacters(lengthRange, Characters.alpha());
+    }
+
+    static Generator<String> generateAlphaUpperString(IntRange lengthRange) {
+        return generateStringFromCharacters(lengthRange, Characters.alphaUpper());
+    }
+
+    static Generator<String> generateAlphaLowerString(IntRange lengthRange) {
+        return generateStringFromCharacters(lengthRange, Characters.alphaLower());
+    }
+
+    static Generator<String> generateAlphanumericString(IntRange lengthRange) {
+        return generateStringFromCharacters(lengthRange, Characters.alphanumeric());
     }
 
     static Generator<String> concatStrings(Generator<String> separator, Iterable<Generator<String>> components) {
