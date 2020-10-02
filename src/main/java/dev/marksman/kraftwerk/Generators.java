@@ -75,10 +75,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.jnape.palatable.lambda.functions.builtin.fn2.Replicate.replicate;
 import static dev.marksman.kraftwerk.Collections.generateCollectionSize;
-import static dev.marksman.kraftwerk.aggregator.Aggregators.collectionAggregator;
-import static dev.marksman.kraftwerk.aggregator.Aggregators.vectorAggregator;
 
 /**
  * A collection of built-in generators
@@ -542,7 +539,7 @@ public final class Generators {
      */
     public static <A, C extends Collection<A>> Generator<C> generateCollection(Fn0<C> constructCollection,
                                                                                Iterable<Generator<A>> elements) {
-        return Aggregation.aggregate(collectionAggregator(constructCollection), elements);
+        return Collections.generateCollection(constructCollection, elements);
     }
 
     /**
@@ -553,16 +550,15 @@ public final class Generators {
      *
      * @param constructCollection the constructor for the desired type of collection (e.g. {@code ArrayList::new})
      * @param size                the size of the output collection.  Must be &gt;= 0.
-     * @param gen                 the element {@code Generator}
+     * @param elements            the element {@code Generator}
      * @param <A>                 the element type of the desired collection
      * @param <C>                 the collection type.   Instances of {@code C} must support {@link Collection#add} (which is to say, must not throw on invocation).
      * @return a {@code Generator<C>}
      */
     public static <A, C extends Collection<A>> Generator<C> generateCollection(Fn0<C> constructCollection,
                                                                                int size,
-                                                                               Generator<A> gen) {
-        Preconditions.requireNaturalSize(size);
-        return generateCollection(constructCollection, replicate(size, gen));
+                                                                               Generator<A> elements) {
+        return Collections.generateCollection(constructCollection, size, elements);
     }
 
     /**
@@ -573,106 +569,15 @@ public final class Generators {
      *
      * @param constructCollection the constructor for the desired type of collection (e.g. {@code ArrayList::new})
      * @param sizeRange           the {@link IntRange} of sizes for the generated collections.  Lower end of range must be &gt;= 0.
-     * @param gen                 the element {@code Generator}
+     * @param elements            the element {@code Generator}
      * @param <A>                 the element type of the desired collection
      * @param <C>                 the collection type.   Instances of {@code C} must support {@link Collection#add} (which is to say, must not throw on invocation).
      * @return a {@code Generator<C>}
      */
     public static <A, C extends Collection<A>> Generator<C> generateCollection(Fn0<C> constructCollection,
                                                                                IntRange sizeRange,
-                                                                               Generator<A> gen) {
-        Preconditions.requireNaturalSize(sizeRange);
-        return generateCollectionSize(sizeRange).flatMap(size -> generateCollection(constructCollection, size, gen));
-    }
-
-    /**
-     * Creates a {@link Generator} that yields {@link ImmutableVector}s by invoking a collection of
-     * element {@code Generator}s in sequence, and then aggregating the results.
-     *
-     * @param elements an {@link Iterable} containing {@code Generator<A>}s.  Each {@code Generator} will correspond with a single output in the final result.
-     * @param <A>      the element type of the desired {@code ImmutableVector}
-     * @return a {@code Generator<ImmutableVector<A>>}
-     */
-    public static <A> Generator<ImmutableVector<A>> buildVector(Iterable<Generator<A>> elements) {
-        return Aggregation.aggregate(vectorAggregator(), elements);
-    }
-
-    /**
-     * Creates a {@link Generator} that yields {@link ImmutableVector}s by invoking an element {@code Generator}s a specific number of times,
-     * and then aggregating the results.
-     * <p>
-     * The size of the generated {@code ImmutableVector}s will always equal {@code size}.
-     *
-     * @param size the size of the output {@code ImmutableVector}.  Must be &gt;= 0.
-     * @param gen  the element {@code Generator}
-     * @param <A>  the element type of the desired {@code ImmutableVector}
-     * @return a {@code Generator<ImmutableVector<A>>}
-     */
-    public static <A> Generator<ImmutableVector<A>> buildVector(int size, Generator<A> gen) {
-        Preconditions.requireNaturalSize(size);
-        return Aggregation.aggregate(vectorAggregator(size), replicate(size, gen));
-    }
-
-    /**
-     * Creates a {@link Generator} that yields {@link ImmutableVector}s by invoking an element {@code Generator}s a random number of times
-     * (within a specific range),  and then aggregating the results.
-     * <p>
-     * The size of the generated {@code ImmutableVector}s will always fall within {@code sizeRange}.
-     *
-     * @param sizeRange the {@link IntRange} of sizes for the generated {@code ImmutableVector}s.  Lower end of range must be &gt;= 0.
-     * @param gen       the element {@code Generator}
-     * @param <A>       the element type of the desired {@code ImmutableVector}
-     * @return a {@code Generator<ImmutableVector<A>>}
-     */
-    public static <A> Generator<ImmutableVector<A>> buildVector(IntRange sizeRange, Generator<A> gen) {
-        Preconditions.requireNaturalSize(sizeRange);
-        return generateCollectionSize(sizeRange).flatMap(size -> buildVector(size, gen));
-    }
-
-    /**
-     * Creates a {@link Generator} that yields {@link ImmutableNonEmptyVector}s by invoking a collection of
-     * element {@code Generator}s in sequence, and then aggregating the results.
-     *
-     * @param elements an {@link NonEmptyIterable} containing {@code Generator<A>}s.  Each {@code Generator} will correspond with a single output in the final result.
-     * @param <A>      the element type of the desired {@code ImmutableNonEmptyVector}
-     * @return a {@code Generator<ImmutableNonEmptyVector<A>>}
-     */
-    public static <A> Generator<ImmutableNonEmptyVector<A>> buildNonEmptyVector(NonEmptyIterable<Generator<A>> elements) {
-        return Aggregation.aggregate(vectorAggregator(), elements)
-                .fmap(ImmutableVector::toNonEmptyOrThrow);
-    }
-
-    /**
-     * Creates a {@link Generator} that yields {@link ImmutableNonEmptyVector}s by invoking an element {@code Generator}s a specific number of times,
-     * and then aggregating the results.
-     * <p>
-     * The size of the generated {@code ImmutableNonEmptyVector}s will always equal {@code size}.
-     *
-     * @param size the size of the output {@code ImmutableNonEmptyVector}.  Must be &gt;= 1.
-     * @param gen  the element {@code Generator}
-     * @param <A>  the element type of the desired {@code ImmutableNonEmptyVector}
-     * @return a {@code Generator<ImmutableNonEmptyVector<A>>}
-     */
-    public static <A> Generator<ImmutableNonEmptyVector<A>> buildNonEmptyVector(int size, Generator<A> gen) {
-        Preconditions.requirePositiveSize(size);
-        return Aggregation.aggregate(vectorAggregator(), replicate(size, gen))
-                .fmap(ImmutableVector::toNonEmptyOrThrow);
-    }
-
-    /**
-     * Creates a {@link Generator} that yields {@link ImmutableNonEmptyVector}s by invoking an element {@code Generator}s a random number of times
-     * (within a specific range),  and then aggregating the results.
-     * <p>
-     * The size of the generated {@code ImmutableNonEmptyVector}s will always fall within {@code sizeRange}.
-     *
-     * @param sizeRange the {@link IntRange} of sizes for the generated {@code ImmutableVector}s.  Lower end of range must be &gt;= 1.
-     * @param gen       the element {@code Generator}
-     * @param <A>       the element type of the desired {@code ImmutableNonEmptyVector}
-     * @return a {@code Generator<ImmutableNonEmptyVector<A>>}
-     */
-    public static <A> Generator<ImmutableNonEmptyVector<A>> buildNonEmptyVector(IntRange sizeRange, Generator<A> gen) {
-        Preconditions.requirePositiveSize(sizeRange);
-        return generateCollectionSize(sizeRange).flatMap(size -> buildNonEmptyVector(size, gen));
+                                                                               Generator<A> elements) {
+        return Collections.generateCollection(constructCollection, sizeRange, elements);
     }
 
     /**

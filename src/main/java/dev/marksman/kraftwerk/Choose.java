@@ -16,8 +16,8 @@ import java.util.Set;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Cons.cons;
 import static com.jnape.palatable.lambda.functions.builtin.fn3.FoldLeft.foldLeft;
+import static dev.marksman.kraftwerk.Collections.buildVector;
 import static dev.marksman.kraftwerk.Distributions.linearRampDown;
-import static dev.marksman.kraftwerk.Generators.buildVector;
 import static dev.marksman.kraftwerk.Generators.constant;
 import static dev.marksman.kraftwerk.Generators.generateInt;
 import static dev.marksman.kraftwerk.ReservoirSample.reservoirSample;

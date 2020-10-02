@@ -1,5 +1,6 @@
 package dev.marksman.kraftwerk;
 
+import com.jnape.palatable.lambda.functions.Fn0;
 import dev.marksman.collectionviews.ImmutableNonEmptyVector;
 import dev.marksman.collectionviews.ImmutableVector;
 import dev.marksman.collectionviews.Vector;
@@ -11,7 +12,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+import static com.jnape.palatable.lambda.functions.builtin.fn2.Replicate.replicate;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Zip.zip;
+import static dev.marksman.kraftwerk.Generators.generateInt;
+import static dev.marksman.kraftwerk.aggregator.Aggregators.collectionAggregator;
+import static dev.marksman.kraftwerk.aggregator.Aggregators.vectorAggregator;
 
 final class Collections {
     private Collections() {
@@ -44,27 +49,27 @@ final class Collections {
     }
 
     static <A> Generator<ImmutableVector<A>> generateVector(Generator<A> gen) {
-        return Generators.sized(n -> Generators.buildVector(n, gen));
+        return Generators.sized(n -> buildVector(n, gen));
     }
 
     static <A> Generator<ImmutableVector<A>> generateVectorOfSize(int size, Generator<A> gen) {
-        return Generators.buildVector(size, gen);
+        return buildVector(size, gen);
     }
 
     static <A> Generator<ImmutableVector<A>> generateVectorOfSize(IntRange sizeRange, Generator<A> gen) {
-        return Generators.buildVector(sizeRange, gen);
+        return buildVector(sizeRange, gen);
     }
 
     static <A> Generator<ImmutableNonEmptyVector<A>> generateNonEmptyVector(Generator<A> gen) {
-        return Generators.sized(n -> Generators.buildNonEmptyVector(Math.max(1, n), gen));
+        return Generators.sized(n -> buildNonEmptyVector(Math.max(1, n), gen));
     }
 
     static <A> Generator<ImmutableNonEmptyVector<A>> generateNonEmptyVectorOfSize(int size, Generator<A> gen) {
-        return Generators.buildNonEmptyVector(size, gen);
+        return buildNonEmptyVector(size, gen);
     }
 
     static <A> Generator<ImmutableNonEmptyVector<A>> generateNonEmptyVectorOfSize(IntRange sizeRange, Generator<A> gen) {
-        return Generators.buildNonEmptyVector(sizeRange, gen);
+        return buildNonEmptyVector(sizeRange, gen);
     }
 
     static <K, V> Generator<Map<K, V>> generateMap(Generator<K> generateKey,
@@ -88,16 +93,35 @@ final class Collections {
     }
 
     static Generator<Integer> generateCollectionSize(IntRange sizeRange) {
-        return Generators.generateInt(sizeRange);
+        return generateInt(sizeRange);
+    }
+
+    static <A, C extends Collection<A>> Generator<C> generateCollection(Fn0<C> constructCollection,
+                                                                        Iterable<Generator<A>> elements) {
+        return Aggregation.aggregate(collectionAggregator(constructCollection), elements);
+    }
+
+    static <A, C extends Collection<A>> Generator<C> generateCollection(Fn0<C> constructCollection,
+                                                                        int size,
+                                                                        Generator<A> gen) {
+        Preconditions.requireNaturalSize(size);
+        return generateCollection(constructCollection, replicate(size, gen));
+    }
+
+    static <A, C extends Collection<A>> Generator<C> generateCollection(Fn0<C> constructCollection,
+                                                                        IntRange sizeRange,
+                                                                        Generator<A> gen) {
+        Preconditions.requireNaturalSize(sizeRange);
+        return generateCollectionSize(sizeRange).flatMap(size -> generateCollection(constructCollection, size, gen));
     }
 
     private static <A> Generator<ArrayList<A>> buildArrayList(int size, Generator<A> gen) {
         Preconditions.requireNaturalSize(size);
-        return Generators.generateCollection(ArrayList::new, size, gen);
+        return generateCollection(ArrayList::new, size, gen);
     }
 
     private static <A> Generator<HashSet<A>> buildHashSet(int size, Generator<A> gen) {
-        return Generators.generateCollection(HashSet::new, size, gen);
+        return generateCollection(HashSet::new, size, gen);
     }
 
     private static <K, V> Generator<Map<K, V>> generateMapImpl(int size,
@@ -115,5 +139,30 @@ final class Collections {
     private static <K, V> Generator<Map<K, V>> generateMapOfSize(int size, Generator<K> generateKey, Generator<V> generateValue) {
         return generateArrayListOfSize(size, generateKey)
                 .flatMap(keys -> generateMapImpl(keys.size(), keys, generateValue));
+    }
+
+    public static <A> Generator<ImmutableVector<A>> buildVector(Iterable<Generator<A>> elements) {
+        return Aggregation.aggregate(vectorAggregator(), elements);
+    }
+
+    private static <A> Generator<ImmutableVector<A>> buildVector(int size, Generator<A> gen) {
+        Preconditions.requireNaturalSize(size);
+        return Aggregation.aggregate(vectorAggregator(size), replicate(size, gen));
+    }
+
+    private static <A> Generator<ImmutableVector<A>> buildVector(IntRange sizeRange, Generator<A> gen) {
+        Preconditions.requireNaturalSize(sizeRange);
+        return generateCollectionSize(sizeRange).flatMap(size -> buildVector(size, gen));
+    }
+
+    private static <A> Generator<ImmutableNonEmptyVector<A>> buildNonEmptyVector(int size, Generator<A> gen) {
+        Preconditions.requirePositiveSize(size);
+        return Aggregation.aggregate(vectorAggregator(), replicate(size, gen))
+                .fmap(ImmutableVector::toNonEmptyOrThrow);
+    }
+
+    private static <A> Generator<ImmutableNonEmptyVector<A>> buildNonEmptyVector(IntRange sizeRange, Generator<A> gen) {
+        Preconditions.requirePositiveSize(sizeRange);
+        return generateCollectionSize(sizeRange).flatMap(size -> buildNonEmptyVector(size, gen));
     }
 }
