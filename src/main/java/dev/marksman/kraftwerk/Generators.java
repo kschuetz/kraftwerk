@@ -540,8 +540,8 @@ public final class Generators {
      * @param <C>                 the collection type.   Instances of {@code C} must support {@link Collection#add} (which is to say, must not throw on invocation).
      * @return a {@code Generator<C>}
      */
-    public static <A, C extends Collection<A>> Generator<C> buildCollection(Fn0<C> constructCollection,
-                                                                            Iterable<Generator<A>> elements) {
+    public static <A, C extends Collection<A>> Generator<C> generateCollection(Fn0<C> constructCollection,
+                                                                               Iterable<Generator<A>> elements) {
         return Aggregation.aggregate(collectionAggregator(constructCollection), elements);
     }
 
@@ -558,11 +558,11 @@ public final class Generators {
      * @param <C>                 the collection type.   Instances of {@code C} must support {@link Collection#add} (which is to say, must not throw on invocation).
      * @return a {@code Generator<C>}
      */
-    public static <A, C extends Collection<A>> Generator<C> buildCollection(Fn0<C> constructCollection,
-                                                                            int size,
-                                                                            Generator<A> gen) {
+    public static <A, C extends Collection<A>> Generator<C> generateCollection(Fn0<C> constructCollection,
+                                                                               int size,
+                                                                               Generator<A> gen) {
         Preconditions.requireNaturalSize(size);
-        return buildCollection(constructCollection, replicate(size, gen));
+        return generateCollection(constructCollection, replicate(size, gen));
     }
 
     /**
@@ -578,11 +578,11 @@ public final class Generators {
      * @param <C>                 the collection type.   Instances of {@code C} must support {@link Collection#add} (which is to say, must not throw on invocation).
      * @return a {@code Generator<C>}
      */
-    public static <A, C extends Collection<A>> Generator<C> buildCollection(Fn0<C> constructCollection,
-                                                                            IntRange sizeRange,
-                                                                            Generator<A> gen) {
+    public static <A, C extends Collection<A>> Generator<C> generateCollection(Fn0<C> constructCollection,
+                                                                               IntRange sizeRange,
+                                                                               Generator<A> gen) {
         Preconditions.requireNaturalSize(sizeRange);
-        return generateCollectionSize(sizeRange).flatMap(size -> buildCollection(constructCollection, size, gen));
+        return generateCollectionSize(sizeRange).flatMap(size -> generateCollection(constructCollection, size, gen));
     }
 
     /**

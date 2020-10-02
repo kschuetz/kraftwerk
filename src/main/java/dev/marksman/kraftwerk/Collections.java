@@ -93,11 +93,11 @@ final class Collections {
 
     private static <A> Generator<ArrayList<A>> buildArrayList(int size, Generator<A> gen) {
         Preconditions.requireNaturalSize(size);
-        return Generators.buildCollection(ArrayList::new, size, gen);
+        return Generators.generateCollection(ArrayList::new, size, gen);
     }
 
     private static <A> Generator<HashSet<A>> buildHashSet(int size, Generator<A> gen) {
-        return Generators.buildCollection(HashSet::new, size, gen);
+        return Generators.generateCollection(HashSet::new, size, gen);
     }
 
     private static <K, V> Generator<Map<K, V>> generateMapImpl(int size,
