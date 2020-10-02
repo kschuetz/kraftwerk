@@ -23,6 +23,10 @@ public final class Characters {
     private static final ImmutableNonEmptyVector<Character> NUMERIC = NonEmptyVector.lazyFill(10, idx -> (char) (48 + idx));
     private static final ImmutableNonEmptyVector<Character> ALPHA_NUMERIC = union(ALPHA, NUMERIC);
     private static final ImmutableNonEmptyVector<Character> ASCII_PRINTABLE = NonEmptyVector.lazyFill(95, idx -> (char) (32 + idx));
+    private static final ImmutableNonEmptyVector<Character> PUNCTUATION = Vector.of('!', '"', '#', '$', '%', '&',
+            '\'', '(', ')', '*', '+', ',', '-', '.', '/', ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_',
+            '`', '{', '|', '}');
+    private static final ImmutableNonEmptyVector<Character> CONTROL_CHAR = NonEmptyVector.lazyFill(32, idx -> (char) (0 + idx));
 
     public static ImmutableNonEmptyVector<Character> alphaLower() {
         return ALPHA_LOWER;
@@ -46,6 +50,14 @@ public final class Characters {
 
     public static ImmutableNonEmptyVector<Character> alphanumeric() {
         return ALPHA_NUMERIC;
+    }
+
+    public static ImmutableNonEmptyVector<Character> punctuation() {
+        return PUNCTUATION;
+    }
+
+    public static ImmutableNonEmptyVector<Character> controlChar() {
+        return CONTROL_CHAR;
     }
 
     @SafeVarargs

@@ -13,6 +13,7 @@ import java.util.Arrays;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Intersperse.intersperse;
 import static dev.marksman.enhancediterables.EnhancedIterable.enhance;
 import static dev.marksman.kraftwerk.Generators.aggregate;
+import static dev.marksman.kraftwerk.Generators.chooseOneValueFromDomain;
 import static dev.marksman.kraftwerk.Generators.constant;
 import static dev.marksman.kraftwerk.Primitives.generateSize;
 import static dev.marksman.kraftwerk.Sequence.sequence;
@@ -176,6 +177,38 @@ final class Strings {
 
     static Generator<String> generateAlphanumericString(IntRange lengthRange) {
         return generateStringFromCharacters(lengthRange, Characters.alphanumeric());
+    }
+
+    static Generator<Character> generateAlphaChar() {
+        return chooseOneValueFromDomain(Characters.alpha());
+    }
+
+    static Generator<Character> generateAlphaUpperChar() {
+        return chooseOneValueFromDomain(Characters.alphaUpper());
+    }
+
+    static Generator<Character> generateAlphaLowerChar() {
+        return chooseOneValueFromDomain(Characters.alphaLower());
+    }
+
+    static Generator<Character> generateAlphanumericChar() {
+        return chooseOneValueFromDomain(Characters.alphanumeric());
+    }
+
+    static Generator<Character> generateNumericChar() {
+        return chooseOneValueFromDomain(Characters.numeric());
+    }
+
+    static Generator<Character> generatePunctuationChar() {
+        return chooseOneValueFromDomain(Characters.punctuation());
+    }
+
+    static Generator<Character> generateAsciiPrintableChar() {
+        return chooseOneValueFromDomain(Characters.asciiPrintable());
+    }
+
+    static Generator<Character> generateControlChar() {
+        return chooseOneValueFromDomain(Characters.controlChar());
     }
 
     static Generator<String> concatStrings(Generator<String> separator, Iterable<Generator<String>> components) {

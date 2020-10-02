@@ -300,6 +300,81 @@ public final class Generators {
     }
 
     /**
+     * Creates a {@link Generator} that yields ASCII alphabetic {@link Character}s (A-Z, a-z).
+     *
+     * @return a {@code Generator<Character>}
+     */
+    public static Generator<Character> generateAlphaChar() {
+        return Strings.generateAlphaChar();
+    }
+
+    /**
+     * Creates a {@link Generator} that yields ASCII uppercase alphabetic {@link Character}s (A-Z).
+     *
+     * @return a {@code Generator<Character>}
+     */
+    public static Generator<Character> generateAlphaUpperChar() {
+        return Strings.generateAlphaUpperChar();
+    }
+
+    /**
+     * Creates a {@link Generator} that yields ASCII lowercase alphabetic {@link Character}s (a-z).
+     *
+     * @return a {@code Generator<Character>}
+     */
+    public static Generator<Character> generateAlphaLowerChar() {
+        return Strings.generateAlphaLowerChar();
+    }
+
+    /**
+     * Creates a {@link Generator} that yields ASCII alphanumeric {@link Character}s (A-Z, a-z, 0-9).
+     *
+     * @return a {@code Generator<Character>}
+     */
+    public static Generator<Character> generateAlphanumericChar() {
+        return Strings.generateAlphanumericChar();
+    }
+
+    /**
+     * Creates a {@link Generator} that yields ASCII numeric {@link Character}s (0-9).
+     *
+     * @return a {@code Generator<Character>}
+     */
+    public static Generator<Character> generateNumericChar() {
+        return Strings.generateNumericChar();
+    }
+
+    /**
+     * Creates a {@link Generator} that yields ASCII punctuation {@link Character}s.
+     * This include any ASCII character that is not a letter, digit, space, or control character.
+     *
+     * @return a {@code Generator<Character>}
+     */
+    public static Generator<Character> generatePunctuationChar() {
+        return Strings.generatePunctuationChar();
+    }
+
+    /**
+     * Creates a {@link Generator} that yields ASCII printable {@link Character}s.
+     * This include any ASCII character that is not a control character.
+     *
+     * @return a {@code Generator<Character>}
+     */
+    public static Generator<Character> generateAsciiPrintableChar() {
+        return Strings.generateAsciiPrintableChar();
+    }
+
+    /**
+     * Creates a {@link Generator} that yields ASCII control {@link Character}s.
+     * A control character is any character from ASCII code 0-31.
+     *
+     * @return a {@code Generator<Character>}
+     */
+    public static Generator<Character> generateControlChar() {
+        return Strings.generateControlChar();
+    }
+
+    /**
      * Creates a {@link Generator} that yields {@link Double}s, which, when accumulated, will result in
      * normal distribution.
      *
