@@ -5,7 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static dev.marksman.kraftwerk.CoProducts.generateBoolean;
+import static dev.marksman.kraftwerk.Generators.generateBoolean;
 import static dev.marksman.kraftwerk.weights.BooleanWeights.falses;
 import static dev.marksman.kraftwerk.weights.BooleanWeights.trues;
 import static testsupport.Assert.assertForAll;

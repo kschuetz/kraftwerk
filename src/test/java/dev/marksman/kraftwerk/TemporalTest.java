@@ -15,13 +15,13 @@ import java.time.LocalTime;
 import java.time.Year;
 import java.time.YearMonth;
 
-import static dev.marksman.kraftwerk.Temporal.generateDayOfWeek;
-import static dev.marksman.kraftwerk.Temporal.generateLocalDate;
-import static dev.marksman.kraftwerk.Temporal.generateLocalDateForMonth;
-import static dev.marksman.kraftwerk.Temporal.generateLocalDateForYear;
-import static dev.marksman.kraftwerk.Temporal.generateLocalDateTime;
-import static dev.marksman.kraftwerk.Temporal.generateLocalTime;
-import static dev.marksman.kraftwerk.Temporal.generateMonth;
+import static dev.marksman.kraftwerk.Generators.generateDayOfWeek;
+import static dev.marksman.kraftwerk.Generators.generateLocalDate;
+import static dev.marksman.kraftwerk.Generators.generateLocalDateForMonth;
+import static dev.marksman.kraftwerk.Generators.generateLocalDateForYear;
+import static dev.marksman.kraftwerk.Generators.generateLocalDateTime;
+import static dev.marksman.kraftwerk.Generators.generateLocalTime;
+import static dev.marksman.kraftwerk.Generators.generateMonth;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static testsupport.Assert.assertAlwaysInRange;
 import static testsupport.CoversRange.coversRange;
@@ -64,13 +64,13 @@ class TemporalTest {
         void alwaysInRange() {
             assertAlwaysInRange(LocalDateRange.from(LocalDate.of(2019, 12, 31))
                             .to(LocalDate.of(2021, 1, 1)),
-                    Temporal::generateLocalDate);
+                    Generators::generateLocalDate);
             assertAlwaysInRange(LocalDateRange.from(LocalDate.of(2020, 9, 27))
                             .to(LocalDate.of(2020, 9, 27)),
-                    Temporal::generateLocalDate);
+                    Generators::generateLocalDate);
             assertAlwaysInRange(LocalDateRange.from(LocalDate.of(1, 1, 1))
                             .to(LocalDate.of(99999, 12, 31)),
-                    Temporal::generateLocalDate);
+                    Generators::generateLocalDate);
         }
 
         @Test
@@ -143,7 +143,7 @@ class TemporalTest {
         void alwaysInRange() {
             assertAlwaysInRange(LocalTimeRange.from(LocalTime.of(1, 2, 3))
                             .to(LocalTime.of(23, 58, 59)),
-                    Temporal::generateLocalTime);
+                    Generators::generateLocalTime);
         }
 
         @Test
@@ -165,10 +165,10 @@ class TemporalTest {
         void alwaysInRange() {
             assertAlwaysInRange(LocalDateTimeRange.from(LocalDate.of(2019, 12, 31).atStartOfDay())
                             .to(LocalDate.of(2021, 1, 1).atStartOfDay()),
-                    Temporal::generateLocalDateTime);
+                    Generators::generateLocalDateTime);
             assertAlwaysInRange(LocalDateTimeRange.from(LocalDateTime.of(2020, 9, 27, 11, 12, 13, 0))
                             .to(LocalDateTime.of(2020, 9, 27, 13, 14, 15, 0)),
-                    Temporal::generateLocalDateTime);
+                    Generators::generateLocalDateTime);
         }
 
         @Test
@@ -203,11 +203,11 @@ class TemporalTest {
         @Test
         void alwaysInRange() {
             assertAlwaysInRange(DurationRange.from(Duration.ofSeconds(1)).to(Duration.ofSeconds(1)),
-                    Temporal::generateDuration);
+                    Generators::generateDuration);
             assertAlwaysInRange(DurationRange.from(Duration.ofSeconds(1)).to(Duration.ofDays(10)),
-                    Temporal::generateDuration);
+                    Generators::generateDuration);
             assertAlwaysInRange(DurationRange.from(Duration.ofDays(1)).to(Duration.ofDays(10)),
-                    Temporal::generateDuration);
+                    Generators::generateDuration);
         }
     }
 }

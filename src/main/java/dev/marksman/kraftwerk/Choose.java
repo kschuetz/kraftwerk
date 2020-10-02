@@ -73,7 +73,7 @@ final class Choose {
         }
     }
 
-    static <A> Generator<ImmutableNonEmptyVector<A>> chooseAtLeastOneValueFromCollection(Iterable<A> candidates) {
+    static <A> Generator<ImmutableNonEmptyVector<A>> chooseAtLeastOneValueFromCollection(Collection<A> candidates) {
         requireNonEmptyCandidates("chooseAtLeastOneFrom", candidates);
         return chooseAtLeastOneValueFromDomain(NonEmptyVector.copyFromOrThrow(candidates));
     }

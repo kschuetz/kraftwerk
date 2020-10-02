@@ -12,23 +12,23 @@ import java.util.Map;
 import java.util.Set;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.All.all;
-import static dev.marksman.kraftwerk.Choose.chooseAtLeastOneOf;
-import static dev.marksman.kraftwerk.Choose.chooseAtLeastOneOfValues;
-import static dev.marksman.kraftwerk.Choose.chooseAtLeastOneValueFromCollection;
-import static dev.marksman.kraftwerk.Choose.chooseEntryFromMap;
-import static dev.marksman.kraftwerk.Choose.chooseKeyFromMap;
-import static dev.marksman.kraftwerk.Choose.chooseOneFromCollection;
-import static dev.marksman.kraftwerk.Choose.chooseOneFromCollectionWeighted;
-import static dev.marksman.kraftwerk.Choose.chooseOneOf;
-import static dev.marksman.kraftwerk.Choose.chooseOneOfValues;
-import static dev.marksman.kraftwerk.Choose.chooseOneOfWeighted;
-import static dev.marksman.kraftwerk.Choose.chooseOneOfWeightedValues;
-import static dev.marksman.kraftwerk.Choose.chooseOneValueFromCollection;
-import static dev.marksman.kraftwerk.Choose.chooseOneValueFromDomain;
-import static dev.marksman.kraftwerk.Choose.chooseSomeOf;
-import static dev.marksman.kraftwerk.Choose.chooseSomeValuesFromCollection;
-import static dev.marksman.kraftwerk.Choose.chooseValueFromMap;
+import static dev.marksman.kraftwerk.Generators.chooseAtLeastOneOf;
+import static dev.marksman.kraftwerk.Generators.chooseAtLeastOneOfValues;
+import static dev.marksman.kraftwerk.Generators.chooseAtLeastOneValueFromCollection;
+import static dev.marksman.kraftwerk.Generators.chooseEntryFromMap;
+import static dev.marksman.kraftwerk.Generators.chooseKeyFromMap;
+import static dev.marksman.kraftwerk.Generators.chooseOneFromCollection;
+import static dev.marksman.kraftwerk.Generators.chooseOneFromCollectionWeighted;
+import static dev.marksman.kraftwerk.Generators.chooseOneOf;
+import static dev.marksman.kraftwerk.Generators.chooseOneOfValues;
+import static dev.marksman.kraftwerk.Generators.chooseOneOfWeighted;
+import static dev.marksman.kraftwerk.Generators.chooseOneOfWeightedValues;
+import static dev.marksman.kraftwerk.Generators.chooseOneValueFromCollection;
+import static dev.marksman.kraftwerk.Generators.chooseOneValueFromDomain;
+import static dev.marksman.kraftwerk.Generators.chooseSomeOf;
 import static dev.marksman.kraftwerk.Generators.chooseSomeOfValues;
+import static dev.marksman.kraftwerk.Generators.chooseSomeValuesFromCollection;
+import static dev.marksman.kraftwerk.Generators.chooseValueFromMap;
 import static dev.marksman.kraftwerk.Generators.generateInt;
 import static dev.marksman.kraftwerk.Weighted.weighted;
 import static java.util.Arrays.asList;
@@ -244,32 +244,32 @@ class ChooseTest {
     class ChooseAtLeastOneValueFromCollection {
         @Test
         void throwsForEmptyCollection() {
-            assertThrows(IllegalArgumentException.class, () -> chooseAtLeastOneValueFromCollection(Vector.empty()));
+            assertThrows(IllegalArgumentException.class, () -> chooseAtLeastOneValueFromCollection(emptyList()));
         }
 
         @Test
         void alwaysInRange() {
-            assertForAll(chooseAtLeastOneValueFromCollection(Vector.of(1, 2, 3)), xs ->
+            assertForAll(chooseAtLeastOneValueFromCollection(asList(1, 2, 3)), xs ->
                     !xs.isEmpty() && all(n -> (n >= 1) && (n <= 3), xs));
         }
 
         @Test
         void noRepeats() {
-            assertForAll(chooseAtLeastOneValueFromCollection(Vector.of(1, 2, 3)), xs ->
+            assertForAll(chooseAtLeastOneValueFromCollection(asList(1, 2, 3)), xs ->
                     xs.toCollection(HashSet::new).size() == xs.size());
         }
 
         @Test
         void coverage() {
             int[] f = new int[4];
-            chooseAtLeastOneValueFromCollection(Vector.of(0, 1, 2)).run().take(100)
+            chooseAtLeastOneValueFromCollection(asList(0, 1, 2)).run().take(100)
                     .forEach(xs -> f[xs.foldLeft(Integer::sum, 0)] += 1);
             assertTrue(coversRange(f));
         }
 
         @Test
         void singleCandidate() {
-            assertForAll(chooseAtLeastOneValueFromCollection(Vector.of(1)), xs -> xs.equals(Vector.of(1)));
+            assertForAll(chooseAtLeastOneValueFromCollection(singletonList(1)), xs -> xs.equals(Vector.of(1)));
         }
     }
 

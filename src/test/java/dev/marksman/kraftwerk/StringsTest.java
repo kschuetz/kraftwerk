@@ -11,18 +11,18 @@ import org.junit.jupiter.api.Test;
 import static com.jnape.palatable.lambda.adt.hlist.HList.tuple;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.All.all;
 import static dev.marksman.kraftwerk.Generators.chooseOneOfValues;
+import static dev.marksman.kraftwerk.Generators.concatMaybeStrings;
+import static dev.marksman.kraftwerk.Generators.concatStrings;
 import static dev.marksman.kraftwerk.Generators.constant;
+import static dev.marksman.kraftwerk.Generators.generateAlphaLowerString;
+import static dev.marksman.kraftwerk.Generators.generateAlphaString;
+import static dev.marksman.kraftwerk.Generators.generateAlphaUpperString;
+import static dev.marksman.kraftwerk.Generators.generateAlphanumericString;
+import static dev.marksman.kraftwerk.Generators.generateIdentifier;
 import static dev.marksman.kraftwerk.Generators.generateIntRange;
 import static dev.marksman.kraftwerk.Generators.generateNothing;
-import static dev.marksman.kraftwerk.Strings.concatMaybeStrings;
-import static dev.marksman.kraftwerk.Strings.concatStrings;
-import static dev.marksman.kraftwerk.Strings.generateAlphaLowerString;
-import static dev.marksman.kraftwerk.Strings.generateAlphaString;
-import static dev.marksman.kraftwerk.Strings.generateAlphaUpperString;
-import static dev.marksman.kraftwerk.Strings.generateAlphanumericString;
-import static dev.marksman.kraftwerk.Strings.generateIdentifier;
-import static dev.marksman.kraftwerk.Strings.generateString;
-import static dev.marksman.kraftwerk.Strings.generateStringFromCharacters;
+import static dev.marksman.kraftwerk.Generators.generateString;
+import static dev.marksman.kraftwerk.Generators.generateStringFromCharacters;
 import static testsupport.Assert.assertForAll;
 import static testsupport.StringIterable.stringIterable;
 
@@ -198,15 +198,15 @@ class StringsTest {
     class GenerateAlphanumericString {
         @Test
         void variableLength() {
-            assertForAll(Strings.generateAlphanumericString(), this::isValidAlphaNumericString);
+            assertForAll(generateAlphanumericString(), this::isValidAlphaNumericString);
         }
 
         @Test
         void constantLength() {
-            assertForAll(Strings.generateAlphanumericString(0), s -> s.length() == 0);
-            assertForAll(Strings.generateAlphanumericString(1), s -> s.length() == 1 && isValidAlphaNumericString(s));
-            assertForAll(Strings.generateAlphanumericString(5), s -> s.length() == 5 && isValidAlphaNumericString(s));
-            assertForAll(Strings.generateAlphanumericString(100), s -> s.length() == 100 && isValidAlphaNumericString(s));
+            assertForAll(generateAlphanumericString(0), s -> s.length() == 0);
+            assertForAll(generateAlphanumericString(1), s -> s.length() == 1 && isValidAlphaNumericString(s));
+            assertForAll(generateAlphanumericString(5), s -> s.length() == 5 && isValidAlphaNumericString(s));
+            assertForAll(generateAlphanumericString(100), s -> s.length() == 100 && isValidAlphaNumericString(s));
         }
 
         @Test
