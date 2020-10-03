@@ -11,10 +11,11 @@ import static dev.marksman.kraftwerk.Generators.generateLocalDateForYear;
 import static dev.marksman.kraftwerk.Generators.generateLong;
 import static dev.marksman.kraftwerk.Generators.generateMaybe;
 import static dev.marksman.kraftwerk.Generators.generateThese;
+import static dev.marksman.kraftwerk.Generators.generateTuple;
 
 public class CoProductExample {
     public static void main(String[] args) {
-        Generators.tupled(generateMaybe(generateLocalDateForYear(Year.now())),
+        generateTuple(generateMaybe(generateLocalDateForYear(Year.now())),
                 generateEither(generateInt(), Generators.generateDoubleFractional()),
                 generateThese(generateLong(), chooseOneOfValues("foo", "bar", "baz")))
                 .run()

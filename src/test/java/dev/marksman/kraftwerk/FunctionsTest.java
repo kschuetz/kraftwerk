@@ -32,7 +32,7 @@ import static dev.marksman.kraftwerk.Generators.generateFn7;
 import static dev.marksman.kraftwerk.Generators.generateFn8;
 import static dev.marksman.kraftwerk.Generators.generateInt;
 import static dev.marksman.kraftwerk.Generators.generateIntRange;
-import static dev.marksman.kraftwerk.Generators.tupled;
+import static dev.marksman.kraftwerk.Generators.generateTuple;
 import static testsupport.Assert.assertForAll;
 
 class FunctionsTest {
@@ -109,7 +109,7 @@ class FunctionsTest {
             Fn4<Integer, Integer, Integer, Integer, Integer> f = t._1();
             IntRange range = t._2();
             ImmutableFiniteIterable<Tuple4<Integer, Integer, Integer, Integer>> args =
-                    tupled(generateInt(), generateInt(), generateInt(), generateInt())
+                    generateTuple(generateInt(), generateInt(), generateInt(), generateInt())
                             .run().take(NUM_CALLS);
 
             Fn1<Tuple4<Integer, Integer, Integer, Integer>, Integer> call = x -> f.apply(x._1(), x._2(), x._3(), x._4());
@@ -132,7 +132,7 @@ class FunctionsTest {
             Fn5<Integer, Integer, Integer, Integer, Integer, Integer> f = t._1();
             IntRange range = t._2();
             ImmutableFiniteIterable<Tuple5<Integer, Integer, Integer, Integer, Integer>> args =
-                    tupled(generateInt(), generateInt(), generateInt(), generateInt(), generateInt())
+                    generateTuple(generateInt(), generateInt(), generateInt(), generateInt(), generateInt())
                             .run().take(NUM_CALLS);
 
             Fn1<Tuple5<Integer, Integer, Integer, Integer, Integer>, Integer> call = x -> f.apply(x._1(), x._2(), x._3(), x._4(), x._5());
@@ -155,7 +155,7 @@ class FunctionsTest {
             Fn6<Integer, Integer, Integer, Integer, Integer, Integer, Integer> f = t._1();
             IntRange range = t._2();
             ImmutableFiniteIterable<Tuple6<Integer, Integer, Integer, Integer, Integer, Integer>> args =
-                    tupled(generateInt(), generateInt(), generateInt(), generateInt(), generateInt(), generateInt())
+                    generateTuple(generateInt(), generateInt(), generateInt(), generateInt(), generateInt(), generateInt())
                             .run().take(NUM_CALLS);
 
             Fn1<Tuple6<Integer, Integer, Integer, Integer, Integer, Integer>, Integer> call =
@@ -180,7 +180,7 @@ class FunctionsTest {
             Fn7<Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer> f = t._1();
             IntRange range = t._2();
             ImmutableFiniteIterable<Tuple7<Integer, Integer, Integer, Integer, Integer, Integer, Integer>> args =
-                    tupled(generateInt(), generateInt(), generateInt(), generateInt(), generateInt(), generateInt(),
+                    generateTuple(generateInt(), generateInt(), generateInt(), generateInt(), generateInt(), generateInt(),
                             generateInt())
                             .run().take(NUM_CALLS);
 
@@ -206,7 +206,7 @@ class FunctionsTest {
             Fn8<Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer> f = t._1();
             IntRange range = t._2();
             ImmutableFiniteIterable<Tuple8<Integer, Integer, Integer, Integer, Integer, Integer, Integer, Integer>> args =
-                    tupled(generateInt(), generateInt(), generateInt(), generateInt(), generateInt(), generateInt(),
+                    generateTuple(generateInt(), generateInt(), generateInt(), generateInt(), generateInt(), generateInt(),
                             generateInt(), generateInt())
                             .run().take(NUM_CALLS);
 

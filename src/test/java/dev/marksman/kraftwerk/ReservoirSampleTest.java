@@ -10,6 +10,7 @@ import java.util.HashSet;
 import static com.jnape.palatable.lambda.adt.hlist.HList.tuple;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.All.all;
 import static dev.marksman.kraftwerk.Generators.generateInt;
+import static dev.marksman.kraftwerk.Generators.generateTuple;
 import static dev.marksman.kraftwerk.ReservoirSample.reservoirSample;
 import static testsupport.Assert.assertForAll;
 
@@ -19,7 +20,7 @@ class ReservoirSampleTest {
         Generator<Integer> generateN = generateInt(IntRange.from(0).to(10));
         Generator<Integer> generateK = generateInt(IntRange.from(0).to(10));
 
-        assertForAll(Generators.tupled(generateN, generateK)
+        assertForAll(generateTuple(generateN, generateK)
                         .flatMap(t -> reservoirSample(t._1(), t._2())
                                 .fmap(result -> tuple(t._1(), t._2(), result))),
                 Into3.into3((n, k, result) -> {

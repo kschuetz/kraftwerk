@@ -197,21 +197,19 @@ public class MappingToADifferentType {
 
 ### Combining generators
 
-Two or more (up to eight) generators can be combined to create a generator of `Tuple`s, using `Generators.tupled`:
+Two or more (up to eight) generators can be combined to create a generator of `Tuple`s, using `Generators.generateTuple`:
 
 ```java
 package examples.tutorial;
 import com.jnape.palatable.lambda.adt.hlist.Tuple2;
 import dev.marksman.kraftwerk.Generator;
-import dev.marksman.kraftwerk.Generators;
 import static dev.marksman.kraftwerk.Generators.generateInt;
 import static dev.marksman.kraftwerk.Generators.generateString;
+import static dev.marksman.kraftwerk.Generators.generateTuple;
 
 public class CombiningTwoGenerators {
     public static void main(String[] args) {
-        Generator<Tuple2<Integer, String>> generator = Generators.tupled(generateInt(),
-                generateString());
-
+        Generator<Tuple2<Integer, String>> generator = generateTuple(generateInt(), generateString());
         generator.run()
                 .take(5)
                 .forEach(System.out::println);
@@ -232,21 +230,21 @@ Here is another example that combines three generators:
 package examples.tutorial;
 import com.jnape.palatable.lambda.adt.hlist.Tuple3;
 import dev.marksman.kraftwerk.Generator;
-import dev.marksman.kraftwerk.Generators;
 import static dev.marksman.kraftwerk.Generators.generateDoubleFractional;
 import static dev.marksman.kraftwerk.Generators.generateInt;
 import static dev.marksman.kraftwerk.Generators.generateString;
+import static dev.marksman.kraftwerk.Generators.generateTuple;
 
 public class CombiningThreeGenerators {
     public static void main(String[] args) {
-        Generator<Tuple3<Integer, String, Double>> generator = Generators.tupled(generateInt(),
+        Generator<Tuple3<Integer, String, Double>> generator = generateTuple(generateInt(),
                 generateString(),
                 generateDoubleFractional());
 
         generator.run()
                 .take(5)
                 .forEach(System.out::println);
-        
+
         // sample output:
         // HList{ 1730204138 :: A(@'y)p#e: :: 0.11402224544546236 }
         // HList{ 1909756109 :: ';B :: 0.9884475029496926 }
@@ -259,21 +257,23 @@ public class CombiningThreeGenerators {
 
 ### Combining into a custom type
 
-If you would prefer a product type other than `Tuple`, you can use `Generators.product`. This takes the component generators,
+If you would prefer a product type other than `Tuple`, you can use `Generators.generateProduct`. This takes the component generators,
 and a function to apply to all of the generated components in order to create the desired type.  Here is an example that
 generates values of a custom type `RGB`:
                                        
 ```java
 package examples.tutorial;
+
 import dev.marksman.kraftwerk.Generator;
-import dev.marksman.kraftwerk.Generators;
 import dev.marksman.kraftwerk.constraints.IntRange;
+
 import static dev.marksman.kraftwerk.Generators.generateInt;
+import static dev.marksman.kraftwerk.Generators.generateProduct;
 
 public class CustomProductTypesExample {
     public static void main(String[] args) {
         Generator<Integer> component = generateInt(IntRange.inclusive(0, 255));
-        Generator<RGB> generateRGB = Generators.product(component, component, component, RGB::new);
+        Generator<RGB> generateRGB = generateProduct(component, component, component, RGB::new);
 
         generateRGB.run()
                 .take(5)
@@ -299,7 +299,6 @@ public class CustomProductTypesExample {
         public int getRed() { return red; }
         public int getGreen() { return green; }
         public int getBlue() { return blue; }
-        
         @Override
         public String toString() {
             return "RGB{" +
@@ -309,7 +308,7 @@ public class CustomProductTypesExample {
                     '}';
         }
     }
-}                         
+}
 ```       
 
 ### Generating `Collection`s

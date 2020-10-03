@@ -18,6 +18,18 @@ import dev.marksman.kraftwerk.weights.NullWeights;
 import java.util.ArrayList;
 
 import static com.jnape.palatable.lambda.adt.Maybe.nothing;
+import static dev.marksman.kraftwerk.Generators.generateArrayList;
+import static dev.marksman.kraftwerk.Generators.generateArrayListOfSize;
+import static dev.marksman.kraftwerk.Generators.generateJust;
+import static dev.marksman.kraftwerk.Generators.generateMaybe;
+import static dev.marksman.kraftwerk.Generators.generateNonEmptyArrayList;
+import static dev.marksman.kraftwerk.Generators.generateNonEmptyVector;
+import static dev.marksman.kraftwerk.Generators.generateNonEmptyVectorOfSize;
+import static dev.marksman.kraftwerk.Generators.generateProduct;
+import static dev.marksman.kraftwerk.Generators.generateTuple;
+import static dev.marksman.kraftwerk.Generators.generateVector;
+import static dev.marksman.kraftwerk.Generators.generateVectorOfSize;
+import static dev.marksman.kraftwerk.Generators.generateWithNulls;
 import static dev.marksman.kraftwerk.StandardGeneratorParameters.defaultGeneratorParameters;
 import static dev.marksman.kraftwerk.ValueSupply.valueSupply;
 
@@ -209,7 +221,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
      * @return a {@code Generator<Tuple2<A, A>>}
      */
     default Generator<Tuple2<A, A>> pair() {
-        return Generators.tupled(this, this);
+        return generateTuple(this, this);
     }
 
     /**
@@ -218,7 +230,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
      * @return a {@code Generator<Tuple3<A, A, A>>}
      */
     default Generator<Tuple3<A, A, A>> triple() {
-        return Generators.tupled(this, this, this);
+        return generateTuple(this, this, this);
     }
 
     /**
@@ -246,7 +258,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
      * @return a {@code Generator<Maybe<A>>}
      */
     default Generator<Maybe<A>> just() {
-        return Generators.generateJust(this);
+        return generateJust(this);
     }
 
     /**
@@ -256,7 +268,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
      * @return a {@code Generator<Maybe<A>>}
      */
     default Generator<Maybe<A>> maybe() {
-        return Generators.generateMaybe(this);
+        return generateMaybe(this);
     }
 
     /**
@@ -266,7 +278,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
      * @return a {@code Generator<Maybe<A>>}
      */
     default Generator<Maybe<A>> maybe(MaybeWeights weights) {
-        return Generators.generateMaybe(weights, this);
+        return generateMaybe(weights, this);
     }
 
     /**
@@ -293,7 +305,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
      * @return a {@code Generator<Maybe<A>>}
      */
     default Generator<A> withNulls() {
-        return Generators.generateWithNulls(this);
+        return generateWithNulls(this);
     }
 
     /**
@@ -303,7 +315,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
      * @return a {@code Generator<Maybe<A>>}
      */
     default Generator<A> withNulls(NullWeights weights) {
-        return Generators.generateWithNulls(weights, this);
+        return generateWithNulls(weights, this);
     }
 
     /**
@@ -313,7 +325,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
      * @return a {@code Generator<ArrayList<A>>}
      */
     default Generator<ArrayList<A>> arrayList() {
-        return Generators.generateArrayList(this);
+        return generateArrayList(this);
     }
 
     /**
@@ -323,7 +335,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
      * @return a {@code Generator<ArrayList<A>>}
      */
     default Generator<ArrayList<A>> nonEmptyArrayList() {
-        return Generators.generateNonEmptyArrayList(this);
+        return generateNonEmptyArrayList(this);
     }
 
     /**
@@ -334,7 +346,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
      * @return a {@code Generator<ArrayList<A>>}
      */
     default Generator<ArrayList<A>> arrayListOfSize(int size) {
-        return Generators.generateArrayListOfSize(size, this);
+        return generateArrayListOfSize(size, this);
     }
 
     /**
@@ -345,7 +357,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
      * @return a {@code Generator<ArrayList<A>>}
      */
     default Generator<ArrayList<A>> arrayListOfSize(IntRange sizeRange) {
-        return Generators.generateArrayListOfSize(sizeRange, this);
+        return generateArrayListOfSize(sizeRange, this);
     }
 
     /**
@@ -355,7 +367,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
      * @return a {@code Generator<ImmutableVector<A>>}
      */
     default Generator<ImmutableVector<A>> vector() {
-        return Generators.generateVector(this);
+        return generateVector(this);
     }
 
     /**
@@ -366,7 +378,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
      * @return a {@code Generator<ImmutableVector<A>>}
      */
     default Generator<ImmutableVector<A>> vectorOfSize(int size) {
-        return Generators.generateVectorOfSize(size, this);
+        return generateVectorOfSize(size, this);
     }
 
     /**
@@ -377,7 +389,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
      * @return a {@code Generator<ImmutableVector<A>>}
      */
     default Generator<ImmutableVector<A>> vectorOfSize(IntRange sizeRange) {
-        return Generators.generateVectorOfSize(sizeRange, this);
+        return generateVectorOfSize(sizeRange, this);
     }
 
     /**
@@ -387,7 +399,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
      * @return a {@code Generator<ImmutableNonEmptyVector<A>>}
      */
     default Generator<ImmutableNonEmptyVector<A>> nonEmptyVector() {
-        return Generators.generateNonEmptyVector(this);
+        return generateNonEmptyVector(this);
     }
 
     /**
@@ -398,7 +410,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
      * @return a {@code Generator<ImmutableNonEmptyVector<A>>}
      */
     default Generator<ImmutableNonEmptyVector<A>> nonEmptyVectorOfSize(int size) {
-        return Generators.generateNonEmptyVectorOfSize(size, this);
+        return generateNonEmptyVectorOfSize(size, this);
     }
 
     /**
@@ -409,7 +421,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
      * @return a {@code Generator<ImmutableNonEmptyVector<A>>}
      */
     default Generator<ImmutableNonEmptyVector<A>> nonEmptyVectorOfSize(IntRange sizeRange) {
-        return Generators.generateNonEmptyVectorOfSize(sizeRange, this);
+        return generateNonEmptyVectorOfSize(sizeRange, this);
     }
 
     /**
@@ -424,7 +436,7 @@ public interface Generator<A> extends Monad<A, Generator<?>>, ToGenerator<A> {
      * @return a {@code Generator<C>}
      */
     default <B, C> Generator<C> zipWith(Fn2<A, B, C> fn, Generator<B> other) {
-        return Generators.product(this, other, fn);
+        return generateProduct(this, other, fn);
     }
 
     /**

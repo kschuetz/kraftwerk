@@ -1,15 +1,15 @@
 package examples.tutorial;
 
 import dev.marksman.kraftwerk.Generator;
-import dev.marksman.kraftwerk.Generators;
 import dev.marksman.kraftwerk.constraints.IntRange;
 
 import static dev.marksman.kraftwerk.Generators.generateInt;
+import static dev.marksman.kraftwerk.Generators.generateProduct;
 
 public class CustomProductTypesExample {
     public static void main(String[] args) {
         Generator<Integer> component = generateInt(IntRange.inclusive(0, 255));
-        Generator<RGB> generateRGB = Generators.product(component, component, component, RGB::new);
+        Generator<RGB> generateRGB = generateProduct(component, component, component, RGB::new);
 
         generateRGB.run()
                 .take(5)

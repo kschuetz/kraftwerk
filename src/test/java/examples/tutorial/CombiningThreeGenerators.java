@@ -2,15 +2,15 @@ package examples.tutorial;
 
 import com.jnape.palatable.lambda.adt.hlist.Tuple3;
 import dev.marksman.kraftwerk.Generator;
-import dev.marksman.kraftwerk.Generators;
 
 import static dev.marksman.kraftwerk.Generators.generateDoubleFractional;
 import static dev.marksman.kraftwerk.Generators.generateInt;
 import static dev.marksman.kraftwerk.Generators.generateString;
+import static dev.marksman.kraftwerk.Generators.generateTuple;
 
 public class CombiningThreeGenerators {
     public static void main(String[] args) {
-        Generator<Tuple3<Integer, String, Double>> generator = Generators.tupled(generateInt(),
+        Generator<Tuple3<Integer, String, Double>> generator = generateTuple(generateInt(),
                 generateString(),
                 generateDoubleFractional());
 

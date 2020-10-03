@@ -1,15 +1,14 @@
 package examples;
 
-import dev.marksman.kraftwerk.Generators;
-
 import static dev.marksman.kraftwerk.Generators.generateDouble;
 import static dev.marksman.kraftwerk.Generators.generateDoubleFractional;
 import static dev.marksman.kraftwerk.Generators.generateFloat;
 import static dev.marksman.kraftwerk.Generators.generateFloatFractional;
+import static dev.marksman.kraftwerk.Generators.generateTuple;
 
 public class FloatingPointExample {
     public static void main(String[] args) {
-        Generators.tupled(generateDoubleFractional(),
+        generateTuple(generateDoubleFractional(),
                 generateDoubleFractional().withNaNs(),
                 generateDouble().withInfinities(),
                 generateFloatFractional(),

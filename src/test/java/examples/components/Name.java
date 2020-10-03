@@ -2,11 +2,17 @@ package examples.components;
 
 import com.jnape.palatable.lambda.adt.Maybe;
 import dev.marksman.kraftwerk.Generator;
-import dev.marksman.kraftwerk.Generators;
 import dev.marksman.kraftwerk.constraints.IntRange;
 import dev.marksman.kraftwerk.domain.Characters;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into4.into4;
+import static dev.marksman.kraftwerk.Generators.chooseOneOfValues;
+import static dev.marksman.kraftwerk.Generators.chooseOneOfWeighted;
+import static dev.marksman.kraftwerk.Generators.chooseOneValueFromCollection;
+import static dev.marksman.kraftwerk.Generators.chooseOneValueFromDomain;
+import static dev.marksman.kraftwerk.Generators.generateInt;
+import static dev.marksman.kraftwerk.Generators.generateNonEmptyMap;
+import static dev.marksman.kraftwerk.Generators.generateTuple;
 import static dev.marksman.kraftwerk.weights.MaybeWeights.nothings;
 import static java.util.Arrays.asList;
 
@@ -32,7 +38,7 @@ public final class Name {
     }
 
     public static void main(String[] args) {
-        Generators.generateNonEmptyMap(Generators.generateInt(IntRange.from(0).to(255)), generateName().fmap(Name::pretty))
+        generateNonEmptyMap(generateInt(IntRange.from(0).to(255)), generateName().fmap(Name::pretty))
                 .run()
                 .take(100)
                 .forEach(System.out::println);
@@ -94,32 +100,32 @@ public final class Name {
     }
 
     private static class generators {
-        static final Generator<String> initial = Generators.chooseOneValueFromDomain(Characters.alphaUpper()).fmap(c -> c + ".");
+        static final Generator<String> initial = chooseOneValueFromDomain(Characters.alphaUpper()).fmap(c -> c + ".");
 
         static final Generator<String> givenNames =
-                Generators.chooseOneOfValues("Alice", "Barbara", "Bart", "Billy", "Bobby", "Carol", "Cindy", "Elizabeth",
+                chooseOneOfValues("Alice", "Barbara", "Bart", "Billy", "Bobby", "Carol", "Cindy", "Elizabeth",
                         "Eric", "George", "Greg", "Homer", "James", "Jan", "John", "Kenny", "Kyle", "Linda", "Lisa",
                         "Maggie", "Marcia", "Marge", "Mary", "Mike", "Oliver", "Patricia", "Peter", "Stan");
 
         static final Generator<String> first =
-                Generators.chooseOneOfWeighted(givenNames.weighted(15),
+                chooseOneOfWeighted(givenNames.weighted(15),
                         initial.weighted(1));
 
         static final Generator<String> middle =
-                Generators.chooseOneOfWeighted(givenNames.weighted(1),
+                chooseOneOfWeighted(givenNames.weighted(1),
                         initial.weighted(5));
 
         static final Generator<String> last =
-                Generators.chooseOneValueFromCollection(asList(
+                chooseOneValueFromCollection(asList(
                         "Allen", "Anderson", "Brown", "Clark", "Davis", "Foobar", "Garcia", "Hall", "Harris",
                         "Hernandez", "Jackson", "Johnson", "Jones", "King", "Lee", "Lewis", "Lopez", "Martin",
                         "Martinez", "Miller", "Moore", "Qwerty", "Robinson", "Rodriguez", "Smith", "Taylor",
                         "Thomas", "Thompson", "Walker", "White", "Williams", "Wilson", "Wright", "Young"
                 ));
 
-        static final Generator<String> suffix = Generators.chooseOneOfValues("Jr.", "III", "Sr.");
+        static final Generator<String> suffix = chooseOneOfValues("Jr.", "III", "Sr.");
 
-        static final Generator<Name> name = Generators.tupled(
+        static final Generator<Name> name = generateTuple(
                 first,
                 middle.maybe(nothings(6).toJusts(1)),
                 last,
@@ -127,5 +133,4 @@ public final class Name {
         ).fmap(into4(Name::name));
 
     }
-
 }

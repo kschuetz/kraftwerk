@@ -2,10 +2,14 @@ package examples.components;
 
 import com.jnape.palatable.lambda.adt.Maybe;
 import dev.marksman.kraftwerk.Generator;
-import dev.marksman.kraftwerk.Generators;
 import dev.marksman.kraftwerk.constraints.IntRange;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into.into;
+import static dev.marksman.kraftwerk.Generators.chooseOneOf;
+import static dev.marksman.kraftwerk.Generators.chooseOneOfValues;
+import static dev.marksman.kraftwerk.Generators.generateInt;
+import static dev.marksman.kraftwerk.Generators.generateProduct;
+import static dev.marksman.kraftwerk.Generators.generateTuple;
 import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
 import static dev.marksman.kraftwerk.weights.MaybeWeights.nothings;
 import static examples.components.City.generateCity;
@@ -124,19 +128,19 @@ public final class Address {
 
     private static class generators {
         static Generator<String> number =
-                frequencyMap(Generators.generateInt(IntRange.from(0).to(990)).fmap(n -> 100 + 10 * n).weighted(3))
-                        .add(Generators.generateInt(IntRange.from(0).to(990)).fmap(n -> 101 + 10 * n).weighted(3))
-                        .add(Generators.generateInt(IntRange.from(10).to(999)).weighted(4))
+                frequencyMap(generateInt(IntRange.from(0).to(990)).fmap(n -> 100 + 10 * n).weighted(3))
+                        .add(generateInt(IntRange.from(0).to(990)).fmap(n -> 101 + 10 * n).weighted(3))
+                        .add(generateInt(IntRange.from(10).to(999)).weighted(4))
                         .toGenerator()
                         .fmap(Object::toString);
 
         static Generator<String> unit =
-                Generators.tupled(Generators.chooseOneOfValues(" #", ", Apt. ", ", Suite "),
-                        Generators.chooseOneOf(Generators.generateInt(IntRange.from(100).to(3000)), Generators.generateInt(IntRange.from(1).to(99))))
+                generateTuple(chooseOneOfValues(" #", ", Apt. ", ", Suite "),
+                        chooseOneOf(generateInt(IntRange.from(100).to(3000)), generateInt(IntRange.from(1).to(99))))
                         .fmap(into((unitName, number) -> unitName + number));
 
         static Generator<Address> address =
-                Generators.product(number,
+                generateProduct(number,
                         generateStreet(),
                         unit.maybe(nothings(4).toJusts(1)),
                         generateCity(),

@@ -2,10 +2,14 @@ package examples.components;
 
 import com.jnape.palatable.lambda.adt.Maybe;
 import dev.marksman.kraftwerk.Generator;
-import dev.marksman.kraftwerk.Generators;
 import dev.marksman.kraftwerk.constraints.IntRange;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into3.into3;
+import static dev.marksman.kraftwerk.Generators.chooseOneOfValues;
+import static dev.marksman.kraftwerk.Generators.chooseOneOfWeighted;
+import static dev.marksman.kraftwerk.Generators.chooseOneOfWeightedValues;
+import static dev.marksman.kraftwerk.Generators.generateInt;
+import static dev.marksman.kraftwerk.Generators.generateTuple;
 import static dev.marksman.kraftwerk.Weighted.weighted;
 import static dev.marksman.kraftwerk.weights.MaybeWeights.nothings;
 import static examples.components.City.generateCityRootName;
@@ -74,11 +78,11 @@ public final class Street {
 
     private static class generators {
         static final Generator<String> compass =
-                Generators.chooseOneOfWeighted(Generators.chooseOneOfValues("N.", "S.", "W.", "E.").weighted(8),
-                        Generators.chooseOneOfValues("NW", "NE", "SW", "SE").weighted(1));
+                chooseOneOfWeighted(chooseOneOfValues("N.", "S.", "W.", "E.").weighted(8),
+                        chooseOneOfValues("NW", "NE", "SW", "SE").weighted(1));
 
         static final Generator<String> ordinal =
-                Generators.generateInt(IntRange.from(1).to(99)).fmap(n -> {
+                generateInt(IntRange.from(1).to(99)).fmap(n -> {
                     if (n == 11) return "11th";
                     else if (n % 10 == 1) return n + "st";
                     else if (n % 10 == 2) return n + "nd";
@@ -87,13 +91,13 @@ public final class Street {
                 });
 
         static final Generator<String> president =
-                Generators.chooseOneOfValues("Washington", "Adams", "Jefferson", "Madison", "Monroe", "Lincoln");
+                chooseOneOfValues("Washington", "Adams", "Jefferson", "Madison", "Monroe", "Lincoln");
 
         static final Generator<String> tree =
-                Generators.chooseOneOfValues("Oak", "Maple", "Elm", "Pine", "Spruce", "Sycamore", "Birch", "Apple", "Peach");
+                chooseOneOfValues("Oak", "Maple", "Elm", "Pine", "Spruce", "Sycamore", "Birch", "Apple", "Peach");
 
         static final Generator<String> suffix =
-                Generators.chooseOneOfWeightedValues(weighted(10, "St."),
+                chooseOneOfWeightedValues(weighted(10, "St."),
                         weighted(7, "Ave."),
                         weighted(5, "Rd."),
                         weighted(3, "Dr."),
@@ -102,12 +106,12 @@ public final class Street {
                         weighted(1, "Ct."));
 
         static final Generator<String> name =
-                Generators.chooseOneOfWeighted(weighted(3, ordinal),
+                chooseOneOfWeighted(weighted(3, ordinal),
                         weighted(2, tree),
                         weighted(2, president),
                         weighted(2, generateCityRootName()));
 
-        static final Generator<Street> street = Generators.tupled(
+        static final Generator<Street> street = generateTuple(
                 compass.maybe(nothings(3).toJusts(1)),
                 name,
                 suffix)
