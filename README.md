@@ -3,6 +3,7 @@
 [![kraftwerk](https://img.shields.io/maven-central/v/dev.marksman/kraftwerk.svg)](http://search.maven.org/#search%7Cga%7C1%7Cdev.marksman.kraftwerk)
 [![Javadoc](https://javadoc-badge.appspot.com/dev.marksman/kraftwerk.svg?label=javadoc)](https://kschuetz.github.io/kraftwerk/javadoc/)
 [![CircleCI](https://circleci.com/gh/kschuetz/kraftwerk.svg?style=svg)](https://circleci.com/gh/kschuetz/kraftwerk)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fkschuetz%2Fkraftwerk.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fkschuetz%2Fkraftwerk?ref=badge_shield)
 
 #### Table of Contents
  - [What is it?](#what-is-it)
@@ -11,6 +12,9 @@
  - [Tutorial](#tutorial)
  - [More on "purely functional"](#purely-functional)
  - [License](#license)
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fkschuetz%2Fkraftwerk.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fkschuetz%2Fkraftwerk?ref=badge_large)
 
 # <a name="what-is-it">What is it?</a>
 
