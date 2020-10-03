@@ -660,6 +660,8 @@ All methods in the *kraftwerk* API are also pure and referentially transparent. 
 
 # <a name="license">License</a>
 
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fkschuetz%2Fkraftwerk.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fkschuetz%2Fkraftwerk?ref=badge_shield)
+
 *kraftwerk* is distributed under [The MIT License](http://choosealicense.com/licenses/mit/).
 
 The MIT License (MIT)
