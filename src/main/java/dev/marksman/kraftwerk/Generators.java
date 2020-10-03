@@ -34,7 +34,6 @@ import dev.marksman.collectionviews.ImmutableVector;
 import dev.marksman.collectionviews.NonEmptyVector;
 import dev.marksman.collectionviews.Vector;
 import dev.marksman.enhancediterables.FiniteIterable;
-import dev.marksman.enhancediterables.ImmutableNonEmptyIterable;
 import dev.marksman.enhancediterables.NonEmptyFiniteIterable;
 import dev.marksman.enhancediterables.NonEmptyIterable;
 import dev.marksman.kraftwerk.aggregator.Aggregator;
@@ -2039,9 +2038,9 @@ public final class Generators {
      *
      * @param elements the generator for elements
      * @param <A>      the element type
-     * @return a {@code Generator<ImmutableNonEmptyIterable<A>>}
+     * @return a {@code Generator<ValueSupply<A>>}
      */
-    public static <A> Generator<ImmutableNonEmptyIterable<A>> generateInfiniteIterable(Generator<A> elements) {
+    public static <A> Generator<ValueSupply<A>> generateInfiniteIterable(Generator<A> elements) {
         return Infinite.generateInfiniteIterable(elements);
     }
 
