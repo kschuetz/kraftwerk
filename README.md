@@ -7,6 +7,7 @@
 #### Table of Contents
  - [What is it?](#what-is-it)
  - [Features](#features)
+ - [Installation](#installation)
  - [Examples](#examples)
  - [Tutorial](#tutorial)
  - [More on "purely functional"](#purely-functional)
@@ -19,6 +20,8 @@
 The property testing framework [Gauntlet](https://github.com/kschuetz/gauntlet) uses *kraftwerk* for sample generation. However, *kraftwerk* is designed to be general purpose and is not limited to the application of property testing.  
 
 *kraftwerk* requires Java 1.8 or higher. It depends on [lambda](https://github.com/palatable/lambda) and supports the generation of several *lambda* types.
+
+For more details, check out the [javadoc](https://kschuetz.github.io/kraftwerk/javadoc/).
 
 # <a name="features">Features</a>
 
@@ -37,6 +40,13 @@ The property testing framework [Gauntlet](https://github.com/kschuetz/gauntlet) 
 * Ranges
 
 Using combinators like `product` and `flatMap`, these generators can be composed to create more complex generators.
+
+# <a name="installation">Installation</a>
+
+To install, add the dependency to the latest version to your `pom.xml` (Maven) or `build.gradle` (Gradle).
+
+Follow this link to get the dependency info for your preferred build tool:
+[![kraftwerk](https://img.shields.io/maven-central/v/dev.marksman/kraftwerk.svg)](http://search.maven.org/#search%7Cga%7C1%7Cdev.marksman.kraftwerk)
 
 # <a name="examples">Examples</a>
 
