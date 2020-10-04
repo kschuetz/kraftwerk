@@ -4,6 +4,8 @@
 [![Javadoc](https://javadoc-badge.appspot.com/dev.marksman/kraftwerk.svg?label=javadoc)](https://kschuetz.github.io/kraftwerk/javadoc/)
 [![CircleCI](https://circleci.com/gh/kschuetz/kraftwerk.svg?style=svg)](https://circleci.com/gh/kschuetz/kraftwerk)
 
+[Source code on GitHub](https://github.com/kschuetz/kraftwerk)
+
 #### Table of Contents
  - [What is it?](#what-is-it)
  - [Features](#features)
@@ -61,9 +63,17 @@ Using combinators like `product` and `flatMap`, these generators can be composed
 
 # <a name="installation">Installation</a>
 
-To install, add the dependency to the latest version to your `pom.xml` (Maven) or `build.gradle` (Gradle).
+To install (if you are using Maven), add the dependency to the latest version to your `pom.xml`:
 
-Follow this link to get the dependency info for your preferred build tool:
+```xml
+<dependency>
+  <groupId>dev.marksman</groupId>
+  <artifactId>kraftwerk</artifactId>
+  <version>0.10.0</version>
+</dependency> 
+```
+
+Or, follow this link to get the dependency info for your preferred build tool:
 [![kraftwerk](https://img.shields.io/maven-central/v/dev.marksman/kraftwerk.svg)](http://search.maven.org/#search%7Cga%7C1%7Cdev.marksman.kraftwerk)
 
 # <a name="examples">Examples</a>
@@ -475,9 +485,7 @@ Here is an example that uses `.arrayList()`:
 
 ```java 
 package examples.tutorial;
-
 import dev.marksman.kraftwerk.constraints.IntRange;
-
 import static dev.marksman.kraftwerk.Generators.generateInt;
 
 public class ArrayListPostfixExample {
@@ -747,7 +755,6 @@ Note that the above example was only for illustrating how to use `flatMap`. `Gen
 
 ```java
 package examples.tutorial;
-
 import static dev.marksman.kraftwerk.Generators.generateAlphaChar;
 import static dev.marksman.kraftwerk.Generators.sized;
 
@@ -813,13 +820,10 @@ public class ContrivedFlatMapExample {
 
 ```java 
 package examples.tutorial;
-
 import dev.marksman.kraftwerk.Generator;
 import dev.marksman.kraftwerk.constraints.IntRange;
-
 import java.time.LocalDate;
 import java.time.Year;
-
 import static dev.marksman.kraftwerk.Generators.generateInt;
 import static dev.marksman.kraftwerk.Generators.generateLocalDateForYear;
 import static dev.marksman.kraftwerk.Weighted.weighted;
@@ -864,7 +868,7 @@ public class DateOfBirthExample {
 }
 ```     
 
-The above example generates ages based on a customized distribution, and then `flatMap`s the age into a generator that generators a date for a particular year.
+The above example generates ages based on a customized distribution, and then `flatMap`s the age into a generator that generates a date for a particular year.
 
 ### <a name="use-with-lambda">Use with *lambda*</a>
 
