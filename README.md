@@ -10,6 +10,24 @@
  - [Installation](#installation)
  - [Examples](#examples)
  - [Tutorial](#tutorial)
+    - [Generating integers](#generating-integers)
+    - [Specifying a range](#specifying-a-range)
+    - [Choosing an initial seed](#choosing-an-initial-seed)
+    - [The `run` method](#the-run-method)
+    - [Mapping a generator](#mapping-a-generator)
+    - [Mapping to a different type](#mapping-to-a-different-type)
+    - [Combining generators](#combining-generators)
+    - [Combining into a custom type](#combining-into-a-custom-type)
+    - [Generating `Collection`s](#generating-collections)
+    - [Controlling the size of a generated collection](#controlling-the-size-of-a-generated-collection)
+    - [Postfix methods on generators](#postfix-methods-on-generators)
+    - [Choosing from a set of items](#choosing-from-a-set-of-items)
+    - [Choosing from a set of weighted items](#choosing-from-a-set-of-weighted-items)
+    - [`FrequencyMap`s](#frequency-maps)
+    - [Composing generators with `flatMap`](#flatMap)
+    - [Use with *lambda*](#use-with-lambda)
+    - [Filtering](#filtering)
+    - [Shuffling](#shuffling)
  - [More on "purely functional"](#purely-functional)
  - [License](#license)
 
@@ -58,7 +76,7 @@ A [`Generator<A>`](https://kschuetz.github.io/kraftwerk/javadoc/dev/marksman/kra
 
 We will start with [`generateInt`](https://kschuetz.github.io/kraftwerk/javadoc/dev/marksman/kraftwerk/Generators.html#generateInt--):
 
-### Generating integers
+### <a name="generating-integers">Generating integers</a>
 
 The following example will generate a supply of random integers, and print the first five to the console.
 
@@ -83,7 +101,7 @@ public class IntegerExample {
 }
 ```      
 
-### Specifying a range
+### <a name="specifying-a-range">Specifying a range</a>
 
 The integers in the above example will all lie between `Integer.MIN_VALUE` and `Integer.MAX_VALUE`.  
 If we want to limit the integers to a specific range, there is another version of `generateInt` that accepts a range parameter.
@@ -110,7 +128,7 @@ public class IntegerWithinRangeExample {
 }
 ```       
 
-### Choosing an initial seed
+### <a name="choosing-an-initial-seed">Choosing an initial seed</a>
 
 The `run` method we used previously randomly generates a new initial seed each time it is called. You may have observed that that isn't purely functional at all!
 That is true; it is a method that's provided for convenience, useful for quick examples like these. 
@@ -142,13 +160,13 @@ public class InitialSeedExample {
 }
 ```                          
 
-### The `run` method
+### <a name="the-run-method">The `run` method</a>
 
 What does the `run` method on a `Generator` do?  It returns a [`ValueSupply<A>`](https://kschuetz.github.io/kraftwerk/javadoc/dev/marksman/kraftwerk/ValueSupply.html), which is an infinite `Iterable<A>` with several additional methods for convenience.
 
 Among other things, `ValueSupply`s can be iterated, mapped (using `fmap`), filtered (using `filter`), or converted to a Java `Stream` (using `stream`).  `ValueSupply`s are immutable and can be shared and iterated multiple times.  An instance of a `ValueSupply` will always yield the same sequence every time is is iterated.
 
-### Mapping a generator
+### <a name="mapping-a-generator">Mapping a generator</a>
 
 A generator can be "mapped" using `fmap`. `fmap` maps the output of a generator to a new value using a function, and yields a new generator.
 The following example multiplies the initial generator's output by 1000:
@@ -176,7 +194,7 @@ public class MappingExample {
 }
 ```    
 
-### Mapping to a different type
+### <a name="mapping-to-a-different-type">Mapping to a different type</a>
 
 The function passed to `fmap` does not need to return the same type as the input. The following example converts a generator
 of `Integer`s to a generator of `LocalDate`s:
@@ -205,7 +223,7 @@ public class MappingToADifferentType {
 }
 ```        
 
-### Combining generators
+### <a name="combining-generators">Combining generators</a>
 
 Two or more (up to eight) generators can be combined to create a generator of `Tuple`s, using `Generators.generateTuple`:
 
@@ -265,7 +283,7 @@ public class CombiningThreeGenerators {
 }
 ```        
 
-### Combining into a custom type
+### <a name="combining-into-a-custom-type">Combining into a custom type</a>
 
 If you would prefer a product type other than `Tuple`, you can use `Generators.generateProduct`. This takes the component generators,
 and a function to apply to all of the generated components in order to create the desired type.  Here is an example that
@@ -321,7 +339,7 @@ public class CustomProductTypesExample {
 }
 ```       
 
-### Generating `Collection`s
+### <a name="generating-collections">Generating `Collection`s</a>
 
 `Generators` contains some built-in generators for building collections. These generators take as a parameter a generator for its elements.
 The following example generates `ArrayList`s of integers:
@@ -356,7 +374,7 @@ public class ArrayListExample {
 
 Notice that the lists that were generated are of various sizes, including empty.
 
-### Controlling the size of a generated collection
+### <a name="controlling-the-size-of-a-generated-collection">Controlling the size of a generated collection</a>
 
 Most collection generators allow you to specify the size of the collection.  This example generates `ArrayList`s of length 5:
 
@@ -447,9 +465,40 @@ public class MapExample {
         //{B=8, D=4, T=1, E=10, G=1, Y=8, I=6, L=10, M=2, O=1}
     }
 }
+```    
+
+### <a name="postfix-methods-on-generators">Postfix methods on generators</a>
+
+There are several methods available on `Generator`s themselves for the purpose of generating collections (and other types), such as `.arrayList()`. These are provided for convenience, and behave the same as their counterparts, e.g., `myGenerator.arrayList()` is  equivalent to `generateArrayList(myGenerator)`.
+
+Here is an example that uses `.arrayList()`:
+
+```java 
+package examples.tutorial;
+
+import dev.marksman.kraftwerk.constraints.IntRange;
+
+import static dev.marksman.kraftwerk.Generators.generateInt;
+
+public class ArrayListPostfixExample {
+    public static void main(String[] args) {
+        generateInt(IntRange.from(1).to(10))
+                .arrayList()
+                .run()
+                .take(5)
+                .forEach(System.out::println);
+
+        // sample output:
+        //[3, 3, 8, 8, 2, 4, 5, 2, 1, 8, 2, 1, 1, 4, 9]
+        //[2, 5, 8]
+        //[8, 2, 10, 3, 7, 9, 4, 1]
+        //[1, 5, 5, 2]
+        //[3, 4, 3, 10, 5, 6]
+    }
+}
 ```
 
-### Choosing from a set of items
+### <a name="choosing-from-a-set-of-items">Choosing from a set of items</a>
 
 Use `chooseOneOfValues` to choose from a set of one or more items:
 
@@ -512,7 +561,7 @@ public class LettersExample {
 }
 ```         
 
-### Choosing from a set of weighted items
+### <a name="choosing-from-a-set-of-weighted-items">Choosing from a set of weighted items</a>
 
 Both `chooseOneOf` and `chooseOneOfValues` randomly select from their argument lists with an equal probability for each argument.
 If you want some items to occur more than others, you can use `chooseOneOfWeightedValues` or `chooseOneOfWeighted`:
@@ -580,7 +629,7 @@ public class CardinalDirectionsExample {
 }
 ```
 
-### `FrequencyMap`s
+### <a name="frequency-maps">`FrequencyMap`s</a>
 
 A `FrequencyMap` is an alternate way to express weights for several values and/or generators.  They can be instantiated using `FrequencyMap.frequencyMap` or `FrequencyMap.frequencyMapFirstValue`.  Several weighted generators or values can then be added.  To convert it to a `Generator` call `toGenerator`.
 
@@ -656,7 +705,337 @@ public class CardinalDirectionsFrequencyMapExample {
         //E
     }
 }     
+```  
+
+### <a name="flatmap">Composing generators with `flatMap`</a>
+
+If you need the parameters of one generator to be determined by the output of another, you can compose these generators using `flatMap`. 
+
+One possible application for `flatMap` is having one generator generate a size, and then have a second generator use that size to generate a collection.
+
+This example uses `flatMap` to generate lists of letters of varying lengths:
+
+```java
+package examples.tutorial;
+import static dev.marksman.kraftwerk.Generators.generateAlphaChar;
+import static dev.marksman.kraftwerk.Generators.generateSize;
+
+public class SizedExample1 {
+    public static void main(String[] args) {
+        generateSize()
+                .flatMap(size -> generateAlphaChar().vectorOfSize(size))
+                .run()
+                .take(10)
+                .forEach(System.out::println);
+
+        //sample output:
+        //Vector(n, P, e)
+        //Vector(w, f, o, W, i, t, y, v, p, i, K, O)
+        //Vector(q, W, X, Q, D, S, T, M, D, l, P, p, E, O, K)
+        //Vector(b, c, H, N, H, m, I, K)
+        //Vector(m, J, Q, F, I, d, Z, C, b)
+        //Vector(Q)
+        //Vector(d, i, U, o, M, T)
+        //Vector(F, S, I, R, s, l, t, V)
+        //Vector(Q, V)
+        //Vector(B, p, Q)
+    }
+}
 ```   
+
+Note that the above example was only for illustrating how to use `flatMap`. `Generators.sized` is available for creating generators that generate things of various sizes.  The following example does the equivalent:
+
+```java
+package examples.tutorial;
+
+import static dev.marksman.kraftwerk.Generators.generateAlphaChar;
+import static dev.marksman.kraftwerk.Generators.sized;
+
+public class SizedExample2 {
+    public static void main(String[] args) {
+        sized(size -> generateAlphaChar().vectorOfSize(size))
+                .run()
+                .take(10)
+                .forEach(System.out::println);
+
+        // sample output:
+        //Vector(E, t, z, h, G, Q, V, A, P, q, X)
+        //Vector(d, W, E, y, p, F, l, N, u, Q, k, C)
+        //Vector(d, x, e, C, Z, W, m, t, T, F, J, L, G, Q)
+        //Vector(d, C)
+        //Vector(G, p, I, T, q, c, X, l, R, w, v, e, m, G, F)
+        //Vector(r, f, B, m, v, I)
+        //Vector(r, q, o)
+        //Vector(x, Q, N, b)
+        //Vector(c, A, f, h, J, H, O, T, A, E, o, E, p, B)
+        //Vector(z, N, P, F, X, B, B, q, u, U)        
+    }
+}
+```
+
+`sized` and `flatMap` are lower-level operations, and again, the above examples only illustrate how to use them. It will not be very common for you to need to use them for any of the built-in generators; all of the built-in collection generators already allow for specifying a size range. `sized` and `flatMap` remain available for use in building generators for custom collection types, however.
+
+Here is another (contrived) example for `flatMap`:
+
+```java 
+package examples.tutorial;
+import dev.marksman.kraftwerk.constraints.IntRange;
+import java.util.Collections;
+import static dev.marksman.kraftwerk.Generators.chooseOneOfValues;
+import static dev.marksman.kraftwerk.Generators.generateInt;
+
+public class ContrivedFlatMapExample {
+    public static void main(String[] args) {
+        generateInt(IntRange.from(3).to(10))
+                .flatMap(size ->
+                        chooseOneOfValues("$", "£", "€", "¥")
+                                .fmap(ch -> String.join("", Collections.nCopies(size, ch))))
+                .run()
+                .take(10)
+                .forEach(System.out::println);
+
+        // sample output:
+        //¥¥¥¥¥¥¥¥¥
+        //£££
+        //$$$$$$
+        //££££££
+        //££££££
+        //€€€€€€€€
+        //$$$$$$$$
+        //¥¥¥¥¥¥¥¥¥
+        //££££££££££
+        //$$$$
+    }
+}
+```    
+
+...and here is a more practical example:
+
+```java 
+package examples.tutorial;
+
+import dev.marksman.kraftwerk.Generator;
+import dev.marksman.kraftwerk.constraints.IntRange;
+
+import java.time.LocalDate;
+import java.time.Year;
+
+import static dev.marksman.kraftwerk.Generators.generateInt;
+import static dev.marksman.kraftwerk.Generators.generateLocalDateForYear;
+import static dev.marksman.kraftwerk.Weighted.weighted;
+import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
+
+public class DateOfBirthExample {
+    private static final int currentYear = LocalDate.now().getYear();
+
+    private static final Generator<Integer> generateAge =
+            frequencyMap(weighted(1, generateInt(IntRange.from(2).to(9))))
+                    .add(weighted(2, generateInt(IntRange.from(10).to(19))))
+                    .add(weighted(3, generateInt(IntRange.from(20).to(29))))
+                    .add(weighted(3, generateInt(IntRange.from(30).to(39))))
+                    .add(weighted(3, generateInt(IntRange.from(40).to(49))))
+                    .add(weighted(3, generateInt(IntRange.from(50).to(59))))
+                    .add(weighted(2, generateInt(IntRange.from(60).to(69))))
+                    .add(weighted(2, generateInt(IntRange.from(70).to(79))))
+                    .add(weighted(2, generateInt(IntRange.from(80).to(99))))
+                    .toGenerator();
+
+    private static final Generator<LocalDate> generateDateOfBirth =
+            generateAge.flatMap(age -> generateLocalDateForYear(Year.of(currentYear - age)));
+
+    public static void main(String[] args) {
+        generateDateOfBirth
+                .run()
+                .take(10)
+                .forEach(System.out::println);
+
+        // sample output:
+        //1988-10-18
+        //2002-05-03
+        //1967-01-04
+        //1985-12-24
+        //1995-04-18
+        //1962-11-25
+        //1999-04-22
+        //1976-02-22
+        //1947-08-25
+        //1946-03-12
+    }
+}
+```     
+
+The above example generates ages based on a customized distribution, and then `flatMap`s the age into a generator that generators a date for a particular year.
+
+### <a name="use-with-lambda">Use with *lambda*</a>
+
+If you are familiar with *[lambda](https://github.com/palatable/lambda)*, you probably recognize `fmap` and `flatMap` from the `Functor` and `Monad` interfaces, respectively.  `Generator`s implement both of these interfaces.
+
+*kraftwerk* also supports the generation of several *lambda* types.  These include `Maybe`, `Either`, `Choice`, `These`, and (as you have already seen) `Tuple`.
+
+To generate `Maybe<A>`s, simply call `.maybe()` on a `Generator<A>`.  These will create a `Generator<Maybe<A>>` that yields `Nothing` roughly 10% of the time:
+
+```java
+package examples.tutorial;
+import static dev.marksman.kraftwerk.Generators.generateString;
+public class MaybeExample {
+    public static void main(String[] args) {
+        generateString().maybe()
+                .run()
+                .take(10)
+                .forEach(System.out::println);
+    }
+
+    //sample output:
+    //Just +_`ysR5:@m
+    //Just v/Z.d+RG~o(Kp@i
+    //Just =Vf
+    //Just yO6p
+    //Nothing
+    //Just 8R>hq68
+    //Just 5?-*{z_R2y
+    //Just (^BpsPz}$"nS,
+    //Just o{S]0&jn
+    //Just oAj
+}
+```  
+
+If you want control over how frequently `Nothing` occurs, you can use `MaybeWeights`.  In the following example, `Nothings` will occur about 25% of the time:
+
+```java
+package examples.tutorial;
+import dev.marksman.kraftwerk.weights.MaybeWeights;
+import static dev.marksman.kraftwerk.Generators.generateString;
+
+public class MaybeExampleWithWeights {
+    public static void main(String[] args) {
+        generateString().maybe(MaybeWeights.justs(3).toNothings(1))
+                .run()
+                .take(10)
+                .forEach(System.out::println);
+
+        //sample output:
+        //Just 9oo*=4+f!OCW
+        //Just ^oSbZU
+        //Just K)[B3:x]ob^8\s
+        //Nothing
+        //Nothing
+        //Just  [cMM
+        //Nothing
+        //Just L
+        //Just :_{MS
+        //Just O`0>Q0        
+    }
+}
+```
+
+The following example illustrates generation of some of the other coproduct types in *lambda*:
+
+```java 
+package examples.tutorial;
+import dev.marksman.kraftwerk.Generators;
+import java.time.Year;
+import static dev.marksman.kraftwerk.Generators.chooseOneOfValues;
+import static dev.marksman.kraftwerk.Generators.generateEither;
+import static dev.marksman.kraftwerk.Generators.generateInt;
+import static dev.marksman.kraftwerk.Generators.generateLocalDateForYear;
+import static dev.marksman.kraftwerk.Generators.generateLong;
+import static dev.marksman.kraftwerk.Generators.generateMaybe;
+import static dev.marksman.kraftwerk.Generators.generateThese;
+import static dev.marksman.kraftwerk.Generators.generateTuple;
+
+public class CoProductExample {
+    public static void main(String[] args) {
+        generateTuple(generateMaybe(generateLocalDateForYear(Year.now())),
+                generateEither(generateInt(), Generators.generateDoubleFractional()),
+                generateThese(generateLong(), chooseOneOfValues("foo", "bar", "baz")))
+                .run()
+                .take(10)
+                .forEach(System.out::println);
+
+        //sample output:
+        //HList{ Just 2020-07-10 :: Left{l=1290020209} :: These{b=baz} }
+        //HList{ Just 2020-04-09 :: Right{r=0.480723935139732} :: These{a=3160121273074965838} }
+        //HList{ Just 2020-03-18 :: Left{l=891956632} :: These{b=bar} }
+        //HList{ Just 2020-09-24 :: Right{r=0.10862715298091574} :: These{both=HList{ -7826076449853900017 :: bar }} }
+        //HList{ Just 2020-02-07 :: Right{r=0.5608597418874514} :: These{a=-860230134582980058} }
+        //HList{ Just 2020-02-17 :: Left{l=2112321697} :: These{b=bar} }
+        //HList{ Just 2020-09-07 :: Right{r=0.709292621079071} :: These{b=baz} }
+        //HList{ Just 2020-01-16 :: Left{l=1919118581} :: These{both=HList{ -2545935683596921432 :: baz }} }
+        //HList{ Just 2020-03-22 :: Left{l=-1905433010} :: These{b=bar} }
+        //HList{ Just 2020-10-02 :: Right{r=0.6120825155638645} :: These{b=baz} }
+    }
+}
+``` 
+
+Notice that `generateMaybe` is also available, in addition to the postfix `.maybe()`.
+
+The following example demonstrates the `ChoiceBuilder` API, which is use to generate *lambda* `Choice` values (of arities from 2-8).
+The example generates one of the eight Java primitive types (albeit boxed), with `Integer`s and `Long`s occurring slightly more frequently:
+
+```java 
+package examples.tutorial;
+import com.jnape.palatable.lambda.adt.choice.Choice8;
+import dev.marksman.kraftwerk.Generator;
+import static dev.marksman.kraftwerk.Generators.choiceBuilder;
+import static dev.marksman.kraftwerk.Generators.generateAsciiPrintableChar;
+import static dev.marksman.kraftwerk.Generators.generateBoolean;
+import static dev.marksman.kraftwerk.Generators.generateByte;
+import static dev.marksman.kraftwerk.Generators.generateDoubleFractional;
+import static dev.marksman.kraftwerk.Generators.generateFloatFractional;
+import static dev.marksman.kraftwerk.Generators.generateInt;
+import static dev.marksman.kraftwerk.Generators.generateLong;
+import static dev.marksman.kraftwerk.Generators.generateShort;
+
+public class WeightedChoiceExample {
+    public static void main(String[] args) {
+        Generator<Choice8<Integer, Double, Float, Boolean, Long, Byte, Short, Character>> primitiveGenerator =
+                choiceBuilder(generateInt().weighted(2))
+                        .or(generateDoubleFractional())
+                        .or(generateFloatFractional())
+                        .or(generateBoolean())
+                        .or(generateLong().weighted(2))
+                        .or(generateByte())
+                        .or(generateShort())
+                        .or(generateAsciiPrintableChar())
+                        .toGenerator();
+
+        primitiveGenerator
+                .run()
+                .take(20)
+                .forEach(System.out::println);
+
+        // sample output:
+        //Choice8{a=67463646}
+        //Choice8{c=0.3798052}
+        //Choice8{c=0.5343417}
+        //Choice8{e=8542724707820389757}
+        //Choice8{e=7723229941486178995}
+        //Choice8{a=983401700}
+        //Choice8{a=2065183438}
+        //Choice8{e=4697885099367790210}
+        //Choice8{b=0.42306257966421357}
+        //Choice8{e=8807970083702066543}
+        //Choice8{a=-1526959351}
+        //Choice8{f=-105}
+        //Choice8{d=true}
+        //Choice8{g=26791}
+        //Choice8{f=-81}
+        //Choice8{h=0}
+        //Choice8{h=#}
+        //Choice8{e=6994438299090618730}
+        //Choice8{h=,}
+        //Choice8{a=-99648217}        
+    }
+}
+```
+
+### <a name="filtering">Filtering</a>
+
+TODO
+
+### <a name="shuffling">Shuffling</a>
+
+TODO
 
 # <a name="purely-functional">More on "purely functional"</a>
 
