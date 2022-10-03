@@ -1,20 +1,30 @@
 # Change Log
+
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Unreleased]
+
 No changes yet
 
+## [0.11.0] - 2022-10-02
+
+### Changed
+
+- Root package is now "software.kes.kraftwerk"
+
 ## [0.10.0] - 2020-10-02
+
 ### Added
-- Add `String` generators: 
-    - `generateAlphaString` 
-    - `generateAlphaUpperString` 
-    - `generateAlphaLowerString` 
-    - `generateAlphanumericString`
+
+- Add `String` generators:
+  - `generateAlphaString`
+  - `generateAlphaUpperString`
+  - `generateAlphaLowerString`
+  - `generateAlphanumericString`
 - Add `Character` generators:
-    - `generateAlphaChar`
+  - `generateAlphaChar`
     - `generateAlphaUpperChar`
     - `generateAlphaLowerChar`
     - `generateAlphanumericChar`
@@ -22,15 +32,20 @@ No changes yet
     - `generatePunctuationChar`
     - `generateAsciiPrintableChar`
     - `generateControlChar`
-    
-### Changed    
+
+### Changed
+
 - Rename `buildCollection` to `generateCollection`
 - Rename `product` to `generateProduct`
 - Rename `tupled` to `generateTuple`
-- `generateInfiniteIterable` now yields `ValueSupply`s 
+- `generateInfiniteIterable` now yields `ValueSupply`s
 
 ### Removed
+
 - Remove `buildVector` from public API
 
-[Unreleased]: https://github.com/kschuetz/kraftwerk/compare/kraftwerk-0.10.0...HEAD
+[Unreleased]: https://github.com/kschuetz/kraftwerk/compare/kraftwerk-0.11.0...HEAD
+
+[0.11.0]: https://github.com/kschuetz/kraftwerk/commits/kraftwerk-0.10.0...kraftwerk-0.11.0
+
 [0.10.0]: https://github.com/kschuetz/kraftwerk/commits/kraftwerk-0.10.0
