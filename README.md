@@ -83,13 +83,13 @@ Several examples, including the tutorial examples below, can be found in the [sr
 
 # <a name="tutorial">Tutorial</a>
 
-A [`Generator<A>`](https://kschuetz.github.io/kraftwerk/javadoc/dev/marksman/kraftwerk/Generator.html) is a strategy for
+A [`Generator<A>`](https://kschuetz.github.io/kraftwerk/javadoc/software/kes/kraftwerk/Generator.html) is a strategy for
 generating random values of type `A`. Several built-in `Generator`s are provided as static methods
-in [`software.kes.kraftwerk.Generators`](https://kschuetz.github.io/kraftwerk/javadoc/dev/marksman/kraftwerk/Generators.html)
+in [`software.kes.kraftwerk.Generators`](https://kschuetz.github.io/kraftwerk/javadoc/software/kes/kraftwerk/Generators.html)
 .
 
 We will start
-with [`generateInt`](https://kschuetz.github.io/kraftwerk/javadoc/dev/marksman/kraftwerk/Generators.html#generateInt--):
+with [`generateInt`](https://kschuetz.github.io/kraftwerk/javadoc/software/kes/kraftwerk/Generators.html#generateInt--):
 
 ### <a name="generating-integers">Generating integers</a>
 
@@ -180,9 +180,13 @@ public class InitialSeedExample {
 
 ### <a name="the-run-method">The `run` method</a>
 
-What does the `run` method on a `Generator` do?  It returns a [`ValueSupply<A>`](https://kschuetz.github.io/kraftwerk/javadoc/dev/marksman/kraftwerk/ValueSupply.html), which is an infinite `Iterable<A>` with several additional methods for convenience.
+What does the `run` method on a `Generator` do? It returns
+a [`ValueSupply<A>`](https://kschuetz.github.io/kraftwerk/javadoc/software/kes/kraftwerk/ValueSupply.html), which is an
+infinite `Iterable<A>` with several additional methods for convenience.
 
-Among other things, `ValueSupply`s can be iterated, mapped (using `fmap`), filtered (using `filter`), or converted to a Java `Stream` (using `stream`).  `ValueSupply`s are immutable and can be shared and iterated multiple times.  An instance of a `ValueSupply` will always yield the same sequence every time is is iterated.
+Among other things, `ValueSupply`s can be iterated, mapped (using `fmap`), filtered (using `filter`), or converted to a
+Java `Stream` (using `stream`).  `ValueSupply`s are immutable and can be shared and iterated multiple times. An instance
+of a `ValueSupply` will always yield the same sequence every time is is iterated.
 
 ### <a name="mapping-a-generator">Mapping a generator</a>
 
