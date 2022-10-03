@@ -1,17 +1,17 @@
 package examples.tutorial;
 
 import com.jnape.palatable.lambda.adt.choice.Choice8;
-import dev.marksman.kraftwerk.Generator;
+import software.kes.kraftwerk.Generator;
 
-import static dev.marksman.kraftwerk.Generators.choiceBuilder;
-import static dev.marksman.kraftwerk.Generators.generateAsciiPrintableChar;
-import static dev.marksman.kraftwerk.Generators.generateBoolean;
-import static dev.marksman.kraftwerk.Generators.generateByte;
-import static dev.marksman.kraftwerk.Generators.generateDoubleFractional;
-import static dev.marksman.kraftwerk.Generators.generateFloatFractional;
-import static dev.marksman.kraftwerk.Generators.generateInt;
-import static dev.marksman.kraftwerk.Generators.generateLong;
-import static dev.marksman.kraftwerk.Generators.generateShort;
+import static software.kes.kraftwerk.Generators.choiceBuilder;
+import static software.kes.kraftwerk.Generators.generateAsciiPrintableChar;
+import static software.kes.kraftwerk.Generators.generateBoolean;
+import static software.kes.kraftwerk.Generators.generateByte;
+import static software.kes.kraftwerk.Generators.generateDoubleFractional;
+import static software.kes.kraftwerk.Generators.generateFloatFractional;
+import static software.kes.kraftwerk.Generators.generateInt;
+import static software.kes.kraftwerk.Generators.generateLong;
+import static software.kes.kraftwerk.Generators.generateShort;
 
 public class WeightedChoiceExample {
     public static void main(String[] args) {

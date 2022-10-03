@@ -1,7 +1,7 @@
 package examples.tutorial;
 
-import static dev.marksman.kraftwerk.Generators.generateAlphaChar;
-import static dev.marksman.kraftwerk.Generators.generateSize;
+import static software.kes.kraftwerk.Generators.generateAlphaChar;
+import static software.kes.kraftwerk.Generators.generateSize;
 
 public class SizedExample1 {
     public static void main(String[] args) {

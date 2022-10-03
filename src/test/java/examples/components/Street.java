@@ -1,18 +1,18 @@
 package examples.components;
 
 import com.jnape.palatable.lambda.adt.Maybe;
-import dev.marksman.kraftwerk.Generator;
-import dev.marksman.kraftwerk.constraints.IntRange;
+import software.kes.kraftwerk.Generator;
+import software.kes.kraftwerk.constraints.IntRange;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into3.into3;
-import static dev.marksman.kraftwerk.Generators.chooseOneOfValues;
-import static dev.marksman.kraftwerk.Generators.chooseOneOfWeighted;
-import static dev.marksman.kraftwerk.Generators.chooseOneOfWeightedValues;
-import static dev.marksman.kraftwerk.Generators.generateInt;
-import static dev.marksman.kraftwerk.Generators.generateTuple;
-import static dev.marksman.kraftwerk.Weighted.weighted;
-import static dev.marksman.kraftwerk.weights.MaybeWeights.nothings;
 import static examples.components.City.generateCityRootName;
+import static software.kes.kraftwerk.Generators.chooseOneOfValues;
+import static software.kes.kraftwerk.Generators.chooseOneOfWeighted;
+import static software.kes.kraftwerk.Generators.chooseOneOfWeightedValues;
+import static software.kes.kraftwerk.Generators.generateInt;
+import static software.kes.kraftwerk.Generators.generateTuple;
+import static software.kes.kraftwerk.Weighted.weighted;
+import static software.kes.kraftwerk.weights.MaybeWeights.nothings;
 
 public final class Street {
     private final Maybe<String> compass;

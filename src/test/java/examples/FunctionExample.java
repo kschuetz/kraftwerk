@@ -2,14 +2,14 @@ package examples;
 
 import com.jnape.palatable.lambda.adt.hlist.Tuple2;
 import com.jnape.palatable.lambda.functions.Fn2;
-import dev.marksman.collectionviews.ImmutableNonEmptyVector;
-import dev.marksman.collectionviews.Vector;
-import dev.marksman.kraftwerk.constraints.IntRange;
+import software.kes.collectionviews.ImmutableNonEmptyVector;
+import software.kes.collectionviews.Vector;
+import software.kes.kraftwerk.constraints.IntRange;
 
-import static dev.marksman.kraftwerk.Cogenerator.cogeneratorInt;
-import static dev.marksman.kraftwerk.Cogenerator.cogeneratorString;
-import static dev.marksman.kraftwerk.Generators.generateFn2;
-import static dev.marksman.kraftwerk.Generators.generateInt;
+import static software.kes.kraftwerk.Cogenerator.cogeneratorInt;
+import static software.kes.kraftwerk.Cogenerator.cogeneratorString;
+import static software.kes.kraftwerk.Generators.generateFn2;
+import static software.kes.kraftwerk.Generators.generateInt;
 
 public class FunctionExample {
 

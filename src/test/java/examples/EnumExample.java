@@ -1,7 +1,7 @@
 package examples;
 
-import static dev.marksman.kraftwerk.Generators.generateFromEnum;
-import static dev.marksman.kraftwerk.Generators.generateTuple;
+import static software.kes.kraftwerk.Generators.generateFromEnum;
+import static software.kes.kraftwerk.Generators.generateTuple;
 
 public class EnumExample {
     enum Color {RED, ORANGE, YELLOW, GREEN, BLUE, INDIGO, VIOLET}

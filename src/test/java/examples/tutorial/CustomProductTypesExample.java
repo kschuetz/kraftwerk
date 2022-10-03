@@ -1,10 +1,10 @@
 package examples.tutorial;
 
-import dev.marksman.kraftwerk.Generator;
-import dev.marksman.kraftwerk.constraints.IntRange;
+import software.kes.kraftwerk.Generator;
+import software.kes.kraftwerk.constraints.IntRange;
 
-import static dev.marksman.kraftwerk.Generators.generateInt;
-import static dev.marksman.kraftwerk.Generators.generateProduct;
+import static software.kes.kraftwerk.Generators.generateInt;
+import static software.kes.kraftwerk.Generators.generateProduct;
 
 public class CustomProductTypesExample {
     public static void main(String[] args) {

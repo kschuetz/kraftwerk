@@ -1,10 +1,10 @@
 package examples.tutorial;
 
-import dev.marksman.kraftwerk.constraints.IntRange;
+import software.kes.kraftwerk.constraints.IntRange;
 
 import java.time.LocalDate;
 
-import static dev.marksman.kraftwerk.Generators.generateInt;
+import static software.kes.kraftwerk.Generators.generateInt;
 
 public class MappingToADifferentType {
     public static void main(String[] args) {

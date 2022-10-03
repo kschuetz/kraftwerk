@@ -1,6 +1,6 @@
 package examples.tutorial;
 
-import static dev.marksman.kraftwerk.Generators.generateString;
+import static software.kes.kraftwerk.Generators.generateString;
 
 public class MaybeExample {
     public static void main(String[] args) {

@@ -1,11 +1,11 @@
 package examples.tutorial;
 
-import dev.marksman.kraftwerk.constraints.IntRange;
+import software.kes.kraftwerk.constraints.IntRange;
 
 import java.util.Collections;
 
-import static dev.marksman.kraftwerk.Generators.chooseOneOfValues;
-import static dev.marksman.kraftwerk.Generators.generateInt;
+import static software.kes.kraftwerk.Generators.chooseOneOfValues;
+import static software.kes.kraftwerk.Generators.generateInt;
 
 public class ContrivedFlatMapExample {
     public static void main(String[] args) {

@@ -1,6 +1,6 @@
 package benchmarks;
 
-import dev.marksman.kraftwerk.Generator;
+import software.kes.kraftwerk.Generator;
 
 public abstract class BenchmarkBase {
     public static final int DEFAULT_ITERATIONS = 5_000_000;

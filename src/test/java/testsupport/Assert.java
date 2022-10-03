@@ -1,8 +1,8 @@
 package testsupport;
 
 import com.jnape.palatable.lambda.functions.Fn1;
-import dev.marksman.kraftwerk.Generator;
-import dev.marksman.kraftwerk.constraints.Constraint;
+import software.kes.kraftwerk.Generator;
+import software.kes.kraftwerk.constraints.Constraint;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.All.all;
 import static org.junit.jupiter.api.Assertions.assertTrue;

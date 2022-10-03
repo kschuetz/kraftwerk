@@ -1,12 +1,12 @@
 package examples.tutorial;
 
 import com.jnape.palatable.lambda.adt.hlist.Tuple3;
-import dev.marksman.kraftwerk.Generator;
+import software.kes.kraftwerk.Generator;
 
-import static dev.marksman.kraftwerk.Generators.generateDoubleFractional;
-import static dev.marksman.kraftwerk.Generators.generateInt;
-import static dev.marksman.kraftwerk.Generators.generateString;
-import static dev.marksman.kraftwerk.Generators.generateTuple;
+import static software.kes.kraftwerk.Generators.generateDoubleFractional;
+import static software.kes.kraftwerk.Generators.generateInt;
+import static software.kes.kraftwerk.Generators.generateString;
+import static software.kes.kraftwerk.Generators.generateTuple;
 
 public class CombiningThreeGenerators {
     public static void main(String[] args) {

@@ -1,7 +1,7 @@
 package examples;
 
-import static dev.marksman.kraftwerk.Generators.generateIdentifier;
-import static dev.marksman.kraftwerk.Generators.generateInfiniteIterable;
+import static software.kes.kraftwerk.Generators.generateIdentifier;
+import static software.kes.kraftwerk.Generators.generateInfiniteIterable;
 
 public class InfiniteIterableExample {
     public static void main(String[] args) {

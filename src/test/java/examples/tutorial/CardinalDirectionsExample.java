@@ -1,7 +1,7 @@
 package examples.tutorial;
 
-import static dev.marksman.kraftwerk.Generators.chooseOneOfValues;
-import static dev.marksman.kraftwerk.Generators.chooseOneOfWeighted;
+import static software.kes.kraftwerk.Generators.chooseOneOfValues;
+import static software.kes.kraftwerk.Generators.chooseOneOfWeighted;
 
 public class CardinalDirectionsExample {
     public static void main(String[] args) {

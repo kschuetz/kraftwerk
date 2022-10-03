@@ -1,14 +1,14 @@
 package examples.components;
 
 
-import dev.marksman.kraftwerk.Generator;
+import software.kes.kraftwerk.Generator;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into3.into3;
-import static dev.marksman.kraftwerk.Generators.chooseOneOfValues;
-import static dev.marksman.kraftwerk.Generators.generateString;
-import static dev.marksman.kraftwerk.Generators.generateTuple;
-import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
-import static dev.marksman.kraftwerk.weights.MaybeWeights.nothings;
+import static software.kes.kraftwerk.Generators.chooseOneOfValues;
+import static software.kes.kraftwerk.Generators.generateString;
+import static software.kes.kraftwerk.Generators.generateTuple;
+import static software.kes.kraftwerk.frequency.FrequencyMap.frequencyMap;
+import static software.kes.kraftwerk.weights.MaybeWeights.nothings;
 
 public final class City {
     private final String name;

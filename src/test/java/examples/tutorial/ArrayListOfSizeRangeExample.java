@@ -1,9 +1,9 @@
 package examples.tutorial;
 
-import dev.marksman.kraftwerk.Generators;
-import dev.marksman.kraftwerk.constraints.IntRange;
+import software.kes.kraftwerk.Generators;
+import software.kes.kraftwerk.constraints.IntRange;
 
-import static dev.marksman.kraftwerk.Generators.generateInt;
+import static software.kes.kraftwerk.Generators.generateInt;
 
 public class ArrayListOfSizeRangeExample {
     public static void main(String[] args) {

@@ -1,9 +1,9 @@
 package examples.tutorial;
 
-import dev.marksman.kraftwerk.Generator;
+import software.kes.kraftwerk.Generator;
 
-import static dev.marksman.kraftwerk.Generators.chooseOneOfValues;
-import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
+import static software.kes.kraftwerk.Generators.chooseOneOfValues;
+import static software.kes.kraftwerk.frequency.FrequencyMap.frequencyMap;
 
 public class CardinalDirectionsFrequencyMapExample {
     public static void main(String[] args) {

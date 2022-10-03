@@ -1,9 +1,9 @@
 package examples.components;
 
-import dev.marksman.kraftwerk.Generator;
+import software.kes.kraftwerk.Generator;
 
-import static dev.marksman.kraftwerk.Generators.chooseOneOfWeightedValues;
-import static dev.marksman.kraftwerk.Weighted.weighted;
+import static software.kes.kraftwerk.Generators.chooseOneOfWeightedValues;
+import static software.kes.kraftwerk.Weighted.weighted;
 
 public final class UsState {
     private final String code;

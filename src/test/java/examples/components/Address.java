@@ -1,21 +1,21 @@
 package examples.components;
 
 import com.jnape.palatable.lambda.adt.Maybe;
-import dev.marksman.kraftwerk.Generator;
-import dev.marksman.kraftwerk.constraints.IntRange;
+import software.kes.kraftwerk.Generator;
+import software.kes.kraftwerk.constraints.IntRange;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into.into;
-import static dev.marksman.kraftwerk.Generators.chooseOneOf;
-import static dev.marksman.kraftwerk.Generators.chooseOneOfValues;
-import static dev.marksman.kraftwerk.Generators.generateInt;
-import static dev.marksman.kraftwerk.Generators.generateProduct;
-import static dev.marksman.kraftwerk.Generators.generateTuple;
-import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
-import static dev.marksman.kraftwerk.weights.MaybeWeights.nothings;
 import static examples.components.City.generateCity;
 import static examples.components.Street.generateStreet;
 import static examples.components.UsState.generateUsState;
 import static examples.components.ZipCode.generateZipCode;
+import static software.kes.kraftwerk.Generators.chooseOneOf;
+import static software.kes.kraftwerk.Generators.chooseOneOfValues;
+import static software.kes.kraftwerk.Generators.generateInt;
+import static software.kes.kraftwerk.Generators.generateProduct;
+import static software.kes.kraftwerk.Generators.generateTuple;
+import static software.kes.kraftwerk.frequency.FrequencyMap.frequencyMap;
+import static software.kes.kraftwerk.weights.MaybeWeights.nothings;
 
 public final class Address {
     private final String number;

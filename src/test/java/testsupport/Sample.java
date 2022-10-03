@@ -1,7 +1,7 @@
 package testsupport;
 
-import dev.marksman.kraftwerk.Generator;
-import dev.marksman.kraftwerk.Seed;
+import software.kes.kraftwerk.Generator;
+import software.kes.kraftwerk.Seed;
 
 import java.util.ArrayList;
 

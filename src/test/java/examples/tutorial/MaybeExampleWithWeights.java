@@ -1,8 +1,8 @@
 package examples.tutorial;
 
-import dev.marksman.kraftwerk.weights.MaybeWeights;
+import software.kes.kraftwerk.weights.MaybeWeights;
 
-import static dev.marksman.kraftwerk.Generators.generateString;
+import static software.kes.kraftwerk.Generators.generateString;
 
 public class MaybeExampleWithWeights {
     public static void main(String[] args) {

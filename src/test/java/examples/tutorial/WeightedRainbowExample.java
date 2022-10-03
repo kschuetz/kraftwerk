@@ -1,7 +1,7 @@
 package examples.tutorial;
 
-import static dev.marksman.kraftwerk.Generators.chooseOneOfWeightedValues;
-import static dev.marksman.kraftwerk.Weighted.weighted;
+import static software.kes.kraftwerk.Generators.chooseOneOfWeightedValues;
+import static software.kes.kraftwerk.Weighted.weighted;
 
 public class WeightedRainbowExample {
     public static void main(String[] args) {

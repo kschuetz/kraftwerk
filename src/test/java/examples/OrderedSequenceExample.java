@@ -1,10 +1,10 @@
 package examples;
 
-import dev.marksman.collectionviews.ImmutableNonEmptyVector;
-import dev.marksman.kraftwerk.constraints.IntRange;
-import dev.marksman.kraftwerk.domain.Characters;
+import software.kes.collectionviews.ImmutableNonEmptyVector;
+import software.kes.kraftwerk.constraints.IntRange;
+import software.kes.kraftwerk.domain.Characters;
 
-import static dev.marksman.kraftwerk.Generators.generateOrderedSequence;
+import static software.kes.kraftwerk.Generators.generateOrderedSequence;
 
 public class OrderedSequenceExample {
 

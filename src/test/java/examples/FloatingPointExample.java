@@ -1,10 +1,10 @@
 package examples;
 
-import static dev.marksman.kraftwerk.Generators.generateDouble;
-import static dev.marksman.kraftwerk.Generators.generateDoubleFractional;
-import static dev.marksman.kraftwerk.Generators.generateFloat;
-import static dev.marksman.kraftwerk.Generators.generateFloatFractional;
-import static dev.marksman.kraftwerk.Generators.generateTuple;
+import static software.kes.kraftwerk.Generators.generateDouble;
+import static software.kes.kraftwerk.Generators.generateDoubleFractional;
+import static software.kes.kraftwerk.Generators.generateFloat;
+import static software.kes.kraftwerk.Generators.generateFloatFractional;
+import static software.kes.kraftwerk.Generators.generateTuple;
 
 public class FloatingPointExample {
     public static void main(String[] args) {

@@ -1,25 +1,25 @@
 package visualization;
 
 import com.jnape.palatable.lambda.functions.Fn1;
-import dev.marksman.kraftwerk.Generators;
-import dev.marksman.kraftwerk.constraints.IntRange;
-import dev.marksman.kraftwerk.frequency.FrequencyMap;
+import software.kes.kraftwerk.Generators;
+import software.kes.kraftwerk.constraints.IntRange;
+import software.kes.kraftwerk.frequency.FrequencyMap;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn1.Id.id;
-import static dev.marksman.kraftwerk.Distributions.linearRampDown;
-import static dev.marksman.kraftwerk.Distributions.linearRampUp;
-import static dev.marksman.kraftwerk.Distributions.triangularInt;
-import static dev.marksman.kraftwerk.Generators.choiceBuilder;
-import static dev.marksman.kraftwerk.Generators.generateBoolean;
-import static dev.marksman.kraftwerk.Generators.generateByte;
-import static dev.marksman.kraftwerk.Generators.generateGaussian;
-import static dev.marksman.kraftwerk.Generators.generateInt;
-import static dev.marksman.kraftwerk.Generators.generateShort;
-import static dev.marksman.kraftwerk.Generators.generateUnit;
-import static dev.marksman.kraftwerk.Weighted.weighted;
+import static software.kes.kraftwerk.Distributions.linearRampDown;
+import static software.kes.kraftwerk.Distributions.linearRampUp;
+import static software.kes.kraftwerk.Distributions.triangularInt;
+import static software.kes.kraftwerk.Generators.choiceBuilder;
+import static software.kes.kraftwerk.Generators.generateBoolean;
+import static software.kes.kraftwerk.Generators.generateByte;
+import static software.kes.kraftwerk.Generators.generateGaussian;
+import static software.kes.kraftwerk.Generators.generateInt;
+import static software.kes.kraftwerk.Generators.generateShort;
+import static software.kes.kraftwerk.Generators.generateUnit;
+import static software.kes.kraftwerk.Weighted.weighted;
 import static visualization.ChartSuite.chartSuite;
 import static visualization.HistogramGenerator.histogram;
 

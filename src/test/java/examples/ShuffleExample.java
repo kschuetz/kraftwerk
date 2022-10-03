@@ -1,8 +1,8 @@
 package examples;
 
-import dev.marksman.collectionviews.NonEmptyVector;
-import dev.marksman.collectionviews.Vector;
-import dev.marksman.kraftwerk.Generators;
+import software.kes.collectionviews.NonEmptyVector;
+import software.kes.collectionviews.Vector;
+import software.kes.kraftwerk.Generators;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into.into;
 import static examples.ShuffleExample.Rank.ACE;

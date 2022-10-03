@@ -1,11 +1,11 @@
 package visualization;
 
 import com.jnape.palatable.lambda.functions.Fn1;
-import dev.marksman.collectionviews.Vector;
-import dev.marksman.kraftwerk.Generator;
 import org.knowm.xchart.CategoryChart;
 import org.knowm.xchart.CategoryChartBuilder;
 import org.knowm.xchart.style.CategoryStyler;
+import software.kes.collectionviews.Vector;
+import software.kes.kraftwerk.Generator;
 
 import java.util.ArrayList;
 import java.util.Arrays;

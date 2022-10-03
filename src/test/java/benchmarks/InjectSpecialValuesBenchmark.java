@@ -1,10 +1,10 @@
 package benchmarks;
 
-import dev.marksman.collectionviews.Vector;
-import dev.marksman.kraftwerk.Generator;
-import dev.marksman.kraftwerk.constraints.IntRange;
+import software.kes.collectionviews.Vector;
+import software.kes.kraftwerk.Generator;
+import software.kes.kraftwerk.constraints.IntRange;
 
-import static dev.marksman.kraftwerk.Generators.generateInt;
+import static software.kes.kraftwerk.Generators.generateInt;
 
 public class InjectSpecialValuesBenchmark extends BenchmarkBase {
     private static final int ITERATIONS = 50_000_000;

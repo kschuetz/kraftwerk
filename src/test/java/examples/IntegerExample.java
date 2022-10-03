@@ -1,6 +1,6 @@
 package examples;
 
-import dev.marksman.kraftwerk.Generators;
+import software.kes.kraftwerk.Generators;
 
 public class IntegerExample {
     public static void main(String[] args) {

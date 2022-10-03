@@ -1,10 +1,10 @@
 package examples.tutorial;
 
-import dev.marksman.kraftwerk.Generator;
-import dev.marksman.kraftwerk.constraints.CharRange;
+import software.kes.kraftwerk.Generator;
+import software.kes.kraftwerk.constraints.CharRange;
 
-import static dev.marksman.kraftwerk.Generators.chooseOneOf;
-import static dev.marksman.kraftwerk.Generators.generateChar;
+import static software.kes.kraftwerk.Generators.chooseOneOf;
+import static software.kes.kraftwerk.Generators.generateChar;
 
 public class LettersExample {
     public static void main(String[] args) {

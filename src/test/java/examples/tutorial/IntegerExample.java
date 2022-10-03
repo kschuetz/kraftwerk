@@ -1,6 +1,6 @@
 package examples.tutorial;
 
-import static dev.marksman.kraftwerk.Generators.generateInt;
+import static software.kes.kraftwerk.Generators.generateInt;
 
 public class IntegerExample {
     public static void main(String[] args) {

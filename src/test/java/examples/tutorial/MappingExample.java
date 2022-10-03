@@ -1,8 +1,8 @@
 package examples.tutorial;
 
-import dev.marksman.kraftwerk.constraints.IntRange;
+import software.kes.kraftwerk.constraints.IntRange;
 
-import static dev.marksman.kraftwerk.Generators.generateInt;
+import static software.kes.kraftwerk.Generators.generateInt;
 
 public class MappingExample {
     public static void main(String[] args) {

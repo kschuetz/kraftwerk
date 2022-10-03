@@ -1,13 +1,13 @@
 package examples;
 
-import dev.marksman.kraftwerk.Generator;
-import dev.marksman.kraftwerk.Generators;
-import dev.marksman.kraftwerk.frequency.FrequencyMap;
+import software.kes.kraftwerk.Generator;
+import software.kes.kraftwerk.Generators;
+import software.kes.kraftwerk.frequency.FrequencyMap;
 
-import static dev.marksman.kraftwerk.Weighted.weighted;
-import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
-import static dev.marksman.kraftwerk.weights.MaybeWeights.justs;
-import static dev.marksman.kraftwerk.weights.MaybeWeights.nothings;
+import static software.kes.kraftwerk.Weighted.weighted;
+import static software.kes.kraftwerk.frequency.FrequencyMap.frequencyMap;
+import static software.kes.kraftwerk.weights.MaybeWeights.justs;
+import static software.kes.kraftwerk.weights.MaybeWeights.nothings;
 
 public class CompoundStringExample {
 

@@ -1,19 +1,19 @@
 package examples.components;
 
-import dev.marksman.kraftwerk.Generator;
-import dev.marksman.kraftwerk.constraints.IntRange;
+import software.kes.kraftwerk.Generator;
+import software.kes.kraftwerk.constraints.IntRange;
 
 import java.time.LocalDate;
 import java.time.Year;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into3.into3;
-import static dev.marksman.kraftwerk.Generators.generateInt;
-import static dev.marksman.kraftwerk.Generators.generateLocalDateForYear;
-import static dev.marksman.kraftwerk.Generators.generateTuple;
-import static dev.marksman.kraftwerk.Weighted.weighted;
-import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
 import static examples.components.Address.generateAddress;
 import static examples.components.Name.generateName;
+import static software.kes.kraftwerk.Generators.generateInt;
+import static software.kes.kraftwerk.Generators.generateLocalDateForYear;
+import static software.kes.kraftwerk.Generators.generateTuple;
+import static software.kes.kraftwerk.Weighted.weighted;
+import static software.kes.kraftwerk.frequency.FrequencyMap.frequencyMap;
 
 public final class Person {
     private final Name name;

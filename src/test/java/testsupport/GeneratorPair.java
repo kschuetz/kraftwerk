@@ -1,12 +1,12 @@
 package testsupport;
 
 import com.jnape.palatable.lambda.functions.Fn1;
-import dev.marksman.kraftwerk.Seed;
-import dev.marksman.kraftwerk.core.StandardSeed;
+import software.kes.kraftwerk.Seed;
+import software.kes.kraftwerk.core.StandardSeed;
 
 import java.util.Random;
 
-import static dev.marksman.kraftwerk.core.StandardSeed.initStandardSeed;
+import static software.kes.kraftwerk.core.StandardSeed.initStandardSeed;
 
 public final class GeneratorPair {
     private final long initialSeedValue;

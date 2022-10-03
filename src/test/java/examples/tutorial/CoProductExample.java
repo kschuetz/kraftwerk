@@ -1,17 +1,17 @@
 package examples.tutorial;
 
-import dev.marksman.kraftwerk.Generators;
+import software.kes.kraftwerk.Generators;
 
 import java.time.Year;
 
-import static dev.marksman.kraftwerk.Generators.chooseOneOfValues;
-import static dev.marksman.kraftwerk.Generators.generateEither;
-import static dev.marksman.kraftwerk.Generators.generateInt;
-import static dev.marksman.kraftwerk.Generators.generateLocalDateForYear;
-import static dev.marksman.kraftwerk.Generators.generateLong;
-import static dev.marksman.kraftwerk.Generators.generateMaybe;
-import static dev.marksman.kraftwerk.Generators.generateThese;
-import static dev.marksman.kraftwerk.Generators.generateTuple;
+import static software.kes.kraftwerk.Generators.chooseOneOfValues;
+import static software.kes.kraftwerk.Generators.generateEither;
+import static software.kes.kraftwerk.Generators.generateInt;
+import static software.kes.kraftwerk.Generators.generateLocalDateForYear;
+import static software.kes.kraftwerk.Generators.generateLong;
+import static software.kes.kraftwerk.Generators.generateMaybe;
+import static software.kes.kraftwerk.Generators.generateThese;
+import static software.kes.kraftwerk.Generators.generateTuple;
 
 public class CoProductExample {
     public static void main(String[] args) {

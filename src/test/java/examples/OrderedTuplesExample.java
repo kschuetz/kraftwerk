@@ -1,11 +1,11 @@
 package examples;
 
-import dev.marksman.kraftwerk.constraints.IntRange;
+import software.kes.kraftwerk.constraints.IntRange;
 
-import static dev.marksman.kraftwerk.Generators.generateIdentifier;
-import static dev.marksman.kraftwerk.Generators.generateInt;
-import static dev.marksman.kraftwerk.Generators.generateOrderedPair;
-import static dev.marksman.kraftwerk.Generators.generateTuple;
+import static software.kes.kraftwerk.Generators.generateIdentifier;
+import static software.kes.kraftwerk.Generators.generateInt;
+import static software.kes.kraftwerk.Generators.generateOrderedPair;
+import static software.kes.kraftwerk.Generators.generateTuple;
 
 public class OrderedTuplesExample {
     public static void main(String[] args) {

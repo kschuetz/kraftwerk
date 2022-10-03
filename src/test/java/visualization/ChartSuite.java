@@ -4,9 +4,9 @@ import com.jnape.palatable.lambda.adt.Unit;
 import com.jnape.palatable.lambda.adt.hlist.Tuple2;
 import com.jnape.palatable.lambda.functions.builtin.fn2.Sequence;
 import com.jnape.palatable.lambda.io.IO;
-import dev.marksman.enhancediterables.ImmutableFiniteIterable;
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.internal.chartpart.Chart;
+import software.kes.enhancediterables.ImmutableFiniteIterable;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,7 +14,7 @@ import java.nio.file.Path;
 import static com.jnape.palatable.lambda.adt.Unit.UNIT;
 import static com.jnape.palatable.lambda.adt.hlist.HList.tuple;
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into.into;
-import static dev.marksman.enhancediterables.ImmutableFiniteIterable.emptyImmutableFiniteIterable;
+import static software.kes.enhancediterables.ImmutableFiniteIterable.emptyImmutableFiniteIterable;
 
 public class ChartSuite {
     private final ImmutableFiniteIterable<Tuple2<ChartGenerator, String>> items;

@@ -1,12 +1,12 @@
 package examples.tutorial;
 
-import dev.marksman.kraftwerk.Generator;
-import dev.marksman.kraftwerk.constraints.CharRange;
-import dev.marksman.kraftwerk.constraints.IntRange;
+import software.kes.kraftwerk.Generator;
+import software.kes.kraftwerk.constraints.CharRange;
+import software.kes.kraftwerk.constraints.IntRange;
 
-import static dev.marksman.kraftwerk.Generators.generateChar;
-import static dev.marksman.kraftwerk.Generators.generateInt;
-import static dev.marksman.kraftwerk.Generators.generateMap;
+import static software.kes.kraftwerk.Generators.generateChar;
+import static software.kes.kraftwerk.Generators.generateInt;
+import static software.kes.kraftwerk.Generators.generateMap;
 
 public class MapExample {
     public static void main(String[] args) {

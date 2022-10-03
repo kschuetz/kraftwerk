@@ -1,6 +1,6 @@
 package examples;
 
-import static dev.marksman.kraftwerk.Generators.generateUUID;
+import static software.kes.kraftwerk.Generators.generateUUID;
 
 public class UUIDExample {
 

@@ -1,20 +1,20 @@
 package examples.components;
 
 import com.jnape.palatable.lambda.adt.Maybe;
-import dev.marksman.kraftwerk.Generator;
-import dev.marksman.kraftwerk.constraints.IntRange;
-import dev.marksman.kraftwerk.domain.Characters;
+import software.kes.kraftwerk.Generator;
+import software.kes.kraftwerk.constraints.IntRange;
+import software.kes.kraftwerk.domain.Characters;
 
 import static com.jnape.palatable.lambda.functions.builtin.fn2.Into4.into4;
-import static dev.marksman.kraftwerk.Generators.chooseOneOfValues;
-import static dev.marksman.kraftwerk.Generators.chooseOneOfWeighted;
-import static dev.marksman.kraftwerk.Generators.chooseOneValueFromCollection;
-import static dev.marksman.kraftwerk.Generators.chooseOneValueFromDomain;
-import static dev.marksman.kraftwerk.Generators.generateInt;
-import static dev.marksman.kraftwerk.Generators.generateNonEmptyMap;
-import static dev.marksman.kraftwerk.Generators.generateTuple;
-import static dev.marksman.kraftwerk.weights.MaybeWeights.nothings;
 import static java.util.Arrays.asList;
+import static software.kes.kraftwerk.Generators.chooseOneOfValues;
+import static software.kes.kraftwerk.Generators.chooseOneOfWeighted;
+import static software.kes.kraftwerk.Generators.chooseOneValueFromCollection;
+import static software.kes.kraftwerk.Generators.chooseOneValueFromDomain;
+import static software.kes.kraftwerk.Generators.generateInt;
+import static software.kes.kraftwerk.Generators.generateNonEmptyMap;
+import static software.kes.kraftwerk.Generators.generateTuple;
+import static software.kes.kraftwerk.weights.MaybeWeights.nothings;
 
 public final class Name {
     private final String first;

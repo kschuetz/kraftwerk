@@ -1,10 +1,10 @@
 package examples.components;
 
-import dev.marksman.kraftwerk.Generator;
-import dev.marksman.kraftwerk.Generators;
+import software.kes.kraftwerk.Generator;
+import software.kes.kraftwerk.Generators;
 
-import static dev.marksman.kraftwerk.domain.Characters.numeric;
-import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
+import static software.kes.kraftwerk.domain.Characters.numeric;
+import static software.kes.kraftwerk.frequency.FrequencyMap.frequencyMap;
 
 public final class ZipCode {
     private final String value;

@@ -1,9 +1,9 @@
 package examples.tutorial;
 
-import dev.marksman.kraftwerk.Seed;
-import dev.marksman.kraftwerk.constraints.IntRange;
+import software.kes.kraftwerk.Seed;
+import software.kes.kraftwerk.constraints.IntRange;
 
-import static dev.marksman.kraftwerk.Generators.generateInt;
+import static software.kes.kraftwerk.Generators.generateInt;
 
 public class InitialSeedExample {
     public static void main(String[] args) {

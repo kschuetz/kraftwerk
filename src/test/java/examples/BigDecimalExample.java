@@ -1,13 +1,13 @@
 package examples;
 
 import com.jnape.palatable.lambda.adt.hlist.Tuple5;
-import dev.marksman.kraftwerk.Generator;
-import dev.marksman.kraftwerk.constraints.BigDecimalRange;
+import software.kes.kraftwerk.Generator;
+import software.kes.kraftwerk.constraints.BigDecimalRange;
 
 import java.math.BigDecimal;
 
-import static dev.marksman.kraftwerk.Generators.generateBigDecimal;
-import static dev.marksman.kraftwerk.Generators.generateTuple;
+import static software.kes.kraftwerk.Generators.generateBigDecimal;
+import static software.kes.kraftwerk.Generators.generateTuple;
 
 public class BigDecimalExample {
     public static void main(String[] args) {

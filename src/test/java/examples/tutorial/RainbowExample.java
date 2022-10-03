@@ -1,6 +1,6 @@
 package examples.tutorial;
 
-import static dev.marksman.kraftwerk.Generators.chooseOneOfValues;
+import static software.kes.kraftwerk.Generators.chooseOneOfValues;
 
 public class RainbowExample {
     public static void main(String[] args) {

@@ -1,15 +1,15 @@
 package examples.tutorial;
 
-import dev.marksman.kraftwerk.Generator;
-import dev.marksman.kraftwerk.constraints.IntRange;
+import software.kes.kraftwerk.Generator;
+import software.kes.kraftwerk.constraints.IntRange;
 
 import java.time.LocalDate;
 import java.time.Year;
 
-import static dev.marksman.kraftwerk.Generators.generateInt;
-import static dev.marksman.kraftwerk.Generators.generateLocalDateForYear;
-import static dev.marksman.kraftwerk.Weighted.weighted;
-import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
+import static software.kes.kraftwerk.Generators.generateInt;
+import static software.kes.kraftwerk.Generators.generateLocalDateForYear;
+import static software.kes.kraftwerk.Weighted.weighted;
+import static software.kes.kraftwerk.frequency.FrequencyMap.frequencyMap;
 
 public class DateOfBirthExample {
     private static final int currentYear = LocalDate.now().getYear();
