@@ -70,7 +70,7 @@ To install (if you are using Maven), add the dependency to the latest version to
 <dependency>
    <groupId>software.kes</groupId>
    <artifactId>kraftwerk</artifactId>
-  <version>0.10.0</version>
+   <version>0.11.0</version>
 </dependency> 
 ```
 
