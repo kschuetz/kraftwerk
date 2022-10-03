@@ -1,7 +1,7 @@
 # kraftwerk
 
-[![kraftwerk](https://img.shields.io/maven-central/v/dev.marksman/kraftwerk.svg)](http://search.maven.org/#search%7Cga%7C1%7Cdev.marksman.kraftwerk)
-[![Javadoc](https://javadoc-badge.appspot.com/dev.marksman/kraftwerk.svg?label=javadoc)](https://kschuetz.github.io/kraftwerk/javadoc/)
+[![kraftwerk](https://img.shields.io/maven-central/v/software.kes/kraftwerk.svg)](http://search.maven.org/#search%7Cga%7C1%7Csoftware.kes.kraftwerk)
+[![Javadoc](https://javadoc-badge.appspot.com/software.kes/kraftwerk.svg?label=javadoc)](https://kschuetz.github.io/kraftwerk/javadoc/)
 [![CircleCI](https://circleci.com/gh/kschuetz/kraftwerk.svg?style=svg)](https://circleci.com/gh/kschuetz/kraftwerk)
 
 [Source code on GitHub](https://github.com/kschuetz/kraftwerk)
@@ -66,15 +66,16 @@ Using combinators like `product` and `flatMap`, these generators can be composed
 To install (if you are using Maven), add the dependency to the latest version to your `pom.xml`:
 
 ```xml
+
 <dependency>
-  <groupId>dev.marksman</groupId>
-  <artifactId>kraftwerk</artifactId>
+   <groupId>software.kes</groupId>
+   <artifactId>kraftwerk</artifactId>
   <version>0.10.0</version>
 </dependency> 
 ```
 
 Or, follow this link to get the dependency info for your preferred build tool:
-[![kraftwerk](https://img.shields.io/maven-central/v/dev.marksman/kraftwerk.svg)](http://search.maven.org/#search%7Cga%7C1%7Cdev.marksman.kraftwerk)
+[![kraftwerk](https://img.shields.io/maven-central/v/software.kes/kraftwerk.svg)](http://search.maven.org/#search%7Cga%7C1%7Csoftware.kes.kraftwerk)
 
 # <a name="examples">Examples</a>
 
@@ -82,9 +83,13 @@ Several examples, including the tutorial examples below, can be found in the [sr
 
 # <a name="tutorial">Tutorial</a>
 
-A [`Generator<A>`](https://kschuetz.github.io/kraftwerk/javadoc/dev/marksman/kraftwerk/Generator.html) is a strategy for generating random values of type `A`.  Several built-in `Generator`s are provided as static methods in [`dev.marksman.kraftwerk.Generators`](https://kschuetz.github.io/kraftwerk/javadoc/dev/marksman/kraftwerk/Generators.html).
+A [`Generator<A>`](https://kschuetz.github.io/kraftwerk/javadoc/dev/marksman/kraftwerk/Generator.html) is a strategy for
+generating random values of type `A`. Several built-in `Generator`s are provided as static methods
+in [`software.kes.kraftwerk.Generators`](https://kschuetz.github.io/kraftwerk/javadoc/dev/marksman/kraftwerk/Generators.html)
+.
 
-We will start with [`generateInt`](https://kschuetz.github.io/kraftwerk/javadoc/dev/marksman/kraftwerk/Generators.html#generateInt--):
+We will start
+with [`generateInt`](https://kschuetz.github.io/kraftwerk/javadoc/dev/marksman/kraftwerk/Generators.html#generateInt--):
 
 ### <a name="generating-integers">Generating integers</a>
 
@@ -92,22 +97,23 @@ The following example will generate a supply of random integers, and print the f
 
 ```java
 package examples.tutorial;
-import static dev.marksman.kraftwerk.Generators.generateInt;
+
+import static software.kes.kraftwerk.Generators.generateInt;
 
 public class IntegerExample {
-    public static void main(String[] args) {
-        generateInt()
-                .run()
-                .take(5)
-                .forEach(System.out::println);
+   public static void main(String[] args) {
+      generateInt()
+              .run()
+              .take(5)
+              .forEach(System.out::println);
 
-        // sample output:
-        // -806894999
-        // -2088055255
-        // 519165596
-        // -247082188
-        // 2073514567
-    }
+      // sample output:
+      // -806894999
+      // -2088055255
+      // 519165596
+      // -247082188
+      // 2073514567
+   }
 }
 ```      
 
@@ -119,8 +125,8 @@ The following will limit the output to be between 1 and 100 (inclusive):
 
 ```java 
 package examples.tutorial;
-import dev.marksman.kraftwerk.constraints.IntRange;
-import static dev.marksman.kraftwerk.Generators.generateInt;
+import software.kes.kraftwerk.constraints.IntRange;
+import static software.kes.kraftwerk.Generators.generateInt;
 
 public class IntegerWithinRangeExample {
     public static void main(String[] args) {
@@ -147,26 +153,28 @@ There *is* a version of `run` that is pure.  In the pure version, you need to pa
 
 ```java
 package examples.tutorial;
-import dev.marksman.kraftwerk.Seed;
-import dev.marksman.kraftwerk.constraints.IntRange;
-import static dev.marksman.kraftwerk.Generators.generateInt;
+
+import software.kes.kraftwerk.Seed;
+import software.kes.kraftwerk.constraints.IntRange;
+
+import static software.kes.kraftwerk.Generators.generateInt;
 
 public class InitialSeedExample {
-    public static void main(String[] args) {
-        Seed initialSeed = Seed.create(123456L);
-        generateInt(IntRange.from(1).to(100))
-                .run(initialSeed)
-                .take(5)
-                .forEach(System.out::println);
+   public static void main(String[] args) {
+      Seed initialSeed = Seed.create(123456L);
+      generateInt(IntRange.from(1).to(100))
+              .run(initialSeed)
+              .take(5)
+              .forEach(System.out::println);
 
-        // output:
-        // 24
-        // 48
-        // 68
-        // 86
-        // 39    
-        // These will be the same on every run because we are using the same initial seed.
-    }
+      // output:
+      // 24
+      // 48
+      // 68
+      // 86
+      // 39    
+      // These will be the same on every run because we are using the same initial seed.
+   }
 }
 ```                          
 
@@ -183,24 +191,26 @@ The following example multiplies the initial generator's output by 1000:
 
 ```java
 package examples.tutorial;
-import dev.marksman.kraftwerk.constraints.IntRange;
-import static dev.marksman.kraftwerk.Generators.generateInt;
+
+import software.kes.kraftwerk.constraints.IntRange;
+
+import static software.kes.kraftwerk.Generators.generateInt;
 
 public class MappingExample {
-    public static void main(String[] args) {
-        generateInt(IntRange.from(0).to(100))
-                .fmap(n -> n * 1000)
-                .run()
-                .take(5)
-                .forEach(System.out::println);
+   public static void main(String[] args) {
+      generateInt(IntRange.from(0).to(100))
+              .fmap(n -> n * 1000)
+              .run()
+              .take(5)
+              .forEach(System.out::println);
 
-        // sample output:
-        // 64000
-        // 34000
-        // 60000
-        // 58000
-        // 61000
-    }
+      // sample output:
+      // 64000
+      // 34000
+      // 60000
+      // 58000
+      // 61000
+   }
 }
 ```    
 
@@ -211,25 +221,28 @@ of `Integer`s to a generator of `LocalDate`s:
 
 ```java
 package examples.tutorial;
-import dev.marksman.kraftwerk.constraints.IntRange;
+
+import software.kes.kraftwerk.constraints.IntRange;
+
 import java.time.LocalDate;
-import static dev.marksman.kraftwerk.Generators.generateInt;
+
+import static software.kes.kraftwerk.Generators.generateInt;
 
 public class MappingToADifferentType {
-    public static void main(String[] args) {
-        generateInt(IntRange.from(0).to(100))
-                .fmap(n -> LocalDate.of(2020, 1, 1).plusDays(n))
-                .run()
-                .take(5)
-                .forEach(System.out::println);
-        
-        // sample output:
-        // 2020-02-27
-        // 2020-03-08
-        // 2020-01-19
-        // 2020-04-09
-        // 2020-01-03
-    }
+   public static void main(String[] args) {
+      generateInt(IntRange.from(0).to(100))
+              .fmap(n -> LocalDate.of(2020, 1, 1).plusDays(n))
+              .run()
+              .take(5)
+              .forEach(System.out::println);
+
+      // sample output:
+      // 2020-02-27
+      // 2020-03-08
+      // 2020-01-19
+      // 2020-04-09
+      // 2020-01-03
+   }
 }
 ```        
 
@@ -239,26 +252,28 @@ Two or more (up to eight) generators can be combined to create a generator of `T
 
 ```java
 package examples.tutorial;
+
 import com.jnape.palatable.lambda.adt.hlist.Tuple2;
-import dev.marksman.kraftwerk.Generator;
-import static dev.marksman.kraftwerk.Generators.generateInt;
-import static dev.marksman.kraftwerk.Generators.generateString;
-import static dev.marksman.kraftwerk.Generators.generateTuple;
+import software.kes.kraftwerk.Generator;
+
+import static software.kes.kraftwerk.Generators.generateInt;
+import static software.kes.kraftwerk.Generators.generateString;
+import static software.kes.kraftwerk.Generators.generateTuple;
 
 public class CombiningTwoGenerators {
-    public static void main(String[] args) {
-        Generator<Tuple2<Integer, String>> generator = generateTuple(generateInt(), generateString());
-        generator.run()
-                .take(5)
-                .forEach(System.out::println);
+   public static void main(String[] args) {
+      Generator<Tuple2<Integer, String>> generator = generateTuple(generateInt(), generateString());
+      generator.run()
+              .take(5)
+              .forEach(System.out::println);
 
-        // sample output:
-        // HList{ 1085224429 :: Sp`b}tM#@E|r }
-        // HList{ -354995125 :: Zh:b4 }
-        // HList{ -41728349 :: C8T[8aD }
-        // HList{ 981101761 :: 'z }
-        // HList{ -1434780244 :: uX }
-    }
+      // sample output:
+      // HList{ 1085224429 :: Sp`b}tM#@E|r }
+      // HList{ -354995125 :: Zh:b4 }
+      // HList{ -41728349 :: C8T[8aD }
+      // HList{ 981101761 :: 'z }
+      // HList{ -1434780244 :: uX }
+   }
 }
 ```        
 
@@ -266,30 +281,32 @@ Here is another example that combines three generators:
 
 ```java
 package examples.tutorial;
+
 import com.jnape.palatable.lambda.adt.hlist.Tuple3;
-import dev.marksman.kraftwerk.Generator;
-import static dev.marksman.kraftwerk.Generators.generateDoubleFractional;
-import static dev.marksman.kraftwerk.Generators.generateInt;
-import static dev.marksman.kraftwerk.Generators.generateString;
-import static dev.marksman.kraftwerk.Generators.generateTuple;
+import software.kes.kraftwerk.Generator;
+
+import static software.kes.kraftwerk.Generators.generateDoubleFractional;
+import static software.kes.kraftwerk.Generators.generateInt;
+import static software.kes.kraftwerk.Generators.generateString;
+import static software.kes.kraftwerk.Generators.generateTuple;
 
 public class CombiningThreeGenerators {
-    public static void main(String[] args) {
-        Generator<Tuple3<Integer, String, Double>> generator = generateTuple(generateInt(),
-                generateString(),
-                generateDoubleFractional());
+   public static void main(String[] args) {
+      Generator<Tuple3<Integer, String, Double>> generator = generateTuple(generateInt(),
+              generateString(),
+              generateDoubleFractional());
 
-        generator.run()
-                .take(5)
-                .forEach(System.out::println);
+      generator.run()
+              .take(5)
+              .forEach(System.out::println);
 
-        // sample output:
-        // HList{ 1730204138 :: A(@'y)p#e: :: 0.11402224544546236 }
-        // HList{ 1909756109 :: ';B :: 0.9884475029496926 }
-        // HList{ 1809180523 :: "W>.<eS :: 0.5097816977203855 }
-        // HList{ -540828092 :: ^Tld^2a#C}>N6U@ :: 0.7904007899645681 }
-        // HList{ -829429249 ::  :: 0.3125739749760317 }
-    }
+      // sample output:
+      // HList{ 1730204138 :: A(@'y)p#e: :: 0.11402224544546236 }
+      // HList{ 1909756109 :: ';B :: 0.9884475029496926 }
+      // HList{ 1809180523 :: "W>.<eS :: 0.5097816977203855 }
+      // HList{ -540828092 :: ^Tld^2a#C}>N6U@ :: 0.7904007899645681 }
+      // HList{ -829429249 ::  :: 0.3125739749760317 }
+   }
 }
 ```        
 
@@ -298,54 +315,65 @@ public class CombiningThreeGenerators {
 If you would prefer a product type other than `Tuple`, you can use `Generators.generateProduct`. This takes the component generators,
 and a function to apply to all of the generated components in order to create the desired type.  Here is an example that
 generates values of a custom type `RGB`:
-                                       
+
 ```java
 package examples.tutorial;
 
-import dev.marksman.kraftwerk.Generator;
-import dev.marksman.kraftwerk.constraints.IntRange;
+import software.kes.kraftwerk.Generator;
+import software.kes.kraftwerk.constraints.IntRange;
 
-import static dev.marksman.kraftwerk.Generators.generateInt;
-import static dev.marksman.kraftwerk.Generators.generateProduct;
+import static software.kes.kraftwerk.Generators.generateInt;
+import static software.kes.kraftwerk.Generators.generateProduct;
 
 public class CustomProductTypesExample {
-    public static void main(String[] args) {
-        Generator<Integer> component = generateInt(IntRange.inclusive(0, 255));
-        Generator<RGB> generateRGB = generateProduct(component, component, component, RGB::new);
+   public static void main(String[] args) {
+      Generator<Integer> component = generateInt(IntRange.inclusive(0, 255));
+      Generator<RGB> generateRGB = generateProduct(component, component, component, RGB::new);
 
-        generateRGB.run()
-                .take(5)
-                .forEach(System.out::println);
+      generateRGB.run()
+              .take(5)
+              .forEach(System.out::println);
 
-        // sample output:
-        // RGB{red=121, green=48, blue=174}
-        // RGB{red=193, green=0, blue=18}
-        // RGB{red=201, green=76, blue=22}
-        // RGB{red=221, green=221, blue=118}
-        // RGB{red=188, green=169, blue=66}
-    }
+      // sample output:
+      // RGB{red=121, green=48, blue=174}
+      // RGB{red=193, green=0, blue=18}
+      // RGB{red=201, green=76, blue=22}
+      // RGB{red=221, green=221, blue=118}
+      // RGB{red=188, green=169, blue=66}
+   }
 
-    public static class RGB {
-        private final int red;
-        private final int green;
-        private final int blue;
-        public RGB(int red, int green, int blue) {
-            this.red = red;
-            this.green = green;
-            this.blue = blue;
-        }
-        public int getRed() { return red; }
-        public int getGreen() { return green; }
-        public int getBlue() { return blue; }
-        @Override
-        public String toString() {
-            return "RGB{" +
-                    "red=" + red +
-                    ", green=" + green +
-                    ", blue=" + blue +
-                    '}';
-        }
-    }
+   public static class RGB {
+      private final int red;
+      private final int green;
+      private final int blue;
+
+      public RGB(int red, int green, int blue) {
+         this.red = red;
+         this.green = green;
+         this.blue = blue;
+      }
+
+      public int getRed() {
+         return red;
+      }
+
+      public int getGreen() {
+         return green;
+      }
+
+      public int getBlue() {
+         return blue;
+      }
+
+      @Override
+      public String toString() {
+         return "RGB{" +
+                 "red=" + red +
+                 ", green=" + green +
+                 ", blue=" + blue +
+                 '}';
+      }
+   }
 }
 ```       
 
@@ -356,29 +384,31 @@ The following example generates `ArrayList`s of integers:
 
 ```java
 package examples.tutorial;
-import dev.marksman.kraftwerk.constraints.IntRange;
-import static dev.marksman.kraftwerk.Generators.generateArrayList;
-import static dev.marksman.kraftwerk.Generators.generateInt;
+
+import software.kes.kraftwerk.constraints.IntRange;
+
+import static software.kes.kraftwerk.Generators.generateArrayList;
+import static software.kes.kraftwerk.Generators.generateInt;
 
 public class ArrayListExample {
-    public static void main(String[] args) {
-        generateArrayList(generateInt(IntRange.from(1).to(10)))
-                .run()
-                .take(10)
-                .forEach(System.out::println);
+   public static void main(String[] args) {
+      generateArrayList(generateInt(IntRange.from(1).to(10)))
+              .run()
+              .take(10)
+              .forEach(System.out::println);
 
-        // sample output:
-        //[3, 3, 8, 4, 4, 3, 7, 9]
-        //[3, 2, 7, 3, 9, 1]
-        //[9, 8, 10, 4, 3, 4, 9, 3, 1, 6, 7, 6, 3]
-        //[3, 3, 10, 10]
-        //[8, 1]
-        //[6, 3, 7, 3, 5, 2, 3, 3, 6, 8, 1, 5, 9]
-        //[]
-        //[8, 7, 8]
-        //[8, 2, 10, 5]
-        //[9, 9, 8, 1, 2, 9]
-    }
+      // sample output:
+      //[3, 3, 8, 4, 4, 3, 7, 9]
+      //[3, 2, 7, 3, 9, 1]
+      //[9, 8, 10, 4, 3, 4, 9, 3, 1, 6, 7, 6, 3]
+      //[3, 3, 10, 10]
+      //[8, 1]
+      //[6, 3, 7, 3, 5, 2, 3, 3, 6, 8, 1, 5, 9]
+      //[]
+      //[8, 7, 8]
+      //[8, 2, 10, 5]
+      //[9, 9, 8, 1, 2, 9]
+   }
 }
 ```
 
@@ -390,24 +420,26 @@ Most collection generators allow you to specify the size of the collection.  Thi
 
 ```java
 package examples.tutorial;
-import dev.marksman.kraftwerk.constraints.IntRange;
-import static dev.marksman.kraftwerk.Generators.generateArrayListOfSize;
-import static dev.marksman.kraftwerk.Generators.generateInt;
+
+import software.kes.kraftwerk.constraints.IntRange;
+
+import static software.kes.kraftwerk.Generators.generateArrayListOfSize;
+import static software.kes.kraftwerk.Generators.generateInt;
 
 public class ArrayListOfSizeExample {
-    public static void main(String[] args) {
-        generateArrayListOfSize(5, generateInt(IntRange.from(1).to(10)))
-                .run()
-                .take(5)
-                .forEach(System.out::println);
+   public static void main(String[] args) {
+      generateArrayListOfSize(5, generateInt(IntRange.from(1).to(10)))
+              .run()
+              .take(5)
+              .forEach(System.out::println);
 
-        // sample output:
-        //[9, 9, 2, 7, 5]
-        //[6, 5, 7, 5, 1]
-        //[8, 7, 4, 7, 7]
-        //[7, 8, 7, 4, 3]
-        //[3, 3, 10, 5, 3]
-    }
+      // sample output:
+      //[9, 9, 2, 7, 5]
+      //[6, 5, 7, 5, 1]
+      //[8, 7, 4, 7, 7]
+      //[7, 8, 7, 4, 3]
+      //[3, 3, 10, 5, 3]
+   }
 }
 ```   
 
@@ -415,30 +447,32 @@ You can also specify a size range:
 
 ```java
 package examples.tutorial;
-import dev.marksman.kraftwerk.Generators;
-import dev.marksman.kraftwerk.constraints.IntRange;
-import static dev.marksman.kraftwerk.Generators.generateInt;
+
+import software.kes.kraftwerk.Generators;
+import software.kes.kraftwerk.constraints.IntRange;
+
+import static software.kes.kraftwerk.Generators.generateInt;
 
 public class ArrayListOfSizeRangeExample {
-    public static void main(String[] args) {
-        Generators.generateArrayListOfSize(IntRange.from(1).to(7),
-                generateInt(IntRange.from(1).to(10)))
-                .run()
-                .take(10)
-                .forEach(System.out::println);
+   public static void main(String[] args) {
+      Generators.generateArrayListOfSize(IntRange.from(1).to(7),
+                      generateInt(IntRange.from(1).to(10)))
+              .run()
+              .take(10)
+              .forEach(System.out::println);
 
-        // sample output:
-        //[1, 5, 5, 3, 4, 8]
-        //[8, 4, 5, 6, 3]
-        //[1, 2, 3]
-        //[10, 2, 4, 4, 2]
-        //[4, 10, 2, 7, 6, 3, 10]
-        //[4, 3, 6, 1, 2, 6]     
-        //[3]
-        //[9, 8, 10]
-        //[4, 6, 3, 3, 1, 5, 4]
-        //[2]
-    }
+      // sample output:
+      //[1, 5, 5, 3, 4, 8]
+      //[8, 4, 5, 6, 3]
+      //[1, 2, 3]
+      //[10, 2, 4, 4, 2]
+      //[4, 10, 2, 7, 6, 3, 10]
+      //[4, 3, 6, 1, 2, 6]     
+      //[3]
+      //[9, 8, 10]
+      //[4, 6, 3, 3, 1, 5, 4]
+      //[2]
+   }
 }
 ```  
 
@@ -446,34 +480,36 @@ There are generators for other collection types as well, such as `Map`s and `Set
 
 ```java
 package examples.tutorial;
-import dev.marksman.kraftwerk.Generator;
-import dev.marksman.kraftwerk.constraints.CharRange;
-import dev.marksman.kraftwerk.constraints.IntRange;
-import static dev.marksman.kraftwerk.Generators.generateChar;
-import static dev.marksman.kraftwerk.Generators.generateInt;
-import static dev.marksman.kraftwerk.Generators.generateMap;
+
+import software.kes.kraftwerk.Generator;
+import software.kes.kraftwerk.constraints.CharRange;
+import software.kes.kraftwerk.constraints.IntRange;
+
+import static software.kes.kraftwerk.Generators.generateChar;
+import static software.kes.kraftwerk.Generators.generateInt;
+import static software.kes.kraftwerk.Generators.generateMap;
 
 public class MapExample {
-    public static void main(String[] args) {
-        Generator<Character> keyGenerator = generateChar(CharRange.from('A').to('Z'));
-        Generator<Integer> valueGenerator = generateInt(IntRange.from(1).to(10));
-        generateMap(keyGenerator, valueGenerator)
-                .run()
-                .take(10)
-                .forEach(System.out::println);
+   public static void main(String[] args) {
+      Generator<Character> keyGenerator = generateChar(CharRange.from('A').to('Z'));
+      Generator<Integer> valueGenerator = generateInt(IntRange.from(1).to(10));
+      generateMap(keyGenerator, valueGenerator)
+              .run()
+              .take(10)
+              .forEach(System.out::println);
 
-        // sample output:
-        //{B=2, R=3, S=3, F=7, W=2, I=2, Y=9, O=3}
-        //{Q=6, C=1, T=3, E=2, G=6, I=10, J=9, L=5, M=7}
-        //{}
-        //{P=10, A=5, B=7, S=7, T=4, W=3, G=3, H=1, Y=7, M=2, N=5, O=1}
-        //{T=7, U=6, E=4, W=6, I=8, K=7, N=3}
-        //{G=7, H=6, I=6, J=5, M=4, N=10}
-        //{}
-        //{}
-        //{A=9, C=6, E=2, I=1, J=6, K=4, L=2, M=7, N=1, P=9, Q=3, S=4, U=9, W=1, X=8}
-        //{B=8, D=4, T=1, E=10, G=1, Y=8, I=6, L=10, M=2, O=1}
-    }
+      // sample output:
+      //{B=2, R=3, S=3, F=7, W=2, I=2, Y=9, O=3}
+      //{Q=6, C=1, T=3, E=2, G=6, I=10, J=9, L=5, M=7}
+      //{}
+      //{P=10, A=5, B=7, S=7, T=4, W=3, G=3, H=1, Y=7, M=2, N=5, O=1}
+      //{T=7, U=6, E=4, W=6, I=8, K=7, N=3}
+      //{G=7, H=6, I=6, J=5, M=4, N=10}
+      //{}
+      //{}
+      //{A=9, C=6, E=2, I=1, J=6, K=4, L=2, M=7, N=1, P=9, Q=3, S=4, U=9, W=1, X=8}
+      //{B=8, D=4, T=1, E=10, G=1, Y=8, I=6, L=10, M=2, O=1}
+   }
 }
 ```    
 
@@ -485,8 +521,8 @@ Here is an example that uses `.arrayList()`:
 
 ```java 
 package examples.tutorial;
-import dev.marksman.kraftwerk.constraints.IntRange;
-import static dev.marksman.kraftwerk.Generators.generateInt;
+import software.kes.kraftwerk.constraints.IntRange;
+import static software.kes.kraftwerk.Generators.generateInt;
 
 public class ArrayListPostfixExample {
     public static void main(String[] args) {
@@ -512,27 +548,28 @@ Use `chooseOneOfValues` to choose from a set of one or more items:
 
 ```java
 package examples.tutorial;
-import static dev.marksman.kraftwerk.Generators.chooseOneOfValues;
+
+import static software.kes.kraftwerk.Generators.chooseOneOfValues;
 
 public class RainbowExample {
-    public static void main(String[] args) {
-        chooseOneOfValues("red", "orange", "yellow", "green", "blue", "indigo", "violet")
-                .run()
-                .take(10)
-                .forEach(System.out::println);
+   public static void main(String[] args) {
+      chooseOneOfValues("red", "orange", "yellow", "green", "blue", "indigo", "violet")
+              .run()
+              .take(10)
+              .forEach(System.out::println);
 
-        // sample output:        
-        //violet
-        //green
-        //orange
-        //violet
-        //yellow
-        //red
-        //yellow
-        //green
-        //blue
-        //violet
-    }
+      // sample output:        
+      //violet
+      //green
+      //orange
+      //violet
+      //yellow
+      //red
+      //yellow
+      //green
+      //blue
+      //violet
+   }
 }
 ```
 
@@ -540,10 +577,10 @@ public class RainbowExample {
 
 ```java       
 package examples.tutorial;
-import dev.marksman.kraftwerk.Generator;
-import dev.marksman.kraftwerk.constraints.CharRange;
-import static dev.marksman.kraftwerk.Generators.chooseOneOf;
-import static dev.marksman.kraftwerk.Generators.generateChar;
+import software.kes.kraftwerk.Generator;
+import software.kes.kraftwerk.constraints.CharRange;
+import static software.kes.kraftwerk.Generators.chooseOneOf;
+import static software.kes.kraftwerk.Generators.generateChar;
 
 public class LettersExample {
     public static void main(String[] args) {
@@ -576,8 +613,8 @@ If you want some items to occur more than others, you can use `chooseOneOfWeight
 
 ```java     
 package examples.tutorial;
-import static dev.marksman.kraftwerk.Generators.chooseOneOfWeightedValues;
-import static dev.marksman.kraftwerk.Weighted.weighted;
+import static software.kes.kraftwerk.Generators.chooseOneOfWeightedValues;
+import static software.kes.kraftwerk.Weighted.weighted;
 
 public class WeightedRainbowExample {
     public static void main(String[] args) {
@@ -611,8 +648,8 @@ In the following example, the cardinal directions (N, S, W, E) will occur 8 time
 
 ```java           
 package examples.tutorial;
-import static dev.marksman.kraftwerk.Generators.chooseOneOfValues;
-import static dev.marksman.kraftwerk.Generators.chooseOneOfWeighted;
+import static software.kes.kraftwerk.Generators.chooseOneOfValues;
+import static software.kes.kraftwerk.Generators.chooseOneOfWeighted;
 
 public class CardinalDirectionsExample {
     public static void main(String[] args) {
@@ -649,8 +686,8 @@ The following example is semantically equivalent to the `RainbowExample` above:
 
 ```java   
 package examples.tutorial;
-import static dev.marksman.kraftwerk.Weighted.weighted;
-import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMapFirstValue;
+import static software.kes.kraftwerk.Weighted.weighted;
+import static software.kes.kraftwerk.frequency.FrequencyMap.frequencyMapFirstValue;
 
 public class RainbowFrequencyMapExample {
     public static void main(String[] args) {
@@ -684,34 +721,36 @@ This example is semantically equivalent to the `CardinalDirectionsExample` above
 
 ```java
 package examples.tutorial;
-import dev.marksman.kraftwerk.Generator;
-import static dev.marksman.kraftwerk.Generators.chooseOneOfValues;
-import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
+
+import software.kes.kraftwerk.Generator;
+
+import static software.kes.kraftwerk.Generators.chooseOneOfValues;
+import static software.kes.kraftwerk.frequency.FrequencyMap.frequencyMap;
 
 public class CardinalDirectionsFrequencyMapExample {
-    public static void main(String[] args) {
-        Generator<String> cardinals = chooseOneOfValues("N", "S", "W", "E");
-        Generator<String> interCardinals = chooseOneOfValues("NW", "NE", "SW", "SE");
+   public static void main(String[] args) {
+      Generator<String> cardinals = chooseOneOfValues("N", "S", "W", "E");
+      Generator<String> interCardinals = chooseOneOfValues("NW", "NE", "SW", "SE");
 
-        frequencyMap(cardinals.weighted(8))
-                .add(interCardinals)
-                .toGenerator()
-                .run()
-                .take(10)
-                .forEach(System.out::println);
+      frequencyMap(cardinals.weighted(8))
+              .add(interCardinals)
+              .toGenerator()
+              .run()
+              .take(10)
+              .forEach(System.out::println);
 
-        // sample output:
-        //W
-        //N
-        //W
-        //SE
-        //W
-        //SW
-        //N
-        //E
-        //E
-        //E
-    }
+      // sample output:
+      //W
+      //N
+      //W
+      //SE
+      //W
+      //SW
+      //N
+      //E
+      //E
+      //E
+   }
 }     
 ```  
 
@@ -725,29 +764,30 @@ This example uses `flatMap` to generate lists of letters of varying lengths:
 
 ```java
 package examples.tutorial;
-import static dev.marksman.kraftwerk.Generators.generateAlphaChar;
-import static dev.marksman.kraftwerk.Generators.generateSize;
+
+import static software.kes.kraftwerk.Generators.generateAlphaChar;
+import static software.kes.kraftwerk.Generators.generateSize;
 
 public class SizedExample1 {
-    public static void main(String[] args) {
-        generateSize()
-                .flatMap(size -> generateAlphaChar().vectorOfSize(size))
-                .run()
-                .take(10)
-                .forEach(System.out::println);
+   public static void main(String[] args) {
+      generateSize()
+              .flatMap(size -> generateAlphaChar().vectorOfSize(size))
+              .run()
+              .take(10)
+              .forEach(System.out::println);
 
-        //sample output:
-        //Vector(n, P, e)
-        //Vector(w, f, o, W, i, t, y, v, p, i, K, O)
-        //Vector(q, W, X, Q, D, S, T, M, D, l, P, p, E, O, K)
-        //Vector(b, c, H, N, H, m, I, K)
-        //Vector(m, J, Q, F, I, d, Z, C, b)
-        //Vector(Q)
-        //Vector(d, i, U, o, M, T)
-        //Vector(F, S, I, R, s, l, t, V)
-        //Vector(Q, V)
-        //Vector(B, p, Q)
-    }
+      //sample output:
+      //Vector(n, P, e)
+      //Vector(w, f, o, W, i, t, y, v, p, i, K, O)
+      //Vector(q, W, X, Q, D, S, T, M, D, l, P, p, E, O, K)
+      //Vector(b, c, H, N, H, m, I, K)
+      //Vector(m, J, Q, F, I, d, Z, C, b)
+      //Vector(Q)
+      //Vector(d, i, U, o, M, T)
+      //Vector(F, S, I, R, s, l, t, V)
+      //Vector(Q, V)
+      //Vector(B, p, Q)
+   }
 }
 ```   
 
@@ -755,28 +795,29 @@ Note that the above example was only for illustrating how to use `flatMap`. `Gen
 
 ```java
 package examples.tutorial;
-import static dev.marksman.kraftwerk.Generators.generateAlphaChar;
-import static dev.marksman.kraftwerk.Generators.sized;
+
+import static software.kes.kraftwerk.Generators.generateAlphaChar;
+import static software.kes.kraftwerk.Generators.sized;
 
 public class SizedExample2 {
-    public static void main(String[] args) {
-        sized(size -> generateAlphaChar().vectorOfSize(size))
-                .run()
-                .take(10)
-                .forEach(System.out::println);
+   public static void main(String[] args) {
+      sized(size -> generateAlphaChar().vectorOfSize(size))
+              .run()
+              .take(10)
+              .forEach(System.out::println);
 
-        // sample output:
-        //Vector(E, t, z, h, G, Q, V, A, P, q, X)
-        //Vector(d, W, E, y, p, F, l, N, u, Q, k, C)
-        //Vector(d, x, e, C, Z, W, m, t, T, F, J, L, G, Q)
-        //Vector(d, C)
-        //Vector(G, p, I, T, q, c, X, l, R, w, v, e, m, G, F)
-        //Vector(r, f, B, m, v, I)
-        //Vector(r, q, o)
-        //Vector(x, Q, N, b)
-        //Vector(c, A, f, h, J, H, O, T, A, E, o, E, p, B)
-        //Vector(z, N, P, F, X, B, B, q, u, U)        
-    }
+      // sample output:
+      //Vector(E, t, z, h, G, Q, V, A, P, q, X)
+      //Vector(d, W, E, y, p, F, l, N, u, Q, k, C)
+      //Vector(d, x, e, C, Z, W, m, t, T, F, J, L, G, Q)
+      //Vector(d, C)
+      //Vector(G, p, I, T, q, c, X, l, R, w, v, e, m, G, F)
+      //Vector(r, f, B, m, v, I)
+      //Vector(r, q, o)
+      //Vector(x, Q, N, b)
+      //Vector(c, A, f, h, J, H, O, T, A, E, o, E, p, B)
+      //Vector(z, N, P, F, X, B, B, q, u, U)        
+   }
 }
 ```
 
@@ -786,10 +827,10 @@ Here is another (contrived) example for `flatMap`:
 
 ```java 
 package examples.tutorial;
-import dev.marksman.kraftwerk.constraints.IntRange;
+import software.kes.kraftwerk.constraints.IntRange;
 import java.util.Collections;
-import static dev.marksman.kraftwerk.Generators.chooseOneOfValues;
-import static dev.marksman.kraftwerk.Generators.generateInt;
+import static software.kes.kraftwerk.Generators.chooseOneOfValues;
+import static software.kes.kraftwerk.Generators.generateInt;
 
 public class ContrivedFlatMapExample {
     public static void main(String[] args) {
@@ -820,14 +861,14 @@ public class ContrivedFlatMapExample {
 
 ```java 
 package examples.tutorial;
-import dev.marksman.kraftwerk.Generator;
-import dev.marksman.kraftwerk.constraints.IntRange;
+import software.kes.kraftwerk.Generator;
+import software.kes.kraftwerk.constraints.IntRange;
 import java.time.LocalDate;
 import java.time.Year;
-import static dev.marksman.kraftwerk.Generators.generateInt;
-import static dev.marksman.kraftwerk.Generators.generateLocalDateForYear;
-import static dev.marksman.kraftwerk.Weighted.weighted;
-import static dev.marksman.kraftwerk.frequency.FrequencyMap.frequencyMap;
+import static software.kes.kraftwerk.Generators.generateInt;
+import static software.kes.kraftwerk.Generators.generateLocalDateForYear;
+import static software.kes.kraftwerk.Weighted.weighted;
+import static software.kes.kraftwerk.frequency.FrequencyMap.frequencyMap;
 
 public class DateOfBirthExample {
     private static final int currentYear = LocalDate.now().getYear();
@@ -880,26 +921,28 @@ To generate `Maybe<A>`s, simply call `.maybe()` on a `Generator<A>`.  These will
 
 ```java
 package examples.tutorial;
-import static dev.marksman.kraftwerk.Generators.generateString;
-public class MaybeExample {
-    public static void main(String[] args) {
-        generateString().maybe()
-                .run()
-                .take(10)
-                .forEach(System.out::println);
-    }
 
-    //sample output:
-    //Just +_`ysR5:@m
-    //Just v/Z.d+RG~o(Kp@i
-    //Just =Vf
-    //Just yO6p
-    //Nothing
-    //Just 8R>hq68
-    //Just 5?-*{z_R2y
-    //Just (^BpsPz}$"nS,
-    //Just o{S]0&jn
-    //Just oAj
+import static software.kes.kraftwerk.Generators.generateString;
+
+public class MaybeExample {
+   public static void main(String[] args) {
+      generateString().maybe()
+              .run()
+              .take(10)
+              .forEach(System.out::println);
+   }
+
+   //sample output:
+   //Just +_`ysR5:@m
+   //Just v/Z.d+RG~o(Kp@i
+   //Just =Vf
+   //Just yO6p
+   //Nothing
+   //Just 8R>hq68
+   //Just 5?-*{z_R2y
+   //Just (^BpsPz}$"nS,
+   //Just o{S]0&jn
+   //Just oAj
 }
 ```  
 
@@ -907,28 +950,30 @@ If you want control over how frequently `Nothing` occurs, you can use `MaybeWeig
 
 ```java
 package examples.tutorial;
-import dev.marksman.kraftwerk.weights.MaybeWeights;
-import static dev.marksman.kraftwerk.Generators.generateString;
+
+import software.kes.kraftwerk.weights.MaybeWeights;
+
+import static software.kes.kraftwerk.Generators.generateString;
 
 public class MaybeExampleWithWeights {
-    public static void main(String[] args) {
-        generateString().maybe(MaybeWeights.justs(3).toNothings(1))
-                .run()
-                .take(10)
-                .forEach(System.out::println);
+   public static void main(String[] args) {
+      generateString().maybe(MaybeWeights.justs(3).toNothings(1))
+              .run()
+              .take(10)
+              .forEach(System.out::println);
 
-        //sample output:
-        //Just 9oo*=4+f!OCW
-        //Just ^oSbZU
-        //Just K)[B3:x]ob^8\s
-        //Nothing
-        //Nothing
-        //Just  [cMM
-        //Nothing
-        //Just L
-        //Just :_{MS
-        //Just O`0>Q0        
-    }
+      //sample output:
+      //Just 9oo*=4+f!OCW
+      //Just ^oSbZU
+      //Just K)[B3:x]ob^8\s
+      //Nothing
+      //Nothing
+      //Just  [cMM
+      //Nothing
+      //Just L
+      //Just :_{MS
+      //Just O`0>Q0        
+   }
 }
 ```
 
@@ -936,16 +981,16 @@ The following example illustrates generation of some of the other coproduct type
 
 ```java 
 package examples.tutorial;
-import dev.marksman.kraftwerk.Generators;
+import software.kes.kraftwerk.Generators;
 import java.time.Year;
-import static dev.marksman.kraftwerk.Generators.chooseOneOfValues;
-import static dev.marksman.kraftwerk.Generators.generateEither;
-import static dev.marksman.kraftwerk.Generators.generateInt;
-import static dev.marksman.kraftwerk.Generators.generateLocalDateForYear;
-import static dev.marksman.kraftwerk.Generators.generateLong;
-import static dev.marksman.kraftwerk.Generators.generateMaybe;
-import static dev.marksman.kraftwerk.Generators.generateThese;
-import static dev.marksman.kraftwerk.Generators.generateTuple;
+import static software.kes.kraftwerk.Generators.chooseOneOfValues;
+import static software.kes.kraftwerk.Generators.generateEither;
+import static software.kes.kraftwerk.Generators.generateInt;
+import static software.kes.kraftwerk.Generators.generateLocalDateForYear;
+import static software.kes.kraftwerk.Generators.generateLong;
+import static software.kes.kraftwerk.Generators.generateMaybe;
+import static software.kes.kraftwerk.Generators.generateThese;
+import static software.kes.kraftwerk.Generators.generateTuple;
 
 public class CoProductExample {
     public static void main(String[] args) {
@@ -979,16 +1024,16 @@ The example generates one of the eight Java primitive types (albeit boxed), with
 ```java 
 package examples.tutorial;
 import com.jnape.palatable.lambda.adt.choice.Choice8;
-import dev.marksman.kraftwerk.Generator;
-import static dev.marksman.kraftwerk.Generators.choiceBuilder;
-import static dev.marksman.kraftwerk.Generators.generateAsciiPrintableChar;
-import static dev.marksman.kraftwerk.Generators.generateBoolean;
-import static dev.marksman.kraftwerk.Generators.generateByte;
-import static dev.marksman.kraftwerk.Generators.generateDoubleFractional;
-import static dev.marksman.kraftwerk.Generators.generateFloatFractional;
-import static dev.marksman.kraftwerk.Generators.generateInt;
-import static dev.marksman.kraftwerk.Generators.generateLong;
-import static dev.marksman.kraftwerk.Generators.generateShort;
+import software.kes.kraftwerk.Generator;
+import static software.kes.kraftwerk.Generators.choiceBuilder;
+import static software.kes.kraftwerk.Generators.generateAsciiPrintableChar;
+import static software.kes.kraftwerk.Generators.generateBoolean;
+import static software.kes.kraftwerk.Generators.generateByte;
+import static software.kes.kraftwerk.Generators.generateDoubleFractional;
+import static software.kes.kraftwerk.Generators.generateFloatFractional;
+import static software.kes.kraftwerk.Generators.generateInt;
+import static software.kes.kraftwerk.Generators.generateLong;
+import static software.kes.kraftwerk.Generators.generateShort;
 
 public class WeightedChoiceExample {
     public static void main(String[] args) {
